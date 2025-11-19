@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lightning Talk Yall!!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+            background: #000000;
+            color: #ededed;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 2.8em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888888;
+            margin-bottom: 40px;
+            font-size: 1.2em;
+            font-weight: 400;
+        }
+        
+        .demo-section {
+            background: #111111;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #1a1a1a;
+            transition: all 0.2s ease;
+        }
+        
+        .demo-section:hover {
+            border-color: #333333;
+        }
+        
+        .demo-section h2 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 12px;
+        }
+        
+        .code-block {
+            background: #0a0a0a;
+            color: #a8a8a8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Courier New', monospace;
+            font-size: 0.9em;
+            border: 1px solid #1a1a1a;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .iframe-container {
+            margin: 25px 0;
+            border: 1px solid #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        iframe, video, object {
+            width: 100%;
+            border: none;
+            display: block;
+        }
+        
+        .description {
+            color: #888888;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+        
+        .note {
+            background: #0a0a0a;
+            border-left: 2px solid #444444;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            color: #a8a8a8;
+        }
+        
+        .warning {
+            background: #0a0a0a;
+            border-left: 2px solid #666666;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            color: #a8a8a8;
+        }
+        
+        .attributes {
+            background: #0a0a0a;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 0.95em;
+            border: 1px solid #1a1a1a;
+        }
+        
+        .attributes strong {
+            color: #ffffff;
+        }
+        
+        .attributes ul {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+        
+        .attributes li {
+            margin-bottom: 6px;
+            color: #888888;
+        }
+        
+        code {
+            background: #0a0a0a;
+            color: #ededed;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 0.9em;
+        }
+        
+        .tag-label {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #ededed;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.85em;
+            margin-bottom: 15px;
+            border: 1px solid #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lightning Talk Yall!!!!!1!!</h1>
+        
+        <!-- object: PowerPoint -->
+        <div class="demo-section">
+            <span class="tag-label">&lt;iframe&gt;</span>
+            <h2>&lt;iframe&gt;: PowerPoint Presentation</h2>
+            
+            <div class="code-block">&lt;iframe src="https://collegedawson-my.sharepoint.com/personal/felix_egan_dawsoncollege_qc_ca/_layouts/15/Doc.aspx?sourcedoc={6197091b-109b-47e8-949a-a7873043afe3}&amp;action=embedview&amp;wdAr=1.7777777777777777" 
+    width="100%" 
+    height="600" 
+    frameborder="0"
+    allowfullscreen="true"&gt;
+    This is an embedded &lt;a target="_blank" href="https://office.com"&gt;Microsoft Office&lt;/a&gt; presentation, powered by &lt;a target="_blank" href="https://office.com/webapps"&gt;Office&lt;/a&gt;.
+&lt;/iframe&gt;</div>
+
+            
+            <div class="iframe-container"></div>
+                <iframe src="https://collegedawson-my.sharepoint.com/personal/felix_egan_dawsoncollege_qc_ca/_layouts/15/Doc.aspx?sourcedoc={6197091b-109b-47e8-949a-a7873043afe3}&amp;action=embedview&amp;wdAr=1.7777777777777777" width="100%" height="600" frameborder="0" allowfullscreen="true">This is an embedded <a target="_blank" href="https://office.com">Microsoft Office</a> presentation, powered by <a target="_blank" href="https://office.com/webapps">Office</a>.</iframe>
+            </div>
+            
+        </div>
+        
+        <!-- iframe 1: External Website -->
+        <div class="demo-section">
+            <span class="tag-label">&lt;iframe&gt;</span>
+            <h2>&lt;iframe&gt;: External Website</h2>
+            
+            <div class="code-block">&lt;iframe src="https://sf-study-tools.com" 
+        width="100%" 
+        height="600"
+        sandbox="allow-same-origin allow-scripts 
+                 allow-popups allow-forms"
+        title="SF Study Tools"&gt;
+&lt;/iframe&gt;</div>
+            
+            <div class="iframe-container">
+                <iframe src="https://sf-study-tools.com" 
+                        width="100%" 
+                        height="600"
+                        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                        title="SF Study Tools website">
+                </iframe>
+            </div>
+        </div>
+        
+        <!-- object: SVG Animation -->
+        <div class="demo-section">
+            <span class="tag-label">&lt;object&gt;</span>
+            <h2>&lt;object&gt;: SVG Animation</h2>
+            
+            <div class="code-block">&lt;object data="logo-anim.svg" 
+        type="image/svg+xml" 
+        width="100%" 
+        height="500"&gt;
+        &lt;p&gt;Your browser doesn't support SVG objects.&lt;/p&gt;
+    &lt;/object&gt;</div>
+            
+            <div class="iframe-container">
+            <object data="logo-anim.svg" 
+                type="image/svg+xml" 
+                width="100%" 
+                height="500">
+                <p style="padding: 40px; text-align: center; color: #fff;">
+                Your browser doesn't support SVG objects.
+                </p>
+            </object>
+            </div>
+        </div>
+        
+        <!-- video: Local Video -->
+        <div class="demo-section">
+            <span class="tag-label">&lt;video&gt;</span>
+            <h2>&lt;video&gt;: Local Video File</h2>
+            
+            <div class="code-block">&lt;video width="100%" 
+       height="500" 
+       controls 
+       preload="metadata"&gt;
+    &lt;source src="dawson-shinanigans.mp4" type="video/mp4"&gt;
+    &lt;p&gt;Your browser doesn't support HTML5 video.&lt;/p&gt;
+&lt;/video&gt;</div>
+
+            <div class="iframe-container">
+                <video width="100%" 
+                       height="500" 
+                       controls 
+                       preload="metadata"
+                       style="background: #000;">
+                    <source src="dawson-shinanigans.mp4" type="video/mp4">
+                    <p style="padding: 40px; text-align: center; color: #fff;">
+                        Your browser doesn't support HTML5 video.
+                        <a href="dawson-shinanigans.mp4" style="color: #00d9ff;">Download the video</a>
+                    </p>
+                </video>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>
