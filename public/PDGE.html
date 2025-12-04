@@ -532,8 +532,6 @@ def element(name):
         
         if (typeof value === 'number') {
             div.classList.remove('dimmed');
-            // Calculate opacity: 0.1 to 1.0 range (good enough visibility, ACCESSIBILITY IS IMPORTANTTT)
-            // Higher is more opaque
             const normalized = (value - min) / (max - min);
             const opacity = 0.1 + (normalized * 0.9);
             div.style.opacity = opacity;
@@ -621,7 +619,10 @@ def element(name):
     - [X] Form styling [DOMI]
     - [X] Error page styling [DOMI]
     - [X] Layout improvements [DOMI]
-- [X] JavaScript interactivity ([X]table hover, [X]search filter, [X]table filters) [FELIX]`
+- [X] JavaScript interactivity [FELIX]
+    - [X]table hover [FELIX]
+    - [X]search filter [FELIX]
+    - [X]table filters [FELIX]`
                     }
                 ]
             },
@@ -634,7 +635,7 @@ def element(name):
             {
                 title: "Thank you!",
                 url: "https://final-project-e6ok.onrender.com/",
-                desc: "<p>Thank you for your time and attention!</p><p>We hope you enjoyed</p><p>Questions?</p>",
+                desc: "<p><strong>Thank you</strong> for your time and attention!</p><p>We hope you enjoyed</p><p><strong>Questions?</strong></p>",
                 files: []
             }
         ];
@@ -743,3 +744,4 @@ def element(name):
 </body>
 
 </html>
+
