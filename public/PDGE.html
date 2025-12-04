@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDGE Project Presentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+    </script>
+
+    <style>
+        :root {
+            --bg: #0f172a;
+            --sidebar-bg: #11161f;
+            --text: #f8fafc;
+            --text-muted: #d7dce4;
+            --accent: #38bdf8;
+            --border: #334155;
+            --code-bg: #0b1120;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: block;
+            overflow: hidden;
+            position: relative;
+        }
+
+        aside {
+            width: 500px;
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            z-index: 20;
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        aside.collapsed {
+            transform: translateX(100%);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--accent), #818cf8);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .collapse-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .collapse-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .tree-indent {
+            position: relative;
+        }
+        .tree-indent::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: -10px;
+            bottom: -10px; 
+            border-left: 1px solid var(--border);
+        }
+
+        .file-tree {
+            overflow: hidden;
+        }
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        main {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            background: #000;
+        }
+
+        #iframeOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        aside.collapsed ~ main #iframeOverlay {
+            pointer-events: none;
+            display: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+
+        .hint-overlay {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 30;
+            border: 1px solid var(--border);
+        }
+        aside.collapsed ~ .hint-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .step-card {
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        h2 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        h3 { font-size: 1rem; margin: 1rem 0 0.5rem; color: var(--accent); }
+        p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; }
+        ul { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem; }
+        li { margin-bottom: 0.5rem; }
+
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            overflow: hidden;
+        }
+        .code-header {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        .code-content {
+            padding: 1rem;
+            overflow-x: auto;
+            color: #e2e8f0;
+        }
+
+        .file-tree {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .tree-item { padding: 2px 0; }
+        .tree-folder { color: var(--accent); font-weight: bold; }
+        .tree-file { color: var(--text); }
+        .tree-indent { display: inline-block; width: 1.5rem; }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover { background: var(--accent); color: #0f172a; border-color: var(--accent); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-icon { font-size: 1.2rem; }
+
+        #fileStructureOverlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--sidebar-bg);
+            padding: 1.5rem;
+            z-index: 20;
+            overflow-y: auto;
+        }
+        #fileStructureOverlay.active { display: block; }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div>
+                <h1>PDGE Explorer</h1>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Interactive Project Documentation</p>
+            </div>
+            <button class="collapse-btn" onclick="toggleSidebar()" title="Collapse Sidebar (Press 'P')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="sidebar-content">
+            <div id="sidebarContent">
+                <!-- dynamic content injected here -->
+            </div>
+            
+            <div id="fileStructureOverlay">
+                <button class="close-btn" onclick="toggleFileStructure()">×</button>
+                <h2>Project Structure</h2>
+                <div class="file-tree">
+                    <div class="tree-item"><span class="tree-folder">final-project/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">app.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">requirements.txt</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">README.md</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">PROJECT_DOCUMENTATION.md</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">documentation/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">static/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">css/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">stylesheet.css</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">data/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">elements.json</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">elements_desc.json</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">votes.json</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">suggestions.json</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">img/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">logo.png</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">elements/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">hydrogen.jpg</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">helium.jpg</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">...</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">js/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">table.js</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">search.js</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">favicon/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">favicon.ico</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">py/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">generate_element_data.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">periodic_scraper-desc.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">periodic_scraper-imgs.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">templates/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">layout.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">index.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">element.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">new_elem.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">same_elem.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">elem_added.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">search.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">suggestion.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">suggestions.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">vote.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">votes.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">error.html</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="btn" id="prevBtn" onclick="prevStep()">← Back</button>
+            <button class="btn" onclick="toggleFileStructure()" title="View File Structure">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3h18v18H3zM9 3v18M21 9H9"/>
+                </svg>
+            </button>
+            <button class="btn" id="nextBtn" onclick="nextStep()">Next →</button>
+        </div>
+    </aside>
+
+    <main>
+        <div id="iframeOverlay" onclick="toggleSidebar()"></div>
+        <iframe id="appFrame" src="https://final-project-e6ok.onrender.com/"></iframe>
+    </main>
+
+    <div class="hint-overlay" onclick="toggleSidebar()">Press 'P' to show sidebar</div>
+
+    <script>
+        const frame = document.getElementById('appFrame');
+        const contentDiv = document.getElementById('sidebarContent');
+        const sidebar = document.getElementById('sidebar');
+        let currentStep = 0;
+        let editors = [];
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'p') {
+                toggleSidebar();
+            }
+
+            if (!sidebar.classList.contains('collapsed')) {
+                if (e.key === 'ArrowLeft') {
+                    prevStep();
+                } else if (e.key === 'ArrowRight') {
+                    nextStep();
+                }
+            }
+        });
+
+        window.addEventListener('message', (event) => {
+            if (event.data === 'toggleSidebar') {
+                toggleSidebar();
+            } else if (event.data === 'prevStep' && !sidebar.classList.contains('collapsed')) {
+                prevStep();
+            } else if (event.data === 'nextStep' && !sidebar.classList.contains('collapsed')) {
+                nextStep();
+            }
+        });
+
+
+
+
+
+
+
+
+
+
+
+        // Presentation Data
+        const steps = [
+            {
+                title: "Welcome! - PDGE Project 2025",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "<p><strong>The Periodic Table</strong></p><p>A project by <strong>Felix Egan</strong> and <strong>Domenico Valentino</strong></p><p>Submitted to Lei Lopez</p><p>Class: Coding III - Section 02</p>",
+                files: []
+            },
+            {
+                title: "Project Overview - Website Topic",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "<ul><li>Topic: Chemistry</li><li>Focus: Periodic Table</li><li>Elements and their properties</li><li>Quick and easy lookup for any element</li></ul>",
+                files: []
+            },
+            {
+                title: "Project Overview - Features",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "<ul><li>Interactive Periodic Table</li><li>Element Detail Pages</li><li>Search Functionality</li><li>New Element Submission</li><li>Heatmap Filtering</li></ul>",
+                files: []
+            },
+            {
+                title: "Features - Interactive Table",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "<p>Click on any element to view detailed information including properties, images, and descriptions.</p><p>Hover to see quick info.</p><p>Color-coded by element groups.</p><p><strong>Code Snippet:</strong></p><p>JavaScript handles click events to load element data dynamically:</p>",
+                files: [
+                    {
+                        name: "table.js",
+                        lang: "javascript",
+                        code: `allElements.forEach(el => {
+    const div = document.createElement('div');
+    const categoryClass = el.category.toLowerCase().replace(/ /g, '-'); 
+    div.className = \`element \${categoryClass}\`;
+    div.style.gridColumn = el.table_column; 
+    div.style.gridRow = el.table_row + 5; 
+    div.innerHTML = \`<div class="number">\${el.atomic_number || ''}</div><div class="symbol">\${el.symbol}</div>\`; 
+    ...
+})`
+                    }
+                ]
+            },
+            {
+                title: "Features - Element Detail Pages",
+                url: "https://final-project-e6ok.onrender.com/element/gold",
+                desc: "<p>Each element has its own page with comprehensive details.</p><p>Includes properties, images, and descriptions.</p><p><strong>Code Snippet:</strong></p><p>Flask route to render element pages:</p>",
+                files: [
+                    {
+                        name: "app.py",
+                        lang: "python",
+                        code: `@app.route('/element/<name>')
+def element(name):
+    desc_json_path = os.path.join(app.static_folder, 'data', 'elements_desc.json')
+    data = ELEMENTS_DATA
+    with open(desc_json_path, 'r', encoding='utf-16') as f:
+        desc_data = json.load(f)
+
+    element_data = next((elem for elem in data if elem.get('name', '').lower() == name.lower()), None)
+    if not element_data:
+        return render_template('error.html', error_message=f"Element '{name}' not found"), 404
+
+    element_desc = desc_data.get(element_data['name'])
+    return render_template('element.html', element=element_data, description=element_desc)`
+                    }
+                ]
+            },
+            {
+                title: "Features - Search Functionality",
+                url: "https://final-project-e6ok.onrender.com/search",
+                desc: "<p>Search for elements by name, symbol, or atomic number.</p><p>Real-time filtering as you type.</p><p><strong>Code Snippet:</strong></p><p>JavaScript for search functionality:</p>",
+                files: [
+                    {
+                        name: "search.js",
+                        lang: "javascript",
+                        code: `function filterSearch() {
+    const searchTerm = this.value.toLowerCase();
+    const items = document.querySelectorAll('#elementList li');
+    
+    items.forEach(item => {
+        const name = item.getAttribute('data-name');
+        const number = item.getAttribute('data-number'); // get atomic number too, just in case
+        
+        if (name.includes(searchTerm) || number.includes(searchTerm)) {
+            item.style.display = '';
+        } else {
+            item.style.display = 'none'; // hide them if no match or substring
+        }
+    });
+}`
+                    }
+                ]
+            },
+            {
+                title: "Features - New Element Submission",
+                url: "https://final-project-e6ok.onrender.com/new_elem",
+                desc: "<p>Users can suggest new elements to be added.</p><p>Submissions are reviewed before inclusion.</p><p><strong>Code Snippet:</strong></p><p>Flask route for handling new element submissions:</p>",
+                files: [
+                    {
+                        name: "app.py",
+                        lang: "python",
+                        code: `        element_data = {
+    'name': request.form.get('name'),
+    'symbol': request.form.get('symbol'),
+    'atomic_number': request.form.get('atomic_number'),
+    'atomic_weight': request.form.get('atomic_weight'),
+    'group': request.form.get('group'),
+    'period': request.form.get('period'),
+    'category': request.form.get('category'),
+    'atomic_radius': request.form.get('atomic_radius'),
+    'ionic_radius': request.form.get('ionic_radius'),
+    'ionization_energy': request.form.get('ionization_energy'),
+    'electronegativity': request.form.get('electronegativity'),
+    'electron_affinity': request.form.get('electron_affinity'),
+    'description': request.form.get('description')
+}`
+                    }
+                ]
+            },
+            {
+                title: "Styling - CSS Highlights",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "<p>Custom CSS for a modern, clean look.</p><p>Responsive design for various devices.</p><p><strong>Code Snippet:</strong></p><p>CSS for element filters:</p>",
+                files: [
+                    {
+                        name: "stylesheet.css",
+                        lang: "css",
+                        code: `/* element groups colors */
+.element.alkali-metal { background: linear-gradient(180deg, rgba(255, 77, 109, .25), rgba(255, 255, 255, .06)); }
+.element.alkaline-earth-metal { background: linear-gradient(180deg, rgba(255, 209, 102, .24), rgba(255, 255, 255, .06)); }
+.element.transition-metal { background: linear-gradient(180deg, rgba(247, 157, 255, .22), rgba(255, 255, 255, .06)); }
+.element.post-transition-metal { background: linear-gradient(180deg, rgba(154, 169, 255, 0.264), rgba(255, 255, 255, .06)); }
+.element.metalloid { background: linear-gradient(180deg, rgba(122, 229, 129, 0.274), rgba(255, 255, 255, .06)); }
+.element.nonmetal { background: linear-gradient(180deg, rgba(110, 231, 245, .18), rgba(255, 255, 255, .06)); }
+.element.halogen { background: linear-gradient(180deg, rgba(255, 234, 0, .18), rgba(255, 255, 255, .06)); }
+.element.noble-gas { background: linear-gradient(180deg, rgba(121, 192, 255, .20), rgba(255, 255, 255, .06)); }
+.element.lanthanide { background: linear-gradient(180deg, rgba(255, 143, 171, .22), rgba(255, 255, 255, .06)); }
+.element.actinide { background: linear-gradient(180deg, rgba(199, 125, 255, .22), rgba(255, 255, 255, .06)); }
+/* -- end(element groups colors) -- */`
+                    }
+                ]
+            },
+            {
+                title: "Future Improvements?",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "UI + UX gaps found during the build, plus concrete improvements that keep the current functionality intact.",
+                files: [
+                    {
+                        name: "stylesheet.css",
+                        lang: "css",
+                        code: `/* Possible Improvements */
+/* 1. Improve mobile responsiveness */
+@media (max-width: 600px) {
+    .element {
+        font-size: 0.7rem;
+        padding: 4px;
+    }
+}
+/* 2. Add animations for element hover and clicks */
+@keyframes hoverEffect {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+/* 3. Enhance color contrast for better accessibility */
+.element:hover {
+    animation: hoverEffect 0.3s ease-in-out;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+/* 4. Optimize CSS by removing unused styles */
+`}
+                ]
+            },
+            {
+                title: "Team workflow",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "How we split work, stayed organized in GitLab, and avoided breaking each other's parts.",
+                files: []
+            },
+            {
+                title: "Learnings & challenges",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "What we learned building a Flask + JSON + JS app and the main problems we had to solve.",
+                files: [
+                    {
+                        name: "slides_learnings_challenges.txt",
+                        lang: "text",
+                        code: "Learnings & challenges\n- Learned how Flask routes connect to Jinja templates and how to pass JSON data into pages.\n- Improved skills reading JSON datasets and looping through them to render content.\n- Built stronger JavaScript skills by updating the UI dynamically on hover and filter changes.\n- Learned that global CSS rules can cause unexpected bugs (example: inputs set to width 100% broke radio layouts).\n- Biggest challenges were responsive layout, filter UX, and merge conflicts during major UI changes.\n- Debugging improved: isolate the issue, inspect DOM structure, then adjust CSS or markup without breaking behavior.\n- Learned the value of consistency: one design system makes the entire project feel more professional.\n"
+                    }
+                ]
+            }
+        ];
+
+
+
+
+
+
+
+
+
+
+
+        function renderStep(index) {
+            if (editors.length > 0) {
+                editors.forEach(e => e.dispose());
+                editors = [];
+            }
+
+            const step = steps[index];
+            
+            if (frame.src !== step.url) {
+                frame.src = step.url;
+            }
+
+            let html = `
+                <div class="step-card active">
+                    <h2>${step.title}</h2>
+                    <p>${step.desc}</p>
+            `;
+
+            step.files.forEach((file, i) => {
+                const lines = file.code.split('\n').length;
+                const height = Math.min(Math.max(lines * 19 + 20, 100), 600);
+
+                html += `
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>${file.name}</span>
+                            <span>${file.lang}</span>
+                        </div>
+                        <div class="code-content" style="padding: 0; overflow: hidden;">
+                            <div id="monaco-container-${i}" style="width: 100%; height: ${height}px;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            contentDiv.innerHTML = html;
+
+            require(['vs/editor/editor.main'], function() {
+                step.files.forEach((file, i) => {
+                    const container = document.getElementById(`monaco-container-${i}`);
+                    if (container) {
+                        const editor = monaco.editor.create(container, {
+                            value: file.code,
+                            language: file.lang === 'text' ? 'plaintext' : file.lang,
+                            theme: 'vs-dark',
+                            readOnly: true,
+                            minimap: { enabled: false },
+                            scrollBeyondLastLine: false,
+                            fontSize: 13,
+                            fontFamily: "'JetBrains Mono', monospace",
+                            renderLineHighlight: 'none',
+                            contextmenu: false,
+                            folding: false,
+                            lineNumbersMinChars: 3,
+                            automaticLayout: true,
+                            scrollbar: {
+                                vertical: 'hidden',
+                                horizontal: 'auto'
+                            }
+                        });
+                        editors.push(editor);
+                    }
+                });
+            });
+
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === steps.length - 1;
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                renderStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep(currentStep);
+            }
+        }
+
+        function toggleFileStructure() {
+            const overlay = document.getElementById('fileStructureOverlay');
+            overlay.classList.toggle('active');
+        }
+
+        renderStep(0);
+    </script>
+</body>
+</html>
