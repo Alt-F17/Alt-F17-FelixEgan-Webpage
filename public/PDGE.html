@@ -270,8 +270,8 @@
     <aside id="sidebar">
         <div class="sidebar-header">
             <div>
-                <h1>PDGE Explorer</h1>
-                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Interactive Project Documentation</p>
+                <h1>PDGE Project Presentation</h1>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Made by Felix Egan and Dominico Valentino</p>
             </div>
             <button class="collapse-btn" onclick="toggleSidebar()" title="Collapse Sidebar (Press 'P')">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -286,7 +286,6 @@
             </div>
             
             <div id="fileStructureOverlay">
-                <button class="close-btn" onclick="toggleFileStructure()">×</button>
                 <h2>Project Structure</h2>
                 <div class="file-tree">
                     <div class="tree-item"><span class="tree-folder">final-project/</span></div>
@@ -421,7 +420,7 @@
             {
                 title: "Features - Interactive Table",
                 url: "https://final-project-e6ok.onrender.com/",
-                desc: "<p>Click on any element to view detailed information including properties, images, and descriptions.</p><p>Hover to see quick info.</p><p>Color-coded by element groups.</p><p><strong>Code Snippet:</strong></p><p>JavaScript handles click events to load element data dynamically:</p>",
+                desc: "<p>Click on any element to view detailed information including properties, images, and descriptions</p><p>Hover to see quick info</p><p>Color-coded by element groups</p><p><strong>Code Snippet:</strong></p><p>JavaScript handles click events to load element data dynamically:</p>",
                 files: [
                     {
                         name: "table.js",
@@ -441,7 +440,7 @@
             {
                 title: "Features - Element Detail Pages",
                 url: "https://final-project-e6ok.onrender.com/element/gold",
-                desc: "<p>Each element has its own page with comprehensive details.</p><p>Includes properties, images, and descriptions.</p><p><strong>Code Snippet:</strong></p><p>Flask route to render element pages:</p>",
+                desc: "<p>Each element has its own page with comprehensive details</p><p>Includes properties, images, and descriptions</p><p><strong>Code Snippet:</strong></p><p>Flask route to render element pages:</p>",
                 files: [
                     {
                         name: "app.py",
@@ -465,7 +464,7 @@ def element(name):
             {
                 title: "Features - Search Functionality",
                 url: "https://final-project-e6ok.onrender.com/search",
-                desc: "<p>Search for elements by name, symbol, or atomic number.</p><p>Real-time filtering as you type.</p><p><strong>Code Snippet:</strong></p><p>JavaScript for search functionality:</p>",
+                desc: "<p>Search for elements by name, symbol, or atomic number</p><p>Real-time filtering as you type</p><p><strong>Code Snippet:</strong></p><p>JavaScript for search functionality:</p>",
                 files: [
                     {
                         name: "search.js",
@@ -491,12 +490,12 @@ def element(name):
             {
                 title: "Features - New Element Submission",
                 url: "https://final-project-e6ok.onrender.com/new_elem",
-                desc: "<p>Users can suggest new elements to be added.</p><p>Submissions are reviewed before inclusion.</p><p><strong>Code Snippet:</strong></p><p>Flask route for handling new element submissions:</p>",
+                desc: "<p>Users can suggest new elements to be added</p><p>Submissions are reviewed before inclusion (duplicates)</p><p><strong>Code Snippet:</strong></p><p>Flask request for handling new element submissions:</p>",
                 files: [
                     {
                         name: "app.py",
                         lang: "python",
-                        code: `        element_data = {
+                        code: `element_data = {
     'name': request.form.get('name'),
     'symbol': request.form.get('symbol'),
     'atomic_number': request.form.get('atomic_number'),
@@ -514,10 +513,40 @@ def element(name):
                     }
                 ]
             },
+                        {
+                title: "Features - Heatmap Filtering",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "<p>Filter elements based on properties like atomic radius, electronegativity, etc.</p><p>Visual heatmap representation.</p><p><strong>Code Snippet:</strong></p><p>JavaScript for heatmap filtering:</p>",
+                files: [
+                    {
+                        name: "table.js",
+                        lang: "javascript",
+                        code: `function applyFilter(type) {
+    ...
+    allElements.forEach(el => {
+        const div = elementDivs[el.symbol];
+        if (!div) return;
+
+        let value = el[type];
+        if (value === null || value === undefined) value = 0; // treat missing values as 0 for opacity calculation
+        
+        if (typeof value === 'number') {
+            div.classList.remove('dimmed');
+            // Calculate opacity: 0.1 to 1.0 range (good enough visibility, ACCESSIBILITY IS IMPORTANTTT)
+            // Higher is more opaque
+            const normalized = (value - min) / (max - min);
+            const opacity = 0.1 + (normalized * 0.9);
+            div.style.opacity = opacity;
+        }
+    });
+}`
+                    }
+                ]
+            },
             {
                 title: "Styling - CSS Highlights",
                 url: "https://final-project-e6ok.onrender.com/",
-                desc: "<p>Custom CSS for a modern, clean look.</p><p>Responsive design for various devices.</p><p><strong>Code Snippet:</strong></p><p>CSS for element filters:</p>",
+                desc: "<p>Custom CSS for a modern, clean look</p><p>Responsive design for various devices</p><p><strong>Code Snippet:</strong></p><p>CSS for element filters:</p>",
                 files: [
                     {
                         name: "stylesheet.css",
@@ -571,20 +600,42 @@ def element(name):
             {
                 title: "Team workflow",
                 url: "https://final-project-e6ok.onrender.com/",
-                desc: "How we split work, stayed organized in GitLab, and avoided breaking each other's parts.",
-                files: []
+                desc: "<ul><li>Version Control: Git + GitHub for code collaboration and versioning</li><li>Task Management: README.md file with a project plan/checklist and assigned tasks</li><li>Communication: Regular commit push updates via Discord</li><li>Code Reviews: Peer reviews and comments in Discord chat, praising and questioning commits</li></ul>",
+                files: [
+                    {
+                        name: "README.md",
+                        lang: "markdown",
+                        code: `### Backend (JSON & Python) [FELIX]
+- [X] app.py
+- [X] Form logic and validation
+- [X] Elem Append
+- [X] Suggestion form
+- [X] Vote counting system
+
+### Frontend Assets (CSS & JS)
+- [X] Images: Find Missing Images [FELIX]
+- [X] CSS Styling: [DOMI]
+    - [X] Search page styling [DOMI]
+    - [X] Table styling [DOMI]
+    - [X] Element page styling [DOMI]
+    - [X] Form styling [DOMI]
+    - [X] Error page styling [DOMI]
+    - [X] Layout improvements [DOMI]
+- [X] JavaScript interactivity ([X]table hover, [X]search filter, [X]table filters) [FELIX]`
+                    }
+                ]
             },
             {
                 title: "Learnings & challenges",
                 url: "https://final-project-e6ok.onrender.com/",
-                desc: "What we learned building a Flask + JSON + JS app and the main problems we had to solve.",
-                files: [
-                    {
-                        name: "slides_learnings_challenges.txt",
-                        lang: "text",
-                        code: "Learnings & challenges\n- Learned how Flask routes connect to Jinja templates and how to pass JSON data into pages.\n- Improved skills reading JSON datasets and looping through them to render content.\n- Built stronger JavaScript skills by updating the UI dynamically on hover and filter changes.\n- Learned that global CSS rules can cause unexpected bugs (example: inputs set to width 100% broke radio layouts).\n- Biggest challenges were responsive layout, filter UX, and merge conflicts during major UI changes.\n- Debugging improved: isolate the issue, inspect DOM structure, then adjust CSS or markup without breaking behavior.\n- Learned the value of consistency: one design system makes the entire project feel more professional.\n"
-                    }
-                ]
+                desc: "<ul><li>Flask routes and Jinja templates</li><li>Reading and looping through JSON datasets</li><li>Dynamic UI updates with JavaScript</li><li>CSS debugging and responsive design</li><li>Importance of design consistency</li><li><strong>WORKING IN A TEAM!</strong></li></ul>",
+                files: []
+            },
+            {
+                title: "Thank you!",
+                url: "https://final-project-e6ok.onrender.com/",
+                desc: "<p>Thank you for your time and attention!</p><p>We hope you enjoyed</p><p>Questions?</p>",
+                files: []
             }
         ];
 
@@ -690,4 +741,5 @@ def element(name):
         renderStep(0);
     </script>
 </body>
+
 </html>
