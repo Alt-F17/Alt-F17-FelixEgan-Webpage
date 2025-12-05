@@ -470,12 +470,12 @@ def element(name):
     
     items.forEach(item => {
         const name = item.getAttribute('data-name');
-        const number = item.getAttribute('data-number'); // get atomic number too, just in case
+        const number = item.getAttribute('data-number');
         
         if (name.includes(searchTerm) || number.includes(searchTerm)) {
             item.style.display = '';
         } else {
-            item.style.display = 'none'; // hide them if no match or substring
+            item.style.display = 'none';
         }
     });
 }`
@@ -523,7 +523,7 @@ def element(name):
         if (!div) return;
 
         let value = el[type];
-        if (value === null || value === undefined) value = 0; // treat missing values as 0 for opacity calculation
+        if (value === null || value === undefined) value = 0;
         
         if (typeof value === 'number') {
             div.classList.remove('dimmed');
@@ -739,5 +739,6 @@ def element(name):
 </body>
 
 </html>
+
 
 
