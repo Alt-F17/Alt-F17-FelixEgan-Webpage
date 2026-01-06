@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dawson Product Design Portfolio Checklist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            color: #fff;
+            padding: 0;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard {
+            position: sticky;
+            top: 0;
+            background: #111;
+            padding: 20px;
+            border-bottom: 2px solid #333;
+            z-index: 100;
+        }
+
+        .progress-container {
+            margin-bottom: 15px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #222;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fff, #ccc);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-box {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .section {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-number {
+            background: #fff;
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #0a0a0a;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid #222;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .checklist-item:active {
+            background: #1a1a1a;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #666;
+            border-radius: 6px;
+            margin-right: 15px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .checklist-item.checked .checkbox {
+            background: #fff;
+            border-color: #fff;
+        }
+
+        .checkbox::after {
+            content: '✓';
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .checklist-item.checked .checkbox::after {
+            display: block;
+        }
+
+        .checklist-item.checked {
+            opacity: 0.6;
+        }
+
+        .checklist-item.checked .item-text {
+            text-decoration: line-through;
+        }
+
+        .item-text {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .subsection {
+            margin-top: 15px;
+            padding-left: 10px;
+            border-left: 2px solid #333;
+        }
+
+        .subsection-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .tips {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid #fff;
+        }
+
+        .tips-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .reset-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .reset-btn:active {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .dashboard {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .item-text {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number" id="completedCount">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="remainingCount">0</div>
+                <div class="stat-label">Remaining</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Dawson Product Design Portfolio — Checklist</h1>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">1</span>
+                Understand the Goal
+            </div>
+            <div class="checklist-item" data-id="goal-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Show how you think, not just how well you draw</div>
+            </div>
+            <div class="checklist-item" data-id="goal-2">
+                <div class="checkbox"></div>
+                <div class="item-text">Demonstrate observation, creativity, and problem-solving</div>
+            </div>
+            <div class="checklist-item" data-id="goal-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Focus on everyday objects and clear perspective</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">2</span>
+                Perspective Drawings (5 REQUIRED)
+            </div>
+            <div class="checklist-item" data-id="persp-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Choose 5 different objects</div>
+            </div>
+            <div class="checklist-item" data-id="persp-2">
+                <div class="checkbox"></div>
+                <div class="item-text">Draw each object in correct perspective (2-point or 3-point)</div>
+            </div>
+            <div class="checklist-item" data-id="persp-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Include shading to show volume (no flat outlines)</div>
+            </div>
+            <div class="checklist-item" data-id="persp-4">
+                <div class="checkbox"></div>
+                <div class="item-text">Keep drawings neat and readable</div>
+            </div>
+            <div class="checklist-item" data-id="persp-5">
+                <div class="checkbox"></div>
+                <div class="item-text">Draw from real objects, not photos</div>
+            </div>
+            
+            <div class="tips">
+                <div class="tips-title">Good object ideas:</div>
+                Chair, Toaster, Headphones, Computer mouse, Desk lamp, Coffee maker, Blender, Backpack
+            </div>
+
+            <div class="subsection">
+                <div class="subsection-title">Tips</div>
+                <div class="checklist-item" data-id="persp-tip-1">
+                    <div class="checkbox"></div>
+                    <div class="item-text">Pencil or ink is best</div>
+                </div>
+                <div class="checklist-item" data-id="persp-tip-2">
+                    <div class="checkbox"></div>
+                    <div class="item-text">No anime / characters</div>
+                </div>
+                <div class="checklist-item" data-id="persp-tip-3">
+                    <div class="checkbox"></div>
+                    <div class="item-text">White or light background</div>
+                </div>
+                <div class="checklist-item" data-id="persp-tip-4">
+                    <div class="checkbox"></div>
+                    <div class="item-text">Take your time — quality > speed</div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <div class="checklist-item" data-id="persp-scan-1">
+                    <div class="checkbox"></div>
+                    <div class="item-text">Scan or photograph each drawing clearly</div>
+                </div>
+                <div class="checklist-item" data-id="persp-scan-2">
+                    <div class="checkbox"></div>
+                    <div class="item-text">Save each as a JPEG</div>
+                </div>
+                <div class="checklist-item" data-id="persp-scan-3">
+                    <div class="checkbox"></div>
+                    <div class="item-text">Name files correctly (e.g. LASTNAME_1Drawing.jpg)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">3</span>
+                Redesign Drawing (1 REQUIRED)
+            </div>
+            <div class="checklist-item" data-id="redesign-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Pick one object from your perspective drawings</div>
+            </div>
+            <div class="checklist-item" data-id="redesign-2">
+                <div class="checkbox"></div>
+                <div class="item-text">Redesign it to improve comfort, usability, or function</div>
+            </div>
+            <div class="checklist-item" data-id="redesign-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Solve a small problem (weight, grip, storage, safety, etc.)</div>
+            </div>
+            <div class="checklist-item" data-id="redesign-4">
+                <div class="checkbox"></div>
+                <div class="item-text">Draw the new design clearly</div>
+            </div>
+            <div class="checklist-item" data-id="redesign-5">
+                <div class="checkbox"></div>
+                <div class="item-text">Show perspective + details</div>
+            </div>
+            <div class="checklist-item" data-id="redesign-6">
+                <div class="checkbox"></div>
+                <div class="item-text">Think like a designer, not an artist</div>
+            </div>
+            <div class="checklist-item" data-id="redesign-7">
+                <div class="checkbox"></div>
+                <div class="item-text">Write a short explanation (30–50 words): What you changed & Why it's better</div>
+            </div>
+            <div class="checklist-item" data-id="redesign-8">
+                <div class="checkbox"></div>
+                <div class="item-text">Save drawing as JPEG</div>
+            </div>
+            <div class="checklist-item" data-id="redesign-9">
+                <div class="checkbox"></div>
+                <div class="item-text">Save explanation for the description PDF</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">4</span>
+                2D Artwork / Technical Drawings (2 REQUIRED)
+            </div>
+            <div class="tips">
+                <div class="tips-title">Choose 2 items total from below:</div>
+            </div>
+            <div class="checklist-item" data-id="2d-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Observational drawing (still life, object study)</div>
+            </div>
+            <div class="checklist-item" data-id="2d-2">
+                <div class="checkbox"></div>
+                <div class="item-text">Technical drawing (orthographic views, exploded view)</div>
+            </div>
+            <div class="checklist-item" data-id="2d-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Graphic design or layout work</div>
+            </div>
+            <div class="checklist-item" data-id="2d-4">
+                <div class="checkbox"></div>
+                <div class="item-text">Clean line work or shaded drawing</div>
+            </div>
+            <div class="checklist-item" data-id="2d-5">
+                <div class="checkbox"></div>
+                <div class="item-text">Must be your own work</div>
+            </div>
+            <div class="checklist-item" data-id="2d-6">
+                <div class="checkbox"></div>
+                <div class="item-text">Photograph or scan clearly</div>
+            </div>
+            <div class="checklist-item" data-id="2d-7">
+                <div class="checkbox"></div>
+                <div class="item-text">Save each as JPEG</div>
+            </div>
+            <div class="checklist-item" data-id="2d-8">
+                <div class="checkbox"></div>
+                <div class="item-text">Write 30–50 word description for each (for the PDF)</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">5</span>
+                Physical Object / 3D Work (2 REQUIRED)
+            </div>
+            <div class="tips">
+                <div class="tips-title">Examples you can use:</div>
+                Cardboard/foam model, 3D print, Wood or metal project, Sculpture, DIY object or prototype, Modified everyday object
+            </div>
+            <div class="checklist-item" data-id="3d-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Take clear photos (good lighting, simple background)</div>
+            </div>
+            <div class="checklist-item" data-id="3d-2">
+                <div class="checkbox"></div>
+                <div class="item-text">Show different angles if possible</div>
+            </div>
+            <div class="checklist-item" data-id="3d-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Save each as JPEG</div>
+            </div>
+            <div class="checklist-item" data-id="3d-4">
+                <div class="checkbox"></div>
+                <div class="item-text">Write 30–50 word description for each: What it is, Materials used, Why you made it</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">6</span>
+                Description PDF (1 REQUIRED)
+            </div>
+            <div class="checklist-item" data-id="pdf-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Create ONE PDF file</div>
+            </div>
+            <div class="checklist-item" data-id="pdf-2">
+                <div class="checkbox"></div>
+                <div class="item-text">Include descriptions for: Redesign drawing, 2D artwork (2), 3D objects (2)</div>
+            </div>
+            <div class="checklist-item" data-id="pdf-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Each description: Max 50 words, Clear and simple language</div>
+            </div>
+            <div class="checklist-item" data-id="pdf-4">
+                <div class="checkbox"></div>
+                <div class="item-text">Name file correctly (e.g. LASTNAME_descriptions.pdf)</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">7</span>
+                Final Quality Check
+            </div>
+            <div class="checklist-item" data-id="final-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Exactly 10 portfolio items total</div>
+            </div>
+            <div class="checklist-item" data-id="final-2">
+                <div class="checkbox"></div>
+                <div class="item-text">All files are JPEG (except description PDF)</div>
+            </div>
+            <div class="checklist-item" data-id="final-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Clean photos (no shadows, blur, messy backgrounds)</div>
+            </div>
+            <div class="checklist-item" data-id="final-4">
+                <div class="checkbox"></div>
+                <div class="item-text">No fan art, anime, or copied work</div>
+            </div>
+            <div class="checklist-item" data-id="final-5">
+                <div class="checkbox"></div>
+                <div class="item-text">Shows design thinking, not just decoration</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">✨</span>
+                Pro Tips to Stand Out (Optional but Smart)
+            </div>
+            <div class="checklist-item" data-id="pro-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Practice daily sketching (even 15–20 min)</div>
+            </div>
+            <div class="checklist-item" data-id="pro-2">
+                <div class="checkbox"></div>
+                <div class="item-text">Redraw the same object multiple times — submit the best</div>
+            </div>
+            <div class="checklist-item" data-id="pro-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Show curiosity: take things apart, redesign simple tools</div>
+            </div>
+            <div class="checklist-item" data-id="pro-4">
+                <div class="checkbox"></div>
+                <div class="item-text">Keep sketches honest — Dawson prefers real thinking over perfection</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <span class="section-number">📅</span>
+                Timeline Suggestion
+            </div>
+            <div class="checklist-item" data-id="time-1">
+                <div class="checkbox"></div>
+                <div class="item-text">Now – December: Practice sketching & choose objects</div>
+            </div>
+            <div class="checklist-item" data-id="time-2">
+                <div class="checkbox"></div>
+                <div class="item-text">January: Finalize drawings & build objects</div>
+            </div>
+            <div class="checklist-item" data-id="time-3">
+                <div class="checkbox"></div>
+                <div class="item-text">Before March 1: Upload portfolio to SRAM / Dawson portal</div>
+            </div>
+        </div>
+
+        <button class="reset-btn" onclick="resetProgress()">Reset All Progress</button>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'dawson_portfolio_checklist';
+        let checkedItems = new Set();
+
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                checkedItems = new Set(JSON.parse(saved));
+                checkedItems.forEach(id => {
+                    const item = document.querySelector(`[data-id="${id}"]`);
+                    if (item) item.classList.add('checked');
+                });
+            }
+            updateStats();
+        }
+
+        function saveProgress() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify([...checkedItems]));
+        }
+
+        function toggleItem(element) {
+            const id = element.dataset.id;
+            if (checkedItems.has(id)) {
+                checkedItems.delete(id);
+                element.classList.remove('checked');
+            } else {
+                checkedItems.add(id);
+                element.classList.add('checked');
+            }
+            saveProgress();
+            updateStats();
+        }
+
+        function updateStats() {
+            const total = document.querySelectorAll('.checklist-item').length;
+            const completed = checkedItems.size;
+            const remaining = total - completed;
+            const percentage = Math.round((completed / total) * 100);
+
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressFill').textContent = percentage + '%';
+            document.getElementById('completedCount').textContent = completed;
+            document.getElementById('remainingCount').textContent = remaining;
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                checkedItems.clear();
+                localStorage.removeItem(STORAGE_KEY);
+                document.querySelectorAll('.checklist-item').forEach(item => {
+                    item.classList.remove('checked');
+                });
+                updateStats();
+            }
+        }
+
+        document.querySelectorAll('.checklist-item').forEach(item => {
+            item.addEventListener('click', function() {
+                toggleItem(this);
+            });
+        });
+
+        loadProgress();
+    </script>
+</body>
+</html>
