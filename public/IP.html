@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrative Project - AURA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
+    </script>
+
+    <style>
+        :root {
+            --bg: #0a0a0b;
+            --sidebar-bg: #1f1611;
+            --text: #f8fafc;
+            --text-muted: #d7dce4;
+            --accent: #f0e68c;
+            --border: rgba(255, 170, 0, 0.8);
+            --code-bg: #0b1120;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: block;
+            overflow: hidden;
+            position: relative;
+        }
+
+        aside {
+            width: 600px;
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            z-index: 20;
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        aside.collapsed {
+            transform: translateX(100%);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--accent), rgba(255, 140, 0, 1));
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .collapse-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .collapse-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+        }
+
+        .sidebar-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .tree-indent {
+            position: relative;
+        }
+        .tree-indent::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: -10px;
+            bottom: -10px; 
+            border-left: 1px solid var(--border);
+        }
+
+        .file-tree {
+            overflow: hidden;
+        }
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 0.5rem;
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        main {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            background: #000;
+        }
+
+        #iframeOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        aside.collapsed ~ main #iframeOverlay {
+            pointer-events: none;
+            display: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+
+        .hint-overlay {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            pointer-events: none;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 30;
+            border: 1px solid var(--border);
+        }
+        aside.collapsed ~ .hint-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .step-card {
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        h2 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        h3 { font-size: 1rem; margin: 1rem 0 0.5rem; color: var(--accent); }
+        p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; line-height: 1.6; }
+        ul { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-muted); font-size: 0.9rem; }
+        li { margin-bottom: 0.5rem; }
+
+        .code-block {
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin-top: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            overflow: hidden;
+        }
+        .code-header {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.05);
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+        .code-content {
+            padding: 1rem;
+            overflow-x: auto;
+            color: #e2e8f0;
+        }
+
+        .file-tree {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .tree-item { padding: 2px 0; }
+        .tree-folder { color: var(--accent); font-weight: bold; }
+        .tree-file { color: var(--text); }
+        .tree-indent { display: inline-block; width: 1.5rem; }
+
+        .btn {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn:hover { background: var(--accent); color: #0f172a; border-color: var(--accent); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-icon { font-size: 1.2rem; }
+
+        #fileStructureOverlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--sidebar-bg);
+            padding: 1.5rem;
+            z-index: 20;
+            overflow-y: auto;
+        }
+        #fileStructureOverlay.active { display: block; }
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div>
+                <h1>Integrative Project Presentation</h1>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Made by Felix Egan, Sebastian Soto & Jesus Monroy</p>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <div id="sidebarContent">
+                <!-- dynamic content injected here -->
+            </div>
+            
+            <div id="fileStructureOverlay">
+                <h2>Project Structure</h2>
+                <div class="file-tree">
+                    <div class="tree-item"><span class="tree-folder">aura-project-monorepo/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">analysis/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">data_processing/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">__init__.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">mechanics/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">__init__.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">notebooks/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">statistics/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">__init__.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">visualization/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">__init__.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">__init__.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">data/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">processed/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">raw/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">sample/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">docs/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">ml-training/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">config/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">curriculum/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">models/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">results/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">scripts/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">references/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">Real-Time Control in Robotic Arm - ML Agents Unity.pdf</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">scripts/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">unity-sim/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">ML-Agents/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">Resources/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">Configs/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">Scripts/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">Data/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">Environment/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">Robot/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">RobotAgent.cs</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">Utils/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-folder">website/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">static/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">css/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">images/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">js/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">unity/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">.gitkeep</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-folder">templates/</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">index.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">layout.html</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-indent"></span><span class="tree-file">app.py</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">.gitignore</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">CURRENT_FILE_STRUCTURE.md</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">FILE_STRUCTURE - Ideal.md</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">README.md</span></div>
+                    <div class="tree-item"><span class="tree-indent"></span><span class="tree-file">requirements.txt</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <button class="btn" id="prevBtn" onclick="prevStep()">← Back</button>
+            <button class="btn" onclick="toggleFileStructure()" title="View File Structure">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3h18v18H3zM9 3v18M21 9H9"/>
+                </svg>
+            </button>
+            <button class="btn" id="nextBtn" onclick="nextStep()">Next →</button>
+        </div>
+    </aside>
+
+    <main>
+        <div id="iframeOverlay" onclick="toggleSidebar()"></div>
+        <iframe id="appFrame" src="https://final-project-e6ok.onrender.com/"></iframe>
+    </main>
+
+    <div class="hint-overlay" onclick="toggleSidebar()">Press 'P' to show sidebar</div>
+
+    <script>
+        const frame = document.getElementById('appFrame');
+        const contentDiv = document.getElementById('sidebarContent');
+        const sidebar = document.getElementById('sidebar');
+        let currentStep = 0;
+        let editors = [];
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('collapsed');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'p') {
+                toggleSidebar();
+            }
+
+            if (!sidebar.classList.contains('collapsed')) {
+                if (e.key === 'ArrowLeft') {
+                    prevStep();
+                } else if (e.key === 'ArrowRight') {
+                    nextStep();
+                }
+            }
+        });
+
+        window.addEventListener('message', (event) => {
+            if (event.data === 'toggleSidebar') {
+                toggleSidebar();
+            } else if (event.data === 'prevStep' && !sidebar.classList.contains('collapsed')) {
+                prevStep();
+            } else if (event.data === 'nextStep' && !sidebar.classList.contains('collapsed')) {
+                nextStep();
+            }
+        });
+
+
+        // Presentation Data
+        const steps = [
+            {
+                title: "Welcome! - IP Project 2026",
+                url: "",
+                desc: "<p><strong>Automated Unity Robot Analysis (A.U.R.A.)</strong></p><p>A project by <strong>Felix Egan</strong>, <strong>Sebastian Soto</strong> and <strong>Jesus Monroy</strong></p><p>Submitted to Zahra Habibi</p><p>Class: Coding IV - Section 02</p>",
+                files: []
+            },
+            {
+                title: "Project Proposal - Scientific Analysis",
+                url: "",
+                desc: "<ul><li><strong>Topic:</strong> Probability, Statistics & Mechanics</li><li><strong>Focus:</strong> Automated Robotics</li><li>Training AI Model to move virtual box</li><li>Improve efficiency of robot movement (power consumption, speed, accuracy)</li><li>Use of machine learning and data analysis</li></ul>",
+                files: []
+            },
+            {
+                title: "Project Proposal - Solution",
+                url: "",
+                desc: "<ul><li><strong>ML-Agents (Neural Network)</strong> to train robot arm</li><li>Data exported to <strong>CSV</strong> then parsed in <strong>Python</strong></li><li>3D graphs and visualization in <strong>ThreeJS</strong> and <strong>JavaScript plotting</strong></li><li>Confidence determination and visualization</li><li>User Interaction and <strong>live demo</strong></li></ul>",
+                files: []
+            },
+            {
+                title: "Project Proposal - Tech Stack",
+                url: "",
+                desc: "<p><strong>Data Collection & Simulation:</strong></p><ul><li><strong>Unity</strong>: Robotic arm simulation, physics engine</li><li><strong>C#</strong>: Unity scripting, control logic, physics calculations</li><li><strong>Unity ML-Agents</strong>: Reinforcement learning training</li></ul><p><strong>Data Analysis & Reporting:</strong></p><ul><li><strong>Python</strong>: Data analysis and visualization</li><li><strong>Pandas</strong>: Data manipulation and analysis</li><li><strong>Matplotlib</strong>: Data visualization</li><li><strong>NumPy</strong>: Numerical computations</li><li><strong>SciPy</strong>: Statistical analysis</li><li><strong>Jupyter Notebooks</strong>: Interactive exploration and reporting</li></ul><p><strong>Web Interface & Deployment:</strong></p><ul><li><strong>HTML/CSS/JavaScript</strong>: Results interface</li><li><strong>Flask</strong>: Backend server and routing</li><li><strong>Unity WebGL</strong>: Web deployment of simulation</li><li><strong>Vercel</strong>: Hosting Flask app + Unity WebGL build</li><li><strong>CSV</strong>: Data storage for training runs</li></ul>",
+                files: []
+            },
+            {
+                title: "Project Proposal - Science Concepts",
+                url: "",
+                desc: "<p><strong>Physics Concepts for Joint Power Consumption:</strong></p><ul><li><strong>Center of Mass:</strong> Computed from masses and distances of joint links to account for gravity effects on precise positioning.</li><li><strong>Inverse Kinematics:</strong> Calculates required joint angles for end-effector positioning using trigonometry and linear algebra (matrices, sine/cosine).</li><li><strong>Inertial Dynamics:</strong> Determines joint torques via Lagrangian formulation (inertia, centrifugal, and gravity matrices), implemented using Unity's built-in physics engine.</li><li><strong>Mechanical Power and Energy:</strong> Power calculated as P = torque × angular velocity; energy obtained by integrating power over time for each joint during trials.</li><li><strong>Newton's Second Law (F = ma):</strong> Applied to compute forces required for joint motion based on link masses and accelerations.</li><li><strong>Mechanical Efficiency:</strong> Evaluated as the ratio of output to input work to determine total power consumption of the robotic arm.</li></ul>",
+                files: []
+            },
+            {
+                title: "Project Proposal - Science Concepts (cont.)",
+                url: "",
+                desc: "<p><strong>Probability and Statistics Concepts:</strong></p><ul><li><strong>Linear Regression:</strong> Models and visualizes the success rate trend across training episodes or trials.</li><li><strong>Coefficient of Determination (R²):</strong> Evaluates how well the regression model fits the data, indicating predictive accuracy of the trained simulation.</li><li><strong>Standard Deviation:</strong> Measures variability in key parameters (e.g., joint torque, power consumption); identifies outliers and assesses consistency relative to the mean.</li></ul>",
+                files: []
+            },
+                        {
+                title: "Project Proposal - Requirements",
+                url: "",
+                desc: "<p><strong>Functional Requirements:</strong></p><ul><li>Concise and clear display of training data</li><li>Optimized loading time (≤2 seconds for website and Unity WebGL)</li><li>Modern, futuristic UI reflecting robotic simulation theme (blurred backgrounds, sleek CSS, etc.)</li></ul><p><strong>Scientific Requirements:</strong></p><ul><li>Strong focus on statistical data presentation</li><li>Accurate joint torque modeling (including motor resistance, referenced to real robotic arms)</li><li>Success rate graphs closely resembling theoretical arctan curve</li><li>Coefficient of determination ≈90% with low percent error</li></ul>",
+                files: []
+            },
+            {
+                title: "Project Proposal - Webpage Features",
+                url: "",
+                desc: "<p><strong>Core Features:</strong></p><ul><li><strong>Home Page:</strong> Project overview with navigation links to all sections</li><li><strong>Unity Simulation Page:</strong> Embedded Unity WebGL build allowing users to drag the box to boundary positions</li><li><strong>Data Analysis Page:</strong> Summarized statistical results, processed data downloads, and href link to official report PDF</li></ul><p><strong>Stretch Goals:</strong></p><ul><li>Interactive 3D WebGL viewer for robotic arm manipulation and box placement</li><li>Advanced visualizations (e.g., heatmaps of movement efficiency)</li><li>Real-time data updates from running simulation</li><li>Generated comprehensive PDF reports with charts and statistics</li></ul>",
+                files: []
+            },
+            {
+                title: "Project Proposal - Timeline & Milestones",
+                url: "",
+                desc: "<p><strong>Setup Tasks (by Feb 6):</strong> Flowcharts, website design plan, proposal draft</p><p><strong>Milestone 1: Data Training (Mar 6)</strong></p><ul><li>Robotic arm Unity design (Feb 26)</li><li>Joint vector inputs (Feb 20)</li><li>Reward system for joint velocities</li><li>Intensive training (5M trials, Mar 6)</li></ul><p><strong>Milestone 2: Power Logic & Export (Mar 27)</strong></p><ul><li>Power consumption calculations</li><li>Data cleaning (Mar 13)</li><li>CSV export from C# (Mar 27)</li></ul><p><strong>Milestone 3: Data Parsing (Apr 2)</strong></p><ul><li>Parse data for required graphs (Mar 31)</li><li>Jupyter snapshots for 3D box position graph (Apr 2)</li></ul><p><strong>Milestone 4: Visualization (Apr 17)</strong></p><ul><li>Create cleaned training graphs (Apr 10)</li><li>Performance optimization (Apr 17)</li></ul><p><strong>Milestone 5: Website Design (Apr 20)</strong></p><ul><li>Flask routes (Mar 4)</li><li>Home Page & navigation (Apr 3)</li><li>About Page & citations (Mar 22–Apr 2)</li><li>Analysis Page & downloads (Apr 20)</li><li>Dashboard graphs (May 1): success rate, IK, power efficiency, 3D box position</li><li>WebGL embed (Mar 30)</li><li>Styling & animations (Apr 17)</li></ul><p><strong>Milestone 6: Interactivity (May 2)</strong></p><ul><li>Top 100 results scrollable view (Apr 3)</li><li>Interactive trained environment with boundaries & animations (Apr 30)</li></ul><p><strong>Milestone 7: Testing (May 2)</strong></p><ul><li>Debugging and runtime optimization</li></ul>",
+                files: []
+            },
+            {
+                title: "Project Proposal - Team Agreement",
+                url: "",
+                desc: "<ul><li>No collection of sensitive personal information</li><li>AI used only as a tool/guide, not as author</li><li>Primary communication: Discord (24-hour response)</li><li>Feature branches to prevent merge conflicts</li><li>Full code and function documentation</li><li>Feature reassignments permitted near deadlines</li><li>Weekly meetings: Tuesdays 10–11:30 and/or 20–22:00</li></ul>",
+                files: []
+            },
+            {
+                title: "Project Proposal - References",
+                url: "",
+                desc: "<ul><li>Unity ML-Agents Documentation</li><li>Probability & Statistics and Mechanics textbooks</li><li>Online tutorials (Unity, ML-Agents, Flask, data analysis)</li><li>Reliable YouTube robotics videos</li><li>Robotics textbooks and papers on kinematics/dynamics</li><li>Open-source GitHub projects (Unity ML-Agents robotic simulations)</li><li><strong>Specific Links:</strong></li><ul><li>Linear Regression Review: https://jastt.org/index.php/jasttpath/article/view/57/20</li><li>Energy Consumption in Robotics (2024): https://arxiv.org/html/2411.03194v1</li><li>Digital Twin-Enabled Robotic Control (2025): https://arxiv.org/abs/2501.18016</li><li>Inverse Kinematics Tutorial: https://www.youtube.com/watch?v=1-FJhmey7vk</li></ul></ul>",
+                files: []
+            },
+            {
+                title: "Thank you!",
+                url: "",
+                desc: "<p><strong>Thank you</strong> for your time and attention!</p><p>We hope you enjoyed</p><p><strong>Questions? Suggestions?</strong></p>",
+                files: []
+            }
+        ];
+
+
+
+
+
+
+
+
+
+
+
+        function renderStep(index) {
+            if (editors.length > 0) {
+                editors.forEach(e => e.dispose());
+                editors = [];
+            }
+
+            const step = steps[index];
+            
+            if (frame.src !== step.url) {
+                frame.src = step.url;
+            }
+
+            let html = `
+                <div class="step-card active">
+                    <h2>${step.title}</h2>
+                    <p>${step.desc}</p>
+            `;
+
+            step.files.forEach((file, i) => {
+                const lines = file.code.split('\n').length;
+                const height = Math.min(Math.max(lines * 19 + 20, 100), 600);
+
+                html += `
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span>${file.name}</span>
+                            <span>${file.lang}</span>
+                        </div>
+                        <div class="code-content" style="padding: 0; overflow: hidden;">
+                            <div id="monaco-container-${i}" style="width: 100%; height: ${height}px;"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            contentDiv.innerHTML = html;
+
+            require(['vs/editor/editor.main'], function() {
+                step.files.forEach((file, i) => {
+                    const container = document.getElementById(`monaco-container-${i}`);
+                    if (container) {
+                        const editor = monaco.editor.create(container, {
+                            value: file.code,
+                            language: file.lang === 'text' ? 'plaintext' : file.lang,
+                            theme: 'vs-dark',
+                            readOnly: true,
+                            minimap: { enabled: false },
+                            scrollBeyondLastLine: false,
+                            fontSize: 13,
+                            fontFamily: "'JetBrains Mono', monospace",
+                            renderLineHighlight: 'none',
+                            contextmenu: false,
+                            folding: false,
+                            lineNumbersMinChars: 3,
+                            automaticLayout: true,
+                            scrollbar: {
+                                vertical: 'hidden',
+                                horizontal: 'auto'
+                            }
+                        });
+                        editors.push(editor);
+                    }
+                });
+            });
+
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === steps.length - 1;
+        }
+
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                renderStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderStep(currentStep);
+            }
+        }
+
+        function toggleFileStructure() {
+            const overlay = document.getElementById('fileStructureOverlay');
+            overlay.classList.toggle('active');
+        }
+
+        renderStep(0);
+    </script>
+</body>
+
+</html>
