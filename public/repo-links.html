@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Links</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        :root {
+            --gold: #f0e68c;
+            --glow-gold: rgba(240, 230, 140, 0.6);
+            --bg-dark: #0a0a0a;
+        }
+
+        body {
+            margin: 0;
+            padding: 2rem;
+            background-color: var(--bg-dark);
+            font-family: 'Orbitron', 'Segoe UI', Roboto, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-shadow: 0 0 15px var(--glow-gold);
+            margin-bottom: 3rem;
+        }
+
+        .button-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        a.repo-button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--gold);
+            padding: 20px 30px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            box-shadow: inset 0 0 20px rgba(240, 230, 140, 0.1);
+            transition: transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+        }
+
+        a.repo-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+            text-shadow: 0 0 8px var(--glow-gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AURA REPOSITORY</h1>
+        <div class="button-grid">
+            <a class="repo-button" href="https://gitlab.com/dawson-scsm-cohort-2026/sf4-ip/section2/teamsebastianjesusfelix/aura-project-monorepo" target="_blank">Repo Main</a>
+            <a class="repo-button" href="https://gitlab.com/dawson-scsm-cohort-2026/sf4-ip/section2/teamsebastianjesusfelix/aura-project-monorepo/-/milestones?sort=name_asc" target="_blank">Milestones</a>
+            <a class="repo-button" href="https://gitlab.com/dawson-scsm-cohort-2026/sf4-ip/section2/teamsebastianjesusfelix/aura-project-monorepo/-/boards" target="_blank">Boards</a>
+        </div>
+    </div>
+</body>
+</html>
