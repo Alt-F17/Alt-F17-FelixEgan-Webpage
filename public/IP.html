@@ -270,7 +270,7 @@
     <aside id="sidebar">
         <div class="sidebar-header">
             <div>
-                <h1>Integrative Project Presentation</h1>
+                <h1>Project Proposal Presentation</h1>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">Made by Felix Egan, Sebastian Soto & Jesus Monroy</p>
             </div>
         </div>
@@ -387,76 +387,80 @@
 
         // Presentation Data
         const steps = [
+            // ── Slide 1: Title ──
             {
-                title: "Welcome! - IP Project 2026",
+                title: "A.U.R.A. — Automated Unity Robot Analysis",
                 url: "https://felixegan.me/ProjectProposal%20-%20AURA.pdf",
-                desc: "<p><strong>Automated Unity Robot Analysis (A.U.R.A.)</strong></p><p>A project by <strong>Felix Egan</strong>, <strong>Sebastian Soto</strong> and <strong>Jesus Monroy</strong></p><p>Submitted to Zahra Habibi</p><p>Class: Coding IV - Section 02</p>",
+                desc: "<p>A project by <strong>Felix Egan</strong>, <strong>Sebastian Soto</strong> and <strong>Jesus Monroy</strong></p><p>Team: AURA</p><p>Submitted to Zahra Habibi</p><p>Class: Coding IV - Section 02</p>",
                 files: []
             },
+            // ── Slide 2: Scientific Problem ──
             {
-                title: "Project Proposal - Scientific Analysis",
-                url: "",
-                desc: "<ul><li><strong>Topic:</strong> Probability, Statistics & Mechanics</li><li><strong>Focus:</strong> Automated Robotics</li><li>Training AI Model to move virtual box</li><li>Improve efficiency of robot movement (power consumption, speed, accuracy)</li><li>Use of machine learning and data analysis</li></ul>",
+                title: "Scientific Problem",
+                url: "https://felixegan.me/Real-Time%20Control%20in%20Robotic%20Arm%20-%20ML%20Agents%20Unity.pdf",
+                desc: "<h3>Science Domain</h3><p><strong>Physics (Mechanics)</strong> + <strong>Mathematics (Probability & Statistics)</strong></p><h3>The Problem</h3><p>Industrial robotic arms consume excessive energy during pick-and-place tasks because their joint movements are not optimized for <strong>power efficiency</strong>, <strong>speed</strong>, and <strong>positional accuracy</strong>.</p><h3>What We're Building</h3><ul><li>A <strong>Unity 3D simulation</strong> of a 3-joint robotic arm trained via reinforcement learning (ML-Agents) to move a box from point A → B</li><li>A <strong>data analysis pipeline</strong> that exports physics data (torque, velocity, energy) to CSV and computes statistical models</li><li>A <strong>Flask web dashboard</strong> that visualizes training performance, inverse kinematics, and power consumption graphs</li></ul>",
                 files: []
             },
+            // ── Slide 3: Proposed Solution ──
             {
-                title: "Project Proposal - Solution",
-                url: "",
-                desc: "<ul><li><strong>ML-Agents (Neural Network)</strong> to train robot arm</li><li>Data exported to <strong>CSV</strong> then parsed in <strong>Python</strong></li><li>3D graphs and visualization in <strong>ThreeJS</strong> and <strong>JavaScript plotting</strong></li><li>Confidence determination and visualization</li><li>User Interaction and <strong>live demo</strong></li></ul>",
+                title: "Proposed Solution",
+                url: "https://felixegan.me/1-bot.png",
+                desc: "<h3>Input</h3><ul><li>Joint angles, angular velocities, box/target positions — <strong>24 continuous observations</strong> fed to the neural network every physics step</li><li>Interactive: User-defined box placement (drag-and-drop in WebGL)</li></ul><h3>Processing</h3><ul><li><strong>ML-Agents SAC (Soft-Actor Critic)</strong> neural network outputs 3 continuous actions (base, shoulder, elbow torques) to control the arm</li><li><strong>DataCollector.cs</strong> records per-episode & per-step physics snapshots → exported to CSV</li><li><strong>Python (Pandas/NumPy/SciPy)</strong> parses CSV, computes regression, R², σ, power integrals</li></ul><h3>Output</h3><ul><li>Success-rate trend graph (result vs trial)</li><li>Inverse kinematics 3D graph (joint positions in x, y, z over time — Three.js)</li><li>Energy consumption graph (power vs time per joint)</li><li>Coefficient of determination (R²) and accuracy report</li><li>Interactive WebGL demo: user drags box, watches trained arm move</li></ul>",
                 files: []
             },
+            // ── Slide 4: Science — Theory & Formulas (Mechanics) ──
             {
-                title: "Project Proposal - Tech Stack",
+                title: "Science Theory — Mechanics",
                 url: "",
-                desc: "<p><strong>Data Collection & Simulation:</strong></p><ul><li><strong>Unity</strong>: Robotic arm simulation, physics engine</li><li><strong>C#</strong>: Unity scripting, control logic, physics calculations</li><li><strong>Unity ML-Agents</strong>: Reinforcement learning training</li></ul><p><strong>Data Analysis & Reporting:</strong></p><ul><li><strong>Python</strong>: Data analysis and visualization</li><li><strong>Pandas</strong>: Data manipulation and analysis</li><li><strong>Matplotlib</strong>: Data visualization</li><li><strong>NumPy</strong>: Numerical computations</li><li><strong>SciPy</strong>: Statistical analysis</li><li><strong>Jupyter Notebooks</strong>: Interactive exploration and reporting</li></ul><p><strong>Web Interface & Deployment:</strong></p><ul><li><strong>HTML/CSS/JavaScript</strong>: Results interface</li><li><strong>Flask</strong>: Backend server and routing</li><li><strong>Unity WebGL</strong>: Web deployment of simulation</li><li><strong>Vercel</strong>: Hosting Flask app + Unity WebGL build</li><li><strong>CSV</strong>: Data storage for training runs</li></ul>",
+                desc: "<h3>Physics Formulas & Algorithms</h3><ul><li><strong>Inverse Kinematics:</strong> Computes required joint angles θ₁, θ₂, θ₃ for end-effector position using trigonometry and linear algebra</li><br><li><strong>Newton's 2nd Law (F = ma):</strong><br>Determines forces on each link given mass and acceleration</li><br><li><strong>Lagrangian Dynamics (τ = M(q)q̈ + C(q, q̇)q̇ + g(q)):</strong><br>Inertia matrix M, Coriolis/centrifugal C, gravity g → joint torques (handled by Unity physics engine)</li><br><li><strong>Mechanical Power:</strong> P = τ · ω (torque × angular velocity)</li><br><li><strong>Energy Consumption:</strong> E = ∫ P dt (integral of power over trial duration)</li><br><li><strong>Mechanical Efficiency:</strong> η = W_out / W_in</li></ul><h3>Key References (Gold/Silver)</h3><ul><li>🥇 <em>Energy Consumption in Robotics</em> (arXiv, 2024) — power modeling methodology</li><li>🥇 <em>Digital Twin-Enabled Robotic Control via SAC RL</em> (arXiv, 2025) — RL training approach</li><li>🥈 Engineering Simplified — <em>Inverse Kinematics of Robots</em> (YouTube, 2022) — IK algorithm walkthrough</li></ul>",
                 files: []
             },
+            // ── Slide 5: Science — Theory & Formulas (Statistics) ──
             {
-                title: "Project Proposal - Science Concepts",
+                title: "Science Theory — Probability & Statistics",
                 url: "",
-                desc: "<p><strong>Physics Concepts for Joint Power Consumption:</strong></p><ul><li><strong>Center of Mass:</strong> Computed from masses and distances of joint links to account for gravity effects on precise positioning.</li><li><strong>Inverse Kinematics:</strong> Calculates required joint angles for end-effector positioning using trigonometry and linear algebra (matrices, sine/cosine).</li><li><strong>Inertial Dynamics:</strong> Determines joint torques via Lagrangian formulation (inertia, centrifugal, and gravity matrices), implemented using Unity's built-in physics engine.</li><li><strong>Mechanical Power and Energy:</strong> Power calculated as P = torque × angular velocity; energy obtained by integrating power over time for each joint during trials.</li><li><strong>Newton's Second Law (F = ma):</strong> Applied to compute forces required for joint motion based on link masses and accelerations.</li><li><strong>Mechanical Efficiency:</strong> Evaluated as the ratio of output to input work to determine total power consumption of the robotic arm.</li></ul>",
+                desc: "<h3>Statistical Formulas</h3><ul><li><strong>Linear Regression (ŷ = β₀ + β₁x):</strong><br>Fits success rate trend across training episodes</li><br><li><strong>Coefficient of Determination (R² = 1 − SS_res / SS_tot):</strong><br>Measures how well regression model fits training data (target ≈ 0.90)</li><br><li><strong>Standard Deviation (σ = √[Σ(xᵢ − x̄)² / N]):</strong><br>Quantifies variability in joint torque, power, and accuracy; identifies outliers</li><br><li><strong>Success Rate:</strong> Expected to follow an <strong>arctan-like</strong> saturation curve as training progresses</li></ul><h3>Key References (Gold/Silver)</h3><ul><li>🥇 <em>A Review on Linear Regression in Machine Learning</em> (JASTT) — regression methodology & R² interpretation</li><li>🥈 Prob & Stats and Mechanics course textbooks — formulas and theory foundation</li></ul>",
                 files: []
             },
+            // ── Slide 6: CS Architecture / Tech Stack ──
             {
-                title: "Project Proposal - Science Concepts (cont.)",
+                title: "Computer Science Architecture & Tech Stack",
                 url: "",
-                desc: "<p><strong>Probability and Statistics Concepts:</strong></p><ul><li><strong>Linear Regression:</strong> Models and visualizes the success rate trend across training episodes or trials.</li><li><strong>Coefficient of Determination (R²):</strong> Evaluates how well the regression model fits the data, indicating predictive accuracy of the trained simulation.</li><li><strong>Standard Deviation:</strong> Measures variability in key parameters (e.g., joint torque, power consumption); identifies outliers and assesses consistency relative to the mean.</li></ul>",
+                desc: "<h3>High-Level Design</h3><div style='background:var(--code-bg);border:1px solid var(--border);border-radius:6px;padding:1rem;font-family:JetBrains Mono,monospace;font-size:0.75rem;line-height:1.8;margin-bottom:1rem;'><span style='color:#f0e68c;'>┌─────────────────────────────────┐</span><br><span style='color:#f0e68c;'>│</span> <strong style='color:#fff;'>Unity 3D Simulation</strong> (C#)<br><span style='color:#f0e68c;'>│</span> RobotAgent · ML-Agents PPO<br><span style='color:#f0e68c;'>│</span> DataCollector → CSV export<br><span style='color:#f0e68c;'>└──────────┬──────────────────────┘</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#f0e68c;'>│</span> CSV files<br><span style='color:#f0e68c;'>┌──────────▼──────────────────────┐</span><br><span style='color:#f0e68c;'>│</span> <strong style='color:#fff;'>Python Analysis</strong><br><span style='color:#f0e68c;'>│</span> Pandas · NumPy · SciPy<br><span style='color:#f0e68c;'>│</span> Matplotlib · Jupyter<br><span style='color:#f0e68c;'>└──────────┬──────────────────────┘</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#f0e68c;'>│</span> processed data + graphs<br><span style='color:#f0e68c;'>┌──────────▼──────────────────────┐</span><br><span style='color:#f0e68c;'>│</span> <strong style='color:#fff;'>Flask Web App</strong> (Python)<br><span style='color:#f0e68c;'>│</span> Jinja templates · Static files<br><span style='color:#f0e68c;'>│</span> Unity WebGL embed<br><span style='color:#f0e68c;'>│</span> Three.js 3D visualizations<br><span style='color:#f0e68c;'>└──────────┬──────────────────────┘</span><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style='color:#f0e68c;'>│</span> deployed<br><span style='color:#f0e68c;'>┌──────────▼──────────────────────┐</span><br><span style='color:#f0e68c;'>│</span> <strong style='color:#fff;'>Render</strong> (Hosting)<br><span style='color:#f0e68c;'>└─────────────────────────────────┘</span></div><h3>Libraries & APIs</h3><ul><li><strong>Simulation:</strong> Unity, C#, ML-Agents (PPO), ArticulationBody physics</li><li><strong>Analysis:</strong> Pandas, NumPy, SciPy, Matplotlib, Jupyter</li><li><strong>Web:</strong> Flask, Jinja2, HTML/CSS/JS, Three.js, Unity WebGL</li><li><strong>Hosting:</strong> Render (Flask + WebGL build), GitLab CI/CD</li></ul>",
                 files: []
             },
-                        {
-                title: "Project Proposal - Requirements",
-                url: "",
-                desc: "<p><strong>Functional Requirements:</strong></p><ul><li>Concise and clear display of training data</li><li>Optimized loading time (≤2 seconds for website and Unity WebGL)</li><li>Modern, futuristic UI reflecting robotic simulation theme (blurred backgrounds, sleek CSS, etc.)</li></ul><p><strong>Scientific Requirements:</strong></p><ul><li>Strong focus on statistical data presentation</li><li>Accurate joint torque modeling (including motor resistance, referenced to real robotic arms)</li><li>Success rate graphs closely resembling theoretical arctan curve</li><li>Coefficient of determination ≈90% with low percent error</li></ul>",
-                files: []
-            },
+            // ── Slide 7: Feasibility — Library/API Tests ──
             {
-                title: "Project Proposal - Webpage Features",
+                title: "Feasibility — Proof of Concept",
                 url: "",
-                desc: "<p><strong>Core Features:</strong></p><ul><li><strong>Home Page:</strong> Project overview with navigation links to all sections</li><li><strong>Unity Simulation Page:</strong> Embedded Unity WebGL build allowing users to drag the box to boundary positions</li><li><strong>Data Analysis Page:</strong> Summarized statistical results, processed data downloads, and href link to official report PDF</li></ul><p><strong>Stretch Goals:</strong></p><ul><li>Interactive 3D WebGL viewer for robotic arm manipulation and box placement</li><li>Advanced visualizations (e.g., heatmaps of movement efficiency)</li><li>Real-time data updates from running simulation</li><li>Generated comprehensive PDF reports with charts and statistics</li></ul>",
+                desc: "<h3>What We've Built So Far</h3><p>Three working proof-of-concept components demonstrating feasibility:</p><h3>1. Unity ML-Agents Training (Working ✅)</h3><ul><li>2-joint robotic arm built with <strong>ArticulationBody</strong> physics</li><li>ML-Agents PPO agent successfully trains with 24 continuous observations and 3 continuous actions</li><li>Curriculum learning: Phase 1 (fixed positions) → Phase 2 (random positions + power budget)</li></ul><h3>2. Data Collection Pipeline (Working ✅)</h3><ul><li><strong>DataCollector.cs</strong> exports episode summaries, detailed physics snapshots, IK data, and statistical summaries to CSV</li><li>Auto-exports every 50 episodes; tracks success rate, energy, accuracy distributions</li></ul><h3>3. Basic Flask Web App + WebGL (In Testing)</h3><ul><li>Flask server with Brotli/Gzip compression handling for Unity WebGL builds</li><li>Jinja2 templates, static file serving, public asset routing all functional</li></ul>",
+                files: [
+                    {
+                        name: "RobotAgent.cs (excerpt — reward calculation)",
+                        lang: "csharp",
+                        code: "private void CalculateRewards(float energyThisStep)\n{\n    // distance improvement reward\n    float distanceImprovement = previousDistanceToTarget - distanceToTarget;\n    AddReward(distanceImprovement * 2f * rewardMultiplier);\n    previousDistanceToTarget = distanceToTarget;\n\n    // energy penalty — incentivize efficiency\n    AddReward(-0.005f * energyThisStep * rewardMultiplier);\n    AddReward(-0.0001f * rewardMultiplier);  // time penalty\n}"
+                    }
+                ]
+            },
+            // ── Slide 8: Plan / Team Contributions ──
+            {
+                title: "Plan & Team Contributions",
+                url: "",
+                desc: "<h3>Felix Egan — Simulation & Architecture</h3><ul><li>Unity robotic arm design & ML-Agents training setup</li><li>RobotAgent.cs: observations, actions, reward shaping, curriculum learning</li><li>DataCollector.cs: CSV export pipeline (physics, IK, statistics)</li><li>Project architecture & monorepo structure</li><li>WebGL deployment</li></ul><h3>Sebastian Soto — Data Analysis & Visualization</h3><ul><li>DataCollector.cs: Extra data exports needed for IK graph generation</li><li>Python data parsing pipeline (Pandas/NumPy)</li><li>Statistical analysis: linear regression, R², standard deviation</li><li>Matplotlib graphs: success rate, energy consumption</li><li>Three.js 3D inverse kinematics visualization</li><li>Jupyter notebooks for interactive exploration</li></ul><h3>Jesus Monroy IV — Website & Interactivity</h3><ul><li>Flask routes, Jinja2 templates, page design</li><li>Dashboard page: embedded graphs & downloadable reports</li><li>Unity WebGL embed & interactive demo mode</li><li>User interaction: drag-and-drop box placement with boundaries</li><li>Styling, animations & performance optimization</li></ul>",
                 files: []
             },
+            // ── Slide 9: Timeline & Milestones ──
             {
-                title: "Project Proposal - Timeline & Milestones",
+                title: "Timeline & Milestones",
                 url: "",
-                desc: "<p><strong>Setup Tasks (by Feb 6):</strong> Flowcharts, website design plan, proposal draft</p><p><strong>Milestone 1: Data Training (Mar 6)</strong></p><ul><li>Robotic arm Unity design (Feb 26)</li><li>Joint vector inputs (Feb 20)</li><li>Reward system for joint velocities</li><li>Intensive training (5M trials, Mar 6)</li></ul><p><strong>Milestone 2: Power Logic & Export (Mar 27)</strong></p><ul><li>Power consumption calculations</li><li>Data cleaning (Mar 13)</li><li>CSV export from C# (Mar 27)</li></ul><p><strong>Milestone 3: Data Parsing (Apr 2)</strong></p><ul><li>Parse data for required graphs (Mar 31)</li><li>Jupyter snapshots for 3D box position graph (Apr 2)</li></ul><p><strong>Milestone 4: Visualization (Apr 17)</strong></p><ul><li>Create cleaned training graphs (Apr 10)</li><li>Performance optimization (Apr 17)</li></ul><p><strong>Milestone 5: Website Design (Apr 20)</strong></p><ul><li>Flask routes (Mar 4)</li><li>Home Page & navigation (Apr 3)</li><li>About Page & citations (Mar 22–Apr 2)</li><li>Analysis Page & downloads (Apr 20)</li><li>Dashboard graphs (May 1): success rate, IK, power efficiency, 3D box position</li><li>WebGL embed (Mar 30)</li><li>Styling & animations (Apr 17)</li></ul><p><strong>Milestone 6: Interactivity (May 2)</strong></p><ul><li>Top 100 results scrollable view (Apr 3)</li><li>Interactive trained environment with boundaries & animations (Apr 30)</li></ul><p><strong>Milestone 7: Testing (May 2)</strong></p><ul><li>Debugging and runtime optimization</li></ul>",
+                desc: "<div style='font-size:0.85rem;'><p><strong>✅ Setup (by Feb 6)</strong> — Flowcharts, design plan, proposal draft</p><p><strong>M1: Training (Mar 6)</strong></p><ul><li>Robotic arm Unity design (Feb 26) · Joint vector inputs (Feb 20)</li><li>Reward system · Intensive training — 5M trials (Mar 6)</li></ul><p><strong>M2: Power Logic & Export (Mar 27)</strong></p><ul><li>Power consumption calculations · Data cleaning (Mar 13)</li><li>CSV export from C# (Mar 27)</li></ul><p><strong>M3: Data Parsing (Apr 2)</strong></p><ul><li>Parse data for 3 core graphs (Mar 31)</li><li>Jupyter snapshots for 3D box-position graph (Apr 2)</li></ul><p><strong>M4: Visualization (Apr 17)</strong></p><ul><li>Cleaned training graphs (Apr 10) · Performance optimization (Apr 17)</li></ul><p><strong>M5: Website (Apr 20)</strong></p><ul><li>Flask routes (Mar 4) · Home/About/Analysis pages</li><li>Dashboard graphs (May 1) · WebGL embed (Mar 30) · Styling (Apr 17)</li></ul><p><strong>M6: Interactivity (May 2)</strong></p><ul><li>Interactive trained environment with boundaries</li></ul><p><strong>M7: Testing (May 2)</strong> — Debugging & runtime optimization</p></div>",
                 files: []
             },
+            // ── Slide 10: Thank You / Q&A ──
             {
-                title: "Project Proposal - Team Agreement",
-                url: "",
-                desc: "<ul><li>No collection of sensitive personal information</li><li>AI used only as a tool/guide, not as author</li><li>Primary communication: Discord (24-hour response)</li><li>Feature branches to prevent merge conflicts</li><li>Full code and function documentation</li><li>Feature reassignments permitted near deadlines</li><li>Weekly meetings: Tuesdays 10–11:30 and/or 20–22:00</li></ul>",
-                files: []
-            },
-            {
-                title: "Project Proposal - References",
-                url: "",
-                desc: "<ul><li>Unity ML-Agents Documentation</li><li>Probability & Statistics and Mechanics textbooks</li><li>Online tutorials (Unity, ML-Agents, Flask, data analysis)</li><li>Reliable YouTube robotics videos</li><li>Robotics textbooks and papers on kinematics/dynamics</li><li>Open-source GitHub projects (Unity ML-Agents robotic simulations)</li><li><strong>Specific Links:</strong></li><ul><li>Linear Regression Review: https://jastt.org/index.php/jasttpath/article/view/57/20</li><li>Energy Consumption in Robotics (2024): https://arxiv.org/html/2411.03194v1</li><li>Digital Twin-Enabled Robotic Control (2025): https://arxiv.org/abs/2501.18016</li><li>Inverse Kinematics Tutorial: https://www.youtube.com/watch?v=1-FJhmey7vk</li></ul></ul>",
-                files: []
-            },
-            {
-                title: "Thank you!",
-                url: "",
-                desc: "<p><strong>Thank you</strong> for your time and attention!</p><p>We hope you enjoyed</p><p><strong>Questions? Suggestions?</strong></p>",
+                title: "Thank You!",
+                url: "https://felixegan.me/ProjectProposal%20-%20AURA.pdf",
+                desc: "<p style='font-size:1.1rem; margin-top:1rem;'><strong>Thank you</strong> for your time and attention!</p><p style='margin-top:1.5rem;'><strong>Questions? Suggestions?</strong></p><p style='margin-top:2rem; font-size:0.8rem; opacity:0.7;'>Team AURA:  Felix Egan   ·   Sebastian Soto   ·   Jesus Monroy IV</p>",
                 files: []
             }
         ];

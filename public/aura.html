@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA - Home</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        :root {
+            --gold: #f0e68c;
+            --glow-gold: rgba(240, 230, 140, 0.6);
+            --bg-dark: #0a0a0a;
+        }
+
+        /* ── layout.css ── */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            font-family: 'Orbitron', 'Segoe UI', Roboto, sans-serif;
+            color: white;
+            display: block;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            padding-top: 2rem;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 3rem;
+            letter-spacing: 8px;
+            margin-bottom: 10px;
+            color: var(--gold);
+            text-shadow: 0 0 15px var(--glow-gold);
+        }
+
+        nav {
+            width: fit-content;
+            justify-self: anchor-center;
+            border: 3px solid var(--gold);
+            padding: 10px;
+            clip-path: polygon(25% 0%, 75% 0%, 120% 50%, 75% 100%, 25% 100%, -20% 50%);
+            background: rgba(255, 255, 255, 0.15);
+            margin: 0 auto 2rem auto;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            z-index: 9999;
+            margin: 0;
+        }
+
+        nav ul li a {
+            font-size: 0.9rem;
+            color: #ffc011;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+
+        nav a:active, nav a:hover {
+            color: var(--gold);
+            text-shadow: 0 0 8px var(--glow-gold);
+        }
+
+        .title {
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            color: var(--gold);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* ── Grid background ── */
+        .grid-container {
+            position: fixed;
+            width: 100%;
+            height: 200%;
+            perspective: 450px;
+            overflow: hidden;
+            bottom: -80px;
+            mask-image: linear-gradient(to top, rgb(0, 0, 0), transparent);
+            z-index: -1;
+        }
+
+        .grid {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) rotateX(120deg);
+            width: 180%;
+            height: 200%;
+            transform-style: preserve-3d;
+            z-index: -1;
+        }
+
+        .horizontal-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            mask-image: radial-gradient(rgb(0, 0, 0), transparent);
+        }
+
+        .h-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right,
+                transparent 0%,
+                #b8b8b8 20%,
+                #4d4d4d 50%,
+                #c0c0c0 80%,
+                transparent 100%);
+            box-shadow: 0 0 10px #e0e0e0, 0 0 20px #e7e7e7;
+        }
+
+        .vertical-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .v-line {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                transparent 0%,
+                #cacaca 50%,
+                transparent 100%);
+            box-shadow: 0 0 10px #f0f0f0;
+        }
+
+        .light {
+            position: absolute;
+            width: 8px;
+            height: 40px;
+            margin-left: -3px;
+            background: linear-gradient(to bottom,
+                transparent,
+                #ffc481d7,
+                #ffb159,
+                #ffe7ba,
+                transparent);
+            box-shadow:
+                0 0 20px #e79e0094,
+                0 0 40px #ff9900d3,
+                0 0 60px #ff9100;
+            border-radius: 50%;
+            filter: blur(2px);
+            animation: travel 3s linear infinite;
+        }
+
+        @keyframes travel {
+            0%   { top: -50px; opacity: 0; }
+            10%  { opacity: 1; }
+            90%  { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .light:nth-child(1)  { animation-delay: 0s; }
+        .light:nth-child(2)  { animation-delay: 0.3s; }
+        .light:nth-child(3)  { animation-delay: 0.6s; }
+        .light:nth-child(4)  { animation-delay: 0.9s; }
+        .light:nth-child(5)  { animation-delay: 1.2s; }
+        .light:nth-child(6)  { animation-delay: 1.5s; }
+        .light:nth-child(7)  { animation-delay: 1.8s; }
+        .light:nth-child(8)  { animation-delay: 2.1s; }
+        .light:nth-child(9)  { animation-delay: 2.4s; }
+        .light:nth-child(10) { animation-delay: 2.7s; }
+
+        /* ── index.css ── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            justify-items: center;
+            padding: 0 5%;
+        }
+
+        h2.title {
+            text-align: center;
+        }
+
+        .card-wrapper {
+            position: relative;
+        }
+
+        .card-number {
+            position: absolute;
+            top: -10px;
+            background: var(--gold);
+            color: black;
+            padding: 5px 15px;
+            font-weight: bold;
+            z-index: 2;
+            clip-path: polygon(0 0, 100% 0, 70% 100%, 0% 100%);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--gold);
+            padding: 40px 30px;
+            max-width: 400px;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            box-shadow: inset 0 0 20px rgba(240, 230, 140, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .card p {
+            color: #bbb;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .course-connections-grid {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            justify-items: center;
+            padding: 0 5% 60px;
+        }
+
+        .course-connection {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--gold);
+            padding: 30px;
+            max-width: 400px;
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+            box-shadow: inset 0 0 20px rgba(240, 230, 140, 0.1);
+        }
+
+        .course-connection h3 {
+            margin-top: 0;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: var(--gold);
+        }
+
+        .course-connection p {
+            color: #bbb;
+            font-size: 0.82rem;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.75rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        main {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="title">AURA</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="/analysis">Analysis</a></li>
+            <li><a href="/simulation">Simulation</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div class="grid-container">
+            <div class="grid">
+                <div class="horizontal-lines" id="hLines"></div>
+                <div class="vertical-lines" id="vLines"></div>
+            </div>
+        </div>
+
+        <!-- index.html content block -->
+        <h2 class="title">AURA'S FEATURES</h2>
+
+        <div class="card-grid">
+            <div class="card-wrapper">
+                <div class="card-number">1</div>
+                <div class="card">
+                    <h3>Machine Learning</h3>
+                    <p>Machine learning is at the crux of this project, where a robotic arm, through ML-agents, will learn how to perform a task over thousands of iterations.</p>
+                </div>
+            </div>
+            <div class="card-wrapper">
+                <div class="card-number">2</div>
+                <div class="card">
+                    <h3>Data Collection</h3>
+                    <p>Various parameters will be collected during the simulation (which is ran within the Unity game engine), and calculated and formatted for a concise, easy-to-understand appearance.</p>
+                </div>
+            </div>
+            <div class="card-wrapper">
+                <div class="card-number">3</div>
+                <div class="card">
+                    <h3>Data Analysis</h3>
+                    <p>Using linear regression, the raw data will be compiled into a success graph, and the simulation's accuracy will also be calculated. Everything will be displayed neatly within this website.</p>
+                </div>
+            </div>
+            <div class="card-wrapper">
+                <div class="card-number">4</div>
+                <div class="card">
+                    <h3>Interactivity</h3>
+                    <p>The simulation is directly accessible to the user via WebGL, and they can manipulate the starting conditions to see how the robot will adjust its movements to accomplish its task.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="title" style="margin-top:60px;">COURSE CONNECTIONS</h2>
+
+        <div class="course-connections-grid">
+            <div class="course-connection">
+                <h3>Mechanics (Advanced)</h3>
+                <p>To calculate the power and energy consumption of a three-joint robot, the process integrates several core principles of robotics and physics into a cohesive workflow. It begins with inverse kinematics and center of mass calculations, utilizing trigonometry and linear algebra, to determine the precise joint angles needed to reach a target while accounting for gravity.</p>
+                <p>These spatial requirements are then fed into inertial dynamics via Lagrangian formulas and Newton's Second Law to derive the necessary torque and force for each joint link.</p>
+                <p>Finally, mechanical power is calculated by multiplying torque by velocity (P = τv), which is then integrated over time to determine total energy consumption, while a mechanical efficiency analysis ensures the work input and output are correctly balanced for the entire system, looking for a movement that minimizes both time and energy consumed.</p>
+            </div>
+            <div class="course-connection">
+                <h3>Probability and Statistics</h3>
+                <p>To evaluate the website's performance and the accuracy of the simulation data, linear regression is employed to model and visualize the success rate over time. The reliability of this model and the underlying simulation parameters such as joint torque values are assessed using the coefficient of determination (R²) to measure goodness-of-fit and standard deviation to identify any significant outliers or variance from the mean.</p>
+                <p>Together, these statistical tools ensure that the simulation remains precise and that any deviations in the training data are clearly identified.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 AURA Project</p>
+    </footer>
+
+    <script>
+        "use strict";
+
+        // Generate horizontal lines
+        const hLinesContainer = document.getElementById("hLines");
+        const numHLines = 30;
+        for (let i = 0; i < numHLines; i++) {
+            const line = document.createElement("div");
+            line.className = "h-line";
+            line.style.top = `${i / numHLines * 100}%`;
+            hLinesContainer.appendChild(line);
+        }
+
+        // Generate vertical lines with traveling lights
+        const vLinesContainer = document.getElementById("vLines");
+        const numVLines = 40;
+        for (let i = 0; i < numVLines; i++) {
+            const lineWrapper = document.createElement("div");
+            lineWrapper.className = "v-line";
+            lineWrapper.style.left = `${i / (numVLines - 1) * 100}%`;
+
+            const numLights = Math.floor(Math.random() * 3) + 3;
+            for (let j = 0; j < numLights; j++) {
+                const light = document.createElement("div");
+                light.className = "light";
+                light.style.animationDelay = `${Math.random() * 3}s`;
+                light.style.animationDuration = `${2 + Math.random() * 2}s`;
+                lineWrapper.appendChild(light);
+            }
+
+            vLinesContainer.appendChild(lineWrapper);
+        }
+    </script>
+</body>
+</html>
