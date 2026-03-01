@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Dawson Fitness</title>
+  <style>
+    /* ── Tokens ─────────────────────────────────────────────── */
+    :root {
+      --bg:       #eef2f8;
+      --surface:  #ffffff;
+      --surface2: #f4f7fb;
+      --ink:      #0f1b2d;
+      --ink2:     #3d4f63;
+      --muted:    #6e7f96;
+      --line:     #dde3ed;
+      --brand:    #0b4ea2;
+      --brand-dk: #083b7b;
+      --brand-lt: #e8f0fc;
+      --glow:     rgba(11,78,162,.14);
+      --r:        14px;
+      --hdr:      54px;
+      --sidebar:  252px;
+      /* ratings */
+      --c-poor:   #dc2626;
+      --c-below:  #ea580c;
+      --c-avg:    #ca8a04;
+      --c-above:  #16a34a;
+      --c-exc:    #0b4ea2;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100dvh;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── App Shell ───────────────────────────────────────────── */
+    .app { display: flex; flex-direction: column; height: 100dvh; }
+
+    /* Header */
+    .hdr {
+      height: var(--hdr);
+      background: var(--brand);
+      color: #fff;
+      display: flex; align-items: center;
+      padding: 0 14px;
+      gap: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,.22);
+      z-index: 20;
+    }
+    .hdr-title {
+      flex: 1;
+      font-size: 16px; font-weight: 800;
+      letter-spacing: .05px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .hdr-subtitle {
+      font-size: 11px; font-weight: 500;
+      opacity: .75;
+      white-space: nowrap;
+    }
+    .icon-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px; border-radius: 11px;
+      border: none; background: rgba(255,255,255,.15);
+      color: #fff; cursor: pointer; flex-shrink: 0;
+      transition: background .12s;
+    }
+    .icon-btn:active { background: rgba(255,255,255,.28); }
+    .menu-btn { display: none; }
+
+    /* Body */
+    .body { display: flex; flex: 1; overflow: hidden; }
+
+    /* ── Sidebar ─────────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar);
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      display: flex; flex-direction: column;
+      overflow: hidden; flex-shrink: 0;
+    }
+    .sidebar-hd {
+      padding: 14px 16px 6px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.1px; text-transform: uppercase;
+      color: var(--muted); flex-shrink: 0;
+    }
+    .test-list { overflow-y: auto; flex: 1; padding: 4px 8px 16px; }
+
+    .t-btn {
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 10px 12px; width: 100%; text-align: left;
+      border: none; background: none; cursor: pointer;
+      border-radius: 11px; color: var(--ink);
+      transition: background .1s; position: relative;
+    }
+    .t-btn:hover { background: var(--surface2); }
+    .t-btn.active { background: var(--brand-lt); color: var(--brand); }
+    .t-btn.active::before {
+      content: ""; position: absolute; left: 0; top: 22%; bottom: 22%;
+      width: 3px; border-radius: 0 3px 3px 0; background: var(--brand);
+    }
+    .t-name { font-size: 13px; font-weight: 700; line-height: 1.25; }
+    .t-meta { font-size: 11px; color: var(--muted); }
+    .t-btn.active .t-meta { color: var(--brand); opacity: .8; }
+
+    /* ── Main ────────────────────────────────────────────────── */
+    .main {
+      flex: 1; overflow-y: auto;
+      padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Mobile test picker button */
+    .mobile-picker { display: none; }
+    .pick-btn {
+      width: 100%; padding: 13px 14px;
+      border-radius: 13px; border: 2px solid var(--brand);
+      background: var(--brand-lt); color: var(--brand);
+      font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; gap: 9px; cursor: pointer;
+    }
+    .pick-btn svg { flex-shrink: 0; }
+    .pick-btn span { flex: 1; text-align: left; line-height: 1.25; }
+    .pick-label { font-size: 10px; font-weight: 600; letter-spacing: .8px; text-transform: uppercase; opacity: .7; }
+    .pick-value { font-size: 14px; }
+
+    /* ── Card ────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 16px;
+      box-shadow: 0 1px 8px rgba(15,27,45,.06);
+    }
+    .card-title {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .9px; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 12px;
+    }
+
+    /* ── Form fields ─────────────────────────────────────────── */
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field { display: flex; flex-direction: column; gap: 5px; }
+    .field label, .flabel {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .8px; text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    select, input[type="number"] {
+      width: 100%; padding: 11px 13px;
+      border-radius: 11px; border: 1.5px solid var(--line);
+      background: var(--surface2); font-size: 15px; color: var(--ink);
+      outline: none; -webkit-appearance: none; appearance: none;
+      transition: border-color .14s, box-shadow .14s;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236e7f96' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 11px center;
+      padding-right: 34px;
+    }
+    select:focus, input[type="number"]:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px var(--glow);
+      background: #fff;
+    }
+
+    /* Big result input */
+    #result {
+      font-size: 32px !important; font-weight: 800;
+      text-align: center; padding: 18px 14px !important;
+      letter-spacing: .5px;
+    }
+    #result::placeholder { font-size: 18px; font-weight: 400; color: var(--line); }
+
+    /* Plank norm toggle */
+    .norm-toggle { display: flex; gap: 6px; }
+    .norm-btn {
+      flex: 1; padding: 9px 4px; border-radius: 10px;
+      border: 1.5px solid var(--line); background: var(--surface2);
+      color: var(--ink2); font-size: 11.5px; font-weight: 700;
+      cursor: pointer; text-align: center; transition: all .12s;
+    }
+    .norm-btn.active { border-color: var(--brand); background: var(--brand-lt); color: var(--brand); }
+
+    /* Actions */
+    .actions { display: flex; gap: 8px; margin-top: 14px; }
+    .btn {
+      border: none; border-radius: 13px;
+      padding: 15px 20px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      transition: background .12s, transform .08s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary {
+      flex: 1; background: var(--brand); color: #fff;
+      box-shadow: 0 4px 14px rgba(11,78,162,.28);
+    }
+    .btn-primary:hover { background: var(--brand-dk); }
+    .btn-ghost {
+      flex-shrink: 0; padding: 15px 16px;
+      background: var(--surface2); color: var(--ink2);
+      border: 1.5px solid var(--line);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-ghost:hover { background: var(--line); }
+
+    /* ── Result card ─────────────────────────────────────────── */
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      padding: 16px;
+      box-shadow: 0 1px 8px rgba(15,27,45,.06);
+      transition: opacity .2s;
+    }
+    .result-card.empty { opacity: .5; }
+
+    .result-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .r-bar {
+      width: 5px; height: 52px; border-radius: 999px;
+      background: var(--line); flex-shrink: 0; transition: background .3s;
+    }
+    .r-bar.poor      { background: var(--c-poor); }
+    .r-bar.below     { background: var(--c-below); }
+    .r-bar.avg       { background: var(--c-avg); }
+    .r-bar.above     { background: var(--c-above); }
+    .r-bar.excellent { background: var(--c-exc); }
+
+    .r-info { flex: 1; }
+    .r-lbl { font-size: 10px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; color: var(--muted); }
+    .r-val { font-size: 28px; font-weight: 900; line-height: 1.1; transition: color .3s; }
+    .r-val.poor      { color: var(--c-poor); }
+    .r-val.below     { color: var(--c-below); }
+    .r-val.avg       { color: var(--c-avg); }
+    .r-val.above     { color: var(--c-above); }
+    .r-val.excellent { color: var(--c-exc); }
+
+    .r-pct {
+      font-size: 11px; font-weight: 700; padding: 5px 10px;
+      border-radius: 999px; background: var(--surface2);
+      border: 1px solid var(--line); color: var(--muted);
+      align-self: flex-start; white-space: nowrap;
+    }
+
+    .r-explain { font-size: 13px; color: var(--muted); line-height: 1.5; }
+    .r-explain b { color: var(--ink2); }
+
+    /* 5-seg scale */
+    .scale { display: flex; gap: 4px; margin-top: 12px; }
+    .seg { flex: 1; height: 6px; border-radius: 999px; background: var(--line); transition: background .3s; }
+    .seg.pop.poor      { background: var(--c-poor); }
+    .seg.pop.below     { background: var(--c-below); }
+    .seg.pop.avg       { background: var(--c-avg); }
+    .seg.pop.above     { background: var(--c-above); }
+    .seg.pop.excellent { background: var(--c-exc); }
+    .scale-lbl {
+      display: flex; justify-content: space-between;
+      font-size: 9px; color: var(--muted); margin-top: 4px;
+    }
+
+    /* ── Hint Chip ───────────────────────────────────────────── */
+    .hint-chip {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 10px 12px; border-radius: 11px;
+      background: var(--brand-lt); border: 1px solid rgba(11,78,162,.15);
+      font-size: 12.5px; color: var(--ink2); line-height: 1.45;
+    }
+    .hint-chip svg { flex-shrink: 0; margin-top: 1px; color: var(--brand); }
+
+    /* ── Bottom Sheet ────────────────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(5,15,35,.45);
+      backdrop-filter: blur(3px); z-index: 100;
+      opacity: 0; pointer-events: none; transition: opacity .22s;
+    }
+    .overlay.open { opacity: 1; pointer-events: all; }
+
+    .sheet {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--surface); border-radius: 22px 22px 0 0;
+      z-index: 101;
+      transform: translateY(100%);
+      transition: transform .3s cubic-bezier(.32,1,.58,1);
+      max-height: 82dvh; display: flex; flex-direction: column;
+      padding-bottom: max(env(safe-area-inset-bottom,0px), 12px);
+    }
+    .sheet.open { transform: translateY(0); }
+
+    .sheet-drag {
+      width: 36px; height: 4px; background: var(--line);
+      border-radius: 999px; margin: 12px auto 0; flex-shrink: 0;
+    }
+    .sheet-hd {
+      padding: 10px 18px 8px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.1px; text-transform: uppercase;
+      color: var(--muted); flex-shrink: 0;
+    }
+    .sheet-body { overflow-y: auto; flex: 1; padding: 0 10px 8px; }
+
+    .s-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 12px; width: 100%; text-align: left;
+      border: none; background: none; cursor: pointer;
+      border-radius: 12px; color: var(--ink);
+      transition: background .1s;
+    }
+    .s-item:active { background: var(--surface2); }
+    .s-item.active { color: var(--brand); }
+    .s-txt { flex: 1; }
+    .s-name { font-size: 14px; font-weight: 700; }
+    .s-meta { font-size: 12px; color: var(--muted); }
+    .s-item.active .s-meta { color: var(--brand); opacity: .75; }
+    .s-check {
+      width: 22px; height: 22px; border-radius: 999px;
+      background: var(--brand);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; opacity: 0; transition: opacity .15s;
+    }
+    .s-item.active .s-check { opacity: 1; }
+
+    /* ── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 680px) {
+      .sidebar     { display: none; }
+      .menu-btn    { display: flex; }
+      .mobile-picker { display: block; }
+
+      .main { padding: 12px 13px 20px; gap: 11px; }
+      #result { font-size: 28px !important; }
+      .r-val  { font-size: 24px; }
+      .btn    { font-size: 15px; padding: 15px 16px; }
+    }
+
+    /* ── Utils ───────────────────────────────────────────────── */
+    .hidden { display: none !important; }
+    *::-webkit-scrollbar { width: 4px; }
+    *::-webkit-scrollbar-track { background: transparent; }
+    *::-webkit-scrollbar-thumb { background: var(--line); border-radius: 999px; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <header class="hdr">
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="Choose test">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+    </button>
+    <div style="flex:1;overflow:hidden;">
+      <div class="hdr-title">Dawson Fitness</div>
+    </div>
+    <div class="hdr-subtitle">17–40 yrs</div>
+  </header>
+
+  <div class="body">
+
+    <!-- Sidebar (desktop) -->
+    <nav class="sidebar">
+      <div class="sidebar-hd">Tests</div>
+      <div class="test-list" id="sidebarList"></div>
+    </nav>
+
+    <!-- Main content -->
+    <main class="main">
+
+      <!-- Mobile: test picker -->
+      <div class="mobile-picker">
+        <button class="pick-btn" id="pickerBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          <span>
+            <div class="pick-label">Current Test</div>
+            <div class="pick-value" id="pickerLabel">—</div>
+          </span>
+        </button>
+      </div>
+
+      <!-- Hint -->
+      <div class="hint-chip">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span id="hintText">—</span>
+      </div>
+
+      <!-- Form -->
+      <div class="card">
+        <div class="card-title">Settings</div>
+
+        <div class="field-row" style="margin-bottom:10px;">
+          <div class="field">
+            <label for="gender">Gender</label>
+            <select id="gender">
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ageBand">Age</label>
+            <select id="ageBand"></select>
+          </div>
+        </div>
+
+        <!-- Plank norm toggle -->
+        <div id="plankRow" class="hidden" style="margin-bottom:10px;">
+          <div class="flabel" style="margin-bottom:6px;">Plank Norms</div>
+          <div class="norm-toggle" id="normToggle">
+            <button class="norm-btn active" data-norm="all">All</button>
+            <button class="norm-btn" data-norm="varsity">Varsity</button>
+            <button class="norm-btn" data-norm="nonvarsity">Non-varsity</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label id="resultLabel" for="result">Result</label>
+          <input id="result" type="number" step="1" inputmode="decimal" placeholder="0" autocomplete="off" />
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="calcBtn">Get Rating</button>
+          <button class="btn btn-ghost" id="resetBtn" aria-label="Reset">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="result-card empty" id="resultCard">
+        <div class="result-head">
+          <div class="r-bar" id="rBar"></div>
+          <div class="r-info">
+            <div class="r-lbl">Rating</div>
+            <div class="r-val" id="rVal">—</div>
+          </div>
+          <div class="r-pct hidden" id="rPct"></div>
+        </div>
+        <div class="r-explain" id="rExplain">Enter a result above to get your rating.</div>
+        <div class="scale">
+          <div class="seg" data-r="poor"></div>
+          <div class="seg" data-r="below"></div>
+          <div class="seg" data-r="avg"></div>
+          <div class="seg" data-r="above"></div>
+          <div class="seg" data-r="excellent"></div>
+        </div>
+        <div class="scale-lbl">
+          <span>Poor</span><span>Below</span><span>Avg</span><span>Above</span><span>Excellent</span>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Overlay + Bottom Sheet (mobile) -->
+  <div class="overlay" id="overlay"></div>
+  <div class="sheet" id="sheet">
+    <div class="sheet-drag"></div>
+    <div class="sheet-hd">Choose Test</div>
+    <div class="sheet-body" id="sheetBody"></div>
+  </div>
+
+</div>
+<script>
+/* ── Data ──────────────────────────────────────────────────── */
+const RATINGS = ["Poor","Below Average","Average","Above Average","Excellent"];
+const RKEYS   = ["poor","below","avg","above","excellent"];
+
+const TESTS = [
+  {
+    id:"pushup_standard",
+    name:"Standard Push-up",
+    meta:"1 min · reps (toes)",
+    units:"reps", better:"higher",
+    hint:"Full push-ups from toes. Count only clean reps with a straight back.",
+    resultLabel:"Push-ups in 60 sec",
+    ageBands:[
+      {key:"17_19",label:"17–19"},{key:"20_29",label:"20–29"},
+      {key:"30_39",label:"30–39"},{key:"40",label:"40+"}
+    ],
+    cuts:{
+      male:{
+        "17_19":{t1:4,t2:11,t3:19,t4:35},"20_29":{t1:4,t2:10,t3:17,t4:30},
+        "30_39":{t1:2,t2:8,t3:13,t4:25},"40":{t1:1,t2:6,t3:11,t4:21}
+      },
+      female:{
+        "17_19":{t1:1,t2:4,t3:7,t4:11},"20_29":{t1:1,t2:5,t3:9,t4:14},
+        "30_39":{t1:1,t2:3,t3:7,t4:13},"40":{t1:1,t2:2,t3:5,t4:10}
+      }
+    },
+    source:"TopEndSports field norms."
+  },
+  {
+    id:"pushup_modified",
+    name:"Modified Push-up",
+    meta:"1 min · reps (knees)",
+    units:"reps", better:"higher",
+    hint:"Bent-knee push-ups. Count only clean reps.",
+    resultLabel:"Modified push-ups in 60 sec",
+    ageBands:[
+      {key:"17_19",label:"17–19"},{key:"20_29",label:"20–29"},
+      {key:"30_39",label:"30–39"},{key:"40",label:"40+"}
+    ],
+    cuts:{
+      female:{
+        "17_19":{t1:2,t2:6,t3:11,t4:21},"20_29":{t1:2,t2:7,t3:12,t4:23},
+        "30_39":{t1:1,t2:5,t3:10,t4:22},"40":{t1:1,t2:4,t3:8,t4:18}
+      }
+    },
+    source:"TopEndSports (women's modified push-up norms)."
+  },
+  {
+    id:"curlup_1min",
+    name:"Curl-up",
+    meta:"1 min · reps",
+    units:"reps", better:"higher",
+    hint:"Controlled curl-up. Stop when form breaks.",
+    resultLabel:"Curl-ups in 60 sec",
+    ageBands:[
+      {key:"18_25",label:"17–25"},{key:"26_35",label:"26–35"},{key:"36_40",label:"36–40"}
+    ],
+    cuts:{
+      male:{
+        "18_25":{t1:35,t2:41,t3:49,t4:61},"26_35":{t1:32,t2:36,t3:39,t4:48},
+        "36_40":{t1:28,t2:32,t3:39,t4:45}
+      },
+      female:{
+        "18_25":{t1:33,t2:38,t3:48,t4:58},"26_35":{t1:26,t2:32,t3:36,t4:44},
+        "36_40":{t1:22,t2:28,t3:32,t4:38}
+      }
+    },
+    source:"YMCA / ACE norms."
+  },
+  {
+    id:"plank_front",
+    name:"Front Plank",
+    meta:"Max hold · seconds",
+    units:"sec", better:"higher",
+    hint:"Elbow plank from toes. Hold until hips drop.",
+    resultLabel:"Hold time (sec)",
+    showPlank:true,
+    pct:{ps:[20,40,60,80]},
+    ageBands:[
+      {key:"17_19",label:"17–19"},{key:"20_24",label:"20–24"},{key:"25_29",label:"25–29"},
+      {key:"30_34",label:"30–34"},{key:"35_39",label:"35–39"},{key:"40",label:"40+"}
+    ],
+    cutsByNorm:{
+      all:{ male:{t1:79,t2:97,t3:122,t4:157}, female:{t1:48,t2:63,t3:84,t4:108} },
+      varsity:{ male:{t1:84,t2:117,t3:140,t4:183}, female:{t1:59,t2:74,t3:97,t4:162} },
+      nonvarsity:{ male:{t1:72,t2:95,t3:115,t4:142}, female:{t1:47,t2:62,t3:79,t4:103} }
+    },
+    source:"Strand et al. (2014)."
+  },
+  {
+    id:"plank_side",
+    name:"Side Plank",
+    meta:"Max hold · seconds",
+    units:"sec", better:"higher",
+    hint:"Elbow under shoulder, feet stacked. Record your best side.",
+    resultLabel:"Hold time, best side (sec)",
+    ageBands:[
+      {key:"19_29",label:"17–29"},{key:"30_39",label:"30–39"},{key:"40",label:"40+"}
+    ],
+    cuts:{
+      male:{
+        "19_29":{t1:57,t2:70,t3:105.5,t4:132},
+        "30_39":{t1:39.5,t2:86,t3:131.25,t4:164},
+        "40":{t1:29.25,t2:53,t3:76.75,t4:96}
+      },
+      female:{
+        "19_29":{t1:27,t2:49,t3:62.5,t4:78},
+        "30_39":{t1:35,t2:56,t3:83.75,t4:105},
+        "40":{t1:11.48,t2:21.5,t3:46.5,t4:58}
+      }
+    },
+    source:"Sidebridge quartile norms."
+  },
+  {
+    id:"grip",
+    name:"Grip Strength",
+    meta:"Max, either hand · lbs",
+    units:"lbs", better:"higher",
+    hint:"Enter best single-hand grip in lbs.",
+    resultLabel:"Best grip (lbs)",
+    pct:{ps:[25,50,75,90]},
+    ageBands:[
+      {key:"17_19",label:"17–19"},{key:"20_24",label:"20–24"},{key:"25_29",label:"25–29"},
+      {key:"30_34",label:"30–34"},{key:"35_39",label:"35–39"},{key:"40",label:"40+"}
+    ],
+    cuts:{
+      male:{
+        "17_19":{t1:66.1,t2:76.1,t3:87.1,t4:99.2},
+        "20_24":{t1:77.2,t2:88.2,t3:101.4,t4:114.6},
+        "25_29":{t1:90.4,t2:105.8,t3:121.3,t4:134.5},
+        "30_34":{t1:97,t2:112.4,t3:127.9,t4:141.1},
+        "35_39":{t1:99.2,t2:112.4,t3:127.9,t4:141.1},
+        "40":{t1:97,t2:110.2,t3:125.7,t4:138.9}
+      },
+      female:{
+        "17_19":{t1:48.5,t2:57.3,t3:65,t4:72.8},
+        "20_24":{t1:52.9,t2:61.7,t3:70.5,t4:79.4},
+        "25_29":{t1:57.3,t2:66.1,t3:77.2,t4:83.8},
+        "30_34":{t1:59.5,t2:68.3,t3:77.2,t4:86},
+        "35_39":{t1:59.5,t2:68.3,t3:77.2,t4:86},
+        "40":{t1:59.5,t2:68.3,t3:77.2,t4:86}
+      }
+    },
+    source:"Dodds et al. (2014)."
+  },
+  {
+    id:"vertical_jump",
+    name:"Vertical Jump",
+    meta:"2-foot · cm",
+    units:"cm", better:"higher",
+    hint:"Enter jump height in cm. Result will also show in inches.",
+    resultLabel:"Jump height (cm)",
+    ageBands:[
+      {key:"17_19",label:"17–19"},{key:"20_29",label:"20–29"},
+      {key:"30_39",label:"30–39"},{key:"40",label:"40+"}
+    ],
+    cuts:{
+      male:{
+        "17_19":{t1:42,t2:46,t3:51,t4:56},"20_29":{t1:42,t2:48,t3:54,t4:58},
+        "30_39":{t1:31,t2:40,t3:46,t4:52},"40":{t1:26,t2:32,t3:36,t4:43}
+      },
+      female:{
+        "17_19":{t1:28,t2:32,t3:36,t4:40},"20_29":{t1:25,t2:29,t3:34,t4:38},
+        "30_39":{t1:24,t2:28,t3:32,t4:36},"40":{t1:18,t2:23,t3:27,t4:31}
+      }
+    },
+    source:"ACE norms."
+  },
+  {
+    id:"step_test",
+    name:"3-min Step Test",
+    meta:"Post-exercise HR · bpm",
+    units:"bpm", better:"lower",
+    hint:"Count 15-sec pulse right after test, multiply ×4 to get bpm. Lower = better recovery.",
+    resultLabel:"Heart rate after test (bpm)",
+    ageBands:[
+      {key:"18_25",label:"17–25"},{key:"26_35",label:"26–35"},{key:"36_40",label:"36–40"}
+    ],
+    cuts:{
+      male:{
+        "18_25":{t4:76,t3:93,t2:100,t1:107},
+        "26_35":{t4:76,t3:94,t2:102,t1:110},
+        "36_40":{t4:76,t3:88,t2:105,t1:113}
+      },
+      female:{
+        "18_25":{t4:81,t3:102,t2:110,t1:120},
+        "26_35":{t4:80,t3:101,t2:110,t1:119},
+        "36_40":{t4:84,t3:104,t2:112,t1:120}
+      }
+    },
+    source:"YMCA 3-min step test tables."
+  }
+];
+
+/* ── Helpers ───────────────────────────────────────────────── */
+function avg(a,b){ return (a+b)/2; }
+function pooled(mc,fc){
+  const o={};
+  for(const k of Object.keys(mc)) o[k]=avg(mc[k],fc[k]);
+  return o;
+}
+function getCuts(test, gender, ageKey, normKey){
+  if(test.id==="plank_front"){
+    const nb = test.cutsByNorm[normKey||"all"];
+    if(!nb) return null;
+    if(gender==="male") return nb.male;
+    if(gender==="female") return nb.female;
+    if(nb.male&&nb.female) return pooled(nb.male,nb.female);
+    return null;
+  }
+  const g = test.cuts;
+  if(g[gender]&&g[gender][ageKey]) return g[gender][ageKey];
+  if(gender==="other"&&g.male&&g.female){
+    const mc=g.male[ageKey],fc=g.female[ageKey];
+    if(mc&&fc) return pooled(mc,fc);
+  }
+  if(g.female&&g.female[ageKey]) return g.female[ageKey];
+  return null;
+}
+function rateHigher(v,c){
+  if(v<c.t1) return 0;
+  if(v<c.t2) return 1;
+  if(v<c.t3) return 2;
+  if(v<c.t4) return 3;
+  return 4;
+}
+function rateLower(v,c){
+  if(v>c.t1) return 0;
+  if(v>c.t2) return 1;
+  if(v>c.t3) return 2;
+  if(v>c.t4) return 3;
+  return 4;
+}
+function pctLabel(idx, ps){
+  const [p1,p2,p3,p4]=ps;
+  return ["<"+p1+"th %ile",p1+"-"+p2+"th %ile",p2+"-"+p3+"th %ile",p3+"-"+p4+"th %ile",">="+p4+"th %ile"][idx];
+}
+
+/* ── State ─────────────────────────────────────────────────── */
+let activeId   = TESTS[0].id;
+let activeNorm = "all";
+
+/* ── DOM refs ──────────────────────────────────────────────── */
+const q = id => document.getElementById(id);
+const sidebarList = q("sidebarList");
+const sheetBody   = q("sheetBody");
+const genderSel   = q("gender");
+const ageBandSel  = q("ageBand");
+const resultInp   = q("result");
+const resultLabel = q("resultLabel");
+const hintText    = q("hintText");
+const plankRow    = q("plankRow");
+const normToggle  = q("normToggle");
+const rBar        = q("rBar");
+const rVal        = q("rVal");
+const rPct        = q("rPct");
+const rExplain    = q("rExplain");
+const resultCard  = q("resultCard");
+const pickerLabel = q("pickerLabel");
+const overlay     = q("overlay");
+const sheet       = q("sheet");
+
+/* ── Build test lists ──────────────────────────────────────── */
+function buildLists(){
+  [sidebarList, sheetBody].forEach((el, idx) => {
+    const isMobile = idx === 1;
+    el.innerHTML = "";
+    for(const t of TESTS){
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = (isMobile ? "s-item" : "t-btn") + (t.id===activeId?" active":"");
+      btn.dataset.id = t.id;
+      if(isMobile){
+        btn.innerHTML =
+          '<div class="s-txt">' +
+            '<div class="s-name">'+t.name+'</div>' +
+            '<div class="s-meta">'+t.meta+'</div>' +
+          '</div>' +
+          '<div class="s-check">' +
+            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>' +
+          '</div>';
+      } else {
+        btn.innerHTML =
+          '<div class="t-name">'+t.name+'</div>' +
+          '<div class="t-meta">'+t.meta+'</div>';
+      }
+      btn.addEventListener("click", ()=>{
+        activeId = t.id;
+        buildLists();
+        syncForm();
+        clearResult();
+        if(isMobile) closeSheet();
+      });
+      el.appendChild(btn);
+    }
+  });
+}
+
+/* ── Sheet open/close ──────────────────────────────────────── */
+function openSheet(){
+  overlay.classList.add("open");
+  sheet.classList.add("open");
+}
+function closeSheet(){
+  overlay.classList.remove("open");
+  sheet.classList.remove("open");
+}
+q("menuBtn").addEventListener("click", openSheet);
+q("pickerBtn").addEventListener("click", openSheet);
+overlay.addEventListener("click", closeSheet);
+
+/* ── Plank norm toggle ─────────────────────────────────────── */
+normToggle.addEventListener("click", e=>{
+  const btn = e.target.closest(".norm-btn");
+  if(!btn) return;
+  normToggle.querySelectorAll(".norm-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  activeNorm = btn.dataset.norm;
+  clearResult();
+});
+
+/* ── Sync form to active test ──────────────────────────────── */
+function syncForm(){
+  const t = TESTS.find(x=>x.id===activeId);
+  if(!t) return;
+
+  hintText.textContent = t.hint;
+  resultLabel.textContent = t.resultLabel + " (" + t.units + ")";
+  pickerLabel.textContent = t.name;
+
+  ageBandSel.innerHTML = "";
+  for(const b of t.ageBands){
+    const o = document.createElement("option");
+    o.value=b.key; o.textContent=b.label;
+    ageBandSel.appendChild(o);
+  }
+
+  plankRow.classList.toggle("hidden", !t.showPlank);
+  if(t.showPlank){
+    normToggle.querySelectorAll(".norm-btn").forEach(b=>{
+      b.classList.toggle("active", b.dataset.norm===activeNorm);
+    });
+  }
+  resultInp.step = (t.units==="cm"||t.units==="sec") ? "0.5" : "1";
+  resultInp.placeholder = t.better==="lower" ? "bpm" : "0";
+  resultInp.value = "";
+}
+
+/* ── Calculate ─────────────────────────────────────────────── */
+function calc(){
+  const t = TESTS.find(x=>x.id===activeId);
+  const gender = genderSel.value;
+  const ageKey = ageBandSel.value;
+  const raw = parseFloat(resultInp.value);
+
+  if(!Number.isFinite(raw)){
+    rExplain.innerHTML = "<b>Enter a valid number</b> and try again.";
+    return;
+  }
+
+  const cuts = getCuts(t, gender, ageKey, activeNorm);
+  if(!cuts){
+    rExplain.textContent = "No data available for this combination.";
+    return;
+  }
+
+  const idx   = t.better==="higher" ? rateHigher(raw,cuts) : rateLower(raw,cuts);
+  const rkey  = RKEYS[idx];
+  const rating= RATINGS[idx];
+
+  rBar.className = "r-bar " + rkey;
+  rVal.textContent = rating;
+  rVal.className = "r-val " + rkey;
+
+  if(t.pct){
+    rPct.textContent = pctLabel(idx, t.pct.ps);
+    rPct.classList.remove("hidden");
+  } else {
+    rPct.classList.add("hidden");
+  }
+
+  document.querySelectorAll(".seg").forEach((seg,i)=>{
+    seg.className = "seg" + (i<=idx ? " pop "+rkey : "");
+  });
+
+  const ageLabel = t.ageBands.find(b=>b.key===ageKey)?.label ?? ageKey;
+  const gLabel = {male:"Male",female:"Female",other:"Other"}[gender];
+  let valDisplay = raw + " " + t.units;
+  if(t.id==="vertical_jump") valDisplay = raw+" cm ("+(raw/2.54).toFixed(1)+" in)";
+
+  let extra = "";
+  if(t.id==="plank_front"){
+    const nm={all:"All",varsity:"Varsity",nonvarsity:"Non-varsity"};
+    extra = " · "+(nm[activeNorm]||"All")+" norms";
+  }
+
+  rExplain.innerHTML =
+    "<b>"+valDisplay+"</b> &rarr; <b>"+rating+"</b> for "+gLabel+", "+ageLabel+extra+
+    ".<br><span style='font-size:11px;opacity:.65;'>"+t.source+"</span>";
+
+  resultCard.classList.remove("empty");
+}
+
+/* ── Clear result ──────────────────────────────────────────── */
+function clearResult(){
+  rBar.className = "r-bar";
+  rVal.className = "r-val";
+  rVal.textContent = "—";
+  rPct.classList.add("hidden");
+  rExplain.textContent = "Enter a result above to get your rating.";
+  resultCard.classList.add("empty");
+  document.querySelectorAll(".seg").forEach(s=>{ s.className = "seg"; });
+}
+
+function resetForm(){
+  resultInp.value = "";
+  clearResult();
+}
+
+q("calcBtn").addEventListener("click", calc);
+q("resetBtn").addEventListener("click", resetForm);
+resultInp.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); calc(); }});
+
+/* ── Init ──────────────────────────────────────────────────── */
+buildLists();
+syncForm();
+clearResult();
+</script>
+</body>
+</html>

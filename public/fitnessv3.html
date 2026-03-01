@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>Dawson Fitness Testing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── Tokens ─────────────────────────── */
+:root{
+  --bg:#0c1016;
+  --s1:#141b24;
+  --s2:#1a2230;
+  --border:#253040;
+  --ink:#dde6f0;
+  --ink2:#8fa4bc;
+  --ink3:#4e6278;
+  --green:#3de87e;
+  --green-dim:rgba(61,232,126,.14);
+  --r:12px;
+  --fd:'Barlow Condensed',sans-serif;
+  --fb:'Barlow',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:var(--fb);
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100dvh;
+  /* single scroll, nothing nested */
+  overflow-x:hidden;
+}
+
+/* ── Top bar ────────────────────────── */
+.bar{
+  position:sticky;top:0;z-index:100;
+  background:rgba(12,16,22,.92);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  height:52px;
+  display:flex;align-items:center;
+  padding:0 16px;
+  gap:14px;
+}
+.logo{
+  font-family:var(--fd);font-weight:900;font-size:20px;
+  letter-spacing:.5px;color:var(--ink);white-space:nowrap;
+  flex-shrink:0;
+}
+.logo em{color:var(--green);font-style:normal}
+
+/* progress track */
+.prog-track{
+  flex:1;height:4px;
+  background:var(--border);
+  border-radius:999px;overflow:hidden;
+}
+.prog-fill{
+  height:100%;
+  background:var(--green);
+  border-radius:999px;
+  width:0%;
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+}
+.prog-label{
+  font-family:var(--fd);font-size:13px;font-weight:700;
+  color:var(--ink2);white-space:nowrap;flex-shrink:0;
+}
+
+/* ── Page sections ─────────────────── */
+.page{max-width:600px;margin:0 auto;padding:0 16px 80px}
+
+/* ── Section block ─────────────────── */
+.section{margin-top:28px}
+.sec-eyebrow{
+  font-family:var(--fd);font-size:11px;font-weight:700;
+  letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--green);margin-bottom:6px;
+}
+.sec-heading{
+  font-family:var(--fd);font-size:clamp(26px,7vw,34px);
+  font-weight:900;line-height:1.05;letter-spacing:.3px;
+  color:var(--ink);margin-bottom:4px;
+}
+.sec-sub{font-size:14px;color:var(--ink2);line-height:1.45;margin-bottom:16px}
+
+/* ── Test picker — scrollable chips ── */
+.chip-scroll{
+  display:flex;gap:8px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  padding-bottom:2px;
+  margin:0 -16px;
+  padding-left:16px;
+  padding-right:16px;
+}
+.chip-scroll::-webkit-scrollbar{display:none}
+
+.cat-chip{
+  flex:0 0 auto;
+  font-family:var(--fd);font-size:13px;font-weight:700;
+  letter-spacing:.5px;
+  padding:7px 14px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--s1);
+  color:var(--ink2);
+  cursor:pointer;
+  transition:all .15s;
+  white-space:nowrap;
+}
+.cat-chip.active{
+  background:var(--green-dim);
+  border-color:var(--green);
+  color:var(--green);
+}
+
+/* ── Test cards ─────────────────────── */
+.test-cards{
+  display:flex;flex-direction:column;gap:8px;
+  margin-top:12px;
+}
+.test-card{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  cursor:pointer;
+  transition:border-color .12s,box-shadow .12s;
+  text-align:left;width:100%;
+  position:relative;overflow:hidden;
+}
+.test-card::after{
+  content:"";position:absolute;
+  inset:0;
+  background:var(--green-dim);
+  opacity:0;transition:opacity .12s;
+  pointer-events:none;
+}
+.test-card:active{opacity:.8}
+.test-card.sel{
+  border-color:var(--green);
+  box-shadow:0 0 0 1px var(--green),inset 0 0 0 3px rgba(61,232,126,.06);
+}
+.test-card.sel::after{opacity:1}
+
+.tc-num{
+  flex:0 0 38px;height:38px;border-radius:10px;
+  background:var(--s2);border:1px solid var(--border);
+  display:grid;place-items:center;
+  font-family:var(--fd);font-weight:900;font-size:15px;
+  color:var(--ink3);
+  transition:all .12s;flex-shrink:0;
+}
+.test-card.sel .tc-num{
+  background:var(--green-dim);border-color:var(--green);color:var(--green);
+}
+.tc-body{flex:1;min-width:0}
+.tc-name{
+  font-family:var(--fd);font-weight:700;font-size:17px;
+  letter-spacing:.15px;color:var(--ink);line-height:1.1;
+}
+.tc-meta{font-size:12.5px;color:var(--ink2);margin-top:2px}
+.tc-arrow{
+  color:var(--ink3);font-size:18px;flex-shrink:0;
+  transition:color .12s,transform .12s;
+}
+.test-card.sel .tc-arrow{color:var(--green);transform:translateX(2px)}
+
+/* ── Form fields ─────────────────────── */
+.field-group{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+  margin-bottom:10px;
+}
+.field-group-label{
+  padding:10px 14px 8px;
+  border-bottom:1px solid var(--border);
+  font-family:var(--fd);font-size:11px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;color:var(--green);
+}
+.field-row{display:grid;grid-template-columns:1fr 1fr}
+.field-row .field:first-child{border-right:1px solid var(--border)}
+.field{padding:12px 14px}
+.field-label{
+  font-size:11px;font-weight:600;letter-spacing:.7px;
+  text-transform:uppercase;color:var(--ink2);margin-bottom:5px;
+}
+select{
+  width:100%;background:transparent;border:none;outline:none;
+  font-family:var(--fb);font-size:15px;font-weight:500;
+  color:var(--ink);-webkit-appearance:none;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238fa4bc'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 0 center;
+  padding-right:16px;cursor:pointer;
+}
+select option{background:#1a2230}
+
+/* Big number input */
+.result-entry{
+  padding:14px 16px 16px;
+  display:flex;align-items:flex-end;gap:8px;
+}
+.result-entry input{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:var(--fd);font-weight:900;font-size:clamp(48px,14vw,72px);
+  color:var(--ink);letter-spacing:.5px;line-height:1;
+  -webkit-appearance:none;appearance:none;
+  /* kill spinners */
+  -moz-appearance:textfield;
+}
+.result-entry input::-webkit-outer-spin-button,
+.result-entry input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.result-entry input::placeholder{color:var(--ink3)}
+.result-unit-lbl{
+  font-family:var(--fd);font-size:20px;font-weight:700;
+  color:var(--ink2);padding-bottom:6px;flex-shrink:0;
+}
+.result-hint-row{
+  padding:0 14px 12px;
+  font-size:13px;color:var(--ink2);line-height:1.4;
+}
+
+/* ── Calculate button ────────────────── */
+.calc-btn{
+  width:100%;
+  padding:18px;
+  background:var(--green);
+  color:#0c1016;
+  border:none;border-radius:var(--r);
+  font-family:var(--fd);font-size:22px;font-weight:900;
+  letter-spacing:.5px;cursor:pointer;
+  transition:background .15s,transform .08s;
+  margin-top:4px;
+}
+.calc-btn:hover{background:#2fd06e}
+.calc-btn:active{transform:scale(.98)}
+
+/* ── Result panel (hidden until calc) ── */
+.result-panel{
+  display:none;
+  flex-direction:column;
+  gap:12px;
+  animation:slideIn .35s cubic-bezier(.2,0,.2,1) both;
+}
+.result-panel.show{display:flex}
+
+@keyframes slideIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* Rating hero */
+.rating-hero{
+  border-radius:var(--r);
+  padding:28px 20px 22px;
+  text-align:center;
+  position:relative;overflow:hidden;
+  background:var(--s1);border:1px solid var(--border);
+}
+.rh-glow{
+  position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:280px;height:280px;border-radius:50%;
+  pointer-events:none;
+}
+.rh-label{
+  font-family:var(--fd);font-size:11px;font-weight:700;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--ink2);margin-bottom:6px;
+  position:relative;
+}
+.rh-word{
+  font-family:var(--fd);font-size:clamp(52px,16vw,80px);
+  font-weight:900;line-height:1;letter-spacing:.5px;
+  position:relative;
+}
+.rh-sub{
+  font-family:var(--fd);font-size:15px;font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;
+  color:var(--ink2);margin-top:6px;position:relative;
+}
+
+/* Band bar */
+.band-bar{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:4px;
+  margin-top:18px;position:relative;
+}
+.band-seg{
+  height:10px;border-radius:999px;
+  background:var(--s2);
+  transition:background .3s,box-shadow .3s;
+}
+.band-labels{
+  display:flex;justify-content:space-between;
+  margin-top:5px;
+}
+.band-labels span{
+  font-family:var(--fd);font-size:10px;font-weight:700;
+  letter-spacing:.3px;color:var(--ink3);
+  text-align:center;flex:1;
+}
+
+/* Info rows */
+.info-block{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;
+}
+.info-row{
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:13px 16px;
+  border-bottom:1px solid var(--border);
+}
+.info-row:last-child{border-bottom:none}
+.ir-key{font-size:13px;color:var(--ink2)}
+.ir-val{
+  font-family:var(--fd);font-size:16px;font-weight:700;
+  color:var(--ink);text-align:right;max-width:55%;
+}
+
+/* Percentile badge */
+.pct-block{
+  display:flex;align-items:center;gap:12px;
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+}
+.pct-icon{
+  font-family:var(--fd);font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--ink2);
+  flex-shrink:0;
+}
+.pct-value{
+  font-family:var(--fd);font-size:22px;font-weight:900;
+  letter-spacing:.3px;
+}
+
+/* Source block */
+.source-block{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px 16px;
+}
+.source-label{
+  font-family:var(--fd);font-size:11px;font-weight:700;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:6px;
+}
+.source-text{font-size:13px;color:var(--ink2);line-height:1.5}
+.source-text a{color:var(--green);text-decoration:none}
+.source-text a:hover{text-decoration:underline}
+.source-caveat{
+  display:block;margin-top:7px;
+  font-size:12px;color:#f59e0b;
+  background:rgba(245,158,11,.07);
+  border:1px solid rgba(245,158,11,.2);
+  border-radius:8px;padding:6px 10px;line-height:1.4;
+}
+
+/* Try again */
+.try-again-btn{
+  width:100%;padding:16px;
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  font-family:var(--fd);font-size:18px;font-weight:800;
+  letter-spacing:.4px;color:var(--ink2);
+  cursor:pointer;transition:border-color .15s,color .15s;
+}
+.try-again-btn:hover{border-color:var(--green);color:var(--green)}
+
+/* All citations accordion */
+.cites-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:14px 16px;
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:var(--r);
+  font-family:var(--fd);font-size:14px;font-weight:700;
+  letter-spacing:.3px;color:var(--ink2);
+  cursor:pointer;transition:border-color .12s,color .12s;
+}
+.cites-toggle:hover{border-color:var(--ink3);color:var(--ink)}
+.cites-toggle svg{transition:transform .25s;flex-shrink:0}
+.cites-toggle.open svg{transform:rotate(180deg)}
+
+.cites-body{
+  display:none;
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-top:none;
+  border-radius:0 0 var(--r) var(--r);
+  overflow:hidden;
+  margin-top:-1px; /* merge with toggle border */
+}
+.cites-body.open{display:block}
+.cite-row{
+  display:flex;gap:10px;
+  padding:11px 14px;
+  border-bottom:1px solid var(--border);
+}
+.cite-row:last-child{border-bottom:none}
+.cite-n{
+  flex:0 0 22px;height:22px;
+  background:var(--s2);border-radius:6px;
+  display:grid;place-items:center;
+  font-family:var(--fd);font-size:12px;font-weight:800;
+  color:var(--ink3);margin-top:1px;flex-shrink:0;
+}
+.cite-body{flex:1;min-width:0}
+.cite-body a{
+  display:block;color:var(--green);font-weight:600;
+  font-size:13px;text-decoration:none;line-height:1.3;
+}
+.cite-body a:hover{text-decoration:underline}
+.cite-body p{font-size:12px;color:var(--ink2);line-height:1.4;margin-top:3px}
+.cite-body .caveat{
+  display:block;font-size:11px;color:#f59e0b;margin-top:4px;
+}
+
+/* hidden util */
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- sticky bar -->
+<div class="bar">
+  <div class="logo">DAWSON <em>FIT</em></div>
+  <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+  <div class="prog-label" id="progLabel">Select test</div>
+</div>
+
+<div class="page">
+
+  <!-- ── SECTION 1: Choose test ──────── -->
+  <div class="section" id="sec1">
+    <div class="sec-eyebrow">Step 1</div>
+    <h2 class="sec-heading">Choose a Test</h2>
+    <p class="sec-sub">Select one assessment — all 8 are available below.</p>
+
+    <!-- category filter chips -->
+    <div class="chip-scroll" id="catChips"></div>
+
+    <!-- test cards -->
+    <div class="test-cards" id="testCards"></div>
+  </div>
+
+  <!-- ── SECTION 2: Your details ─────── -->
+  <div class="section" id="sec2">
+    <div class="sec-eyebrow">Step 2</div>
+    <h2 class="sec-heading" id="sec2Heading">Your Details</h2>
+    <p class="sec-sub" id="sec2Sub">Fill in your info, then enter your result.</p>
+
+    <!-- gender + age -->
+    <div class="field-group">
+      <div class="field-group-label">About You</div>
+      <div class="field-row">
+        <div class="field">
+          <div class="field-label">Gender</div>
+          <select id="gender">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <div class="field-label">Age Range</div>
+          <select id="ageBand"></select>
+        </div>
+      </div>
+    </div>
+
+    <!-- plank norm (conditionally shown) -->
+    <div class="field-group hidden" id="plankNormGroup">
+      <div class="field-group-label">Norm Group</div>
+      <div class="field" style="border:none">
+        <div class="field-label">Student type</div>
+        <select id="plankNorm">
+          <option value="all">All students</option>
+          <option value="varsity">Varsity athlete</option>
+          <option value="nonvarsity">Non-varsity</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- result input -->
+    <div class="field-group">
+      <div class="field-group-label" id="resultGroupLabel">Your Result</div>
+      <div class="result-entry">
+        <input id="result" type="number" inputmode="decimal" placeholder="0" autocomplete="off"/>
+        <div class="result-unit-lbl" id="resultUnit">reps</div>
+      </div>
+      <div class="result-hint-row" id="resultHint"></div>
+    </div>
+
+    <button class="calc-btn" id="calcBtn">Calculate My Rating →</button>
+  </div>
+
+  <!-- ── SECTION 3: Result ───────────── -->
+  <div class="section" id="sec3">
+    <div class="sec-eyebrow">Your Result</div>
+    <h2 class="sec-heading" id="sec3Heading">—</h2>
+
+    <div class="result-panel" id="resultPanel">
+
+      <!-- Rating hero -->
+      <div class="rating-hero" id="ratingHero">
+        <div class="rh-glow" id="rhGlow"></div>
+        <div class="rh-label">RATING</div>
+        <div class="rh-word" id="rhWord">—</div>
+        <div class="rh-sub" id="rhSub">—</div>
+
+        <!-- 5-band bar -->
+        <div class="band-bar">
+          <div class="band-seg" id="bs0"></div>
+          <div class="band-seg" id="bs1"></div>
+          <div class="band-seg" id="bs2"></div>
+          <div class="band-seg" id="bs3"></div>
+          <div class="band-seg" id="bs4"></div>
+        </div>
+        <div class="band-labels">
+          <span>Poor</span><span>Below</span><span>Avg</span><span>Above</span><span>Excel</span>
+        </div>
+      </div>
+
+      <!-- Percentile (shown when available) -->
+      <div class="pct-block hidden" id="pctBlock">
+        <div class="pct-icon">Percentile</div>
+        <div class="pct-value" id="pctValue">—</div>
+      </div>
+
+      <!-- Summary rows -->
+      <div class="info-block" id="infoBlock"></div>
+
+      <!-- Citation -->
+      <div class="source-block" id="sourceBlock">
+        <div class="source-label">Data Source</div>
+        <div class="source-text" id="sourceText">—</div>
+      </div>
+
+      <!-- Try again -->
+      <button class="try-again-btn" id="tryAgainBtn">← Try Another Test</button>
+
+      <!-- All citations (accordion) -->
+      <button class="cites-toggle" id="citesToggle" type="button">
+        <span>All standards &amp; citations</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="cites-body" id="citesBody"></div>
+
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+/* ── Data ─────────────────────────────────────────────────────── */
+const BANDS=["Poor","Below Average","Average","Above Average","Excellent"];
+const BKEYS=["POOR","BELOW","AVG","ABOVE","EXCELLENT"];
+const COLORS={POOR:"#ef4444",BELOW:"#f59e0b",AVG:"#3b82f6",ABOVE:"#22d3ee",EXCELLENT:"#3de87e"};
+
+const CITES={
+  push_std:{label:"Push-up norms — TopEndSports",url:"https://www.topendsports.com/testing/tests/home-pushup.htm",meta:"Field norms tables for standard (toes) 1-minute push-up.",caveat:null},
+  push_mod:{label:"Modified push-up norms — TopEndSports",url:"https://www.topendsports.com/testing/tests/home-pushup.htm",meta:"Field norms tables for modified (knees) 1-minute push-up.",caveat:null},
+  curl:{label:"Curl-up norms — YMCA / ACE Fitness",url:"https://www.acefitness.org/resources/pros/expert-articles/6302/assessment-tools-for-personal-trainers/",meta:"1-minute curl-up norms from the YMCA Fitness Testing and Assessment Manual, reprinted in ACE assessment materials.",caveat:null},
+  plank_front:{label:"Front plank — Strand et al. (2014)",url:"https://pmc.ncbi.nlm.nih.gov/articles/PMC4096102/",meta:"Strand SL et al. Norms for an isometric muscle endurance test. J Hum Kinet. 2014;40:93–102. PMC4096102.",caveat:"⚠ Sample was college-aged (≈20 yr). Age-banding not available; applied as approximation."},
+  plank_side:{label:"Side plank — McIntosh et al.",url:"https://www.researchgate.net/profile/Greg-Mcintosh/publication/233783616_Sidebridge_Muscle_Endurance_Testing_Normative_Data_for_Adults/links/55e75d4508ae3e1218420b58/Sidebridge-Muscle-Endurance-Testing-Normative-Data-for-Adults.pdf",meta:"Sidebridge muscle endurance normative data for adults.",caveat:null},
+  grip:{label:"Grip strength — Dodds et al. (2014)",url:"https://pmc.ncbi.nlm.nih.gov/articles/PMC4256164/",meta:"Dodds RM et al. Grip strength across the life course. PLoS ONE. 2014;9(12):e113637. PMC4256164.",caveat:"⚠ Original data in kg (British sample). Values converted to lbs. Centiles: 25th, 50th, 75th, 90th."},
+  vj:{label:"Vertical jump — ACE Fitness protocol",url:"https://contentcdn.eacefitness.com/assets/certification/ace-answers/forms/pt/40_Vertical_Jump_Assessment_Protocol.pdf",meta:"2-foot vertical jump rating bands from ACE Fitness assessment protocol tables.",caveat:null},
+  step:{label:"3-min step test — YMCA tables",url:"https://www.vistawellbeing.org.uk/wp-content/uploads/2023/01/YMCA-3-Minute-Step-Test.pdf",meta:"Post-exercise heart-rate (bpm) rating ranges from the YMCA 3-minute step test protocol.",caveat:null}
+};
+
+const TESTS=[
+  {id:"push_std",cat:"Upper Body",n:1,name:"Standard Push-up",meta:"1 min · from toes",units:"reps",better:"high",hint:"Count full-range push-ups from toes over 60 seconds.",ages:[{k:"17_19",l:"17–19"},{k:"20_29",l:"20–29"},{k:"30_39",l:"30–39"},{k:"40",l:"40"}],cuts:{male:{"17_19":{t1:4,t2:11,t3:19,t4:35},"20_29":{t1:4,t2:10,t3:17,t4:30},"30_39":{t1:2,t2:8,t3:13,t4:25},"40":{t1:1,t2:6,t3:11,t4:21}},female:{"17_19":{t1:1,t2:4,t3:7,t4:11},"20_29":{t1:1,t2:5,t3:9,t4:14},"30_39":{t1:1,t2:3,t3:7,t4:13},"40":{t1:1,t2:2,t3:5,t4:10}}}},
+  {id:"push_mod",cat:"Upper Body",n:2,name:"Modified Push-up",meta:"1 min · from knees",units:"reps",better:"high",hint:"Count full-range bent-knee push-ups over 60 seconds.",ages:[{k:"17_19",l:"17–19"},{k:"20_29",l:"20–29"},{k:"30_39",l:"30–39"},{k:"40",l:"40"}],cuts:{female:{"17_19":{t1:2,t2:6,t3:11,t4:21},"20_29":{t1:2,t2:7,t3:12,t4:23},"30_39":{t1:1,t2:5,t3:10,t4:22},"40":{t1:1,t2:4,t3:8,t4:18}}}},
+  {id:"curl",cat:"Core",n:3,name:"Curl-up",meta:"1 min · reps",units:"reps",better:"high",hint:"Controlled partial curl-up. Stop when form breaks.",ages:[{k:"18_25",l:"17–25"},{k:"26_35",l:"26–35"},{k:"36_40",l:"36–40"}],cuts:{male:{"18_25":{t1:35,t2:41,t3:49,t4:61},"26_35":{t1:32,t2:36,t3:39,t4:48},"36_40":{t1:28,t2:32,t3:39,t4:45}},female:{"18_25":{t1:33,t2:38,t3:48,t4:58},"26_35":{t1:26,t2:32,t3:36,t4:44},"36_40":{t1:22,t2:28,t3:32,t4:38}}}},
+  {id:"plank_front",cat:"Core",n:4,name:"Elbow Plank (toes)",meta:"Max hold · seconds",units:"s",better:"high",showPlank:true,pct:{ps:[20,40,60,80]},hint:"Prone forearm plank — stop when hips drop or rotate.",ages:[{k:"all",l:"Any age"}],cutsNorm:{all:{male:{t1:79,t2:97,t3:122,t4:157},female:{t1:48,t2:63,t3:84,t4:108}},varsity:{male:{t1:84,t2:117,t3:140,t4:183},female:{t1:59,t2:74,t3:97,t4:162}},nonvarsity:{male:{t1:72,t2:95,t3:115,t4:142},female:{t1:47,t2:62,t3:79,t4:103}}}},
+  {id:"plank_side",cat:"Core",n:5,name:"Side Plank (elbow)",meta:"Max hold · seconds",units:"s",better:"high",hint:"Elbow under shoulder, feet stacked. Enter best side.",ages:[{k:"19_29",l:"17–29"},{k:"30_39",l:"30–39"},{k:"40",l:"40+"}],cuts:{female:{"19_29":{t1:27,t2:49,t3:62.5,t4:78},"30_39":{t1:35,t2:56,t3:83.75,t4:105},"40":{t1:11.5,t2:21.5,t3:46.5,t4:58}},male:{"19_29":{t1:57,t2:70,t3:105.5,t4:132},"30_39":{t1:39.5,t2:86,t3:131.25,t4:164},"40":{t1:29.25,t2:53,t3:76.75,t4:96}}}},
+  {id:"grip",cat:"Strength",n:6,name:"Grip Dynamometer",meta:"Max of either hand · lbs",units:"lbs",better:"high",pct:{ps:[25,50,75,90]},hint:"Enter the highest reading from either hand in lbs.",ages:[{k:"17_19",l:"17–19"},{k:"20_24",l:"20–24"},{k:"25_29",l:"25–29"},{k:"30_34",l:"30–34"},{k:"35_39",l:"35–39"},{k:"40",l:"40"}],cuts:{male:{"17_19":{t1:66.1,t2:76.1,t3:87.1,t4:99.2},"20_24":{t1:77.2,t2:88.2,t3:101.4,t4:114.6},"25_29":{t1:90.4,t2:105.8,t3:121.3,t4:134.5},"30_34":{t1:97.0,t2:112.4,t3:127.9,t4:141.1},"35_39":{t1:99.2,t2:112.4,t3:127.9,t4:141.1},"40":{t1:97.0,t2:110.2,t3:125.7,t4:138.9}},female:{"17_19":{t1:48.5,t2:57.3,t3:65.0,t4:72.8},"20_24":{t1:52.9,t2:61.7,t3:70.5,t4:79.4},"25_29":{t1:57.3,t2:66.1,t3:77.2,t4:83.8},"30_34":{t1:59.5,t2:68.3,t3:77.2,t4:86.0},"35_39":{t1:59.5,t2:68.3,t3:77.2,t4:86.0},"40":{t1:59.5,t2:68.3,t3:77.2,t4:86.0}}}},
+  {id:"vj",cat:"Power",n:7,name:"2-foot Vertical Jump",meta:"cm → shown in cm + inches",units:"cm",better:"high",hint:"Enter jump height in centimetres.",ages:[{k:"17_19",l:"17–19"},{k:"20_29",l:"20–29"},{k:"30_39",l:"30–39"},{k:"40",l:"40"}],cuts:{male:{"17_19":{t1:42,t2:46,t3:51,t4:56},"20_29":{t1:42,t2:48,t3:54,t4:58},"30_39":{t1:31,t2:40,t3:46,t4:52},"40":{t1:26,t2:32,t3:36,t4:43}},female:{"17_19":{t1:28,t2:32,t3:36,t4:40},"20_29":{t1:25,t2:29,t3:34,t4:38},"30_39":{t1:24,t2:28,t3:32,t4:36},"40":{t1:18,t2:23,t3:27,t4:31}}}},
+  {id:"step",cat:"Cardio",n:8,name:"3-min Step Test",meta:"Recovery pulse · bpm",units:"bpm",better:"low",hint:"Count pulse for 15 s after test, multiply by 4. Lower = better fitness.",ages:[{k:"18_25",l:"17–25"},{k:"26_35",l:"26–35"},{k:"36_40",l:"36–40"}],cuts:{male:{"18_25":{t4:76,t3:93,t2:100,t1:107},"26_35":{t4:76,t3:94,t2:102,t1:110},"36_40":{t4:76,t3:88,t2:105,t1:113}},female:{"18_25":{t4:81,t3:102,t2:110,t1:120},"26_35":{t4:80,t3:101,t2:110,t1:119},"36_40":{t4:84,t3:104,t2:112,t1:120}}}}
+];
+
+/* ── Helpers ──────────────────────────────────────────────────── */
+const $=id=>document.getElementById(id);
+const avg=(a,b)=>(a+b)/2;
+function pooled(m,f){const o={};for(const k of Object.keys(m))o[k]=avg(m[k],f[k]);return o}
+function getT(){return TESTS.find(t=>t.id===activeId)}
+
+function getCuts(t,gender,ageKey,normKey){
+  if(t.showPlank){
+    const norm=t.cutsNorm[normKey]||t.cutsNorm.all;
+    if(gender==="other")return pooled(norm.male,norm.female);
+    return norm[gender]||null;
+  }
+  const g=t.cuts;
+  if(gender==="other"){
+    const m=g.male&&g.male[ageKey],f=g.female&&g.female[ageKey];
+    if(m&&f)return pooled(m,f);
+    return m||f||null;
+  }
+  if(g[gender]&&g[gender][ageKey])return g[gender][ageKey];
+  if(g.female&&g.female[ageKey])return g.female[ageKey];
+  return null;
+}
+
+function rateIdx(t,v,c){
+  if(t.better==="high"){return v<c.t1?0:v<c.t2?1:v<c.t3?2:v<c.t4?3:4}
+  return v>c.t1?0:v>c.t2?1:v>c.t3?2:v>c.t4?3:4;
+}
+function pctBand(v,c,ps){
+  const i=v<c.t1?0:v<c.t2?1:v<c.t3?2:v<c.t4?3:4;
+  return [`< ${ps[0]}th`,`${ps[0]}th – ${ps[1]}th`,`${ps[1]}th – ${ps[2]}th`,`${ps[2]}th – ${ps[3]}th`,`≥ ${ps[3]}th`][i];
+}
+
+/* ── State ────────────────────────────────────────────────────── */
+let activeId=TESTS[0].id;
+let activeCat="All";
+
+/* ── Progress bar ─────────────────────────────────────────────── */
+function setProgress(pct,label){
+  $("progFill").style.width=pct+"%";
+  $("progLabel").textContent=label;
+}
+
+/* ── Build category chips ─────────────────────────────────────── */
+function buildChips(){
+  const cats=["All",...new Set(TESTS.map(t=>t.cat))];
+  const wrap=$("catChips");
+  wrap.innerHTML="";
+  cats.forEach(c=>{
+    const btn=document.createElement("button");
+    btn.textContent=c;
+    btn.className="cat-chip"+(c===activeCat?" active":"");
+    btn.onclick=()=>{activeCat=c;buildChips();renderCards()};
+    wrap.appendChild(btn);
+  });
+}
+
+/* ── Build test cards ─────────────────────────────────────────── */
+function renderCards(){
+  const wrap=$("testCards");
+  wrap.innerHTML="";
+  const visible=activeCat==="All"?TESTS:TESTS.filter(t=>t.cat===activeCat);
+  visible.forEach(t=>{
+    const btn=document.createElement("button");
+    btn.className="test-card"+(t.id===activeId?" sel":"");
+    btn.dataset.id=t.id;
+    btn.innerHTML=`
+      <div class="tc-num">${t.n}</div>
+      <div class="tc-body">
+        <div class="tc-name">${t.name}</div>
+        <div class="tc-meta">${t.meta}</div>
+      </div>
+      <div class="tc-arrow">›</div>`;
+    btn.onclick=()=>{
+      activeId=t.id;
+      document.querySelectorAll(".test-card").forEach(b=>b.classList.toggle("sel",b.dataset.id===t.id));
+      syncForm();
+      // smooth scroll to step 2
+      setTimeout(()=>$("sec2").scrollIntoView({behavior:"smooth",block:"start"}),80);
+      setProgress(33,"Details");
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+/* ── Sync form to test ────────────────────────────────────────── */
+function syncForm(){
+  const t=getT();
+  $("sec2Heading").textContent=t.name;
+  $("sec2Sub").textContent=t.hint;
+  $("resultGroupLabel").textContent=`Your Result (${t.units})`;
+  $("resultUnit").textContent=t.units;
+  $("resultHint").textContent=t.better==="low"
+    ?"Lower value = better cardiovascular fitness."
+    :`Higher is better. Enter in ${t.units}.`;
+
+  const ab=$("ageBand");ab.innerHTML="";
+  t.ages.forEach(a=>{const o=document.createElement("option");o.value=a.k;o.textContent=a.l;ab.appendChild(o)});
+
+  $("plankNormGroup").classList.toggle("hidden",!t.showPlank);
+  $("result").value="";
+  $("result").step=t.units==="cm"?"0.1":"1";
+  // hide result panel when test changes
+  $("resultPanel").classList.remove("show");
+  $("sec3Heading").textContent="—";
+}
+
+/* ── Build all-cites list ─────────────────────────────────────── */
+function buildAllCites(){
+  const body=$("citesBody");body.innerHTML="";
+  TESTS.forEach(t=>{
+    const c=CITES[t.id];if(!c)return;
+    const row=document.createElement("div");row.className="cite-row";
+    row.innerHTML=`<div class="cite-n">${t.n}</div>
+      <div class="cite-body">
+        <a href="${c.url}" target="_blank" rel="noopener">${c.label}</a>
+        <p>${c.meta}${c.caveat?`<span class="caveat">${c.caveat}</span>`:""}</p>
+      </div>`;
+    body.appendChild(row);
+  });
+}
+
+/* ── Calculate ────────────────────────────────────────────────── */
+function calculate(){
+  const t=getT();
+  const gender=$("gender").value;
+  const ageKey=$("ageBand").value;
+  const normKey=$("plankNorm").value;
+  const raw=parseFloat($("result").value);
+
+  // validate
+  const inp=$("result");
+  if(!Number.isFinite(raw)||raw<0){
+    inp.style.outline="2px solid #ef4444";
+    inp.focus();
+    setTimeout(()=>inp.style.outline="",1500);
+    return;
+  }
+
+  const cuts=getCuts(t,gender,ageKey,normKey);
+  if(!cuts){alert("No norm table for this combination.");return;}
+
+  const idx=rateIdx(t,raw,cuts);
+  const label=BANDS[idx];
+  const key=BKEYS[idx];
+  const color=COLORS[key];
+
+  // heading
+  $("sec3Heading").textContent=t.name+" — Result";
+
+  // hero
+  $("rhWord").textContent=label;
+  $("rhWord").style.color=color;
+  $("rhSub").textContent=t.better==="low"?"Lower = better fitness":"Higher = better fitness";
+  $("rhGlow").style.background=`radial-gradient(circle,${color}25,transparent 68%)`;
+
+  // band bar
+  for(let i=0;i<5;i++){const s=$(`bs${i}`);s.style.background="var(--s2)";s.style.boxShadow="";}
+  setTimeout(()=>{
+    for(let i=0;i<=idx;i++){
+      const s=$(`bs${i}`),c2=COLORS[BKEYS[i]];
+      setTimeout(()=>{s.style.background=c2;s.style.boxShadow=`0 0 10px ${c2}88`;},i*90);
+    }
+  },120);
+
+  // percentile
+  if(t.pct){
+    $("pctValue").textContent=pctBand(raw,cuts,t.pct.ps);
+    $("pctValue").style.color=color;
+    $("pctBlock").classList.remove("hidden");
+  } else {
+    $("pctBlock").classList.add("hidden");
+  }
+
+  // info rows
+  const ageLabel=t.ages.find(a=>a.k===ageKey)?.l??ageKey;
+  const gLabel=gender==="other"?"Other":gender==="male"?"Male":"Female";
+  let valDisplay=`${raw} ${t.units}`;
+  if(t.id==="vj")valDisplay=`${raw.toFixed(1)} cm / ${(raw/2.54).toFixed(1)} in`;
+  let normLabel="";
+  if(t.showPlank){const m={all:"All students",varsity:"Varsity",nonvarsity:"Non-varsity"};normLabel=m[normKey]||"All";}
+
+  const rows=[{k:"Test",v:t.name},{k:"Result",v:valDisplay},{k:"Gender",v:gLabel},{k:"Age range",v:ageLabel}];
+  if(normLabel)rows.push({k:"Norm group",v:normLabel});
+  $("infoBlock").innerHTML=rows.map(r=>`<div class="info-row"><span class="ir-key">${r.k}</span><span class="ir-val">${r.v}</span></div>`).join("");
+
+  // citation
+  const c=CITES[t.id];
+  if(c)$("sourceText").innerHTML=`<a href="${c.url}" target="_blank" rel="noopener">${c.label}</a><br>${c.meta}${c.caveat?`<span class="source-caveat">${c.caveat}</span>`:""}`;
+
+  // show result
+  const panel=$("resultPanel");
+  panel.classList.remove("show");
+  void panel.offsetWidth; // reflow to re-trigger animation
+  panel.classList.add("show");
+
+  setProgress(100,"Done!");
+
+  // scroll to result
+  setTimeout(()=>$("sec3").scrollIntoView({behavior:"smooth",block:"start"}),100);
+}
+
+/* ── Events ────────────────────────────────────────────────────── */
+$("calcBtn").addEventListener("click",calculate);
+$("result").addEventListener("keydown",e=>{if(e.key==="Enter")calculate()});
+$("tryAgainBtn").addEventListener("click",()=>{
+  $("sec1").scrollIntoView({behavior:"smooth",block:"start"});
+  setProgress(0,"Select test");
+});
+$("citesToggle").addEventListener("click",()=>{
+  const open=$("citesBody").classList.toggle("open");
+  $("citesToggle").classList.toggle("open",open);
+});
+
+/* ── Init ──────────────────────────────────────────────────────── */
+buildChips();
+renderCards();
+syncForm();
+buildAllCites();
+setProgress(0,"Select test");
+</script>
+</body>
+</html>
