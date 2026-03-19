@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen" />
+  <meta name="apple-mobile-web-app-title" content="8 Ball" />
+  <meta name="theme-color" content="#000000" />
+  <title>Magic 8 Ball</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --deep-black: #000000;
+      --ball-dark: #0a0a0f;
+      --ball-mid: #111118;
+      --circle-bg: #060610;
+      --ink-blue: #0d0d2b;
+      --glow-blue: #1a1aff;
+      --answer-color: #c8d8ff;
+      --triangle-blue: #1e2fff;
+      --shimmer: #4466ff;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: 'Cinzel', serif;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Starfield */
+    #stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: white;
+      opacity: 0;
+      animation: twinkle var(--dur) infinite var(--delay);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: var(--op); transform: scale(1); }
+    }
+
+    /* Main scene */
+    #scene {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100vw;
+      height: 100dvh;
+    }
+
+    /* The Ball */
+    #ball-wrap {
+      position: relative;
+      width: min(80vw, 80vh, 340px);
+      height: min(80vw, 80vh, 340px);
+    }
+
+    #ball {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at 35% 30%,
+        #2a2a3a 0%,
+        #111120 30%,
+        #08080f 65%,
+        #000000 100%
+      );
+      box-shadow:
+        0 0 0 1px #1a1a2e,
+        0 8px 40px rgba(0,0,0,0.95),
+        0 30px 80px rgba(0,0,0,0.8),
+        inset 0 -20px 60px rgba(0,0,0,0.9),
+        inset 0 10px 30px rgba(80,80,120,0.12);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    #ball::before {
+      content: '';
+      position: absolute;
+      top: 6%;
+      left: 12%;
+      width: 35%;
+      height: 22%;
+      background: radial-gradient(ellipse, rgba(180,180,220,0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: rotate(-25deg);
+      pointer-events: none;
+    }
+
+    /* The 8 label on ball */
+    #eight-label {
+      position: absolute;
+      top: 10%;
+      right: 14%;
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(18px, 5vw, 28px);
+      font-weight: 700;
+      color: rgba(255,255,255,0.85);
+      text-shadow: 0 0 10px rgba(100,120,255,0.5);
+      transition: opacity 0.4s;
+    }
+
+    /* Inner circle / portal */
+    #inner-circle {
+      width: 58%;
+      height: 58%;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, #0a0a2a 0%, #04040e 60%, #000008 100%);
+      border: 1px solid rgba(30,47,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow:
+        0 0 20px rgba(26,26,255,0.08) inset,
+        0 0 2px rgba(26,26,255,0.4);
+    }
+
+    #inner-circle::after {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: conic-gradient(
+        transparent 0deg,
+        rgba(30,47,255,0.04) 90deg,
+        transparent 180deg,
+        rgba(30,47,255,0.04) 270deg,
+        transparent 360deg
+      );
+      animation: rotatePortal 12s linear infinite;
+    }
+
+    @keyframes rotatePortal {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Triangle */
+    #triangle-wrap {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 75%;
+      height: 75%;
+    }
+
+    #triangle {
+      width: 0;
+      height: 0;
+      border-left: clamp(28px, 8vw, 50px) solid transparent;
+      border-right: clamp(28px, 8vw, 50px) solid transparent;
+      border-bottom: clamp(50px, 14vw, 88px) solid var(--triangle-blue);
+      position: relative;
+      filter: drop-shadow(0 0 8px rgba(30,47,255,0.6));
+      transition: filter 0.3s;
+    }
+
+    #triangle::after {
+      content: '';
+      position: absolute;
+      width: 0; height: 0;
+      border-left: clamp(22px, 6.5vw, 40px) solid transparent;
+      border-right: clamp(22px, 6.5vw, 40px) solid transparent;
+      border-bottom: clamp(40px, 11.5vw, 72px) solid #0a0e2a;
+      top: clamp(16px, 4.5vw, 30px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    /* Answer text inside triangle */
+    #answer {
+      position: absolute;
+      width: clamp(80px, 20vw, 130px);
+      text-align: center;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -30%);
+      z-index: 3;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(8px, 2.2vw, 13px);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--answer-color);
+      text-shadow: 0 0 6px rgba(150,180,255,0.7);
+      opacity: 0;
+      transition: opacity 0.1s;
+      pointer-events: none;
+      line-height: 1.2;
+    }
+
+    /* Reveal animation */
+    @keyframes fadeInAnswer {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    #answer.reveal {
+      animation: fadeInAnswer 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    /* Ink wash / vignette effect when revealing */
+    #ink-wash {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at center, #040410 0%, transparent 60%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s;
+      z-index: 1;
+    }
+
+    #ink-wash.active { opacity: 1; }
+
+    /* Idle state hint text */
+    #hint {
+      position: absolute;
+      bottom: max(env(safe-area-inset-bottom, 20px), 30px);
+      left: 0; right: 0;
+      text-align: center;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(10px, 2.5vw, 13px);
+      letter-spacing: 0.2em;
+      color: rgba(100,120,180,0.4);
+      text-transform: uppercase;
+      transition: opacity 0.6s;
+    }
+
+    #hint.hidden { opacity: 0; }
+
+    /* Shake ripple */
+    @keyframes ballShake {
+      0%   { transform: rotate(0deg) scale(1); }
+      15%  { transform: rotate(-4deg) scale(0.97); }
+      30%  { transform: rotate(4deg) scale(1.02); }
+      45%  { transform: rotate(-3deg) scale(0.98); }
+      60%  { transform: rotate(3deg) scale(1.01); }
+      75%  { transform: rotate(-1deg) scale(0.99); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+
+    #ball.shaking {
+      animation: ballShake 0.5s ease-in-out;
+    }
+
+    /* Permission overlay */
+    #permission-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      padding: 40px;
+      text-align: center;
+    }
+
+    #permission-overlay h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: clamp(24px, 7vw, 42px);
+      color: #fff;
+      letter-spacing: 0.05em;
+    }
+
+    #permission-overlay p {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(13px, 3.5vw, 17px);
+      color: rgba(150,170,220,0.8);
+      line-height: 1.7;
+      letter-spacing: 0.05em;
+    }
+
+    #permit-btn {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(13px, 3.5vw, 16px);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: none;
+      border: 1px solid rgba(30,47,255,0.6);
+      color: #c8d8ff;
+      padding: 16px 40px;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 0 20px rgba(30,47,255,0.2);
+    }
+
+    #permit-btn:active {
+      background: rgba(30,47,255,0.1);
+      box-shadow: 0 0 30px rgba(30,47,255,0.4);
+    }
+
+    .hidden { display: none !important; }
+
+    /* Glow pulse when face-up */
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 0 1px #1a1a2e, 0 8px 40px rgba(0,0,0,0.95), 0 30px 80px rgba(0,0,0,0.8), inset 0 -20px 60px rgba(0,0,0,0.9), inset 0 10px 30px rgba(80,80,120,0.12); }
+      50% { box-shadow: 0 0 0 1px rgba(30,47,255,0.3), 0 8px 40px rgba(0,0,0,0.95), 0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(30,47,255,0.08), inset 0 -20px 60px rgba(0,0,0,0.9), inset 0 10px 30px rgba(80,80,120,0.12); }
+    }
+
+    #ball.face-up {
+      animation: glowPulse 3s ease-in-out infinite;
+    }
+  </style>
+
+</head>
+<body>
+
+<!-- Stars -->
+
+<div id="stars"></div>
+
+<!-- Permission screen (iOS requires gesture) -->
+
+<div id="permission-overlay">
+  <h1>Magic 8</h1>
+  <p>Ask your question.<br/>Then hold the ball face up.</p>
+  <button id="permit-btn">Reveal the Oracle</button>
+</div>
+
+<!-- Main scene -->
+
+<div id="scene">
+  <div id="ball-wrap">
+    <div id="ball">
+      <div id="eight-label">8</div>
+      <div id="inner-circle">
+        <div id="ink-wash"></div>
+        <div id="triangle-wrap">
+          <div id="triangle"></div>
+          <div id="answer"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="hint">Ask your question &amp; turn face up</div>
+</div>
+
+<script>
+  // --- Stars ---
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      top:${Math.random()*100}%;
+      left:${Math.random()*100}%;
+      --dur:${(Math.random()*4+2).toFixed(1)}s;
+      --delay:${(Math.random()*5).toFixed(1)}s;
+      --op:${(Math.random()*0.6+0.1).toFixed(2)};
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // --- Answers ---
+  const answers = [
+    "YES",
+    "NO",
+    "MAYBE",
+    "DEFINITELY",
+    "NEVER",
+    "NO WAY",
+    "ASK AGAIN",
+    "PERHAPS",
+    "CERTAINLY",
+    "DOUBTFUL",
+    "IT IS SO",
+    "TRY AGAIN",
+  ];
+
+  // --- State ---
+  let lastAnswer = null;
+  let faceUpSince = null;
+  let currentlyFaceUp = false;
+  let revealDone = false;
+  let permissionGranted = false;
+
+  const ball = document.getElementById('ball');
+  const answerEl = document.getElementById('answer');
+  const inkWash = document.getElementById('ink-wash');
+  const hintEl = document.getElementById('hint');
+  const overlay = document.getElementById('permission-overlay');
+  const permitBtn = document.getElementById('permit-btn');
+
+  function pickAnswer() {
+    const pool = answers.filter(a => a !== lastAnswer);
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    lastAnswer = pick;
+    return pick;
+  }
+
+  function revealAnswer() {
+    const text = pickAnswer();
+    answerEl.textContent = text;
+    answerEl.classList.remove('reveal');
+    void answerEl.offsetWidth; // reflow
+    answerEl.classList.add('reveal');
+    inkWash.classList.add('active');
+    hintEl.classList.add('hidden');
+    revealDone = true;
+  }
+
+  function hideAnswer() {
+    answerEl.classList.remove('reveal');
+    answerEl.style.opacity = '0';
+    inkWash.classList.remove('active');
+    hintEl.classList.remove('hidden');
+    revealDone = false;
+
+    // shake
+    ball.classList.remove('shaking');
+    void ball.offsetWidth;
+    ball.classList.add('shaking');
+    setTimeout(() => ball.classList.remove('shaking'), 500);
+  }
+
+  // --- Orientation logic ---
+  // Beta: front-to-back tilt. When screen faces up (flat on table), beta ~ 0
+  // Gamma: left-right tilt.
+  // Alpha: compass direction (irrelevant)
+  // "Screen face up" = beta close to 0 AND gamma close to 0
+  // "Upright held in hand" = beta close to 90 (portrait), gamma ~0
+
+  function handleOrientation(e) {
+    const beta = e.beta;   // -180 to 180, 90 = portrait upright
+    const gamma = e.gamma; // -90 to 90
+
+    if (beta === null || gamma === null) return;
+
+    // Face up = screen pointing at sky: beta near 0, gamma near 0
+    const isFaceUp = Math.abs(beta) < 25 && Math.abs(gamma) < 25;
+
+    // "Normal hold" = screen facing user in portrait: beta 60-120, gamma -30 to 30
+    const isUpright = beta > 55 && beta < 125 && Math.abs(gamma) < 40;
+
+    if (isFaceUp && !currentlyFaceUp) {
+      currentlyFaceUp = true;
+      ball.classList.add('face-up');
+      faceUpSince = Date.now();
+      // short delay for mystique
+      setTimeout(() => {
+        if (currentlyFaceUp) revealAnswer();
+      }, 600);
+    } else if (!isFaceUp && currentlyFaceUp) {
+      currentlyFaceUp = false;
+      ball.classList.remove('face-up');
+      faceUpSince = null;
+      if (revealDone) hideAnswer();
+    }
+
+    // Upright but not face-up: clear quietly
+    if (!isFaceUp && !isUpright && revealDone) {
+      // tilted sideways / upside down — fade out
+      answerEl.classList.remove('reveal');
+      answerEl.style.opacity = '0';
+      revealDone = false;
+    }
+  }
+
+  // --- iOS Permission ---
+  function startListening() {
+    window.addEventListener('deviceorientation', handleOrientation);
+  }
+
+  permitBtn.addEventListener('click', () => {
+    if (typeof DeviceOrientationEvent !== 'undefined' &&
+        typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission()
+        .then(state => {
+          if (state === 'granted') {
+            permissionGranted = true;
+            overlay.classList.add('hidden');
+            startListening();
+          } else {
+            permitBtn.textContent = 'Permission Denied';
+          }
+        })
+        .catch(console.error);
+    } else {
+      // Non-iOS or already permitted
+      permissionGranted = true;
+      overlay.classList.add('hidden');
+      startListening();
+    }
+  });
+</script>
+
+</body>
+</html>
