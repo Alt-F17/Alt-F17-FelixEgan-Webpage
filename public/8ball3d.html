@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen"/>
+  <meta name="apple-mobile-web-app-title" content="8 Ball"/>
+  <meta name="theme-color" content="#000000"/>
+  <title>Magic 8 Ball</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #000;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    #c { display: block; width: 100vw; height: 100dvh; }
+
+```
+#answer-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 10;
+}
+#answer-text {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: clamp(10px, 3vw, 16px);
+  letter-spacing: 0.14em;
+  color: #b8ccff;
+  text-shadow: 0 0 10px rgba(120,150,255,0.9), 0 0 28px rgba(80,110,255,0.5);
+  text-align: center;
+  opacity: 0;
+  transition: opacity 2s cubic-bezier(0.4,0,0.2,1);
+  margin-top: 6px;
+}
+#answer-text.visible { opacity: 1; }
+
+#hint {
+  position: fixed;
+  bottom: max(env(safe-area-inset-bottom, 16px), 28px);
+  left: 0; right: 0;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(9px, 2.2vw, 12px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(80,100,170,0.4);
+  transition: opacity 0.7s;
+  pointer-events: none;
+}
+#hint.hidden { opacity: 0; }
+
+#perm {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 48px 36px;
+  text-align: center;
+}
+#perm h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(30px, 8vw, 54px);
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+#perm p {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(13px, 3.5vw, 17px);
+  color: rgba(160,180,230,0.75);
+  line-height: 1.8;
+  letter-spacing: 0.06em;
+}
+#perm-btn {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(12px, 3vw, 15px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid rgba(50,80,255,0.55);
+  color: #b8ccff;
+  padding: 16px 44px;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 24px rgba(50,80,255,0.18);
+  transition: all 0.3s;
+}
+#perm-btn:active {
+  background: rgba(50,80,255,0.12);
+  box-shadow: 0 0 40px rgba(50,80,255,0.35);
+}
+.gone { display: none !important; }
+```
+
+  </style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div id="answer-overlay"><div id="answer-text"></div></div>
+<div id="hint">Ask your question &amp; face the screen skyward</div>
+
+<div id="perm">
+  <h1>Magic 8</h1>
+  <p>Think of your question.<br/>Then hold the screen<br/>face up toward the sky.</p>
+  <button id="perm-btn">Consult the Oracle</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+// ── Answers ───────────────────────────────────────────────────────────────────
+const ANSWERS = [
+  "YES","NO","MAYBE","DEFINITELY",
+  "NEVER","NO WAY","ASK AGAIN","PERHAPS",
+  "CERTAINLY","DOUBTFUL","IT IS SO","TRY AGAIN"
+];
+let lastAnswer = null;
+function pickAnswer() {
+  const pool = ANSWERS.filter(a => a !== lastAnswer);
+  return (lastAnswer = pool[Math.floor(Math.random() * pool.length)]);
+}
+
+// ── Renderer ──────────────────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2.5));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+scene.fog = new THREE.FogExp2(0x000005, 0.18);
+
+const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 50);
+camera.position.set(0, 0, 4.6);
+
+function onResize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+onResize();
+window.addEventListener('resize', onResize);
+
+// ── Lights ────────────────────────────────────────────────────────────────────
+scene.add(new THREE.AmbientLight(0x0a0a1a, 3));
+
+const keyLight = new THREE.DirectionalLight(0xffffff, 3.5);
+keyLight.position.set(-3, 4, 4);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(1024, 1024);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0x3355ff, 0.8);
+fillLight.position.set(4, 0, 2);
+scene.add(fillLight);
+
+const rimLight = new THREE.DirectionalLight(0x112288, 1.4);
+rimLight.position.set(0, -3, -4);
+scene.add(rimLight);
+
+const glowLight = new THREE.PointLight(0x1133ff, 0, 3);
+glowLight.position.set(0, 0, 1.3);
+scene.add(glowLight);
+
+// ── Ball ──────────────────────────────────────────────────────────────────────
+const RADIUS = 1.3;
+const ballGeo = new THREE.SphereGeometry(RADIUS, 128, 128);
+const ballMat = new THREE.MeshPhysicalMaterial({
+  color:               0x060610,
+  metalness:           0.0,
+  roughness:           0.035,
+  clearcoat:           1.0,
+  clearcoatRoughness:  0.018,
+  reflectivity:        1.0,
+});
+const ball = new THREE.Mesh(ballGeo, ballMat);
+ball.castShadow = true;
+ball.receiveShadow = true;
+scene.add(ball);
+
+// ── Specular highlight sphere (fake second reflection) ────────────────────────
+const specGeo = new THREE.SphereGeometry(RADIUS * 0.995, 64, 64);
+const specMat = new THREE.MeshPhongMaterial({
+  color:      0x000000,
+  specular:   0x8899ff,
+  shininess:  900,
+  transparent: true,
+  opacity:    0.25,
+  depthWrite: false,
+});
+ball.add(new THREE.Mesh(specGeo, specMat));
+
+// ── Circle window ─────────────────────────────────────────────────────────────
+const CIRCLE_R = 0.60;
+const Z_SURF   = RADIUS + 0.001;
+
+const circGeo = new THREE.CircleGeometry(CIRCLE_R, 128);
+const circMat = new THREE.MeshPhysicalMaterial({
+  color:     0x02020c,
+  roughness: 0.18,
+  metalness: 0.0,
+});
+const circMesh = new THREE.Mesh(circGeo, circMat);
+circMesh.position.set(0, 0, Z_SURF);
+scene.add(circMesh);
+
+// Ring border — subtle neon
+const ringGeo = new THREE.RingGeometry(CIRCLE_R - 0.01, CIRCLE_R + 0.028, 128);
+const ringMat = new THREE.MeshBasicMaterial({
+  color: 0x1a2fff,
+  transparent: true,
+  opacity: 0.5,
+  side: THREE.DoubleSide,
+});
+const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+ringMesh.position.set(0, 0, Z_SURF + 0.001);
+scene.add(ringMesh);
+
+// ── Triangle ──────────────────────────────────────────────────────────────────
+const T = 0.33; // half-base
+const TH = T * Math.sqrt(3); // height of equilateral with half-base T
+
+const triShape = new THREE.Shape();
+triShape.moveTo( 0,       TH * 0.64);
+triShape.lineTo(-T,      -TH * 0.36);
+triShape.lineTo( T,      -TH * 0.36);
+triShape.closePath();
+
+const triGeo = new THREE.ExtrudeGeometry(triShape, {
+  depth:            0.025,
+  bevelEnabled:     true,
+  bevelThickness:   0.009,
+  bevelSize:        0.007,
+  bevelSegments:    5,
+});
+triGeo.center();
+
+const triMat = new THREE.MeshPhysicalMaterial({
+  color:              0x1535ff,
+  emissive:           0x001599,
+  emissiveIntensity:  0.55,
+  roughness:          0.12,
+  metalness:          0.05,
+  clearcoat:          0.9,
+  clearcoatRoughness: 0.08,
+});
+const triMesh = new THREE.Mesh(triGeo, triMat);
+triMesh.position.set(0, -0.018, Z_SURF + 0.013);
+scene.add(triMesh);
+
+// ── "8" canvas texture ────────────────────────────────────────────────────────
+{
+  const tc = document.createElement('canvas');
+  tc.width = 128; tc.height = 128;
+  const ctx = tc.getContext('2d');
+  ctx.font = 'bold 88px Georgia, serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('8', 64, 66);
+  const tex = new THREE.CanvasTexture(tc);
+  const eGeo = new THREE.PlaneGeometry(0.34, 0.34);
+  const eMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
+  const eMesh = new THREE.Mesh(eGeo, eMat);
+  eMesh.position.set(0.50, 0.52, Z_SURF - 0.25);
+  eMesh.lookAt(camera.position);
+  ball.add(eMesh);
+}
+
+// ── Simple envmap via CubeRenderTarget ────────────────────────────────────────
+// A tiny procedural envmap to give gloss something to reflect
+const cubeRT = new THREE.WebGLCubeRenderTarget(128, {
+  format: THREE.RGBFormat,
+  generateMipmaps: true,
+  minFilter: THREE.LinearMipmapLinearFilter,
+});
+const cubeCamera = new THREE.CubeCamera(0.1, 10, cubeRT);
+scene.add(cubeCamera);
+ballMat.envMap = cubeRT.texture;
+ballMat.envMapIntensity = 0.7;
+
+// Background particles for depth
+const starGeo = new THREE.BufferGeometry();
+const starCount = 300;
+const starPos = new Float32Array(starCount * 3);
+for (let i = 0; i < starCount; i++) {
+  starPos[i*3]   = (Math.random() - 0.5) * 20;
+  starPos[i*3+1] = (Math.random() - 0.5) * 20;
+  starPos[i*3+2] = (Math.random() - 0.5) * 12 - 2;
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+const starMat = new THREE.PointsMaterial({ color: 0x8899ff, size: 0.025, transparent: true, opacity: 0.7 });
+scene.add(new THREE.Points(starGeo, starMat));
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let faceUp = false;
+let revealed = false;
+const answerEl = document.getElementById('answer-text');
+const hintEl   = document.getElementById('hint');
+
+let wobVX = 0, wobVY = 0, wobX = 0, wobY = 0;
+let targetRotX = 0, targetRotY = 0;
+
+function reveal() {
+  answerEl.textContent = pickAnswer();
+  answerEl.classList.add('visible');
+  hintEl.classList.add('hidden');
+  revealed = true;
+  glowLight.intensity = 2.2;
+}
+
+function hide() {
+  answerEl.classList.remove('visible');
+  hintEl.classList.remove('hidden');
+  revealed = false;
+  glowLight.intensity = 0;
+  // Shake impulse
+  wobVX += (Math.random() - 0.5) * 0.22;
+  wobVY += (Math.random() - 0.5) * 0.22;
+}
+
+// ── Orientation handler ───────────────────────────────────────────────────────
+function onOrient(e) {
+  const beta  = e.beta;
+  const gamma = e.gamma;
+  if (beta == null) return;
+
+  const nowFaceUp = Math.abs(beta) < 26 && Math.abs(gamma) < 26;
+
+  if (nowFaceUp && !faceUp) {
+    faceUp = true;
+    setTimeout(() => { if (faceUp && !revealed) reveal(); }, 650);
+  } else if (!nowFaceUp && faceUp) {
+    faceUp = false;
+    if (revealed) hide();
+  }
+
+  // Natural tilt response
+  const tx = THREE.MathUtils.clamp(gamma / 80, -1, 1) * 0.22;
+  const ty = THREE.MathUtils.clamp((beta - 90) / 80, -1, 1) * 0.22;
+  targetRotX =  ty;
+  targetRotY =  tx;
+}
+
+// ── Render loop ───────────────────────────────────────────────────────────────
+const clock = new THREE.Clock();
+let t = 0;
+
+(function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  t += dt;
+
+  // Ease ball toward tilt target
+  wobVX += (targetRotY - wobX) * 0.05;
+  wobVY += (targetRotX - wobY) * 0.05;
+  wobVX *= 0.86; wobVY *= 0.86;
+  wobX  += wobVX; wobY  += wobVY;
+  wobX  *= 0.94;  wobY  *= 0.94;
+
+  // Gentle idle float
+  const idleX = Math.sin(t * 0.42) * 0.013;
+  const idleY = Math.cos(t * 0.58) * 0.009;
+
+  ball.rotation.x = wobY + idleY;
+  ball.rotation.y = wobX + idleX;
+
+  // Keep circle/ring/tri locked to world (always face camera)
+  circMesh.rotation.set(0, 0, 0);
+  ringMesh.rotation.set(0, 0, 0);
+  triMesh.rotation.set(0, 0, 0);
+
+  // Animate triangle & glow
+  if (revealed) {
+    const pulse = Math.sin(t * 2.8) * 0.5 + 0.5;
+    triMat.emissiveIntensity = 0.5 + pulse * 0.35;
+    glowLight.intensity = 1.8 + pulse * 0.8;
+    ringMat.opacity = 0.45 + pulse * 0.2;
+  } else {
+    triMat.emissiveIntensity = 0.3 + Math.sin(t * 1.1) * 0.08;
+    ringMat.opacity = 0.32 + Math.sin(t * 0.8) * 0.06;
+    glowLight.intensity *= 0.95;
+  }
+
+  // Update cube env map (slow, every ~30 frames)
+  if (Math.round(t * 60) % 30 === 0) {
+    ball.visible = false;
+    cubeCamera.update(renderer, scene);
+    ball.visible = true;
+  }
+
+  renderer.render(scene, camera);
+})();
+
+// ── Permission ────────────────────────────────────────────────────────────────
+const permEl  = document.getElementById('perm');
+const permBtn = document.getElementById('perm-btn');
+
+permBtn.addEventListener('click', () => {
+  if (typeof DeviceOrientationEvent !== 'undefined' &&
+      typeof DeviceOrientationEvent.requestPermission === 'function') {
+    DeviceOrientationEvent.requestPermission()
+      .then(s => {
+        if (s === 'granted') {
+          permEl.classList.add('gone');
+          window.addEventListener('deviceorientation', onOrient);
+        } else {
+          permBtn.textContent = 'Permission Denied';
+        }
+      }).catch(console.error);
+  } else {
+    permEl.classList.add('gone');
+    window.addEventListener('deviceorientation', onOrient);
+  }
+});
+</script>
+
+</body>
+</html>
