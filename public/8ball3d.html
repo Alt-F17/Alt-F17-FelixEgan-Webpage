@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="8-Ball">
+    <title>Magic 8-Ball</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: white;
+        }
+
+        /* Overlay for iOS Sensor Permission */
+        #start-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 25px;
+            border: none;
+            background: #fff;
+            color: #000;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* The Black Void where the message appears */
+        #void-window {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #0a0a0a 0%, #000000 80%);
+            box-shadow: inset 0 0 20px #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0; /* Hidden by default */
+            transition: opacity 2.5s ease-in-out; /* Slow fade */
+            pointer-events: none;
+        }
+
+        /* The Message Text */
+        #message {
+            color: #4444ff; /* Classic 8-ball blueish dye */
+            text-shadow: 0 0 8px rgba(68, 68, 255, 0.5);
+            font-weight: bold;
+            font-size: 1.4rem;
+            text-align: center;
+            text-transform: uppercase;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 3s ease-in;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <h2>Ask a question.</h2>
+        <p>Tap below to activate sensors.</p>
+        <button id="start-btn">Reveal</button>
+    </div>
+
+    <div id="void-window">
+        <div id="message"></div>
+    </div>
+
+    <script>
+        const messages = [
+            "Yes.", "No.", "Maybe.", "Definitely.", 
+            "Never.", "No way.", "Perchance.", "Try again."
+        ];
+
+        let isReady = false;
+        let isRevealed = false;
+
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const voidWindow = document.getElementById('void-window');
+        const messageEl = document.getElementById('message');
+
+        // --- Three.js Setup ---
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Create the 8-Ball
+        const geometry = new THREE.SphereGeometry(3, 64, 64);
+        const material = new THREE.MeshPhongMaterial({ 
+            color: 0x111111, 
+            shininess: 100, // Makes it look like polished plastic
+            specular: 0x555555
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add(sphere);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        camera.position.z = 6;
+
+        // Animation Loop
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- Gyroscope & Logic ---
+        startBtn.addEventListener('click', async () => {
+            // iOS 13+ requires permission for DeviceOrientation
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                try {
+                    const permissionState = await DeviceOrientationEvent.requestPermission();
+                    if (permissionState === 'granted') {
+                        initGyro();
+                    } else {
+                        alert("Sensor permission denied.");
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                // Non-iOS 13+ devices
+                initGyro();
+            }
+        });
+
+        function initGyro() {
+            startScreen.style.display = 'none';
+            
+            window.addEventListener('deviceorientation', (event) => {
+                let beta = event.beta;   // Front-to-back tilt in degrees [-180, 180]
+                let gamma = event.gamma; // Left-to-right tilt in degrees [-90, 90]
+
+                // Null check for devices without sensors
+                if (beta === null || gamma === null) return;
+
+                // Move the 3D ball based on motion
+                sphere.rotation.x = THREE.MathUtils.degToRad(beta);
+                sphere.rotation.y = THREE.MathUtils.degToRad(gamma);
+
+                // Logic: Upside down or flat face down (shaking phase)
+                // Beta > 120 or < -120 usually means the screen is facing the floor
+                if (beta > 100 || beta < -100) {
+                    if (isRevealed) {
+                        // Reset the ball when turned over
+                        voidWindow.style.opacity = '0';
+                        messageEl.style.opacity = '0';
+                        isRevealed = false;
+                        isReady = true; // Ready for a new message
+                    }
+                }
+
+                // Logic: Screen straight-way up (reading phase)
+                // Beta between 20 and 80 degrees (normal holding angle)
+                if (isReady && beta > 10 && beta < 85 && Math.abs(gamma) < 45) {
+                    revealMessage();
+                }
+            });
+        }
+
+        function revealMessage() {
+            isReady = false; // Prevent rapid re-triggering
+            isRevealed = true;
+            
+            // Pick a random message
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+            messageEl.textContent = randomMsg;
+
+            // Fade in the void window, then the text
+            voidWindow.style.opacity = '1';
+            setTimeout(() => {
+                messageEl.style.opacity = '1';
+            }, 500); // Slight delay for the text to appear from the void
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
