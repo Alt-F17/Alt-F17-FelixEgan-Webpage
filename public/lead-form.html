@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lead Form</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Google Identity Services for OAuth 2.0 -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,6 +22,10 @@
     --danger: #ff6464;
   }
 
+  html {
+    overscroll-behavior: none;
+  }
+
   body {
     background: var(--bg);
     color: var(--text);
@@ -30,6 +36,7 @@
     align-items: flex-start;
     justify-content: center;
     padding: 40px;
+    overscroll-behavior: none;
   }
 
   .container {
@@ -54,28 +61,6 @@
     body {
       padding: 24px;
     }
-  }
-
-  .header {
-    margin-bottom: 32px;
-    border-left: 2px solid var(--accent);
-    padding-left: 14px;
-  }
-
-  .header h1 {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    color: var(--accent);
-    text-transform: uppercase;
-  }
-
-  .header p {
-    font-size: 12px;
-    color: var(--muted);
-    margin-top: 4px;
-    font-family: 'IBM Plex Mono', monospace;
   }
 
   .section {
@@ -142,7 +127,8 @@
     background-image: none;
     padding-right: 12px;
     height: auto;
-    min-height: 90px;
+    min-height: 255px;
+    overflow: hidden;
   }
 
   select[multiple] option {
@@ -249,6 +235,98 @@
     flex: 1;
     padding: 6px 10px;
     font-size: 12px;
+  }
+
+  /* Calendar UI */
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .calendar-header button {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 4px 12px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .calendar-header button:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent); }
+  .month-label { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: var(--accent); }
+  
+  .weekend-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .weekend-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .weekend-header-day {
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  .time-slots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .time-slot {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    text-align: center;
+    padding: 8px;
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .time-slot.booked {
+    opacity: 0.2;
+    cursor: not-allowed;
+    background: var(--surface);
+    pointer-events: none;
+    text-decoration: line-through;
+  }
+  .time-slot.past {
+    opacity: 0.2;
+    cursor: not-allowed;
+    background: var(--surface);
+    pointer-events: none;
+  }
+  .time-slot.available:hover {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+  }
+  .time-slot.selected {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .time-slot-loading {
+    grid-column: span 2;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    padding: 20px 0;
   }
 
   /* Address autocomplete */
@@ -369,7 +447,7 @@
     gap: 12px;
     position: sticky;
     top: 40px;
-    height: calc(100vh - 80px); /* Tall dashboard panel container */
+    height: calc(90vh - 80px); /* Tall dashboard panel container */
   }
 
   .output-section {
@@ -454,11 +532,6 @@
 <body>
 <div class="container">
 
-  <div class="header">
-    <h1>New Lead</h1>
-    <p>// fill → generate → edit → copy</p>
-  </div>
-
   <div class="dashboard-grid">
     <div class="form-column">
       <!-- Contact -->
@@ -501,7 +574,7 @@
         <div class="section-label">Service</div>
         <div class="field" style="margin-bottom:0">
           <label>Service(s) — hold Ctrl / ⌘ to multi-select</label>
-          <select id="service" multiple>
+          <select id="service" multiple size="8">
             <option value="Int/Ext Windows">Int/Ext Windows</option>
             <option value="Ext Windows">Ext Windows</option>
             <option value="Int Gutters">Int Gutters</option>
@@ -533,6 +606,35 @@
           <input type="text" id="customMin" placeholder="e.g. 100">
           <span>to</span>
           <input type="text" id="customMax" placeholder="e.g. 5000">
+        </div>
+      </div>
+
+      <!-- Availability Calendar -->
+      <div class="section">
+        <div class="section-label" style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Availability (Weekends)</span>
+          <button id="authBtn" onclick="handleAuthClick()" style="padding: 4px 8px; font-size: 10px; font-family: 'IBM Plex Mono'; cursor: pointer; background: var(--surface); color: var(--accent); border: 1px solid var(--accent);">Connect Calendar</button>
+        </div>
+        <div class="calendar-header">
+          <button type="button" onclick="changeMonth(-1)">&#8592;</button>
+          <span class="month-label" id="monthLabel">Month Year</span>
+          <button type="button" onclick="changeMonth(1)">&#8594;</button>
+        </div>
+        
+        <div class="weekend-grid" id="weekendGrid">
+          <div class="weekend-col" id="satCol">
+            <div class="weekend-header-day">SAT</div>
+            <!-- Saturday Days go here -->
+          </div>
+          <div class="weekend-col" id="sunCol">
+            <div class="weekend-header-day">SUN</div>
+            <!-- Sunday Days go here -->
+          </div>
+        </div>
+
+        <div id="timeSlotsContainer" style="display: none;">
+          <div class="section-label" style="margin-top:20px; font-size:10px;">Select Time</div>
+          <div id="timeSlotsGrid" class="time-slots"></div>
         </div>
       </div>
 
@@ -572,6 +674,7 @@
         </div>
         <textarea id="output" placeholder="Output will appear here after you hit Generate…"></textarea>
         <button class="btn-copy" id="copyBtn" onclick="copyOutput()">Copy to Clipboard</button>
+        <button class="btn-copy" id="bookEstimateBtn" onclick="bookEstimate()" style="margin-top: 10px; display: none;">Book Estimate</button>
       </div>
     </div> <!-- End Output Column -->
 
@@ -715,6 +818,291 @@
     return minDisplay.textContent + ' – ' + maxDisplay.textContent;
   }
 
+  // --- CALENDAR LOGIC (OAuth 2.0) ---
+  const CALENDAR_IDS = [
+    'd202e4eaa609e358be0a68a1020a0a78f043b3258dc1f53bdc19684326b1c7bd@group.calendar.google.com',
+    '5u0rransmq3ng6utve230g5um0@group.calendar.google.com' // Replace with your shared calendar IDs
+  ];
+  
+  // You MUST create an OAuth 2.0 Client ID in Google Cloud Console
+  // Authorized JavaScript origins must include: https://felixegan.me
+  const CLIENT_ID = '645892232656-8m0uup2rn2jjcj0r1mf6ttrvhr46bp5h.apps.googleusercontent.com';
+  const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
+  const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+
+  let tokenClient;
+  let gapiInited = false;
+  let gisInited = false;
+  let isAuthenticated = false;
+
+  // Initialize the API client library
+  function gapiLoaded() {
+    gapi.load('client', intializeGapiClient);
+  }
+
+  async function intializeGapiClient() {
+    await gapi.client.init({
+      discoveryDocs: [DISCOVERY_DOC],
+    });
+    gapiInited = true;
+    checkAuthStatus();
+  }
+
+  function gisLoaded() {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback: '', // defined below
+    });
+    gisInited = true;
+    checkAuthStatus();
+  }
+
+  function checkAuthStatus() {
+    if (gapiInited && gisInited) {
+      // Show auth button, ready to click
+      document.getElementById('authBtn').style.display = 'block';
+      checkExistingToken(); // Try to auto-connect using saved token
+    }
+  }
+
+  function handleAuthClick() {
+    tokenClient.callback = async (resp) => {
+      if (resp.error !== undefined) {
+        throw (resp);
+      }
+      
+      // Save token to localStorage with expiration
+      const tokenData = {
+        access_token: resp.access_token,
+        expires_at: Date.now() + (resp.expires_in * 1000)
+      };
+      localStorage.setItem('google_calendar_token', JSON.stringify(tokenData));
+      
+      setAuthUI();
+    };
+
+    if (gapi.client.getToken() === null) {
+      // Prompt the user to select an account.
+      tokenClient.requestAccessToken({prompt: 'consent'});
+    } else {
+      // Skip display of account chooser.
+      tokenClient.requestAccessToken({prompt: ''});
+    }
+  }
+
+  function checkExistingToken() {
+    const rawData = localStorage.getItem('google_calendar_token');
+    if (rawData) {
+      try {
+        const tokenData = JSON.parse(rawData);
+        // Check if token is still valid (add 5 min buffer)
+        if (Date.now() < (tokenData.expires_at - 300000)) {
+          gapi.client.setToken({ access_token: tokenData.access_token });
+          setAuthUI();
+        } else {
+          localStorage.removeItem('google_calendar_token'); // expired
+        }
+      } catch (e) {
+        localStorage.removeItem('google_calendar_token');
+      }
+    }
+  }
+
+  function setAuthUI() {
+    isAuthenticated = true;
+    const btn = document.getElementById('authBtn');
+    btn.textContent = 'Calendar Connected';
+    btn.style.background = 'var(--accent)';
+    btn.style.color = '#000';
+    if (selectedDateStr) renderTimeSlots(selectedDateStr); // Refresh times if date already selected
+  }
+
+  let currentDate = new Date();
+  currentDate.setDate(1); // Start of current month
+  let selectedDateStr = null;
+  let selectedTimeStr = null;
+
+  const monthLabel = document.getElementById('monthLabel');
+  const calendarDays = document.getElementById('calendarDays');
+  const timeSlotsContainer = document.getElementById('timeSlotsContainer');
+  const timeSlotsGrid = document.getElementById('timeSlotsGrid');
+
+  function renderCalendar() {
+    const satCol = document.getElementById('satCol');
+    const sunCol = document.getElementById('sunCol');
+    
+    // Clear previous except headers
+    satCol.innerHTML = '<div class="weekend-header-day">SAT</div>';
+    sunCol.innerHTML = '<div class="weekend-header-day">SUN</div>';
+    
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    
+    // Set Header
+    const dateOpts = { month: 'long', year: 'numeric' };
+    monthLabel.textContent = currentDate.toLocaleDateString('en-US', dateOpts);
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    
+    for (let i = 1; i <= daysInMonth; i++) {
+      const dayOfWeek = new Date(year, month, i).getDay();
+      const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+      
+      if (!isWeekend) continue;
+
+      const dayDiv = document.createElement('div');
+      dayDiv.className = 'time-slot';
+      dayDiv.textContent = i;
+      
+      // Determine if past day
+      const thisDate = new Date(year, month, i);
+      thisDate.setHours(23, 59, 59, 999);
+      const isPast = thisDate < today;
+
+      if (isPast) {
+        dayDiv.classList.add('booked'); // visually disabled
+      } else {
+        dayDiv.classList.add('available');
+        
+        let mStr = (month + 1).toString().padStart(2, '0');
+        let dStr = i.toString().padStart(2, '0');
+        let yStr = year;
+        let dateId = `${yStr}-${mStr}-${dStr}`;
+
+        if (dateId === selectedDateStr) {
+          dayDiv.classList.add('selected');
+        }
+
+        if (thisDate.toDateString() === today.toDateString()) {
+          dayDiv.classList.add('today'); // Optional, add later if needed
+        }
+
+        dayDiv.addEventListener('click', () => {
+          // Clear selected visual from days
+          satCol.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+          sunCol.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+          
+          dayDiv.classList.add('selected');
+          selectedDateStr = dateId;
+          selectedTimeStr = null; // Reset time
+
+          renderTimeSlots(dateId);
+        });
+      }
+      
+      if (dayOfWeek === 6) {
+        satCol.appendChild(dayDiv);
+      } else if (dayOfWeek === 0) {
+        sunCol.appendChild(dayDiv);
+      }
+    }
+  }
+
+  function changeMonth(delta) {
+    currentDate.setMonth(currentDate.getMonth() + delta);
+    renderCalendar();
+    timeSlotsContainer.style.display = 'none';
+  }
+
+  async function renderTimeSlots(dateId) {
+    timeSlotsContainer.style.display = 'block';
+    timeSlotsGrid.innerHTML = '<div class="time-slot-loading">Checking availability...</div>';
+
+    // Time blocks: 9 AM to 5 PM
+    const hours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
+    let events = [];
+
+    // Attempt to fetch from Google Calendars if configured
+    try {
+      const timeMin = new Date(`${dateId}T00:00:00`).toISOString();
+      const timeMax = new Date(`${dateId}T23:59:59`).toISOString();
+      
+      if (!isAuthenticated) {
+        timeSlotsGrid.innerHTML = '<div class="time-slot-loading">Please connect calendar...</div>';
+        return;
+      }
+      
+      const fetchPromises = CALENDAR_IDS.map(async (calId) => {
+        if (!calId || calId.includes('shared_calendar_id')) return [];
+        try {
+          const response = await gapi.client.calendar.events.list({
+            'calendarId': calId,
+            'timeMin': timeMin,
+            'timeMax': timeMax,
+            'showDeleted': false,
+            'singleEvents': true,
+            'orderBy': 'startTime',
+          });
+          return response.result.items || [];
+        } catch (err) {
+          console.error(`Failed to fetch calendar ${calId}`, err);
+          return [];
+        }
+      });
+
+      const allEventsArrays = await Promise.all(fetchPromises);
+      events = allEventsArrays.flat(); // Merge events from all calendars
+    } catch (err) {
+      console.error('Error fetching calendars', err);
+      // Remove bad token if auth error
+      if (err.status === 401 || err.status === 403) {
+         localStorage.removeItem('google_calendar_token');
+         isAuthenticated = false;
+         document.getElementById('authBtn').textContent = 'Connect Calendar';
+         document.getElementById('authBtn').style.background = 'var(--surface)';
+         document.getElementById('authBtn').style.color = 'var(--accent)';
+      }
+    }
+
+    timeSlotsGrid.innerHTML = '';
+    
+    hours.forEach(hour => {
+      // Check if this hour overlaps with any event
+      const slotStart = new Date(`${dateId}T${hour.toString().padStart(2, '0')}:00:00`);
+      const slotEnd = new Date(`${dateId}T${(hour + 1).toString().padStart(2, '0')}:00:00`);
+
+      let isBooked = false;
+      for (const ev of events) {
+        const evStart = new Date(ev.start.dateTime || ev.start.date);
+        const evEnd = new Date(ev.end.dateTime || ev.end.date);
+        // Overlap condition: start1 < end2 AND end1 > start2
+        if (slotStart < evEnd && slotEnd > evStart) {
+          isBooked = true;
+          break;
+        }
+      }
+
+      // Format hour (e.g. 9 AM)
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      let hr12 = hour % 12;
+      if (hr12 === 0) hr12 = 12;
+      const timeLabel = `${hr12}:00 ${ampm}`;
+
+      const slotDiv = document.createElement('div');
+      slotDiv.className = 'time-slot';
+      slotDiv.textContent = timeLabel;
+      
+      if (isBooked) {
+        slotDiv.classList.add('booked');
+      } else {
+        slotDiv.classList.add('available');
+        slotDiv.addEventListener('click', () => {
+          document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+          slotDiv.classList.add('selected');
+          selectedTimeStr = timeLabel;
+        });
+      }
+      
+      timeSlotsGrid.appendChild(slotDiv);
+    });
+  }
+
+  // Initialize Calendar
+  renderCalendar();
+  // --- END CALENDAR LOGIC ---
+
   function generate() {
     const first = document.getElementById('firstName').value.trim() || '—';
     const last = document.getElementById('lastName').value.trim() || '—';
@@ -730,6 +1118,22 @@
 
     const dm = document.querySelector('input[name="dm"]:checked').value;
     const ten = document.querySelector('input[name="ten"]:checked').value;
+    
+    // Format Date & Time
+    let appointment = '—';
+    const bookBtn = document.getElementById('bookEstimateBtn');
+    
+    if (selectedDateStr && selectedTimeStr) {
+      appointment = `${selectedDateStr} @ ${selectedTimeStr}`;
+      const [y, m, d] = selectedDateStr.split('-');
+      bookBtn.textContent = `Book Estimate On: ${d}/${m}/${y} at ${selectedTimeStr}`;
+      bookBtn.style.display = 'block';
+    } else if (selectedDateStr) {
+      appointment = `${selectedDateStr} (Time not selected)`;
+      bookBtn.style.display = 'none';
+    } else {
+      bookBtn.style.display = 'none';
+    }
 
     const out =
 `Name: ${first} ${last}
@@ -743,6 +1147,38 @@ DM? ${dm}
 10%? ${ten}`;
 
     document.getElementById('output').value = out;
+  }
+
+  function bookEstimate() {
+    if (!selectedDateStr || !selectedTimeStr) return;
+
+    const [year, month, day] = selectedDateStr.split('-');
+    
+    const timeParts = selectedTimeStr.split(' ');
+    const [hourStr, minStr] = timeParts[0].split(':');
+    let hour = parseInt(hourStr);
+    if (timeParts[1] === 'PM' && hour !== 12) hour += 12;
+    if (timeParts[1] === 'AM' && hour === 12) hour = 0;
+    
+    const startObj = new Date(year, parseInt(month) - 1, day, hour, parseInt(minStr));
+    const endObj = new Date(startObj.getTime() + 60 * 60 * 1000); // 1 hour duration
+    
+    const formatTime = (d) => {
+      const pad = (n) => n.toString().padStart(2, '0');
+      // Format as YYYYMMDDTHHMMSS (local time, let Google interpret based on user's timezone)
+      return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+    };
+    
+    const dates = `${formatTime(startObj)}/${formatTime(endObj)}`;
+    const address = (addressHidden.value || addressInput.value).trim();
+    const details = document.getElementById('output').value;
+    const first = document.getElementById('firstName').value.trim() || 'Client';
+    const last = document.getElementById('lastName').value.trim() || '';
+    
+    const title = `Estimate: ${first} ${last}`;
+    
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(address)}`;
+    window.open(url, '_blank');
   }
 
   function copyOutput() {
@@ -761,5 +1197,8 @@ DM? ${dm}
   }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDNFm1BhYGyoPRG68N61Q-UGlSYuyJbyw4&libraries=places&callback=initAutocomplete" async defer></script>
+<!-- Load Google API scripts -->
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 </body>
 </html>
