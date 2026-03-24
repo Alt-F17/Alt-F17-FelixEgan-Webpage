@@ -12,15 +12,29 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --bg: #0f0f0f;
-    --surface: #131313;
-    --border: #2a2a2a;
+    --bg: #000000;
+    --surface: #080808;
+    --border: #3c3c3c;
     --border-focus: #4ac8de;
     --text: #ffffff;
     --muted: #ffffff;
     --accent: #4abcde;
     --accent-dim: rgba(74, 202, 222, 0.08);
     --danger: #ff6464;
+    --accent-text: #000000;
+  }
+
+  :root[data-theme="light"] {
+    --bg: #f4f4f5;
+    --surface: #ffffff;
+    --border: #d4d4d8;
+    --border-focus: #0ea5e9;
+    --text: #18181b;
+    --muted: #71717a;
+    --accent: #0ea5e9;
+    --accent-dim: rgba(14, 165, 233, 0.08);
+    --danger: #ef4444;
+    --accent-text: #ffffff;
   }
 
   html {
@@ -150,7 +164,7 @@
 
   .service-chip.selected {
     background: var(--accent);
-    color: #000;
+    color: var(--accent-text);
     border-color: var(--accent);
     font-weight: 500;
   }
@@ -329,7 +343,7 @@
   }
   .time-slot.selected {
     background: var(--accent);
-    color: #000;
+    color: var(--accent-text);
     border-color: var(--accent);
     font-weight: 600;
   }
@@ -372,7 +386,7 @@
   .maps-btn:hover { background: var(--accent-dim); }
 
   .pac-container {
-    background: #1e1e1e !important;
+    background: var(--surface) !important;
     border: 1px solid var(--accent) !important;
     border-top: none !important;
     font-family: 'IBM Plex Mono', monospace !important;
@@ -381,7 +395,7 @@
   }
 
   .pac-item {
-    background: #1e1e1e !important;
+    background: var(--surface) !important;
     border-top: 1px solid var(--border) !important;
     color: var(--text) !important;
     font-family: 'IBM Plex Mono', monospace !important;
@@ -451,7 +465,7 @@
 
   .toggle-options input[type=radio]:checked + label {
     background: var(--accent);
-    color: #000;
+    color: var(--accent-text);
   }
 
   /* Output */
@@ -490,7 +504,7 @@
 
   .btn-generate {
     background: var(--accent);
-    color: #000;
+    color: var(--accent-text);
     border: none;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
@@ -539,8 +553,37 @@
     transition: all 0.15s;
   }
 
-  .btn-copy:hover { background: var(--accent); color: #000; }
-  .btn-copy.copied { background: var(--accent); color: #000; }
+  .btn-copy:hover { background: var(--accent); color: var(--accent-text); }
+  .btn-copy.copied { background: var(--accent); color: var(--accent-text); }
+
+  .theme-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.15s;
+  }
+  .theme-btn:hover {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .theme-btn svg {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .theme-btn:hover svg {
+    transform: rotate(15deg);
+  }
 </style>
 </head>
 <body>
@@ -696,6 +739,14 @@
         <button class="btn-copy" id="copyBtn" onclick="copyOutput()">Copy to Clipboard</button>
         <button class="btn-copy" id="bookEstimateBtn" onclick="bookEstimate()" style="margin-top: 10px; display: none;">Book Estimate</button>
       </div>
+
+      <!-- Theme Toggle -->
+      <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+        <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">
+          <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <span id="themeText">Light Mode</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -736,6 +787,27 @@
   minSlider.addEventListener('input', updateSlider);
   maxSlider.addEventListener('input', updateSlider);
   updateSlider();
+
+  // Theme toggle
+  const sunIcon = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+  const moonIcon = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+
+  function toggleTheme() {
+    const root = document.documentElement;
+    const isLight = root.getAttribute('data-theme') === 'light';
+    const icon = document.getElementById('themeIcon');
+    const text = document.getElementById('themeText');
+
+    if (isLight) {
+      root.removeAttribute('data-theme');
+      icon.innerHTML = sunIcon;
+      text.textContent = 'Light Mode';
+    } else {
+      root.setAttribute('data-theme', 'light');
+      icon.innerHTML = moonIcon;
+      text.textContent = 'Dark Mode';
+    }
+  }
 
   // URL Parameters hydration
   function hydrateFromURL() {
