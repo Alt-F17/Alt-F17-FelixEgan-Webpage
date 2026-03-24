@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lead Form</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
 <!-- Google Identity Services for OAuth 2.0 -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
@@ -573,7 +574,7 @@
       <div class="section">
         <div class="section-label">Service</div>
         <div class="field" style="margin-bottom:0">
-          <label>Service(s) — hold Ctrl / ⌘ to multi-select</label>
+          <label>Service(s)</label>
           <select id="service" multiple size="8">
             <option value="Int/Ext Windows">Int/Ext Windows</option>
             <option value="Ext Windows">Ext Windows</option>
@@ -584,7 +585,45 @@
             <option value="Gutter Guards">Gutter Guards</option>
             <option value="Polymeric Sanding">Polymeric Sanding</option>
           </select>
-          <div class="select-hint">Click to select · Ctrl+Click for multiple</div>
+          <div class="select-hint">Click an option to toggle it on or off</div>
+        </div>
+      </div>
+
+      <!-- Availability Calendar -->
+      <div class="section">
+        <div class="section-label" style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Availability (Weekends)</span>
+          <div style="display: flex; gap: 8px;">
+            <button id="openCalBtn" onclick="window.open('https://calendar.google.com/calendar/u/0/r', '_blank')" style="background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s;" title="Open Google Calendar">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                <path d="M16 2v2h4v16H4V4h4V2H2v20h20V2h-6zm4 16H4V9h16v9zm0-11H4V4h2v2h2V4h8v2h2V4h2v3z" fill="var(--text)"/>
+                <path d="M7 11h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" fill="var(--text)"/>
+                <path d="M7 15h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z" fill="var(--text)"/>
+              </svg>
+            </button>
+            <button id="authBtn" onclick="handleAuthClick()" style="padding: 4px 8px; font-size: 10px; font-family: 'IBM Plex Mono'; cursor: pointer; background: var(--surface); color: var(--accent); border: 1px solid var(--accent); display: none;">Connect Calendar</button>
+          </div>
+        </div>
+        <div class="calendar-header">
+          <button type="button" onclick="changeMonth(-1)">&#8592;</button>
+          <span class="month-label" id="monthLabel">Month Year</span>
+          <button type="button" onclick="changeMonth(1)">&#8594;</button>
+        </div>
+        
+        <div class="weekend-grid" id="weekendGrid">
+          <div class="weekend-col" id="satCol">
+            <div class="weekend-header-day">SAT</div>
+            <!-- Saturday Days filled here -->
+          </div>
+          <div class="weekend-col" id="sunCol">
+            <div class="weekend-header-day">SUN</div>
+            <!-- Sunday Days filled here -->
+          </div>
+        </div>
+
+        <div id="timeSlotsContainer" style="display: none;">
+          <div class="section-label" style="margin-top:20px; font-size:10px;">Select Time</div>
+          <div id="timeSlotsGrid" class="time-slots"></div>
         </div>
       </div>
 
@@ -609,39 +648,11 @@
         </div>
       </div>
 
-      <!-- Availability Calendar -->
-      <div class="section">
-        <div class="section-label" style="display: flex; justify-content: space-between; align-items: center;">
-          <span>Availability (Weekends)</span>
-          <button id="authBtn" onclick="handleAuthClick()" style="padding: 4px 8px; font-size: 10px; font-family: 'IBM Plex Mono'; cursor: pointer; background: var(--surface); color: var(--accent); border: 1px solid var(--accent);">Connect Calendar</button>
-        </div>
-        <div class="calendar-header">
-          <button type="button" onclick="changeMonth(-1)">&#8592;</button>
-          <span class="month-label" id="monthLabel">Month Year</span>
-          <button type="button" onclick="changeMonth(1)">&#8594;</button>
-        </div>
-        
-        <div class="weekend-grid" id="weekendGrid">
-          <div class="weekend-col" id="satCol">
-            <div class="weekend-header-day">SAT</div>
-            <!-- Saturday Days go here -->
-          </div>
-          <div class="weekend-col" id="sunCol">
-            <div class="weekend-header-day">SUN</div>
-            <!-- Sunday Days go here -->
-          </div>
-        </div>
-
-        <div id="timeSlotsContainer" style="display: none;">
-          <div class="section-label" style="margin-top:20px; font-size:10px;">Select Time</div>
-          <div id="timeSlotsGrid" class="time-slots"></div>
-        </div>
-      </div>
-
-    </div> <!-- End Form Column -->
+    </div>
 
     <!-- Output Column -->
     <div class="output-column">
+
       <!-- Booleans (Moved here) -->
       <div class="section" style="margin-bottom: 0;">
         <div class="section-label">Flags</div>
@@ -676,12 +687,22 @@
         <button class="btn-copy" id="copyBtn" onclick="copyOutput()">Copy to Clipboard</button>
         <button class="btn-copy" id="bookEstimateBtn" onclick="bookEstimate()" style="margin-top: 10px; display: none;">Book Estimate</button>
       </div>
-    </div> <!-- End Output Column -->
-
-  </div> <!-- End Grid -->
+    </div>
+  </div>
 </div>
 
 <script>
+  // Service option toggle logic
+  document.getElementById('service').addEventListener('mousedown', function (e) {
+    if (e.target.tagName === 'OPTION') {
+      e.preventDefault();
+      const scroll = this.scrollTop;
+      e.target.selected = !e.target.selected;
+      setTimeout(() => { this.scrollTop = scroll; }, 0);
+      this.focus();
+    }
+  });
+
   // Slider logic
   const minSlider = document.getElementById('minSlider');
   const maxSlider = document.getElementById('maxSlider');
@@ -1152,6 +1173,27 @@ DM? ${dm}
   function bookEstimate() {
     if (!selectedDateStr || !selectedTimeStr) return;
 
+    const details = document.getElementById('output').value.trim();
+    const bookBtn = document.getElementById('bookEstimateBtn');
+    
+    // Validation: make sure they generated the output first
+    if (!details) {
+      const originalText = bookBtn.textContent;
+      bookBtn.textContent = 'Generate Output First!';
+      bookBtn.style.color = 'var(--danger)';
+      bookBtn.style.borderColor = 'var(--danger)';
+      setTimeout(() => {
+        bookBtn.textContent = originalText;
+        bookBtn.style.color = '';
+        bookBtn.style.borderColor = '';
+      }, 2000);
+      return;
+    }
+
+    // Set the specific calendar ID to post the new event to. 
+    // If left empty or null, it opens the default primary calendar.
+    const TARGET_CALENDAR_ID = 'd202e4eaa609e358be0a68a1020a0a78f043b3258dc1f53bdc19684326b1c7bd@group.calendar.google.com'; 
+
     const [year, month, day] = selectedDateStr.split('-');
     
     const timeParts = selectedTimeStr.split(' ');
@@ -1171,13 +1213,18 @@ DM? ${dm}
     
     const dates = `${formatTime(startObj)}/${formatTime(endObj)}`;
     const address = (addressHidden.value || addressInput.value).trim();
-    const details = document.getElementById('output').value;
     const first = document.getElementById('firstName').value.trim() || 'Client';
     const last = document.getElementById('lastName').value.trim() || '';
     
     const title = `Estimate: ${first} ${last}`;
     
-    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(address)}`;
+    let url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${dates}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(address)}`;
+    
+    // Append the target calendar ID if configured
+    if (TARGET_CALENDAR_ID) {
+      url += `&src=${encodeURIComponent(TARGET_CALENDAR_ID)}`;
+    }
+    
     window.open(url, '_blank');
   }
 
