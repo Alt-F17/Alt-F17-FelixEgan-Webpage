@@ -629,8 +629,9 @@
           </div>
         </div>
 
-        <div id="timeSlotsContainer" style="display: none;">
-          <div class="section-label" style="margin-top:20px; font-size:10px;">Select Time</div>
+        <div id="timeSlotsContainer" style="display: block;">
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid var(--border);">
+          <div class="section-label" style="font-size:10px;">Select Time</div>
           <div id="timeSlotsGrid" class="time-slots"></div>
         </div>
       </div>
@@ -641,12 +642,12 @@
         <div class="slider-values">
           <span class="slider-val" id="minDisplay">$250</span>
           <span class="slider-sep">—</span>
-          <span class="slider-val" id="maxDisplay">$2000</span>
+          <span class="slider-val" id="maxDisplay">$1000</span>
         </div>
         <div class="slider-track" id="sliderTrack">
           <div class="slider-fill" id="sliderFill"></div>
-          <input type="range" id="minSlider" min="250" max="2000" step="50" value="250">
-          <input type="range" id="maxSlider" min="250" max="2000" step="50" value="2000">
+          <input type="range" id="minSlider" min="250" max="1000" step="50" value="250">
+          <input type="range" id="maxSlider" min="250" max="1000" step="50" value="1000">
         </div>
         <div class="custom-range-row">
           <span>Custom range:</span>
@@ -720,7 +721,7 @@
     let min = parseInt(minSlider.value);
     let max = parseInt(maxSlider.value);
     if (min > max) { [min, max] = [max, min]; }
-    const range = 2000 - 250;
+    const range = 1000 - 250;
     const leftPct = ((min - 250) / range) * 100;
     const rightPct = ((max - 250) / range) * 100;
     sliderFill.style.left = leftPct + '%';
@@ -981,12 +982,25 @@
       dayDiv.className = 'time-slot';
       dayDiv.textContent = i;
       
-      // Determine if past day
+      // Determine if past day or blocked by Thursday cutoff
       const thisDate = new Date(year, month, i);
       thisDate.setHours(23, 59, 59, 999);
       const isPast = thisDate < today;
 
-      if (isPast) {
+      let isBlockedByThursdayCutoff = false;
+      const todayDateObj = new Date();
+      todayDateObj.setHours(0, 0, 0, 0);
+
+      // Find the Thursday of this the week for `thisDate` (Saturday=6, Sunday=0)
+      const thursdayOfThisWeek = new Date(thisDate);
+      thursdayOfThisWeek.setDate(thisDate.getDate() - (thisDate.getDay() === 6 ? 2 : 3));
+      thursdayOfThisWeek.setHours(0, 0, 0, 0);
+
+      if (todayDateObj >= thursdayOfThisWeek) {
+        isBlockedByThursdayCutoff = true;
+      }
+
+      if (isPast || isBlockedByThursdayCutoff) {
         dayDiv.classList.add('booked'); // visually disabled
       } else {
         dayDiv.classList.add('available');
@@ -1028,7 +1042,27 @@
   function changeMonth(delta) {
     currentDate.setMonth(currentDate.getMonth() + delta);
     renderCalendar();
-    timeSlotsContainer.style.display = 'none';
+    selectedDateStr = null;
+    selectedTimeStr = null;
+    renderEmptyTimeSlots();
+  }
+
+  function renderEmptyTimeSlots() {
+    timeSlotsGrid.innerHTML = '';
+    const hours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
+    hours.forEach(hour => {
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      let hr12 = hour % 12;
+      if (hr12 === 0) hr12 = 12;
+      const timeLabel = `${hr12}:00 ${ampm}`;
+
+      const slotDiv = document.createElement('div');
+      slotDiv.className = 'time-slot available';
+      slotDiv.textContent = timeLabel;
+      slotDiv.style.opacity = '0.4';
+      slotDiv.style.cursor = 'not-allowed';
+      timeSlotsGrid.appendChild(slotDiv);
+    });
   }
 
   async function renderTimeSlots(dateId) {
@@ -1126,6 +1160,7 @@
 
   // Initialize Calendar
   renderCalendar();
+  renderEmptyTimeSlots();
   // --- END CALENDAR LOGIC ---
 
   function generate() {
