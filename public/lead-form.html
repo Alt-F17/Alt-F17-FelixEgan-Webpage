@@ -570,6 +570,8 @@
     border-radius: 4px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex: 1;
     gap: 8px;
     transition: all 0.15s;
   }
@@ -740,8 +742,14 @@
         <button class="btn-copy" id="bookEstimateBtn" onclick="bookEstimate()" style="margin-top: 10px; display: none;">Book Estimate</button>
       </div>
 
-      <!-- Theme Toggle -->
-      <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+      <!-- Bottom Actions -->
+      <div style="display: flex; gap: 8px; margin-top: 8px; width: 100%;">
+        <button id="simonBtn" class="theme-btn" onclick="handleSimonBtn()">
+          <span id="simonBtnText">Simon</span>
+        </button>
+        <button class="theme-btn" onclick="window.open('https://app.getleadflow.io/', '_blank')">
+          <span>GetLeadFlow</span>
+        </button>
         <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">
           <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
           <span id="themeText">Light Mode</span>
@@ -809,10 +817,26 @@
     }
   }
 
+  // Simon Button Logic
+  let openedFromExtension = false;
+  function handleSimonBtn() {
+    if (openedFromExtension) {
+      window.close(); // Close tab to return to the previous Simon tab
+    } else {
+      window.open('https://simon.studentworks.com', '_blank');
+    }
+  }
+
   // URL Parameters hydration
   function hydrateFromURL() {
     const params = new URLSearchParams(window.location.search);
     
+    // Detect if launched from the extension (URL has payload params)
+    if (params.has('firstName') || params.has('phone')) {
+      openedFromExtension = true;
+      document.getElementById('simonBtnText').textContent = 'New Lead';
+    }
+
     function setVal(id, param) {
       if (params.has(param)) {
         let val = params.get(param);
