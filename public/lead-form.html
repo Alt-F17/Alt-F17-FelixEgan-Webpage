@@ -1096,7 +1096,7 @@
         isBlockedByThursdayCutoff = true;
       }
 
-      if (isPast || isBlockedByThursdayCutoff) {
+      if (isPast) { // add `|| isBlockedByThursdayCutoff` to cut next weekends
         dayDiv.classList.add('booked'); // visually disabled
       } else {
         dayDiv.classList.add('available');
