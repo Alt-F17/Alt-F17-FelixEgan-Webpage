@@ -608,6 +608,32 @@
   maxSlider.addEventListener('input', updateSlider);
   updateSlider();
 
+  // URL Parameters hydration
+  function hydrateFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    
+    function setVal(id, param) {
+      if (params.has(param)) {
+        let val = params.get(param);
+        if (val === '-') val = '';
+        document.getElementById(id).value = val;
+      }
+    }
+    
+    setVal('firstName', 'firstName');
+    setVal('lastName', 'lastName');
+    setVal('phone', 'phone');
+    setVal('email', 'email');
+    
+    if (params.has('address')) {
+      let val = params.get('address');
+      if (val === '-') val = '';
+      document.getElementById('addressInput').value = val;
+      document.getElementById('address').value = val;
+    }
+  }
+  hydrateFromURL();
+
   // Google Places Autocomplete with 1.5s debounce
   const addressInput = document.getElementById('addressInput');
   const addressHidden = document.getElementById('address');
