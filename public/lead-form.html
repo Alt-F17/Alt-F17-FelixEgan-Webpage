@@ -1244,7 +1244,7 @@
       } else {
         slotDiv.classList.add('available');
         slotDiv.addEventListener('click', () => {
-          document.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
+          timeSlotsGrid.querySelectorAll('.time-slot').forEach(el => el.classList.remove('selected'));
           slotDiv.classList.add('selected');
           selectedTimeStr = timeLabel;
         });
