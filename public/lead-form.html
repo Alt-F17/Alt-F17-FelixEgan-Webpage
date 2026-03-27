@@ -265,6 +265,39 @@
     font-size: 12px;
   }
 
+  /* Custom Checkboxes */
+  .custom-checkbox-label {
+    position: relative;
+    user-select: none;
+  }
+  .checkbox-box {
+    width: 18px;
+    height: 18px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    background: var(--bg);
+  }
+  .custom-checkbox-label:hover .checkbox-box {
+    border-color: var(--accent);
+  }
+  input[type="checkbox"]:checked ~ .checkbox-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  input[type="checkbox"]:checked ~ .checkbox-box::after {
+    content: '';
+    width: 4px;
+    height: 9px;
+    border: solid var(--accent-text);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    margin-top: -2px;
+  }
+
   /* Calendar UI */
   .calendar-header {
     display: flex;
@@ -645,6 +678,11 @@
             </button>
           </div>
           <input type="hidden" id="address">
+          <button type="button" class="theme-btn" style="margin-top: 12px; width: 100%;" onclick="previewStreetView()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 8a3 3 0 1 0-2.977-2.63l-1.49 1.49a3.473 3.473 0 1 0-1.041 1.041l1.49 1.49A3 3 0 1 0 15 8z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M2 12h2"/><path d="M20 12h2"/></svg>
+            Preview Street View
+          </button>
+          <div id="streetViewContainer" style="width: 100%; height: 240px; border: 1px solid var(--border); margin-top: 12px; display: none;"></div>
         </div>
       </div>
 
@@ -722,6 +760,84 @@
         </div>
       </div>
 
+      <!-- Paver Calculator -->
+      <div class="section" id="paverCalcSection" style="display: none;">
+        <div class="section-label">Paver Calculator</div>
+        
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-family: 'IBM Plex Mono', monospace; font-size: 13px;">
+          <thead>
+            <tr>
+              <th style="padding: 8px 4px; border-bottom: 1px solid var(--border); color: var(--muted); font-weight: 500;">Size</th>
+              <th style="padding: 8px 4px; border-bottom: 1px solid var(--border); color: var(--muted); font-weight: 500;">Area (sq ft)</th>
+              <th style="padding: 8px 4px; border-bottom: 1px solid var(--border); color: var(--muted); font-weight: 500;">10% disc.</th>
+              <th style="padding: 8px 4px; border-bottom: 1px solid var(--border); color: var(--muted); font-weight: 500;">Regular</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 8px 4px;">Small Pavers</td>
+              <td style="padding: 8px 4px;"><input type="number" id="areaSmall" placeholder="0" style="padding: 6px; font-size: 13px; width: 100px; background: var(--bg); border: 1px solid var(--border); color: var(--text);" oninput="calcPavers()"></td>
+              <td style="padding: 8px 4px; color: var(--muted);" id="priceSmall">-</td>
+              <td style="padding: 8px 4px; color: var(--muted);" id="priceSmallReg">-</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 4px;">Medium Pavers</td>
+              <td style="padding: 8px 4px;"><input type="number" id="areaMed" placeholder="0" style="padding: 6px; font-size: 13px; width: 100px; background: var(--bg); border: 1px solid var(--border); color: var(--text);" oninput="calcPavers()"></td>
+              <td style="padding: 8px 4px; color: var(--muted);" id="priceMed">-</td>
+              <td style="padding: 8px 4px; color: var(--muted);" id="priceMedReg">-</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 4px; border-bottom: 2px solid var(--border);">Large Pavers</td>
+              <td style="padding: 8px 4px; border-bottom: 2px solid var(--border);"><input type="number" id="areaLarge" placeholder="0" style="padding: 6px; font-size: 13px; width: 100px; background: var(--bg); border: 1px solid var(--border); color: var(--text);" oninput="calcPavers()"></td>
+              <td style="padding: 8px 4px; border-bottom: 2px solid var(--border); color: var(--muted);" id="priceLarge">-</td>
+              <td style="padding: 8px 4px; border-bottom: 2px solid var(--border); color: var(--muted);" id="priceLargeReg">-</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px 4px 8px; font-weight: 600;">Total</td>
+              <td style="padding: 12px 4px 8px; font-weight: 600;" id="paverTotalArea">0</td>
+              <td style="padding: 12px 4px 8px; font-weight: 600; color: var(--accent); font-size: 14px;" id="paverTotalPrice">$0.00</td>
+              <td style="padding: 12px 4px 8px; font-weight: 600; font-size: 14px;" id="paverTotalPriceReg">$0.00</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px 4px 8px; border-top: 1px solid var(--border); font-weight: 600;">Total + Addons</td>
+              <td style="padding: 12px 4px 8px; border-top: 1px solid var(--border); font-weight: 600;" id="paverTotalAreaAddons">0</td>
+              <td style="padding: 12px 4px 8px; border-top: 1px solid var(--border); font-weight: 600; color: var(--accent); font-size: 16px;" id="paverTotalAddonsPrice">$0.00</td>
+              <td style="padding: 12px 4px 8px; border-top: 1px solid var(--border); font-weight: 600; font-size: 16px;" id="paverTotalAddonsPriceReg">$0.00</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Options -->
+        <div style="margin-top: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px;" class="custom-checkboxes">
+            <label class="custom-checkbox-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; text-transform: none; letter-spacing: normal; font-size: 13px; color: var(--text);">
+              <input type="checkbox" id="chkSealEff" style="display: none;" onchange="calcPavers()"> 
+              <div class="checkbox-box"></div>
+              <span>Sealer & Efflorescence</span>
+            </label>
+            <label class="custom-checkbox-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; text-transform: none; letter-spacing: normal; font-size: 13px; color: var(--text);">
+              <input type="checkbox" id="chkIns" style="display: none;" onchange="calcPavers()"> 
+              <div class="checkbox-box"></div>
+              <span>Insecticide</span>
+            </label>
+            <label class="custom-checkbox-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; text-transform: none; letter-spacing: normal; font-size: 13px; color: var(--text);">
+              <input type="checkbox" id="chkWeed" style="display: none;" onchange="calcPavers()"> 
+              <div class="checkbox-box"></div>
+              <span>Weed Repellent</span>
+            </label>
+          </div>
+
+          <div class="toggle-group" style="width: 100%;">
+            <div class="toggle-options">
+              <input type="radio" name="sandType" id="sand-super" value="Supersand" onchange="calcPavers()">
+              <label for="sand-super">Supersand</label>
+              <input type="radio" name="sandType" id="sand-g2" value="G2 Maxx" onchange="calcPavers()" checked>
+              <label for="sand-g2">G2 Maxx</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Output Column -->
@@ -784,6 +900,16 @@
   document.querySelectorAll('.service-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       chip.classList.toggle('selected');
+      
+      // Toggle Paver Calculator section visibility based on Polymeric Sanding selection
+      if (chip.dataset.value === "Polymeric Sanding") {
+        const paverCalcSection = document.getElementById('paverCalcSection');
+        if (chip.classList.contains('selected')) {
+          paverCalcSection.style.display = 'block';
+        } else {
+          paverCalcSection.style.display = 'none';
+        }
+      }
     });
   });
 
@@ -954,6 +1080,40 @@
     window.open('https://earth.google.com/web/search/' + encodeURIComponent(addr), '_blank');
   }
 
+  function previewStreetView() {
+    const addr = addressHidden.value || addressInput.value;
+    if (!addr.trim()) return;
+    
+    const svContainer = document.getElementById('streetViewContainer');
+    
+    // Toggle container
+    if (svContainer.style.display === 'block') {
+      svContainer.style.display = 'none';
+      return;
+    }
+    
+    svContainer.style.display = 'block';
+    svContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--muted); font-family: \'IBM Plex Mono\', monospace; font-size: 11px;">Loading Street View...</div>';
+
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ 'address': addr }, function(results, status) {
+      if (status === 'OK') {
+        const location = results[0].geometry.location;
+        new google.maps.StreetViewPanorama(svContainer, {
+          position: location,
+          pov: { heading: 0, pitch: 0 },
+          zoom: 1,
+          disableDefaultUI: true,
+          showRoadLabels: false,
+          linksControl: true,
+          panControl: true
+        });
+      } else {
+        svContainer.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--muted); font-family: \'IBM Plex Mono\', monospace; font-size: 11px;">Could not find Street View for this address. Make sure the address is valid.</div>';
+      }
+    });
+  }
+
 
   function getPriceRange() {
     const cMin = customMin.value.trim();
@@ -964,6 +1124,101 @@
       return lo + ' – ' + hi;
     }
     return minDisplay.textContent + ' – ' + maxDisplay.textContent;
+  }
+
+  // --- PAVER CALCULATOR ---
+  function calcPavers() {
+    const smallArea = parseFloat(document.getElementById('areaSmall').value) || 0;
+    const medArea = parseFloat(document.getElementById('areaMed').value) || 0;
+    const largeArea = parseFloat(document.getElementById('areaLarge').value) || 0;
+
+    const SumAreas = smallArea + medArea + largeArea;
+    document.getElementById('paverTotalArea').textContent = SumAreas;
+    document.getElementById('paverTotalAreaAddons').textContent = SumAreas;
+
+    if (SumAreas === 0) {
+      document.getElementById('paverTotalPrice').textContent = "$0.00";
+      document.getElementById('paverTotalPriceReg').textContent = "$0.00";
+      document.getElementById('paverTotalAddonsPrice').textContent = "$0.00";
+      document.getElementById('paverTotalAddonsPriceReg').textContent = "$0.00";
+      
+      document.getElementById('priceSmall').textContent = "-";
+      document.getElementById('priceSmallReg').textContent = "-";
+      document.getElementById('priceMed').textContent = "-";
+      document.getElementById('priceMedReg').textContent = "-";
+      document.getElementById('priceLarge').textContent = "-";
+      document.getElementById('priceLargeReg').textContent = "-";
+      return;
+    }
+
+    const SumHoursPressure = (smallArea/60 + medArea/80 + largeArea/100) + 1;
+    const SumHoursSand = (smallArea/125 + medArea/150 + largeArea/175) + 1;
+    const SumHoursSealEff = (SumAreas/200 + SumAreas/400) + 1;
+    const SumHoursWeed = SumAreas/300;
+    const SumHoursIns = SumAreas/300;
+
+    const CostG2Maxx = Math.ceil(SumAreas/65) * 42;
+    const CostSupersand = Math.ceil(SumAreas/65) * 25;
+    const CostSealant = (SumAreas/200) * 85;
+    const CostEfflor = (SumAreas/300) * 45;
+    const CostIns = Math.ceil(SumAreas/1000) * 38;
+    const CostWeed = Math.ceil(SumAreas/1000) * 35;
+
+    const isG2 = document.getElementById('sand-g2').checked;
+    
+    let basePrice = 0;
+    if (isG2) {
+      basePrice = ((SumHoursPressure + SumHoursSand)*90 + CostG2Maxx/0.41);
+    } else {
+      basePrice = ((SumHoursPressure + SumHoursSand)*90 + CostSupersand/0.41);
+    }
+
+    let addonsPrice = 0;
+    if (document.getElementById('chkSealEff').checked) {
+      addonsPrice += ((SumHoursSealEff)*90 + (CostSealant + CostEfflor)/0.41);
+    }
+    if (document.getElementById('chkIns').checked) {
+      addonsPrice += (SumHoursIns*90 + CostIns/0.41);
+    }
+    if (document.getElementById('chkWeed').checked) {
+      addonsPrice += (SumHoursWeed*90 + CostWeed/0.41);
+    }
+
+    const baseReg = basePrice / 0.9;
+    const addonsReg = (basePrice + addonsPrice) / 0.9;
+
+    document.getElementById('paverTotalPrice').textContent = "$" + Math.ceil(basePrice);
+    document.getElementById('paverTotalPriceReg').textContent = "$" + Math.ceil(baseReg);
+    document.getElementById('paverTotalAddonsPrice').textContent = "$" + Math.ceil(basePrice + addonsPrice);
+    document.getElementById('paverTotalAddonsPriceReg').textContent = "$" + Math.ceil(addonsReg);
+
+    // Calculate individual row prices based on proportion of total area
+    if (smallArea > 0) {
+      const ratio = smallArea / SumAreas;
+      document.getElementById('priceSmall').textContent = "$" + Math.ceil(basePrice * ratio);
+      document.getElementById('priceSmallReg').textContent = "$" + Math.ceil(baseReg * ratio);
+    } else {
+      document.getElementById('priceSmall').textContent = "-";
+      document.getElementById('priceSmallReg').textContent = "-";
+    }
+
+    if (medArea > 0) {
+      const ratio = medArea / SumAreas;
+      document.getElementById('priceMed').textContent = "$" + Math.ceil(basePrice * ratio);
+      document.getElementById('priceMedReg').textContent = "$" + Math.ceil(baseReg * ratio);
+    } else {
+      document.getElementById('priceMed').textContent = "-";
+      document.getElementById('priceMedReg').textContent = "-";
+    }
+
+    if (largeArea > 0) {
+      const ratio = largeArea / SumAreas;
+      document.getElementById('priceLarge').textContent = "$" + Math.ceil(basePrice * ratio);
+      document.getElementById('priceLargeReg').textContent = "$" + Math.ceil(baseReg * ratio);
+    } else {
+      document.getElementById('priceLarge').textContent = "-";
+      document.getElementById('priceLargeReg').textContent = "-";
+    }
   }
 
   // --- CALENDAR LOGIC (OAuth 2.0) ---
