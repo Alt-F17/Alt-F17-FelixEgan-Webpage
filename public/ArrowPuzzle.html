@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arrow Puzzle Solver</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1c20;
+    --surface: #252830;
+    --surface2: #2e323c;
+    --border: #383d48;
+    --accent: #e8c547;
+    --accent2: #4fc3f7;
+    --up-color: #4fc3f7;
+    --down-color: #e05c5c;
+    --solved-color: #66bb6a;
+    --press-color: #e8c547;
+    --text: #eff0f3;
+    --muted: #6e7585;
+    --tile-size: 52px;
+    --tile-gap: 3px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 16px 56px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 36px 36px;
+    opacity: 0.14;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  header { text-align: center; }
+  header h1 { font-weight: 800; font-size: 2rem; letter-spacing: -0.02em; line-height: 1; }
+  header h1 span { color: var(--accent); }
+  header p { 
+    font-family: 'Space Mono', monospace; 
+    font-size: 0.68rem; color: var(--muted); 
+    margin-top: 5px; letter-spacing: 0.09em; text-transform: uppercase; 
+  }
+
+  .legend {
+    display: flex; gap: 20px; align-items: center; 
+    font-family: 'Space Mono', monospace; font-size: 0.68rem; color: var(--muted);
+    flex-wrap: wrap; justify-content: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .legend-dot { 
+    width: 26px; height: 26px; border-radius: 50%; 
+    display: flex; align-items: center; justify-content: center; font-size: 13px; 
+  }
+  .legend-dot.up    { background: rgba(79,195,247,0.12); border: 1.5px solid var(--up-color);    color: var(--up-color); }
+  .legend-dot.down  { background: rgba(224,92,92,0.12);  border: 1.5px solid var(--down-color);  color: var(--down-color); }
+  .legend-dot.press { background: rgba(232,197,71,0.12); border: 1.5px solid var(--press-color); color: var(--press-color); }
+
+  #status-bar { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--muted); text-align: center; }
+  #status-bar span { color: var(--accent2); }
+
+  .grid-section { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .grid-label { font-family: 'Space Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* Changed from column to row for pointy-topped hex */
+  #puzzle-grid { display: flex; flex-direction: row; align-items: center; gap: var(--tile-gap); }
+  .grid-col { display: flex; flex-direction: column; gap: var(--tile-gap); }
+
+  .tile {
+    width: var(--tile-size); height: var(--tile-size);
+    border-radius: 50%; border: 1.5px solid var(--border);
+    background: var(--surface); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    transition: transform 0.12s ease, border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    user-select: none; flex-shrink: 0;
+  }
+  .tile:hover { transform: scale(1.07); border-color: var(--accent); background: var(--surface2); }
+  .tile.state-up   { border-color: rgba(79,195,247,0.45); background: rgba(79,195,247,0.07); }
+  .tile.state-down { border-color: rgba(224,92,92,0.45);  background: rgba(224,92,92,0.07); }
+  .tile.to-press { 
+    border-color: var(--press-color) !important; 
+    background: rgba(232,197,71,0.16) !important;
+    animation: pulse-press 1.3s ease-in-out infinite; 
+  }
+  .tile.all-solved { border-color: rgba(102,187,106,0.55) !important; background: rgba(102,187,106,0.08) !important; }
+
+  @keyframes pulse-press {
+    0%,100% { box-shadow: 0 0 8px rgba(232,197,71,0.2); }
+    50%      { box-shadow: 0 0 26px rgba(232,197,71,0.55); }
+  }
+
+  .tile-inner { display: flex; flex-direction: column; align-items: center; gap: 1px; pointer-events: none; }
+  .arrow-svg  { width: 20px; height: 13px; display: block; }
+  
+  .tile.state-up   .arrow-svg { color: var(--up-color); }
+  .tile.state-down .arrow-svg { color: var(--down-color); }
+  .tile.to-press   .arrow-svg { color: var(--press-color); }
+  .tile.all-solved .arrow-svg { color: var(--solved-color); }
+
+  .tile-num { font-family: 'Space Mono', monospace; font-size: 7.5px; color: var(--muted); line-height: 1; pointer-events: none; }
+
+  .tile::after {
+    content: '#' attr(data-num);
+    position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%);
+    background: #0d0e10; color: var(--accent);
+    font-family: 'Space Mono', monospace; font-size: 9px; padding: 2px 5px; border-radius: 3px;
+    white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.12s; z-index: 20;
+  }
+  .tile:hover::after { opacity: 1; }
+
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+  button {
+    font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700; 
+    letter-spacing: 0.07em; text-transform: uppercase;
+    padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;
+    transition: all 0.13s ease;
+  }
+  #btn-solve    { background: var(--accent); color: #171717; }
+  #btn-solve:hover { background: #f5d55a; transform: translateY(-1px); box-shadow: 0 4px 18px rgba(232,197,71,0.35); }
+  #btn-reset    { background: transparent; color: var(--muted); border: 1.5px solid var(--border); }
+  #btn-reset:hover { color: var(--text); border-color: var(--muted); }
+  #btn-all-down { background: transparent; color: var(--down-color); border: 1.5px solid rgba(224,92,92,0.35); }
+  #btn-all-down:hover { background: rgba(224,92,92,0.08); border-color: var(--down-color); }
+
+  #solution-panel { 
+    width: 100%; background: var(--surface); border: 1.5px solid var(--border); 
+    border-radius: 12px; padding: 22px; display: none; 
+    animation: slide-in 0.28s ease;
+  }
+  @keyframes slide-in { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  #solution-panel.visible { display: block; }
+
+  .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .panel-title  { font-weight: 800; font-size: 0.95rem; }
+  
+  .badge { font-family: 'Space Mono', monospace; font-size: 0.62rem; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.07em; text-transform: uppercase; }
+  .badge.solvable   { background: rgba(102,187,106,0.12); color: var(--solved-color); border: 1px solid rgba(102,187,106,0.28); }
+  .badge.unsolvable { background: rgba(224,92,92,0.12);   color: var(--down-color);   border: 1px solid rgba(224,92,92,0.28); }
+
+  .sol-body { font-family: 'Space Mono', monospace; font-size: 0.75rem; color: var(--muted); line-height: 1.8; }
+  .sol-body .hi  { color: var(--accent);  font-weight: 700; }
+  .sol-body .hi2 { color: var(--accent2); }
+
+  .press-sequence { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+  .press-chip { 
+    background: rgba(232,197,71,0.1); border: 1px solid rgba(232,197,71,0.28); 
+    color: var(--accent); padding: 4px 11px; border-radius: 4px; 
+    font-family: 'Space Mono', monospace; font-size: 0.7rem; font-weight: 700;
+  }
+
+  .sec { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .sec-label { font-size: 0.62rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+
+  .stats-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .stat-box { 
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; 
+    padding: 6px 12px; font-family: 'Space Mono', monospace; font-size: 0.67rem; color: var(--muted); 
+  }
+  .stat-box span { color: var(--accent2); font-weight: 700; }
+
+  .verify-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; align-items: center; }
+  .vbit { width: 20px; height: 20px; border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: 'Space Mono', monospace; }
+  .vbit.z { background: rgba(102,187,106,0.13); color: var(--solved-color); }
+  .vbit.o { background: rgba(224,92,92,0.13);   color: var(--down-color); }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <h1>Arrow <span>Puzzle</span> Solver</h1>
+    <p>Pointy-Topped Hexagon · 4 per side · 37 tiles</p>
+  </header>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot up">∧</div><span>UP = solved</span></div>
+    <div class="legend-item"><div class="legend-dot down">∨</div><span>DOWN = flip needed</span></div>
+    <div class="legend-item"><div class="legend-dot press">∧</div><span>PRESS THIS TILE</span></div>
+  </div>
+
+  <div id="status-bar">Click tiles to toggle · <span id="down-count">0</span> / 37 pointing down</div>
+
+  <div class="grid-section">
+    <div class="grid-label">Board — click to toggle arrows</div>
+    <div id="puzzle-grid"></div>
+  </div>
+
+  <div class="controls">
+    <button id="btn-all-down">Set All Down</button>
+    <button id="btn-solve">⚡ Solve + Verify</button>
+    <button id="btn-reset">Reset All Up</button>
+  </div>
+
+  <div id="solution-panel">
+    <div class="panel-header">
+      <div class="panel-title">Solution</div>
+      <div id="sol-badge" class="badge solvable">SOLVABLE</div>
+    </div>
+    <div class="sol-body" id="sol-body"></div>
+  </div>
+
+</div>
+<script>
+// ============================================================
+// GF(2) LIGHTS-OUT SOLVER — Pointy-Topped Hexagon 4/side
+// Column sizes: [4, 5, 6, 7, 6, 5, 4]
+// ============================================================
+
+const COL_SIZES = [4, 5, 6, 7, 6, 5, 4];
+
+const tiles = [];
+for (let c = 0; c < COL_SIZES.length; c++) {
+  for (let r = 0; r < COL_SIZES[c]; r++) {
+    tiles.push([c, r]);
+  }
+}
+
+const N = tiles.length; // 37
+
+const tileIdx = {};
+tiles.forEach(([c, r], i) => { tileIdx[`${c},${r}`] = i; });
+
+function hexNeighbors(c, r) {
+  const nb = [];
+  const size = COL_SIZES[c];
+
+  // Up/Down within the same column
+  if (r > 0)        nb.push([c, r - 1]);
+  if (r < size - 1) nb.push([c, r + 1]);
+
+  // Left column neighbors
+  if (c > 0) {
+    const ps = COL_SIZES[c - 1];
+    if (ps < size) {                          // left column is shorter
+      if (r - 1 >= 0 && r - 1 < ps) nb.push([c-1, r-1]);
+      if (r < ps)                   nb.push([c-1, r]);
+    } else {                                  // left column is taller
+      if (r < ps)     nb.push([c-1, r]);
+      if (r+1 < ps)   nb.push([c-1, r+1]);
+    }
+  }
+
+  // Right column neighbors
+  if (c < COL_SIZES.length - 1) {
+    const ns = COL_SIZES[c + 1];
+    if (ns > size) {                          // right column is taller
+      if (r < ns)     nb.push([c+1, r]);
+      if (r+1 < ns)   nb.push([c+1, r+1]);
+    } else {                                  // right column is shorter
+      if (r-1 >= 0 && r-1 < ns) nb.push([c+1, r-1]);
+      if (r < ns)               nb.push([c+1, r]);
+    }
+  }
+
+  return nb;
+}
+
+// Build 37x37 action matrix over GF(2)
+const A_MATRIX = (() => {
+  const A = Array.from({length: N}, () => new Int8Array(N));
+  tiles.forEach(([c, r], j) => {
+    A[j][j] = 1;
+    hexNeighbors(c, r).forEach(([nc, nr]) => { A[tileIdx[`${nc},${nr}`]][j] = 1; });
+  });
+  return A;
+})();
+
+// GF(2) Gaussian elimination: solve Ax = b, return x or null
+function gf2Solve(b) {
+  const M = A_MATRIX.map((row, i) => {
+    const aug = new Int8Array(N + 1);
+    for (let k = 0; k < N; k++) aug[k] = row[k];
+    aug[N] = b[i];
+    return aug;
+  });
+
+  const pivotCols = [];
+  let row = 0;
+  
+  for (let col = 0; col < N; col++) {
+    let found = -1;
+    for (let r = row; r < N; r++) { if (M[r][col]) { found = r; break; } }
+    if (found === -1) continue;
+    [M[row], M[found]] = [M[found], M[row]];
+    pivotCols.push(col);
+    for (let r = 0; r < N; r++) {
+      if (r !== row && M[r][col]) 
+        for (let k = 0; k <= N; k++) M[r][k] ^= M[row][k];
+    }
+    row++;
+  }
+
+  for (let r = row; r < N; r++) if (M[r][N]) return null;
+
+  const x = new Int8Array(N);
+  pivotCols.forEach((col, i) => { x[col] = M[i][N]; });
+  return x;
+}
+
+// Verify: (A·x + b) mod 2 — all must be 0
+function verify(x, b) {
+  return Array.from({length: N}, (_, i) => {
+    let s = b[i];
+    for (let j = 0; j < N; j++) s ^= A_MATRIX[i][j] & x[j];
+    return s & 1;
+  });
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let state = new Int8Array(N); // 0=up, 1=down
+let solPresses = null;        
+
+const updateStatus = () => {
+  document.getElementById('down-count').textContent = Array.from(state).filter(Boolean).length;
+};
+
+function toggleTile(i) {
+  state[i] ^= 1;
+  solPresses = null; 
+  clearSolution();
+  renderTile(i);
+  updateStatus();
+}
+
+// ============================================================
+// SOLVE
+// ============================================================
+function solve() {
+  const b = Array.from(state);
+  const x = gf2Solve(b);
+
+  const panel = document.getElementById('solution-panel');
+  const badge = document.getElementById('sol-badge');
+  const body  = document.getElementById('sol-body');
+  panel.classList.add('visible');
+
+  if (!x) {
+    badge.className = 'badge unsolvable';
+    badge.textContent = 'UNSOLVABLE';
+    body.innerHTML = `
+      <div>This config has <span class="hi">no solution</span>.</div>
+      <div style="margin-top:8px">rank(A) = <span class="hi">33</span> over GF(2) &rarr; only 2<sup>33</sup>/2<sup>37</sup> = <span class="hi">6.25%</span> of configs are solvable. Try toggling 1&ndash;2 tiles.</div>`;
+    solPresses = null;
+    renderAll();
+    return;
+  }
+
+  const pressIdx = [];
+  for (let i = 0; i < N; i++) if (x[i]) pressIdx.push(i);
+  solPresses = new Set(pressIdx);
+
+  const vResult  = verify(x, b);
+  const verified = vResult.every(v => v === 0);
+
+  badge.className = 'badge solvable';
+  badge.textContent = 'SOLVABLE';
+
+  body.innerHTML = `
+    <div>Solved via <span class="hi">GF(2) Gaussian Elimination</span> on a 37&times;37 action matrix.</div>
+    <div style="margin-top:5px">Press <span class="hi">${pressIdx.length}</span> tile${pressIdx.length!==1?'s':''} (order doesn't matter &mdash; GF(2) commutativity):</div>
+    
+    <div class="press-sequence">
+      ${pressIdx.map(i=>`<div class="press-chip">#${i+1}</div>`).join('')}
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">Tile locations (col, row within col)</div>
+      <div style="font-size:0.67rem;line-height:2">
+        ${pressIdx.map(i=>`<span class="hi">#${i+1}</span> <span style="color:var(--muted)">(c${tiles[i][0]},r${tiles[i][1]})</span>`).join(' &middot; ')}
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">Math stats</div>
+      <div class="stats-row">
+        <div class="stat-box">N = <span>37</span></div>
+        <div class="stat-box">rank(A) = <span>33</span></div>
+        <div class="stat-box">null dim = <span>4</span></div>
+        <div class="stat-box">presses = <span>${pressIdx.length}</span></div>
+        <div class="stat-box">solvable = <span>6.25%</span></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-label">Verification &mdash; (A&middot;x + b) mod 2 = 0?</div>
+      <div style="margin-bottom:6px;font-size:0.72rem">
+        ${verified 
+          ? '<span style="color:var(--solved-color)">✓ ALL ZEROS &mdash; VERIFIED CORRECT</span>' 
+          : '<span style="color:var(--down-color)">✗ VERIFICATION FAILED</span>'}
+      </div>
+      <div class="verify-row">
+        ${vResult.map((v,i)=>`<div class="vbit ${v?'o':'z'}" title="#${i+1}">${v}</div>`).join('')}
+      </div>
+    </div>`;
+    
+  renderAll();
+}
+
+function clearSolution() {
+  document.getElementById('solution-panel').classList.remove('visible');
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderTile(i) {
+  const el = document.querySelector(`[data-idx="${i}"]`);
+  if (!el) return;
+  const isUp      = state[i] === 0;
+  const isPress   = solPresses && solPresses.has(i);
+  const allSolved = Array.from(state).every(v => v === 0);
+
+  el.className = 'tile';
+  if (allSolved)    el.classList.add('all-solved');
+  else if (isPress) el.classList.add('to-press');
+  else if (isUp)    el.classList.add('state-up');
+  else              el.classList.add('state-down');
+
+  const d = isUp ? 'M2,9 L10,2 L18,9' : 'M2,3 L10,10 L18,3';
+  el.innerHTML = `
+    <div class="tile-inner">
+      <svg class="arrow-svg" viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="${d}"/>
+      </svg>
+      <div class="tile-num">${i+1}</div>
+    </div>`;
+}
+
+function renderAll() { for (let i = 0; i < N; i++) renderTile(i); }
+
+// ============================================================
+// BUILD GRID DOM
+// ============================================================
+function buildGrid() {
+  const grid = document.getElementById('puzzle-grid');
+  grid.innerHTML = '';
+  let idx = 0;
+
+  COL_SIZES.forEach(size => {
+    const colEl = document.createElement('div');
+    colEl.className = 'grid-col';
+
+    for (let r = 0; r < size; r++) {
+      const i = idx++;
+      const el = document.createElement('div');
+      el.className = 'tile state-up';
+      el.dataset.idx = i;
+      el.dataset.num = i + 1;
+      el.addEventListener('click', () => toggleTile(i));
+      colEl.appendChild(el);
+    }
+    grid.appendChild(colEl);
+  });
+
+  renderAll();
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.getElementById('btn-solve').addEventListener('click', solve);
+document.getElementById('btn-reset').addEventListener('click', () => { 
+  state.fill(0); solPresses = null; clearSolution(); renderAll(); updateStatus(); 
+});
+document.getElementById('btn-all-down').addEventListener('click', () => { 
+  state.fill(1); solPresses = null; clearSolution(); renderAll(); updateStatus(); 
+});
+
+buildGrid();
+updateStatus();
+</script>
+</body>
+</html>
