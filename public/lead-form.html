@@ -758,6 +758,9 @@
           <span>to</span>
           <input type="text" id="customMax" placeholder="e.g. 5000">
         </div>
+        <div id="priceTemplatesContainer" style="display: none; margin-top: 12px; gap: 8px; flex-wrap: wrap;">
+          <!-- dynamically populated -->
+        </div>
       </div>
 
       <!-- Paver Calculator -->
@@ -896,6 +899,108 @@
 </div>
 
 <script>
+  const servicePricing = {
+    "Int/Ext Windows": [
+      { label: "Small", min: 350, max: 450 },
+      { label: "Medium", min: 450, max: 550 },
+      { label: "Large 1", min: 550, max: 650 },
+      { label: "Large 2", min: 650, max: 750 },
+      { label: "XL", min: 800, max: 1200 }
+    ],
+    "Ext Windows": [
+      { label: "Small", min: 200, max: 300 },
+      { label: "Medium", min: 250, max: 350 },
+      { label: "Large 1", min: 300, max: 350 },
+      { label: "Large 2", min: 350, max: 400 },
+      { label: "XL", min: 450, max: 650 }
+    ],
+    "Int Gutters": [
+      { label: "Small", min: 200, max: 300 },
+      { label: "Medium", min: 250, max: 350 },
+      { label: "Large", min: 300, max: 450 },
+      { label: "XL", min: 450, max: 550 }
+    ],
+    "Ext Gutters": [
+      { label: "Small", min: 200, max: 300 },
+      { label: "Medium", min: 250, max: 350 },
+      { label: "Large", min: 300, max: 450 },
+      { label: "XL", min: 450, max: 550 }
+    ],
+    "Soffits": [
+      { label: "Small", min: 200, max: 350 },
+      { label: "Medium", min: 250, max: 400 },
+      { label: "Large", min: 300, max: 450 },
+      { label: "XL", min: 450, max: 550 }
+    ],
+    "Siding Cleaning": [
+      { label: "Average Vinyl", min: 325, max: 650 },
+      { label: "Range", min: 300, max: 1000 }
+    ],
+    "Gutter Guards": [
+      { label: "Standard", min: 1000, max: 2500 }
+    ]
+  };
+
+  function updatePriceTemplates() {
+    const container = document.getElementById('priceTemplatesContainer');
+    container.innerHTML = '';
+    
+    let activeTemplates = [];
+    document.querySelectorAll('.service-chip.selected').forEach(chip => {
+      const srv = chip.dataset.value;
+      if (servicePricing[srv]) {
+        activeTemplates.push({ service: srv, templates: servicePricing[srv] });
+      }
+    });
+
+    if (activeTemplates.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    
+    activeTemplates.forEach(group => {
+      const groupDiv = document.createElement('div');
+      groupDiv.style.width = '100%';
+      groupDiv.style.marginBottom = '6px';
+      
+      const label = document.createElement('div');
+      label.style.fontSize = '12px';
+      label.style.fontFamily = "'IBM Plex Mono', monospace";
+      label.style.fontWeight = '600';
+      label.style.color = 'var(--text)';
+      label.style.marginBottom = '6px';
+      label.textContent = group.service + " Pricing:";
+      groupDiv.appendChild(label);
+      
+      const chipsDiv = document.createElement('div');
+      chipsDiv.style.display = 'flex';
+      chipsDiv.style.flexWrap = 'wrap';
+      chipsDiv.style.gap = '6px';
+      
+      group.templates.forEach(t => {
+        const btn = document.createElement('div');
+        btn.className = 'service-chip';
+        btn.style.fontSize = '12px';
+        btn.style.fontFamily = "'IBM Plex Mono', monospace";
+        btn.style.padding = '4px 8px';
+        btn.style.display = 'inline-block';
+        btn.style.margin = '0';
+        btn.innerText = `${t.label}: $${t.min}-$${t.max}`;
+        btn.onclick = () => {
+          document.getElementById('customMin').value = t.min;
+          document.getElementById('customMax').value = t.max;
+        };
+        chipsDiv.appendChild(btn);
+      });
+      
+      groupDiv.appendChild(chipsDiv);
+      container.appendChild(groupDiv);
+    });
+  }
+
   // Service option toggle logic
   document.querySelectorAll('.service-chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -910,6 +1015,8 @@
           paverCalcSection.style.display = 'none';
         }
       }
+
+      updatePriceTemplates();
     });
   });
 
@@ -1090,11 +1197,11 @@
 
 
   function getPriceRange() {
-    const cMin = customMin.value.trim();
-    const cMax = customMax.value.trim();
+    const cMin = document.getElementById('customMin').value.trim();
+    const cMax = document.getElementById('customMax').value.trim();
     if (cMin || cMax) {
-      const lo = cMin ? '$' + cMin : '?';
-      const hi = cMax ? '$' + cMax : '?';
+      const lo = cMin ? '$' + cMin : minDisplay.textContent;
+      const hi = cMax ? '$' + cMax : maxDisplay.textContent;
       return lo + ' – ' + hi;
     }
     return minDisplay.textContent + ' – ' + maxDisplay.textContent;
@@ -1122,6 +1229,8 @@
       document.getElementById('priceMedReg').textContent = "-";
       document.getElementById('priceLarge').textContent = "-";
       document.getElementById('priceLargeReg').textContent = "-";
+      document.getElementById('customMin').value = "";
+      document.getElementById('customMax').value = "";
       return;
     }
 
@@ -1165,6 +1274,10 @@
     document.getElementById('paverTotalPriceReg').textContent = "$" + Math.ceil(baseReg);
     document.getElementById('paverTotalAddonsPrice').textContent = "$" + Math.ceil(basePrice + addonsPrice);
     document.getElementById('paverTotalAddonsPriceReg').textContent = "$" + Math.ceil(addonsReg);
+
+    // Auto-update custom price range directly from Paver Calculator
+    document.getElementById('customMin').value = Math.ceil(basePrice + addonsPrice);
+    document.getElementById('customMax').value = Math.ceil(addonsReg);
 
     // Calculate individual row prices based on proportion of total area
     if (smallArea > 0) {
