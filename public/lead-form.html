@@ -508,7 +508,7 @@
     gap: 12px;
     position: sticky;
     top: 40px;
-    height: calc(90vh - 40px); /* Tall dashboard panel container */
+    height: calc(100vh - 80px); /* Fill the full screen height available */
   }
 
   .output-section {
@@ -563,7 +563,8 @@
     font-size: 14px;
     line-height: 1.7;
     padding: 20px;
-    resize: none; /* Disable resize since it fills the space naturally */
+    resize: vertical;
+    min-height: 300px;
     outline: none;
     margin-bottom: 16px;
   }
