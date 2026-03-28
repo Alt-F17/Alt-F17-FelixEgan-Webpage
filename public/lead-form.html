@@ -642,7 +642,12 @@
         <div class="row">
           <div class="field">
             <label>Phone Number</label>
-            <input type="tel" id="phone" placeholder="(514) 000-0000">
+            <div style="display: flex; gap: 0;">
+              <input type="tel" id="phone" placeholder="(514) 000-0000" style="flex: 1; border-right: none;">
+              <button type="button" class="maps-btn" title="Call" onclick="callPhone()" style="padding: 0 10px; border-left: 1px solid var(--border);">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              </button>
+            </div>
           </div>
           <div class="field">
             <label>Email</label>
@@ -846,8 +851,11 @@
     <!-- Output Column -->
     <div class="output-column">
 
-      <!-- Booleans (Moved here) -->
+      <!-- Notes -->
       <div class="section" style="margin-bottom: 0;">
+        <div class="section-label" style="margin-bottom: 8px;">Notes</div>
+        <textarea id="notes" placeholder="Enter additional notes here..." style="width: 100%; height: 60px; resize: vertical; margin-bottom: 12px;"></textarea>
+
         <div class="section-label">Flags</div>
         <div class="toggle-row">
           <div class="toggle-group">
@@ -1270,19 +1278,19 @@
     const baseReg = basePrice / 0.9;
     const addonsReg = (basePrice + addonsPrice) / 0.9;
 
-    document.getElementById('paverTotalPrice').textContent = "$" + Math.ceil(basePrice);
+    document.getElementById('paverTotalPrice').textContent = "$" + Math.round(basePrice);
     document.getElementById('paverTotalPriceReg').textContent = "$" + Math.ceil(baseReg);
-    document.getElementById('paverTotalAddonsPrice').textContent = "$" + Math.ceil(basePrice + addonsPrice);
+    document.getElementById('paverTotalAddonsPrice').textContent = "$" + Math.round(basePrice + addonsPrice);
     document.getElementById('paverTotalAddonsPriceReg').textContent = "$" + Math.ceil(addonsReg);
 
     // Auto-update custom price range directly from Paver Calculator
-    document.getElementById('customMin').value = Math.ceil(basePrice + addonsPrice);
+    document.getElementById('customMin').value = Math.round(basePrice + addonsPrice);
     document.getElementById('customMax').value = Math.ceil(addonsReg);
 
     // Calculate individual row prices based on proportion of total area
     if (smallArea > 0) {
       const ratio = smallArea / SumAreas;
-      document.getElementById('priceSmall').textContent = "$" + Math.ceil(basePrice * ratio);
+      document.getElementById('priceSmall').textContent = "$" + Math.round(basePrice * ratio);
       document.getElementById('priceSmallReg').textContent = "$" + Math.ceil(baseReg * ratio);
     } else {
       document.getElementById('priceSmall').textContent = "-";
@@ -1291,7 +1299,7 @@
 
     if (medArea > 0) {
       const ratio = medArea / SumAreas;
-      document.getElementById('priceMed').textContent = "$" + Math.ceil(basePrice * ratio);
+      document.getElementById('priceMed').textContent = "$" + Math.round(basePrice * ratio);
       document.getElementById('priceMedReg').textContent = "$" + Math.ceil(baseReg * ratio);
     } else {
       document.getElementById('priceMed').textContent = "-";
@@ -1300,7 +1308,7 @@
 
     if (largeArea > 0) {
       const ratio = largeArea / SumAreas;
-      document.getElementById('priceLarge').textContent = "$" + Math.ceil(basePrice * ratio);
+      document.getElementById('priceLarge').textContent = "$" + Math.round(basePrice * ratio);
       document.getElementById('priceLargeReg').textContent = "$" + Math.ceil(baseReg * ratio);
     } else {
       document.getElementById('priceLarge').textContent = "-";
@@ -1633,6 +1641,7 @@
     const phone = document.getElementById('phone').value.trim() || '—';
     const email = document.getElementById('email').value.trim() || '—';
     const address = (addressHidden.value || addressInput.value).trim() || '—';
+    const notes = document.getElementById('notes').value.trim();
 
     const selectedChips = Array.from(document.querySelectorAll('.service-chip.selected'));
     const selected = selectedChips.map(c => c.getAttribute('data-value'));
@@ -1668,9 +1677,16 @@ Address: ${address}
 Service: ${service}
 PR: ${pr}
 DM? ${dm}
-10%? ${ten}`;
+10%? ${ten}` + (notes ? `\n---\nNotes:\n${notes}` : '');
 
     document.getElementById('output').value = out;
+  }
+
+  function callPhone() {
+    const phoneNumber = document.getElementById('phone').value.trim();
+    if (phoneNumber && phoneNumber !== '—') {
+      window.location.href = 'tel:' + encodeURIComponent(phoneNumber);
+    }
   }
 
   function bookEstimate() {
