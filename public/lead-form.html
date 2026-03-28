@@ -46,7 +46,8 @@
     color: var(--text);
     font-family: 'IBM Plex Sans', sans-serif;
     font-weight: 300;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     align-items: flex-start;
     justify-content: center;
@@ -65,7 +66,20 @@
     grid-template-columns: 1fr 1fr;
     gap: 40px;
     align-items: start;
-    min-height: calc(100vh - 150px);
+    height: 100%;
+  }
+
+  /* Two independently scrollable columns, hiding the scrollbar */
+  .form-column, .output-column {
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding-bottom: 20px; /* little padding so bottom elements aren't cut off */
+  }
+
+  .form-column::-webkit-scrollbar, .output-column::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
   }
 
   /* For smaller screens, revert to single column */
@@ -75,6 +89,13 @@
     }
     body {
       padding: 24px;
+      overflow: auto; /* Allow normal scrolling on mobile */
+      height: auto;
+      min-height: 100vh;
+    }
+    .form-column, .output-column {
+      height: auto;
+      overflow-y: visible;
     }
   }
 
@@ -507,9 +528,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    position: sticky;
-    top: 40px;
-    height: calc(100vh - 80px); /* Fill the full screen height available */
+    /* Height and overflow handled in the shared column class above */
   }
 
   .output-section {
