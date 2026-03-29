@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Simon Lead Form Autofill",
+  "version": "6.2",
+  "description": "Extracts lead details from Simon and autofills the Felix Egan lead form.",
+  "icons": {
+    "16": "16.png",
+    "48": "48.png",
+    "128": "128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Simon Lead Autofill",
+    "default_icon": "128.png"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://simon.studentworks.com/*",
+        "https://app.getleadflow.io/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["128.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

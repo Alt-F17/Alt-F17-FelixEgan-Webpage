@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { 
+      font-family: 'IBM Plex Sans', sans-serif; 
+      width: 260px; 
+      padding: 15px; 
+      margin: 0; 
+      background: #080808; 
+      color: #fff; 
+      text-align: center; 
+    }
+    h3 { 
+      margin-top: 0; 
+      color: #4abcde; 
+      font-size: 16px; 
+      margin-bottom: 10px; 
+      border-bottom: 1px solid #222;
+      padding-bottom: 10px;
+    }
+    .info { 
+      font-size: 13px; 
+      color: #aaa; 
+      margin-bottom: 15px; 
+      word-break: break-word; 
+      min-height: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    button { 
+      background: #4abcde; 
+      color: #000; 
+      border: none; 
+      padding: 10px; 
+      width: 100%; 
+      border-radius: 4px; 
+      font-weight: bold; 
+      cursor: pointer; 
+      transition: 0.2s; 
+    }
+    button:hover { 
+      background: #3baabb; 
+    }
+    button:disabled { 
+      background: #222; 
+      color: #555; 
+      cursor: not-allowed; 
+    }
+    .manual-btn { 
+      background: transparent; 
+      border: 1px solid #3c3c3c; 
+      color: #aaa; 
+      margin-top: 10px; 
+      padding: 6px; 
+      font-size: 11px; 
+    }
+    .manual-btn:hover { 
+      background: #111;
+      color: #fff; 
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 10px;
+      border-radius: 8px; /* Optional: rounds the corners of your logo */
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <img src="icon.png" alt="Logo" class="logo" onerror="this.style.display='none'">
+  <h3>Simon Lead Autofill</h3>
+  <div id="status" class="info">Scanning page...</div>
+  <button id="fillBtn" disabled>Open Lead Form</button>
+  <button id="manualBtn" class="manual-btn">Force Manual Scan</button>
+  <script src="popup.js"></script>
+</body>
+</html>
