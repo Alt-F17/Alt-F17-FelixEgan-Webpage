@@ -1,0 +1,1 @@
+const fs = require('fs'); const html = fs.readFileSync('public/getleadflowDOM.html', 'utf8'); const results = [...html.matchAll(/placeholder="([^"]+)"[^>]*value="([^"]*)"/g)]; console.log(results.map(r => r[1] + ' : ' + r[2]));

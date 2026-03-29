@@ -99,6 +99,96 @@
     }
   }
 
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 320px;
+    height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+  }
+  .sidebar.open {
+    left: 0;
+  }
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .sidebar-overlay.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .sidebar-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 998;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sidebar-btn:hover { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+  .client-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    font-size: 13px;
+  }
+  .client-card:hover { border-color: var(--accent); }
+  .client-name { font-weight: 600; margin-bottom: 4px; }
+  .client-detail { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+
+  /* Login Overlay */
+  #login-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: var(--bg);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .login-box {
+    background: var(--surface);
+    padding: 40px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+    width: 320px;
+  }
+  .login-box input { margin-bottom: 16px; text-align: center; font-size: 16px; letter-spacing: 0.1em; }
+  .login-box button { width: 100%; border-radius: 4px; }
+
   .section {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -643,6 +733,44 @@
 </style>
 </head>
 <body>
+
+<!-- Login Overlay -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 500; margin-bottom: 20px; color: var(--accent);">Authentication Required</div>
+    <input type="password" id="login-password" placeholder="Password" onkeydown="if(event.key === 'Enter') checkLogin()">
+    <button class="btn-generate" onclick="checkLogin()">Login</button>
+    <div id="login-error" style="color: var(--danger); font-size: 11px; margin-top: 10px; display: none;">Incorrect password</div>
+  </div>
+</div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+  <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; color: var(--accent);">Dashboard Menu</div>
+    <button onclick="toggleSidebar()" style="background:none; border:none; color:var(--text); cursor:pointer; font-size: 20px;">&times;</button>
+  </div>
+  
+  <div class="section-label" style="margin-bottom: 0;">Scripts</div>
+  <div id="scripts-container" style="color: var(--muted); font-size: 12px; font-style: italic;">
+    (No scripts available)
+  </div>
+
+  <div class="section-label" style="margin-bottom: 0; margin-top: 12px;">Past Clients</div>
+  <input type="text" id="clientSearch" placeholder="Search clients..." style="font-size: 11px; padding: 6px; margin-bottom: 12px;" oninput="renderClients()">
+  <div id="clients-container">
+    <!-- Client cards injected here -->
+  </div>
+</div>
+
+<!-- Sidebar Toggle Button -->
+<button class="sidebar-btn" onclick="toggleSidebar()" title="Toggle Menu">
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+</button>
+
 <div class="container">
 
   <div class="dashboard-grid">
@@ -928,6 +1056,89 @@
 </div>
 
 <script>
+  async function checkLogin() {
+    const pwdInput = document.getElementById("password-input").value;
+    
+    // Simple SHA-256 hash checking to avoid plain-text password in source
+    const encoder = new TextEncoder();
+    const data = encoder.encode(pwdInput);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    if (hashHex === "13a9ebc9cfae3764c835558652a41e7e7b2de3c040d517981ee408936306ed1f") {
+      document.cookie = "swwc_auth=true; path=/; max-age=31536000"; // 1 year cookie
+      document.getElementById("login-overlay").style.display = "none";
+    } else {
+      alert("Incorrect password");
+    }
+  }
+
+  // Check auth on load
+  document.addEventListener("DOMContentLoaded", () => {
+    if (document.cookie.split(';').some((item) => item.trim().startsWith('swwc_auth='))) {
+      document.getElementById("login-overlay").style.display = "none";
+    }
+    renderClients();
+  });
+
+  // Handle Enter key for login
+  document.getElementById("password-input")?.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      checkLogin();
+    }
+  });
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('open');
+  }
+
+  function renderClients() {
+    const clientList = document.getElementById('client-list');
+    let pastClients = JSON.parse(localStorage.getItem('pastClients') || "[]");
+    
+    // Sort clients so newest are at the top (optional, assuming appended to end)
+    pastClients.reverse();
+
+    if (pastClients.length === 0) {
+      clientList.innerHTML = "<div style='color: var(--text-color); font-size: 14px;'>No clients saved yet.</div>";
+      return;
+    }
+
+    clientList.innerHTML = pastClients.map(client => `
+      <div class="client-card">
+        <div><strong>Name:</strong> ${client.first_name || ''} ${client.last_name || ''}</div>
+        <div><strong>Phone:</strong> ${client.phone || ''}</div>
+        <div><strong>Email:</strong> ${client.email || ''}</div>
+      </div>
+    `).join('');
+  }
+
+  function saveClient(clientData) {
+    if (!clientData.first_name || !clientData.last_name) return; // Need at least a name
+    
+    let pastClients = JSON.parse(localStorage.getItem('pastClients') || "[]");
+    
+    // Check if client exists
+    const existingIndex = pastClients.findIndex(c => 
+      c.first_name.toLowerCase() === clientData.first_name.toLowerCase() && 
+      c.last_name.toLowerCase() === clientData.last_name.toLowerCase()
+    );
+
+    if (existingIndex !== -1) {
+      // Update existing client with any new info (merge)
+      pastClients[existingIndex] = { ...pastClients[existingIndex], ...clientData };
+    } else {
+      // Add new client
+      pastClients.push(clientData);
+    }
+    
+    localStorage.setItem('pastClients', JSON.stringify(pastClients));
+    renderClients(); // Update UI if sidebar is open
+  }
+
   const servicePricing = {
     "Int/Ext Windows": [
       { label: "Small", min: 350, max: 450 },
@@ -1117,6 +1328,18 @@
     if (params.has('firstName') || params.has('phone')) {
       openedFromExtension = true;
       document.getElementById('simonBtnText').textContent = 'New Lead';
+      
+      // Save client info coming from extension
+      const clientData = {
+        first_name: params.get('firstName') || '',
+        last_name: params.get('lastName') || '',
+        phone: params.get('phone') || '',
+        email: params.get('email') || '',
+        address: params.get('address') || '',
+        city: params.get('city') || '',
+        zip: params.get('zip') || ''
+      };
+      saveClient(clientData);
     }
 
     function setVal(id, param) {
