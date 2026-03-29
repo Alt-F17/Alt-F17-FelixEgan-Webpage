@@ -3,18 +3,23 @@ import { useState, useEffect } from 'react';
 import { Link as ScrollLink } from 'react-scroll';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { name: 'Home', to: 'hero' },
-  { name: 'About', to: 'about' },
-  { name: 'Skills', to: 'skills' },
-  { name: 'Projects', to: 'projects' },
-  { name: 'Contact', to: 'contact' },
-];
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { LanguageToggle } from "@/components/site/LanguageToggle";
+import { portfolioCopy } from "@/content/portfolioCopy";
 
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { locale } = useLanguage();
+  const copy = portfolioCopy.header.nav;
+
+  const navLinks = [
+    { name: copy.home[locale], to: 'hero' },
+    { name: copy.about[locale], to: 'about' },
+    { name: copy.skills[locale], to: 'skills' },
+    { name: copy.projects[locale], to: 'projects' },
+    { name: copy.contact[locale], to: 'contact' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -59,18 +64,26 @@ export const Header = () => {
               {link.name}
             </ScrollLink>
           ))}
+          <a
+            href="/studio"
+            className="text-space-text hover:text-[#3b82f6] transition-colors"
+          >
+            {copy.studio[locale]}
+          </a>
+          <LanguageToggle />
           <Button
             variant="outline"
             className="border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white"
           >
             <a href="/CV.pdf" target="_blank" rel="noopener noreferrer">
-              Resume
+              {copy.resume[locale]}
             </a>
           </Button>
         </nav>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center gap-2">
+          <LanguageToggle />
           <Button
             variant="ghost"
             className="text-white"
@@ -123,12 +136,18 @@ export const Header = () => {
                 {link.name}
               </ScrollLink>
             ))}
+            <a href="/studio" className="block text-space-text hover:text-[#3b82f6] py-2">
+              {copy.studio[locale]}
+            </a>
+            <div className="py-1">
+              <LanguageToggle />
+            </div>
             <Button
               variant="outline"
               className="w-full border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white mt-2"
             >
               <a href="/resume_template.pdf" target="_blank" rel="noopener noreferrer">
-                Resume
+                {copy.resume[locale]}
               </a>
             </Button>
           </div>

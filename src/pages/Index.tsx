@@ -1,38 +1,20 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import SpaceBackground from '@/components/three/SpaceBackground';
-import Hero from '@/components/sections/Hero';
-import About from '@/components/sections/About';
-import Skills from '@/components/sections/Skills';
-import Projects from '@/components/sections/Projects';
-import Contact from '@/components/sections/Contact';
-import ScrambledText from '@/components/ScrambledText';
+import { useState } from "react";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import SpaceBackground from "@/components/three/SpaceBackground";
+import Hero from "@/components/sections/Hero";
+import About from "@/components/sections/About";
+import Skills from "@/components/sections/Skills";
+import Projects from "@/components/sections/Projects";
+import Contact from "@/components/sections/Contact";
+import ScrambledText from "@/components/ScrambledText";
 
-// Store loading state in sessionStorage to persist between page navigations
 const getInitialLoadingState = () => {
-  // Check if we're coming back from a subpage
-  const fromSubpage = sessionStorage.getItem('visitedSubpage') === 'true';
-  
-  // If we're coming from a subpage, don't show loading
-  // Otherwise check if we've already loaded once in this session
-  if (fromSubpage) {
-    return false;
-  } else {
-    return true; // Always show loading on direct page load or refresh
-  }
+  return sessionStorage.getItem("homeAnimationPlayed") !== "true";
 };
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(getInitialLoadingState);
-  const location = useLocation();
-
-  useEffect(() => {
-    // Mark that we're on the main page now
-    sessionStorage.setItem('visitedSubpage', 'false');
-    // loading will be dismissed via scramble onComplete
-  }, []);
 
   return (
     <div className="relative">
@@ -46,7 +28,10 @@ const Index = () => {
               scrambleChars={["⣀","⣤","⣶","⣿","⠿","⠛","⠉"]}
               duration={3.0}
               speed={75}
-              onComplete={() => setIsLoading(false)}
+              onComplete={() => {
+                sessionStorage.setItem("homeAnimationPlayed", "true");
+                setIsLoading(false);
+              }}
             />
              <div className="w-48 h-1 bg-space-dark mx-auto rounded-full overflow-hidden">
                <div className="h-full bg-[#3b82f6] animate-pulse"></div>

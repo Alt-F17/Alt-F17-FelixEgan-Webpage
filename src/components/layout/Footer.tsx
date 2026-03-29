@@ -1,8 +1,12 @@
 import { Link } from 'react-scroll';
 import { FaGithub, FaInstagram, FaDiscord, FaEnvelope } from 'react-icons/fa';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { portfolioCopy } from '@/content/portfolioCopy';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { locale } = useLanguage();
+  const copy = portfolioCopy.footer;
   
   return (
     <footer className="bg-space-darker py-8">
@@ -15,12 +19,12 @@ export const Footer = () => {
               </h2>
             </Link>
             <p className="text-space-text/70">
-              Python Developer & ML Enthusiast based in Montreal, creating innovative solutions to real-world problems.
+              {copy.description[locale]}
             </p>
           </div>
           
           <div>
-            <h3 className="text-lg font-medium mb-4">Quick Links</h3>
+            <h3 className="text-lg font-medium mb-4">{copy.quickLinks[locale]}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -30,7 +34,7 @@ export const Footer = () => {
                   duration={500}
                   className="text-space-text/70 hover:text-space-accent transition-colors cursor-pointer"
                 >
-                  About Me
+                  {copy.aboutMe[locale]}
                 </Link>
               </li>
               <li>
@@ -41,7 +45,7 @@ export const Footer = () => {
                   duration={500}
                   className="text-space-text/70 hover:text-space-accent transition-colors cursor-pointer"
                 >
-                  Skills
+                  {copy.skills[locale]}
                 </Link>
               </li>
               <li>
@@ -52,7 +56,7 @@ export const Footer = () => {
                   duration={500}
                   className="text-space-text/70 hover:text-space-accent transition-colors cursor-pointer"
                 >
-                  Projects
+                  {copy.projects[locale]}
                 </Link>
               </li>
               <li>
@@ -63,14 +67,14 @@ export const Footer = () => {
                   duration={500}
                   className="text-space-text/70 hover:text-space-accent transition-colors cursor-pointer"
                 >
-                  Contact
+                  {copy.contact[locale]}
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-lg font-medium mb-4">Connect</h3>
+            <h3 className="text-lg font-medium mb-4">{copy.connect[locale]}</h3>
             <div className="flex space-x-4">
               <a href="https://github.com/Alt-F17" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-space-darker border-4 border-space-accent/30 flex items-center justify-center text-space-accent hover:bg-space-accent hover:text-white transition-colors">
                 <FaGithub className="w-5 h-5" />

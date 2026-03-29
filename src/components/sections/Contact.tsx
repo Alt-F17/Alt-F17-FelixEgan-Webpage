@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { FaGithub, FaInstagram, FaDiscord, FaEnvelope, FaPaypal, FaCoffee } from 'react-icons/fa';
 import { SiHackthebox } from 'react-icons/si';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { portfolioCopy } from '@/content/portfolioCopy';
 
 export const Contact = () => {
   const { toast } = useToast();
@@ -13,6 +15,8 @@ export const Contact = () => {
   const contactRef = useRef<HTMLDivElement>(null);
   const socialRef = useRef<HTMLDivElement>(null);
   const supportRef = useRef<HTMLDivElement>(null);
+  const { locale } = useLanguage();
+  const copy = portfolioCopy.contact;
   
   const [formData, setFormData] = useState({
     name: '',
@@ -42,8 +46,8 @@ export const Contact = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     toast({
-      title: "Message Sent!",
-      description: "Thanks for reaching out. I'll get back to you soon.",
+      title: copy.sentTitle[locale],
+      description: copy.sentBody[locale],
     });
     
     if (formRef.current) {
@@ -79,9 +83,9 @@ export const Contact = () => {
     <section id="contact" className="section pb-24">
       <div className="container-padding max-w-5xl mx-auto">
         <h2 className="section-title">
-          <span className="text-space-accent">/</span> Contact
+          <span className="text-space-accent">/</span> {copy.title[locale]}
         </h2>
-        <p className="section-subtitle">Let's get in touch</p>
+        <p className="section-subtitle">{copy.subtitle[locale]}</p>
 
         <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mt-8">
           <div 
@@ -89,16 +93,16 @@ export const Contact = () => {
             className="opacity-0 transform translate-y-4 transition-all duration-1000 md:col-span-3 w-full"
           >
             <Card className="bg-space-darker border-[#3b82f6]/20 border-4 w-full h-full">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-medium mb-6">Send me a message</h3>
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-medium mb-6">{copy.sendMessage[locale]}</h3>
                 <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col h-full space-y-4">
                   <div className="space-y-2">
                     <label htmlFor="name" className="block text-sm font-medium">
-                      Your Name
+                      {copy.yourName[locale]}
                     </label>
                     <Input
                       id="name"
-                      placeholder="Your Name"
+                      placeholder={copy.yourName[locale]}
                       value={formData.name}
                       onChange={(e) => handleInputChange('name', e.target.value)}
                       required
@@ -108,12 +112,12 @@ export const Contact = () => {
                   
                   <div className="space-y-2">
                     <label htmlFor="email" className="block text-sm font-medium">
-                      Your Email
+                      {copy.yourEmail[locale]}
                     </label>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="yourname@example.com"
+                      placeholder="name@example.com"
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       required
@@ -123,11 +127,11 @@ export const Contact = () => {
                   
                   <div className="space-y-2 flex-1">
                     <label htmlFor="message" className="block text-sm font-medium">
-                      Message
+                      {copy.message[locale]}
                     </label>
                     <Textarea
                       id="message"
-                      placeholder="Feel free to reach out with any questions or just to say hi!"
+                      placeholder={copy.messagePlaceholder[locale]}
                       value={formData.message}
                       onChange={(e) => handleInputChange('message', e.target.value)}
                       required
@@ -154,7 +158,7 @@ export const Contact = () => {
                         : 'bg-gray-500 text-gray-300 cursor-not-allowed'
                     }`}
                   >
-                    Send Message
+                    {copy.send[locale]}
                   </Button>
                 </form>
               </CardContent>
@@ -166,20 +170,20 @@ export const Contact = () => {
             className="opacity-0 transform translate-y-4 transition-all duration-1000 delay-200 md:col-span-2 w-full"
           >
             <Card className="bg-space-darker border-[#3b82f6]/20 border-4 h-full w-full">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-medium mb-6">Connect with me</h3>
+              <CardContent className="p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-medium mb-6">{copy.connect[locale]}</h3>
                 
-                <div className="space-y-6">
+                <div className="space-y-3 sm:space-y-6">
                   {socials.map((social) => (
                     <a
                       key={social.name}
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center p-4 border-4 border-space-accent/20 rounded-md hover:bg-space-accent/10 transition-all duration-300"
+                      className="flex items-center p-3 sm:p-4 border-4 border-space-accent/20 rounded-md hover:bg-space-accent/10 transition-all duration-300"
                     >
                       {/* Icon */}
-                      <div className="w-12 h-12 rounded-full bg-space-accent/20 flex items-center justify-center mr-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-space-accent/20 flex items-center justify-center mr-3 sm:mr-4">
                         {social.icon === 'github' && <FaGithub className="w-5 h-5 text-space-accent" />}
                         {social.icon === 'instagram' && <FaInstagram className="w-5 h-5 text-space-accent" />}
                         {social.icon === 'discord' && <FaDiscord className="w-5 h-5 text-space-accent" />}
@@ -206,14 +210,14 @@ export const Contact = () => {
           className="opacity-0 transform translate-y-4 transition-all duration-1000 delay-400 mt-6 max-w-5xl mx-auto"
         >
           <Card className="bg-space-darker border-[#3b82f6]/20 border-4 w-full">
-            <CardContent className="p-6">
-              <h3 className="text-lg font-medium mb-4">Support My Work</h3>
+            <CardContent className="p-4 sm:p-6">
+              <h3 className="text-lg font-medium mb-4">{copy.support[locale]}</h3>
               <div className="flex flex-wrap gap-6 justify-center">
                 <a
                    href="https://paypal.me/altf17"
                    target="_blank"
                    rel="noopener noreferrer"
-                   className="flex items-center text-space-text hover:text-space-accent transition-colors"
+                   className="flex items-center text-space-text hover:text-space-accent transition-colors text-sm sm:text-base"
                  >
                   <FaPaypal className="w-5 h-5 mr-2 text-space-accent" />
                    <span className="mr-2">PayPal:</span>
@@ -223,10 +227,10 @@ export const Contact = () => {
                    href="https://coff.ee/alt.f17"
                    target="_blank"
                    rel="noopener noreferrer"
-                   className="flex items-center text-space-text hover:text-space-accent transition-colors"
+                   className="flex items-center text-space-text hover:text-space-accent transition-colors text-sm sm:text-base"
                  >
                   <FaCoffee className="w-5 h-5 mr-2 text-space-accent" />
-                   <span className="mr-2">Buy Me A Coffee:</span>
+                   <span className="mr-2">{copy.buyCoffee[locale]}</span>
                    <span className="text-space-accent">@alt-f17</span>
                  </a>
               </div>

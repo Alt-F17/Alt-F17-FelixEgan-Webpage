@@ -1,6 +1,8 @@
 import { useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { FaPython, FaHtml5, FaLinux, FaGitAlt, FaUserSecret, FaMicrochip } from 'react-icons/fa';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { portfolioCopy } from '@/content/portfolioCopy';
 
 const skills = [
 	{ name: 'Python Development', icon: FaPython },
@@ -14,6 +16,8 @@ const skills = [
 export const Skills = () => {
 	const sectionRef = useRef<HTMLDivElement>(null);
 	const cardsRef = useRef<HTMLDivElement[]>([]);
+	const { locale } = useLanguage();
+	const copy = portfolioCopy.skills;
 
 	const addToCardsRef = (el: HTMLDivElement) => {
 		if (el && !cardsRef.current.includes(el)) {
@@ -44,9 +48,9 @@ export const Skills = () => {
 		<section id="skills" className="section" ref={sectionRef}>
 			<div className="container-padding max-w-5xl mx-auto">
 				<h2 className="section-title">
-					<span className="text-space-accent">/</span> Skills & Interests
+					<span className="text-space-accent">/</span> {copy.title[locale]}
 				</h2>
-				<p className="section-subtitle">What I bring to the table</p>
+				<p className="section-subtitle">{copy.subtitle[locale]}</p>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					{skills.map((skill, index) => (
@@ -76,25 +80,12 @@ export const Skills = () => {
 					<Card className="bg-space-darker border-space-accent/20 lg:border-4">
 						<CardContent className="p-6">
 							<h3 className="text-xl font-medium mb-4">
-								Current Focus & Aspirations
+								{copy.focusTitle[locale]}
 							</h3>
 							<ul className="space-y-3 list-disc list-inside text-space-text/80">
-								<li>
-									Working on PLUTO - a personal AI assistant that's local,
-									open-source, customizable, and privacy-focused.
-								</li>
-								<li>
-									Daily work on improving ethical hacking and cybersecurity
-									skills through HackTheBox Academy.
-								</li>
-								<li>
-									Aspiring to become a part-time ethical hacker (HTB Academy
-									certified) and machine learning engineer.
-								</li>
-								<li>
-									Active in Dawson College community, working on founding
-									Dawson Coding & DawsHack Dawson Hackathon clubs.
-								</li>
+								{copy.focusItems[locale].map((item, index) => (
+									<li key={index}>{item}</li>
+								))}
 							</ul>
 						</CardContent>
 					</Card>

@@ -72,8 +72,8 @@ export default {
 				}
 			},
 		   fontFamily: {
-			   'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
-			   'mono': ['Noto Sans Mono', 'JetBrains Mono', 'monospace'],
+			   'sans': ['Sora', 'ui-sans-serif', 'system-ui'],
+			   'mono': ['IBM Plex Mono', 'ui-monospace', 'monospace'],
 		   },
 			keyframes: {
 				'accordion-down': {

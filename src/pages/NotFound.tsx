@@ -1,26 +1,17 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Seo } from "@/components/seo/Seo";
 
 const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-  }, [location.pathname]);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
-      </div>
-    </div>
+    <main className="mx-auto flex min-h-[70vh] w-full max-w-3xl flex-col items-center justify-center px-4 text-center">
+      <Seo title="Page not found | Felix Egan Studio" description="Requested page was not found." canonicalPath="/404" />
+      <p className="text-sm uppercase tracking-[0.14em] text-zinc-500">404</p>
+      <h1 className="mt-2 text-3xl font-semibold text-zinc-100">Page not found</h1>
+      <p className="mt-3 text-zinc-400">The page you requested does not exist or has moved.</p>
+      <Link to="/" className="mt-6 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500">
+        Return home
+      </Link>
+    </main>
   );
 };
 
