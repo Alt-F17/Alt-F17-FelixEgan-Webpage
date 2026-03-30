@@ -22,7 +22,11 @@ async function checkLogin() {
     if (loginOverlay && document.cookie.split(';').some((item) => item.trim().startsWith('swwc_auth='))) {
       loginOverlay.style.display = "none";
     }
-    renderClients();
+    try {
+      renderClients();
+    } catch (err) {
+      console.error('renderClients failed on DOMContentLoaded:', err);
+    }
   });
 
   // Handle Enter key for login
@@ -39,7 +43,15 @@ async function checkLogin() {
   }
 
   function renderClients() {
-    const clientList = document.getElementById('clients-container') || document.getElementById('client-list');
+    let clientList = document.getElementById('clients-container') || document.getElementById('client-list');
+    if (!clientList) {
+      const sidebar = document.getElementById('sidebar');
+      if (sidebar) {
+        clientList = document.createElement('div');
+        clientList.id = 'clients-container';
+        sidebar.appendChild(clientList);
+      }
+    }
     if (!clientList) return;
     let pastClients = JSON.parse(localStorage.getItem('pastClients') || "[]");
     
@@ -290,7 +302,8 @@ async function checkLogin() {
       if (params.has(param)) {
         let val = params.get(param);
         if (val === '-') val = '';
-        document.getElementById(id).value = val;
+        const el = document.getElementById(id);
+        if (el) el.value = val;
       }
     }
     
@@ -306,7 +319,11 @@ async function checkLogin() {
       document.getElementById('address').value = val;
     }
   }
-  hydrateFromURL();
+  try {
+    hydrateFromURL();
+  } catch (err) {
+    console.error('hydrateFromURL failed:', err);
+  }
 
   // Google Places Autocomplete
   const addressInput = document.getElementById('addressInput');
