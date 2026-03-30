@@ -18,8 +18,9 @@ async function checkLogin() {
 
   // Check auth on load
   document.addEventListener("DOMContentLoaded", () => {
-    if (document.cookie.split(';').some((item) => item.trim().startsWith('swwc_auth='))) {
-      document.getElementById("login-overlay").style.display = "none";
+    const loginOverlay = document.getElementById("login-overlay");
+    if (loginOverlay && document.cookie.split(';').some((item) => item.trim().startsWith('swwc_auth='))) {
+      loginOverlay.style.display = "none";
     }
     renderClients();
   });
@@ -38,7 +39,8 @@ async function checkLogin() {
   }
 
   function renderClients() {
-    const clientList = document.getElementById('client-list');
+    const clientList = document.getElementById('clients-container') || document.getElementById('client-list');
+    if (!clientList) return;
     let pastClients = JSON.parse(localStorage.getItem('pastClients') || "[]");
     
     // Sort clients so newest are at the top (optional, assuming appended to end)
@@ -545,7 +547,8 @@ async function checkLogin() {
   function checkAuthStatus() {
     if (gapiInited && gisInited) {
       // Show auth button, ready to click
-      document.getElementById('authBtn').style.display = 'block';
+      const authBtn = document.getElementById('authBtn');
+      if (authBtn) authBtn.style.display = 'block';
       checkExistingToken(); // Try to auto-connect using saved token
     }
   }
@@ -596,6 +599,7 @@ async function checkLogin() {
   function setAuthUI() {
     isAuthenticated = true;
     const btn = document.getElementById('authBtn');
+    if (!btn) return;
     btn.textContent = 'Calendar Connected';
     btn.style.background = 'var(--accent)';
     btn.style.color = '#000';
@@ -647,6 +651,7 @@ async function checkLogin() {
   function renderCalendar() {
     const satCol = document.getElementById('satCol');
     const sunCol = document.getElementById('sunCol');
+    if (!satCol || !sunCol || !monthLabel) return;
     
     // Clear previous except headers
     satCol.innerHTML = '<div class="weekend-header-day">SAT</div>';
@@ -742,12 +747,14 @@ async function checkLogin() {
   }
 
   function renderEmptyTimeSlots() {
+    if (!timeSlotsContainer || !timeSlotsGrid) return;
     // Hide the time slots container entirely instead of showing empty ones
     document.getElementById('timeSlotsContainer').style.display = 'none';
     timeSlotsGrid.innerHTML = '';
   }
 
   async function renderTimeSlots(dateId) {
+    if (!timeSlotsContainer || !timeSlotsGrid) return;
     timeSlotsContainer.style.display = 'block';
     timeSlotsGrid.innerHTML = '<div class="time-slot-loading">Checking availability...</div>';
 
@@ -791,9 +798,12 @@ async function checkLogin() {
       if (err.status === 401 || err.status === 403) {
          localStorage.removeItem('google_calendar_token');
          isAuthenticated = false;
-         document.getElementById('authBtn').textContent = 'Connect Calendar';
-         document.getElementById('authBtn').style.background = 'var(--surface)';
-         document.getElementById('authBtn').style.color = 'var(--accent)';
+         const authBtn = document.getElementById('authBtn');
+         if (authBtn) {
+           authBtn.textContent = 'Connect Calendar';
+           authBtn.style.background = 'var(--surface)';
+           authBtn.style.color = 'var(--accent)';
+         }
       }
     }
 
@@ -872,8 +882,10 @@ async function checkLogin() {
   }
 
   // Initialize Calendar
-  renderCalendar();
-  renderEmptyTimeSlots();
+  if (monthLabel && timeSlotsContainer && timeSlotsGrid) {
+    renderCalendar();
+    renderEmptyTimeSlots();
+  }
   // --- END CALENDAR LOGIC ---
 
   function generate() {
