@@ -742,21 +742,9 @@ async function checkLogin() {
   }
 
   function renderEmptyTimeSlots() {
+    // Hide the time slots container entirely instead of showing empty ones
+    document.getElementById('timeSlotsContainer').style.display = 'none';
     timeSlotsGrid.innerHTML = '';
-    const hours = [9, 10, 11, 12, 13, 14, 15, 16, 17];
-    hours.forEach(hour => {
-      const ampm = hour >= 12 ? 'PM' : 'AM';
-      let hr12 = hour % 12;
-      if (hr12 === 0) hr12 = 12;
-      const timeLabel = `${hr12}:00 ${ampm}`;
-
-      const slotDiv = document.createElement('div');
-      slotDiv.className = 'time-slot available';
-      slotDiv.textContent = timeLabel;
-      slotDiv.style.opacity = '0.4';
-      slotDiv.style.cursor = 'not-allowed';
-      timeSlotsGrid.appendChild(slotDiv);
-    });
   }
 
   async function renderTimeSlots(dateId) {
