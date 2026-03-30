@@ -554,9 +554,23 @@ async function checkLogin() {
   }
 
   function handleAuthClick() {
+    const authBtn = document.getElementById('authBtn');
+
+    if (!gisInited || !gapiInited || !tokenClient || typeof gapi === 'undefined' || !gapi.client) {
+      if (authBtn) {
+        authBtn.textContent = 'Loading Google...';
+        setTimeout(() => {
+          authBtn.textContent = isAuthenticated ? 'Calendar Connected' : 'Connect Calendar';
+        }, 1200);
+      }
+      return;
+    }
+
     tokenClient.callback = async (resp) => {
       if (resp.error !== undefined) {
-        throw (resp);
+        console.error('Google auth error:', resp);
+        if (authBtn) authBtn.textContent = 'Connect Calendar';
+        return;
       }
       
       // Save token to localStorage with expiration
@@ -569,12 +583,16 @@ async function checkLogin() {
       setAuthUI();
     };
 
-    if (gapi.client.getToken() === null) {
-      // Prompt the user to select an account.
-      tokenClient.requestAccessToken({prompt: 'consent'});
-    } else {
-      // Skip display of account chooser.
-      tokenClient.requestAccessToken({prompt: ''});
+    try {
+      if (authBtn) authBtn.textContent = 'Connecting...';
+      if (gapi.client.getToken() === null) {
+        tokenClient.requestAccessToken({prompt: 'consent'});
+      } else {
+        tokenClient.requestAccessToken({prompt: ''});
+      }
+    } catch (err) {
+      console.error('Failed to start Google OAuth flow:', err);
+      if (authBtn) authBtn.textContent = 'Connect Calendar';
     }
   }
 
