@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { Link as ScrollLink } from 'react-scroll';
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -70,6 +71,34 @@ export const Header = () => {
           >
             {copy.studio[locale]}
           </a>
+          <RouterLink
+            to="/qr"
+            aria-label="Share via QR code"
+            className="flex items-center justify-center rounded-md p-2 text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="3" height="3" />
+              <rect x="18" y="14" width="3" height="3" />
+              <rect x="14" y="18" width="3" height="3" />
+              <rect x="18" y="18" width="3" height="3" />
+              <rect x="5" y="5" width="3" height="3" fill="currentColor" stroke="none" />
+              <rect x="16" y="5" width="3" height="3" fill="currentColor" stroke="none" />
+              <rect x="5" y="16" width="3" height="3" fill="currentColor" stroke="none" />
+            </svg>
+          </RouterLink>
           <LanguageToggle />
           <Button
             variant="outline"
@@ -83,6 +112,34 @@ export const Header = () => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center gap-2">
+          <RouterLink
+            to="/qr"
+            aria-label="Share via QR code"
+            className="flex items-center justify-center rounded-md p-2 text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="3" height="3" />
+              <rect x="18" y="14" width="3" height="3" />
+              <rect x="14" y="18" width="3" height="3" />
+              <rect x="18" y="18" width="3" height="3" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="5" y="5" width="3" height="3" fill="currentColor" stroke="none" />
+              <rect x="16" y="5" width="3" height="3" fill="currentColor" stroke="none" />
+              <rect x="5" y="16" width="3" height="3" fill="currentColor" stroke="none" />
+            </svg>
+          </RouterLink>
           <LanguageToggle />
           <Button
             variant="ghost"
