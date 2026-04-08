@@ -11,6 +11,7 @@ import CaseStudyPage from "@/pages/CaseStudyPage";
 import BlogPage from "@/pages/BlogPage";
 import BlogPostPage from "@/pages/BlogPostPage";
 import TestimonialsPage from "@/pages/TestimonialsPage";
+import QRPage from "@/pages/QRPage";
 import NotFound from "./pages/NotFound";
 import { captureUtmFromLocation } from "@/lib/utm";
 import { useEffect } from "react";
@@ -41,6 +42,7 @@ const AppRoutes = () => {
         <Route path="blog/:slug" element={<BlogPostPage />} />
         <Route path="testimonials" element={<TestimonialsPage />} />
       </Route>
+      <Route path="/qr" element={<QRPage />} />
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<NotFound />} />
     </Routes>

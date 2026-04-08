@@ -33,6 +33,34 @@ export const Header = () => {
           </a>
         </nav>
         <div className="flex items-center gap-2">
+          <Link
+            to="/qr"
+            aria-label="Share via QR code"
+            className="flex items-center justify-center rounded-md p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="3" height="3" />
+              <rect x="18" y="14" width="3" height="3" />
+              <rect x="14" y="18" width="3" height="3" />
+              <rect x="18" y="18" width="3" height="3" />
+              <rect x="5" y="5" width="3" height="3" fill="currentColor" stroke="none" />
+              <rect x="16" y="5" width="3" height="3" fill="currentColor" stroke="none" />
+              <rect x="5" y="16" width="3" height="3" fill="currentColor" stroke="none" />
+            </svg>
+          </Link>
           <LanguageToggle />
           <a
             href="/studio#book-call"
