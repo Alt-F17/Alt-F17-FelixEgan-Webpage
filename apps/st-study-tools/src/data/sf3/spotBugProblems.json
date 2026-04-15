@@ -1,0 +1,104 @@
+[
+    {
+        "code": "@app.route('/submit')\ndef submit():\n    if request.method == 'POST':\n        return 'Submitted'",
+        "bugLine": 1,
+        "bugDescription": "Method Not Allowed: By default, routes only accept GET. Add methods=['GET', 'POST'].",
+        "language": "python"
+    },
+    {
+        "code": "from flask import Flask\napp = Flask(__name__)\n\n@app.route('/')\ndef home():\n    return render_template('index.html')",
+        "bugLine": 6,
+        "bugDescription": "NameError: name 'render_template' is not defined. You need to import it from flask.",
+        "language": "python"
+    },
+    {
+        "code": "@app.route('/login', methods=['POST'])\ndef login():\n    username = request.args.get('username')\n    return f'Hello {username}'",
+        "bugLine": 3,
+        "bugDescription": "Logic Error: For POST requests, form data is usually in 'request.form', not 'request.args'.",
+        "language": "python"
+    },
+    {
+        "code": "@app.route('/user/<username>')\ndef profile():\n    return f'User: {username}'",
+        "bugLine": 2,
+        "bugDescription": "TypeError: The view function 'profile' is missing the argument 'username' defined in the route.",
+        "language": "python"
+    },
+    {
+        "code": "if __name__ == '__main__':\n    app.run(debug=True",
+        "bugLine": 2,
+        "bugDescription": "SyntaxError: unexpected EOF while parsing. Missing closing parenthesis.",
+        "language": "python"
+    },
+    {
+        "code": "<h1>Hello {{ user.name }</h1>\n<p>Welcome to our site!</p>",
+        "bugLine": 1,
+        "bugDescription": "Jinja Syntax Error: Missing closing curly brace '}}'.",
+        "language": "xml"
+    },
+    {
+        "code": "{% extends 'base.html' %}\n\n{% block content %}\n    <p>Welcome!</p>",
+        "bugLine": 4,
+        "bugDescription": "Jinja Syntax Error: Missing {% endblock %} tag.",
+        "language": "xml"
+    },
+    {
+        "code": "<a href=\"{% url_for('login') %}\">Login</a>\n<p>Click to login.</p>\n<p>Enjoy your stay!</p>",
+        "bugLine": 1,
+        "bugDescription": "Jinja Syntax Error: url_for outputs a string, so it should be used with {{ ... }}, not {% ... %}.",
+        "language": "xml"
+    },
+    {
+        "code": "<ul>\n{% for item in items %}\n    <li>{% item %}</li>\n{% endfor %}\n</ul>",
+        "bugLine": 3,
+        "bugDescription": "Jinja Syntax Error: To print a variable, use {{ item }}, not {% item %}.",
+        "language": "xml"
+    },
+    {
+        "code": ".nav-link {\n    color: #333;\n    text-decoration: none\n    padding: 10px;",
+        "bugLine": 3,
+        "bugDescription": "CSS Syntax Error: Missing semicolon after 'none'.",
+        "language": "css"
+    },
+    {
+        "code": "#submit-btn {\n    background-color: blue;\n    font-wait: bold;\n}",
+        "bugLine": 3,
+        "bugDescription": "CSS Property Error: 'font-wait' is not a valid property. Did you mean 'font-weight'?",
+        "language": "css"
+    },
+    {
+        "code": ".container {\n    width: 100;\n    margin: 0 auto;\n}",
+        "bugLine": 2,
+        "bugDescription": "CSS Value Error: Missing unit for width (e.g., '100%', '100px').",
+        "language": "css"
+    },
+    {
+        "code": "const btn = document.querySelector('.submit-btn');\nbtn.addEventListener('click', () => {\n    console.log('Clicked');\n}",
+        "bugLine": 4,
+        "bugDescription": "SyntaxError: Missing closing parenthesis ')' for the addEventListener function call.",
+        "language": "javascript"
+    },
+    {
+        "code": "const input = document.getElementById('username');\nconsole.log(input.innerHTML);",
+        "bugLine": 2,
+        "bugDescription": "Logic Error: To get the text inside an input field, use '.value', not '.innerHTML'.",
+        "language": "javascript"
+    },
+    {
+        "code": "const box = document.querySelector('.box');\nbox.classlist.add('active');",
+        "bugLine": 2,
+        "bugDescription": "TypeError: Cannot read properties of undefined. It is 'classList' (camelCase), not 'classlist'.",
+        "language": "javascript"
+    },
+    {
+        "code": "const items = document.querySelectorAll('.item');\nitems.style.color = 'red';",
+        "bugLine": 2,
+        "bugDescription": "TypeError: 'items' is a NodeList, not a single element. You must loop through it to change styles.",
+        "language": "javascript"
+    },
+    {
+        "code": "document.getElementById('btn').onclick = function() {\n    this.style.background-color = 'red';\n};",
+        "bugLine": 2,
+        "bugDescription": "SyntaxError: In JavaScript, CSS properties use camelCase. Use 'backgroundColor' instead of 'background-color'.",
+        "language": "javascript"
+    }
+]

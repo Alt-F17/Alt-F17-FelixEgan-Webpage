@@ -1,0 +1,898 @@
+[
+  {
+    "front": "What does HTML stand for and what is it?",
+    "back": "HyperText Markup Language. It is the standard markup language for documents designed to be displayed in a web browser."
+  },
+  {
+    "front": "What is CSS?",
+    "back": "Cascading Style Sheets. It is a style sheet language used for describing the presentation of a document written in HTML."
+  },
+  {
+    "front": "What is a Web Page?",
+    "back": "A document structured with HTML that can be displayed in a web browser."
+  },
+  {
+    "front": "What is a Web Site?",
+    "back": "A collection of related web pages linked together under a common domain name."
+  },
+  {
+    "front": "What is a Web Server?",
+    "back": "A computer that stores web site files and serves them to users upon request."
+  },
+  {
+    "front": "What is a Web Browser?",
+    "back": "An application used to access and view websites (e.g., Chrome, Firefox)."
+  },
+  {
+    "front": "What is a Domain Name?",
+    "back": "The human-readable address of a website (e.g., google.com)."
+  },
+  {
+    "front": "What does URL stand for and what is it?",
+    "back": "Uniform Resource Locator. It is the address of a specific resource on the Web."
+  },
+  {
+    "front": "What is the HTTP protocol?",
+    "back": "HyperText Transfer Protocol. It is the protocol used for transmitting web pages over the Internet."
+  },
+  {
+    "front": "What is the HTTPS protocol?",
+    "back": "HyperText Transfer Protocol Secure. It is the secure version of HTTP, using encryption."
+  },
+  {
+    "front": "What is DNS?",
+    "back": "Domain Name System. It is a system that translates domain names into IP addresses."
+  },
+  {
+    "front": "What is an IP Address?",
+    "back": "A unique numerical label assigned to each device connected to a computer network."
+  },
+  {
+    "front": "In the client-server model, what is a Client?",
+    "back": "A device or software that requests services or resources from a server."
+  },
+  {
+    "front": "In the client-server model, what is a Server?",
+    "back": "A computer or system that provides resources, data, services, or programs to other computers."
+  },
+  {
+    "front": "What is an HTTP Request?",
+    "back": "A message sent by a client to a server asking for a resource."
+  },
+  {
+    "front": "What is an HTTP Response?",
+    "back": "A message sent by a server to a client containing the requested resource."
+  },
+  {
+    "front": "What is the HTTP GET method used for?",
+    "back": "It is used to request data from a specified resource."
+  },
+  {
+    "front": "What is the HTTP POST method used for?",
+    "back": "It is used to send data to a server to create or update a resource."
+  },
+  {
+    "front": "What is an HTML Element?",
+    "back": "An individual component of an HTML document, consisting of a start tag, content, and an end tag."
+  },
+  {
+    "front": "What is an HTML Attribute?",
+    "back": "It provides additional information about an HTML element (e.g., src, href)."
+  },
+  {
+    "front": "What is a CSS attribute value?",
+    "back": "The specific setting assigned to an attribute (e.g., 'red' for color)."
+  },
+  {
+    "front": "What is Semantic HTML?",
+    "back": "HTML elements that clearly describe their meaning to both the browser and the developer (e.g., <header>, <footer>)."
+  },
+  {
+    "front": "What are HTML Heading tags?",
+    "back": "Tags (h1-h6) used to define titles and subtitles."
+  },
+  {
+    "front": "What is the <p> tag used for?",
+    "back": "It defines a paragraph of text."
+  },
+  {
+    "front": "What is the <ul> tag used for?",
+    "back": "It defines an unordered list (bullet points)."
+  },
+  {
+    "front": "What is the <ol> tag used for?",
+    "back": "It defines an ordered list (numbered)."
+  },
+  {
+    "front": "What is the <li> tag used for?",
+    "back": "It defines a list item inside <ul> or <ol>."
+  },
+  {
+    "front": "What is the <img> tag used for?",
+    "back": "It is used to embed an image."
+  },
+  {
+    "front": "What is a Hyperlink?",
+    "back": "A link from a hypertext file or document to another location or file."
+  },
+  {
+    "front": "What is the <a> tag used for?",
+    "back": "It defines an anchor (hyperlink)."
+  },
+  {
+    "front": "What is the <form> tag used for?",
+    "back": "It is used to create an HTML form for user input."
+  },
+  {
+    "front": "What is the <input> tag used for?",
+    "back": "It creates an interactive control for web-based forms."
+  },
+  {
+    "front": "What is the <label> tag used for?",
+    "back": "It defines a label for an <input> element."
+  },
+  {
+    "front": "What is the <button> tag used for?",
+    "back": "It creates a clickable button."
+  },
+  {
+    "front": "What is the <div> tag used for?",
+    "back": "It is a block-level container used to group other HTML elements."
+  },
+  {
+    "front": "What is the <span> tag used for?",
+    "back": "It is an inline container used to mark up a part of a text or document."
+  },
+  {
+    "front": "What is the <header> tag used for?",
+    "back": "It represents introductory content or a set of navigational links."
+  },
+  {
+    "front": "What is the <footer> tag used for?",
+    "back": "It represents a footer for a document or section."
+  },
+  {
+    "front": "What is the <main> tag used for?",
+    "back": "It specifies the main content of a document."
+  },
+  {
+    "front": "What is the <nav> tag used for?",
+    "back": "It defines a set of navigation links."
+  },
+  {
+    "front": "What is the <article> tag used for?",
+    "back": "It represents a self-contained composition."
+  },
+  {
+    "front": "What is the <section> tag used for?",
+    "back": "It defines a section in a document."
+  },
+  {
+    "front": "What is the <figure> tag used for?",
+    "back": "It is used for self-contained content, like illustrations or diagrams."
+  },
+  {
+    "front": "What is the <figcaption> tag used for?",
+    "back": "It defines a caption for a <figure> element."
+  },
+  {
+    "front": "What is the <meta> tag used for?",
+    "back": "It provides metadata about the HTML document."
+  },
+  {
+    "front": "What is the <title> tag used for?",
+    "back": "It defines the title of the document shown in the browser's title bar or tab."
+  },
+  {
+    "front": "What is the <link> tag used for?",
+    "back": "It is used to link external resources like CSS files."
+  },
+  {
+    "front": "What is the <script> tag used for?",
+    "back": "It is used to embed or reference executable code (usually JavaScript)."
+  },
+  {
+    "front": "What does <html lang='en'> do?",
+    "back": "It specifies that the language of the document is English."
+  },
+  {
+    "front": "What is the <strong> tag used for?",
+    "back": "It defines text with strong importance (usually displayed as bold)."
+  },
+  {
+    "front": "What is a self-closing tag?",
+    "back": "An HTML tag that does not require a closing tag (e.g., <br>, <img>)."
+  },
+  {
+    "front": "What is an inline element?",
+    "back": "An element that does not start on a new line and only takes up as much width as necessary."
+  },
+  {
+    "front": "What is a relative path?",
+    "back": "A path to a file relative to the current file's location."
+  },
+  {
+    "front": "What is an absolute path?",
+    "back": "A complete path to a file, including the protocol and domain."
+  },
+  {
+    "front": "What is an HTML/CSS Validator?",
+    "back": "A tool used to check if HTML or CSS code follows the standards."
+  },
+  {
+    "front": "What is W3C?",
+    "back": "World Wide Web Consortium, the main international standards organization for the World Wide Web."
+  },
+  {
+    "front": "What is ESLint?",
+    "back": "A tool for identifying and reporting on patterns found in JavaScript code."
+  },
+  {
+    "front": "What is linting?",
+    "back": "The process of running a program that analyzes code for potential errors."
+  },
+  {
+    "front": "What is Copyright?",
+    "back": "A legal right that grants the creator of an original work exclusive rights for its use and distribution."
+  },
+  {
+    "front": "What is Public Domain?",
+    "back": "Creative materials that are not protected by intellectual property laws."
+  },
+  {
+    "front": "What is Creative Commons?",
+    "back": "A license that allows creators to grant permission for others to use their work."
+  },
+  {
+    "front": "What is a network packet?",
+    "back": "A small segment of data sent over a network."
+  },
+  {
+    "front": "What is a network hop?",
+    "back": "One portion of the path between source and destination in a network."
+  },
+  {
+    "front": "What does LAN stand for? What does it do?",
+    "back": "Local Area Network. It connects computers within a limited area."
+  },
+  {
+    "front": "What is TCP?",
+    "back": "Transmission Control Protocol. It defines how to establish and maintain a network conversation."
+  },
+  {
+    "front": "What is UDP?",
+    "back": "User Datagram Protocol. A communication protocol used for time-sensitive transmissions."
+  },
+  {
+    "front": "What is a domain registrar?",
+    "back": "An organization that manages the reservation of internet domain names."
+  },
+  {
+    "front": "What is a Top-Level Domain (TLD)?",
+    "back": "The last segment of a domain name (e.g., .com, .org)."
+  },
+  {
+    "front": "What is an HTTP Status Code?",
+    "back": "A number returned by a server to indicate the result of a request (e.g., 200, 404)."
+  },
+  {
+    "front": "What does the HTTP status code '404 Not Found' indicate?",
+    "back": "The requested resource could not be found."
+  },
+  {
+    "front": "What does the HTTP status code '200 OK' indicate?",
+    "back": "The request has succeeded."
+  },
+  {
+    "front": "What is a CSS Selector?",
+    "back": "A pattern used to select the element(s) you want to style."
+  },
+  {
+    "front": "What is a CSS Declaration?",
+    "back": "A property and value pair (e.g., color: red;)."
+  },
+  {
+    "front": "What is a CSS Property?",
+    "back": "An aspect of an element you want to change in CSS (e.g., color, font-size)."
+  },
+  {
+    "front": "What is CSS Specificity?",
+    "back": "The weight given to a CSS rule to determine which style is applied."
+  },
+  {
+    "front": "What is CSS Inheritance?",
+    "back": "The mechanism where certain CSS properties are passed from parent to child elements."
+  },
+  {
+    "front": "What does the `color` property do?",
+    "back": "It sets the text color."
+  },
+  {
+    "front": "What does the `background-color` property do?",
+    "back": "It sets the background color of an element."
+  },
+  {
+    "front": "What does the `font-family` property do?",
+    "back": "It specifies the font for an element."
+  },
+  {
+    "front": "What does the `font-size` property do?",
+    "back": "It specifies the size of the font."
+  },
+  {
+    "front": "What does the `font-weight` property do?",
+    "back": "It specifies the thickness of characters."
+  },
+  {
+    "front": "What does the `border` property do?",
+    "back": "It sets the border around an element."
+  },
+  {
+    "front": "What does the `margin` property do?",
+    "back": "It creates space around elements, outside of any defined borders."
+  },
+  {
+    "front": "What does the `padding` property do?",
+    "back": "It creates space around an element's content, inside of any defined borders."
+  },
+  {
+    "front": "What does the `display` property do?",
+    "back": "It specifies the display behavior (the type of rendering box) of an element."
+  },
+  {
+    "front": "What is `rgb()`?",
+    "back": "A color model based on Red, Green, and Blue."
+  },
+  {
+    "front": "What is the CSS Box Model?",
+    "back": "A concept describing the rectangular boxes generated for elements (content, padding, border, margin)."
+  },
+  {
+    "front": "What is a pseudo-class?",
+    "back": "A keyword added to a selector that specifies a special state of the selected element(s)."
+  },
+  {
+    "front": "What is the `:hover` pseudo-class?",
+    "back": "It is activated when the user moves the mouse over an element."
+  },
+  {
+    "front": "What is the `:active` pseudo-class?",
+    "back": "It is activated when an element is being activated (e.g., clicked)."
+  },
+  {
+    "front": "What is the `:visited` pseudo-class?",
+    "back": "It is used to select visited links."
+  },
+  {
+    "front": "What is the 'class' attribute used for?",
+    "back": "It defines a group of elements for styling or JS selection (using .)."
+  },
+  {
+    "front": "What is the 'id' attribute used for?",
+    "back": "It identifies a unique element (using #)."
+  },
+  {
+    "front": "What is GitLab?",
+    "back": "A web-based DevOps lifecycle tool that provides a Git-repository manager."
+  },
+  {
+    "front": "What is a Git repository?",
+    "back": "A storage location for software packages or code."
+  },
+  {
+    "front": "What is a Git commit?",
+    "back": "An operation which saves your changes to the local repository."
+  },
+  {
+    "front": "What is a Git push?",
+    "back": "An operation which sends your committed changes to a remote repository."
+  },
+  {
+    "front": "What is a Git fork?",
+    "back": "A copy of a repository that allows you to freely experiment with changes without affecting the original project."
+  },
+  {
+    "front": "What is Inspect Element?",
+    "back": "A browser tool that allows you to view and edit the HTML and CSS of a web page."
+  },
+  {
+    "front": "What is alt text?",
+    "back": "A text description of an image, used for accessibility and when the image cannot be displayed."
+  },
+  {
+    "front": "What is the DOCTYPE?",
+    "back": "An instruction that associates a particular HTML document with a document type definition."
+  },
+  {
+    "front": "What is charset?",
+    "back": "The character encoding used in the document (e.g., UTF-8)."
+  },
+  {
+    "front": "What is `@import` in CSS?",
+    "back": "A CSS rule used to import style rules from other style sheets."
+  },
+  {
+    "front": "What is a User Agent?",
+    "back": "Software (usually a web browser) that acts on behalf of a user."
+  },
+  {
+    "front": "What is a Terminal?",
+    "back": "An interface for typing commands to the computer's operating system."
+  },
+  {
+    "front": "What is a URL parameter?",
+    "back": "A value passed in a query string (key=value)."
+  },
+  {
+    "front": "What is Flexbox?",
+    "back": "A CSS layout module (display: flex) for laying out items in one dimension."
+  },
+  {
+    "front": "What is CSS Grid?",
+    "back": "A CSS layout module (display: grid) for laying out items in two dimensions."
+  },
+  {
+    "front": "What is responsive design?",
+    "back": "A web design approach that makes web pages render well on a variety of devices and window or screen sizes."
+  },
+  {
+    "front": "What is a media query?",
+    "back": "A CSS technique (@media) used to apply styles based on the device's general type or specific parameters."
+  },
+  {
+    "front": "What is accessibility?",
+    "back": "The practice of making websites usable by as many people as possible, including those with disabilities."
+  },
+  {
+    "front": "What is navigation?",
+    "back": "A section of a website intended to aid users in moving through the site."
+  },
+  {
+    "front": "What is a layout?",
+    "back": "The arrangement of visual elements on a web page."
+  },
+  {
+    "front": "What is a prototype?",
+    "back": "An early sample, model, or release of a product built to test a concept or process."
+  },
+  {
+    "front": "What is a bug?",
+    "back": "An error, flaw, failure or fault in a computer program or system."
+  },
+  {
+    "front": "What is debugging?",
+    "back": "The process of finding and resolving bugs within computer programs."
+  },
+  {
+    "front": "What is the browser console?",
+    "back": "A browser tool for logging information and running JavaScript."
+  },
+  {
+    "front": "What is the Network Tab?",
+    "back": "A browser dev tool for monitoring network requests."
+  },
+  {
+    "front": "What is a file extension?",
+    "back": "The suffix at the end of a filename (e.g., .html, .css)."
+  },
+  {
+    "front": "What is a Directory?",
+    "back": "Another name for a folder in a file system."
+  },
+  {
+    "front": "What is the root directory?",
+    "back": "The top-level directory of a file system or website."
+  },
+  {
+    "front": "What is a parent element?",
+    "back": "An element that contains other elements."
+  },
+  {
+    "front": "What is a child element?",
+    "back": "An element that is contained within another element."
+  },
+  {
+    "front": "What is a sibling element?",
+    "back": "Elements that share the same parent."
+  },
+  {
+    "front": "What is an ancestor element?",
+    "back": "A parent, grandparent, etc., of an element."
+  },
+  {
+    "front": "What is a descendant element?",
+    "back": "A child, grandchild, etc., of an element."
+  },
+  {
+    "front": "What is Indentation?",
+    "back": "Empty space at the beginning of a line of code to show structure."
+  },
+  {
+    "front": "What is the universal selector (`*`)?",
+    "back": "A CSS selector that matches any element."
+  },
+  {
+    "front": "What is a group selector?",
+    "back": "A CSS selector that matches multiple elements separated by commas."
+  },
+  {
+    "front": "What is a descendant selector?",
+    "back": "A CSS selector (space) that matches all elements that are descendants of a specified element."
+  },
+  {
+    "front": "What is a child selector (`>`)?",
+    "back": "A CSS selector that matches all elements that are direct children of a specified element."
+  },
+  {
+    "front": "What does the `opacity` property do?",
+    "back": "It sets the transparency level of an element."
+  },
+  {
+    "front": "What is 'Transparent'?",
+    "back": "Having an opacity of 0, allowing background to show through."
+  },
+  {
+    "front": "What is the `static` folder in Flask?",
+    "back": "The directory where constant files (images, CSS, JS) are stored."
+  },
+  {
+    "front": "What is `app.py`?",
+    "back": "The main Python file that runs your Flask application."
+  },
+  {
+    "front": "What is Flask?",
+    "back": "A lightweight WSGI web application framework in Python."
+  },
+  {
+    "front": "What is a Flask route?",
+    "back": "A URL pattern that is mapped to a specific function in a Flask application."
+  },
+  {
+    "front": "What is a Flask template?",
+    "back": "An HTML file that contains placeholders for dynamic content."
+  },
+  {
+    "front": "What is Jinja?",
+    "back": "A templating engine for Python, used by Flask to render HTML templates."
+  },
+  {
+    "front": "What does `render_template()` do?",
+    "back": "It renders an HTML template with dynamic content in Flask."
+  },
+  {
+    "front": "What does the `--debug` flag do?",
+    "back": "It runs a Flask application in debug mode, allowing auto-reload and better error messages."
+  },
+  {
+    "front": "What does `@app.route()` do?",
+    "back": "It is a decorator in Flask used to define a route for a specific URL."
+  },
+  {
+    "front": "What is `@media`?",
+    "back": "A CSS rule used to apply styles based on device characteristics like screen size."
+  },
+  {
+    "front": "What is SVG?",
+    "back": "Scalable Vector Graphics, an XML-based format for vector images."
+  },
+  {
+    "front": "What is a Favicon?",
+    "back": "A small icon associated with a website, displayed in the browser tab."
+  },
+  {
+    "front": "What is JSON?",
+    "back": "JavaScript Object Notation, a lightweight data interchange format."
+  },
+  {
+    "front": "Who is the teacher for the PDGE course?",
+    "back": "Lei."
+  },
+  {
+    "front": "What does PDGE stand for?",
+    "back": "Program Development in a Graphical Environment."
+  },
+  {
+    "front": "What is the 'Client-Server' model?",
+    "back": "A distributed application structure that partitions tasks or workloads between the providers of a resource or service, called servers, and service requesters, called clients."
+  },
+  {
+    "front": "What is the difference between TCP and UDP?",
+    "back": "TCP is connection-oriented and reliable (guarantees delivery), while UDP is connectionless and faster but does not guarantee delivery."
+  },
+  {
+    "front": "What is 'localhost'?",
+    "back": "A hostname that means this computer. It is used to access the network services that are running on the host via the loopback network interface."
+  },
+  {
+    "front": "What is the IP address typically associated with localhost?",
+    "back": "127.0.0.1"
+  },
+  {
+    "front": "What is the purpose of the <!DOCTYPE html> declaration?",
+    "back": "It tells the browser that the document is an HTML5 document."
+  },
+  {
+    "front": "What is the <head> element used for?",
+    "back": "It contains metadata about the document, such as the title, character set, and links to scripts and stylesheets."
+  },
+  {
+    "front": "What is the <body> element used for?",
+    "back": "It contains the visible content of the web page."
+  },
+  {
+    "front": "How do you create a comment in HTML?",
+    "back": "<!-- This is a comment -->"
+  },
+  {
+    "front": "How do you create a comment in CSS?",
+    "back": "/* This is a comment */"
+  },
+  {
+    "front": "What is the 'Box Model' in CSS?",
+    "back": "A box that wraps around every HTML element. It consists of: margins, borders, padding, and the actual content."
+  },
+  {
+    "front": "What is the difference between 'id' and 'class' attributes?",
+    "back": "An 'id' is unique to a page and can only be used once per page, while a 'class' can be used on multiple elements."
+  },
+  {
+    "front": "What is 'Specificity' in CSS?",
+    "back": "The means by which browsers decide which CSS property values are the most relevant to an element and, therefore, will be applied."
+  },
+  {
+    "front": "What is 'Responsive Web Design'?",
+    "back": "An approach to web design that makes web pages render well on a variety of devices and window or screen sizes."
+  },
+  {
+    "front": "What is 'Flexbox'?",
+    "back": "A CSS layout module designed to lay out items in one dimension (row or column)."
+  },
+  {
+    "front": "What is 'CSS Grid'?",
+    "back": "A CSS layout system designed to lay out items in two dimensions (rows and columns)."
+  },
+  {
+    "front": "What is 'Git'?",
+    "back": "A distributed version control system for tracking changes in source code during software development."
+  },
+  {
+    "front": "What command is used to save changes to the local repository in Git?",
+    "back": "git commit"
+  },
+  {
+    "front": "What command is used to upload local repository content to a remote repository?",
+    "back": "git push"
+  },
+  {
+    "front": "What command is used to fetch and download content from a remote repository and immediately update the local repository to match that content?",
+    "back": "git pull"
+  },
+  {
+    "front": "What is 'Linting'?",
+    "back": "The process of running a program that will analyze code for potential errors."
+  },
+  {
+    "front": "What is 'Prettier'?",
+    "back": "An opinionated code formatter that supports many languages and integrates with most editors."
+  },
+  {
+    "front": "What is the 'Console' in a web browser?",
+    "back": "A tool that logs information associated with a web page, such as JavaScript, network requests, and security errors."
+  },
+  {
+    "front": "What is the 'Inspector' or 'Elements' tab in browser dev tools?",
+    "back": "A tool that allows you to view and edit the HTML and CSS of a web page in real-time."
+  },
+  {
+    "front": "What is a '404' error?",
+    "back": "A standard response code indicating that the browser was able to communicate with a given server, but the server could not find what was requested."
+  },
+  {
+    "front": "What is a '200' OK status?",
+    "back": "The standard response for successful HTTP requests."
+  },
+  {
+    "front": "What is a '500' error?",
+    "back": "A generic error message, given when an unexpected condition was encountered and no more specific message is suitable."
+  },
+  {
+    "front": "What is 'Semantic HTML'?",
+    "back": "The use of HTML markup to reinforce the semantics, or meaning, of the information in webpages and web applications rather than merely to define its presentation or look."
+  },
+  {
+    "front": "Why is 'alt text' important for images?",
+    "back": "It provides a text alternative for screen readers (accessibility) and is displayed if the image fails to load."
+  },
+  {
+    "front": "What is the difference between <ul> and <ol>?",
+    "back": "<ul> creates an unordered (bulleted) list, while <ol> creates an ordered (numbered) list."
+  },
+  {
+    "front": "What is the <a> tag used for?",
+    "back": "It defines a hyperlink, which is used to link from one page to another."
+  },
+  {
+    "front": "What is the 'href' attribute?",
+    "back": "Specifies the URL of the page the link goes to."
+  },
+  {
+    "front": "What is the 'target' attribute in an anchor tag?",
+    "back": "Specifies where to open the linked document (e.g., _blank for a new tab)."
+  },
+  {
+    "front": "What is a 'Self-Closing Tag'?",
+    "back": "A tag that does not have a closing tag (e.g., <img />, <br />, <hr />, <input />)."
+  },
+  {
+    "front": "What is 'Block-level' element?",
+    "back": "An element that always starts on a new line and takes up the full width available (e.g., <div>, <p>, <h1>)."
+  },
+  {
+    "front": "What is an 'Inline' element?",
+    "back": "An element that does not start on a new line and only takes up as much width as necessary (e.g., <span>, <a>, <img>)."
+  },
+  {
+    "front": "What is the purpose of the <meta charset='utf-8'> tag?",
+    "back": "It specifies the character encoding for the HTML document, ensuring that text is displayed correctly."
+  },
+  {
+    "front": "What is 'Deployment'?",
+    "back": "The process of making a website or application available for use on the internet."
+  },
+  {
+    "front": "What is 'Hosting'?",
+    "back": "The service of providing storage space and access for websites."
+  },
+  {
+    "front": "What is a 'User Agent'?",
+    "back": "Software (usually a web browser) that acts on behalf of a user."
+  },
+  {
+    "front": "What is 'Copyright'?",
+    "back": "The exclusive legal right, given to an originator or an assignee to print, publish, perform, film, or record literary, artistic, or musical material."
+  },
+  {
+    "front": "What is 'Public Domain'?",
+    "back": "The state of belonging or being available to the public as a whole, and therefore not subject to copyright."
+  },
+  {
+    "front": "What is 'Creative Commons'?",
+    "back": "A non-profit organization that offers an alternative to full copyright, allowing creators to share their work with specific conditions."
+  },
+  {
+    "front": "What is the 'Network Tab' in browser dev tools used for?",
+    "back": "To monitor and inspect network requests and responses, including file sizes and load times."
+  },
+  {
+    "front": "What is a 'Bug' in programming?",
+    "back": "An error, flaw, failure or fault in a computer program or system that causes it to produce an incorrect or unexpected result."
+  },
+  {
+    "front": "What is 'Debugging'?",
+    "back": "The process of finding and resolving bugs within computer programs, software, or systems."
+  },
+  {
+    "front": "What is a 'Prototype'?",
+    "back": "An early sample, model, or release of a product built to test a concept or process."
+  },
+  {
+    "front": "What is 'Wireframing'?",
+    "back": "A visual guide that represents the skeletal framework of a website."
+  },
+  {
+    "front": "What is 'UI' (User Interface)?",
+    "back": "The space where interactions between humans and machines occur."
+  },
+  {
+    "front": "What is 'UX' (User Experience)?",
+    "back": "The overall experience of a person using a product such as a website or computer application."
+  },
+  {
+    "front": "What is the 'viewport' meta tag used for?",
+    "back": "To control the layout on mobile browsers, ensuring the page renders correctly on different screen sizes."
+  },
+  {
+    "front": "What is 'padding' in the Box Model?",
+    "back": "The space between the content and the border."
+  },
+  {
+    "front": "What is 'margin' in the Box Model?",
+    "back": "The space outside the border."
+  },
+  {
+    "front": "What is 'border' in the Box Model?",
+    "back": "The line between the margin and the padding."
+  },
+  {
+    "front": "What is 'content' in the Box Model?",
+    "back": "The actual content of the box, where text and images appear."
+  },
+  {
+    "front": "What is the default value of the 'position' property?",
+    "back": "static"
+  },
+  {
+    "front": "What does 'position: relative' do?",
+    "back": "Positions the element relative to its normal position."
+  },
+  {
+    "front": "What does 'position: absolute' do?",
+    "back": "Positions the element relative to the nearest positioned ancestor."
+  },
+  {
+    "front": "What does 'position: fixed' do?",
+    "back": "Positions the element relative to the viewport, which means it always stays in the same place even if the page is scrolled."
+  },
+  {
+    "front": "What is 'z-index'?",
+    "back": "A CSS property that specifies the stack order of an element."
+  },
+  {
+    "front": "What is the 'float' property used for?",
+    "back": "To specify whether an element should float to the left, right, or not at all."
+  },
+  {
+    "front": "What is 'clearing' floats?",
+    "back": "Specifying what elements can float beside the cleared element and on which side."
+  },
+  {
+    "front": "What is a 'Pseudo-class'?",
+    "back": "A keyword added to a selector that specifies a special state of the selected element(s) (e.g., :hover)."
+  },
+  {
+    "front": "What is a 'Pseudo-element'?",
+    "back": "A keyword added to a selector that lets you style a specific part of the selected element(s) (e.g., ::before)."
+  },
+  {
+    "front": "What is the syntax for a CSS variable?",
+    "back": "--variable-name: value;"
+  },
+  {
+    "front": "How do you use a CSS variable?",
+    "back": "var(--variable-name)"
+  },
+  {
+    "front": "In Flask, what happens if you name your main file `flask.py`?",
+    "back": "It causes a conflict because Flask tries to import itself, leading to an ImportError. You should never name your application file `flask.py`."
+  },
+  {
+    "front": "What does '{{ variable }}' do in a Jinja2 template?",
+    "back": "It is the syntax for outputting a variable."
+  },
+  {
+    "front": "What do `{% if ... %}` and `{% for ... %}` blocks do in Jinja2?",
+    "back": "They are control structures used for conditional logic (if-statements) and loops."
+  },
+  {
+    "front": "What does `{# ... #}` do in a Jinja2 template?",
+    "back": "It creates a comment that will not be included in the rendered HTML output."
+  },
+  {
+    "front": "What is the purpose of the `url_for()` function in Flask/Jinja2?",
+    "back": "It generates a URL to a specific function (route) dynamically, which is safer and more flexible than hardcoding URLs."
+  },
+  {
+    "front": "What does `dict.key` or `dict['key']` do in a Jinja2 template?",
+    "back": "It accesses a value from a dictionary variable."
+  },
+  {
+    "front": "What does the pipe symbol `|` do in Jinja2 (e.g., `{{ name | upper }}`)?",
+    "back": "It applies a filter to modify the variable (e.g., converting text to uppercase)."
+  },
+  {
+    "front": "In Flask, why is `app.run(debug=True)` dangerous in production?",
+    "back": "It allows arbitrary code execution if an error occurs and exposes the interactive debugger to the public."
+  },
+  {
+    "front": "What is the `g` object in Flask?",
+    "back": "A global namespace for holding any data you want during a single request context (e.g., database connections)."
+  },
+  {
+    "front": "What does `{% extends 'base.html' %}` do in Jinja2?",
+    "back": "It signals that the current template inherits from 'base.html'."
+  },
+  {
+    "front": "What does `{% block content %}{% endblock %}` do in Jinja2?",
+    "back": "It defines a block of content that can be overridden by child templates."
+  }
+]

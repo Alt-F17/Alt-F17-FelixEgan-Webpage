@@ -1,0 +1,337 @@
+[
+  {
+    "code": "def calculate_average(numbers):\n    total = 0\n    for num in numbers:\n        total += num\n    return total / len(numbers)\n\nprint(calculate_average([]))",
+    "bugLine": 5,
+    "bugDescription": "ZeroDivisionError: Division by zero occurs if an empty list is passed, as len(numbers) will be 0."
+  },
+  {
+    "code": "def remove_duplicates(items):\n    result = []\n    for item in items:\n        if item not in result:\n            result.append(item)\n    return results\n\nprint(remove_duplicates([1, 2, 2, 3]))",
+    "bugLine": 6,
+    "bugDescription": "NameError: The variable 'results' is referenced before assignment (typo, should be 'result')."
+  },
+  {
+    "code": "numbers = [1, 2, 3]\nnumbers[len(numbers)] = 4\nprint(numbers)",
+    "bugLine": 2,
+    "bugDescription": "IndexError: list index out of range because the list has only three elements (indices 0-2)."
+  },
+  {
+    "code": "def concat(elem1, elem2):\n    return elem1 + elem2\n\nprint(concat('Hello', 5))",
+    "bugLine": 2,
+    "bugDescription": "TypeError: can only concatenate str (not \"int\") to str"
+  },
+  {
+    "code": "print(unknown_var) # This one should be fairly easy XD",
+    "bugLine": 1,
+    "bugDescription": "NameError: name 'unknown_var' is not defined"
+  },
+  {
+    "code": "def dictprint(d, y, z='x'):\n    return d[z]\n\nprint(dictprint({'y': 1, 'z': 2}, 'y', 'x'))",
+    "bugLine": 2,
+    "bugDescription": "KeyError: 'x'"
+  },
+  {
+    "code": "my_list = [1, 2, 3]\nmy_set = {1, 2, 3}\nmy_set.add(4)\nmy_list.add(4)\nprint(my_list)\nprint(my_set)",
+    "bugLine": 4,
+    "bugDescription": "AttributeError: 'list' object has no attribute 'add'"
+  },
+  {
+    "code": "num = 49\nroot_exp = num ** 0.5\nroot_sqrt = math.sqrt(num)\nprint(root_exp == root_sqrt)",
+    "bugLine": 3,
+    "bugDescription": "NameError: name 'math' is not defined (missing import statement for math module)"
+  },
+  {
+    "code": "def fibonacci(n)\n    if n < 0: return 'Incorrect input'\n    a, b = 0, 1\n    for _ in range(n): a, b = b, a + b\n    return a\n\nprint(fibonacci(5))",
+    "bugLine": 1,
+    "bugDescription": "SyntaxError: invalid syntax (missing colon after function definition)"
+  },
+  {
+    "code": "try:\n    if True:\n        print('Try\\nThis?')\n    if 1:print('Or\\nThis')\n    if 'false':print('Or');print('This')\n    elif [1]:print('Or give up...')\n",
+    "bugLine": 7,
+    "bugDescription": "SyntaxError: expected 'except' or 'finally' block"
+  },
+  {
+    "code": "def multiply(a, b=1):\n    return a * b\n\nprint(multiply(5, 2, 3))",
+    "bugLine": 4,
+    "bugDescription": "TypeError: multiply() takes from 1 to 2 positional arguments but 3 were given"
+  },
+  {
+    "code": "class Test:\n    pass\nobj = Test()\nobj.missing",
+    "bugLine": 4,
+    "bugDescription": "AttributeError: 'Test' object has no attribute 'missing'"
+  },
+  {
+    "code": "x, y = [1, 2, 3]",
+    "bugLine": 1,
+    "bugDescription": "ValueError: too many values to unpack (expected 2)"
+  },
+  {
+    "code": "s = 'text'\ns[1] = 'a'",
+    "bugLine": 2,
+    "bugDescription": "TypeError: 'str' object does not support item assignment"
+  },
+  {
+    "code": "[10 / x for x in [2, 1, 0]]",
+    "bugLine": 1,
+    "bugDescription": "ZeroDivisionError: division by zero"
+  },
+  {
+    "code": "x = None\nx.upper()",
+    "bugLine": 2,
+    "bugDescription": "AttributeError: 'NoneType' object has no attribute 'upper'"
+  },
+  {
+    "code": "class Example:\n    pass\ne = Example()\ne.no_attr",
+    "bugLine": 4,
+    "bugDescription": "AttributeError: 'Example' object has no attribute 'no_attr'"
+  },
+  {
+    "code": "def remove_duplicates_in_place(lst):\n    seen = set()\n    for i in range(len(lst)):\n        if lst[i] in seen:\n            lst.remove(lst[i])\n        else:\n            seen.add(lst[i])\n    return lst",
+    "bugLine": 5,
+    "bugDescription": "Deleting elements from the list while iterating over it with a fixed range causes the loop to skip elements or raise an IndexError because the list length changes but the range does not adjust."
+  },
+  {
+    "code": "def factorial_with_check(n):\n    def factorial(n):\n        if n <= 1:\n            return n\n        return n * factorial(n - 1)\n    if n < 0:\n        return \"Negative numbers not allowed\"\n    result = factorial(n)\n    return result",
+    "bugLine": 4,
+    "bugDescription": "The base case returns `n` when `n <= 1`, so `factorial(0)` returns 0 instead of 1, which is incorrect for factorial where 0! = 1."
+  },
+  {
+    "code": "def count_words(text):\n    word_dict = {}\n    lines = text.split('\\n')\n    for line in lines:\n        words = line.split()\n        for word in words:\n            if word in word_dict:\n                word_dict[word] += 1\n            else:\n                word_dict[word] = 1\n    return word_dict",
+    "bugLine": 7,
+    "bugDescription": "The function does not convert words to a consistent case (e.g., lowercase) before counting, treating 'Hello' and 'HELLO' as different keys."
+  },
+  {
+    "code": "def calculate_average_grades(grades):\n    total = 0\n    count = 0\n    for student in grades:\n        for grade in student:\n            total += grade\n        count += len(student)\n    if count > 0:\n        return total / count\n    return 0",
+    "bugLine": 22,
+    "bugDescription": "The count is incremented by the length of each sublist, even empty ones, but total only includes actual grades, leading to an incorrect average."
+  },
+  {
+    "code": "def find_longest_sequence(numbers):\n    if not numbers:\n        return 0\n    current_length = 1\n    max_length = 1\n    for i in range(1, len(numbers)):\n        if numbers[i] == numbers[i - 1] + 1:\n            current_length += 1\n            max_length = max(max_length, current_length)\n        else:\n            current_length = 1\n    return max_length",
+    "bugLine": 7,
+    "bugDescription": "The `max_length` update is inside the if block, so it only updates when the sequence continues, missing the final sequence length when it ends."
+  },
+  {
+    "code": "def process_data(data):\n    result = []\n    temp = 0\n    for i in range(len(data)):\n        if i % 2 == 0:\n            temp += data[i]\n        else:\n            temp *= data[i]\n            result.append(temp)\n            temp = 0\n    return result",
+    "bugLine": 9,
+    "bugDescription": "The function only appends when i is odd, so if the list has an odd length, the last even-indexed element’s computation is never added to result."
+  },
+  {
+    "code": "def matrix_sum_buggy(matrix):\n    total = 0\n    for i in range(len(matrix) + 1):\n        for j in range(len(matrix[i])):\n            total += matrix[i][j]\n    return total",
+    "bugLine": 17,
+    "bugDescription": "The outer loop runs up to len(matrix) + 1, causing an IndexError when accessing matrix[len(matrix)]."
+  },
+  {
+    "code": "def filter_positive_pairs_buggy(numbers):\n    result = []\n    for i in range(0, len(numbers), 2):\n        if numbers[i] > 0 and numbers[i + 1] > 0:\n            result.append((numbers[i], numbers[i + 1]))\n    return result",
+    "bugLine": 19,
+    "bugDescription": "When the list has an odd length, accessing numbers[i + 1] goes out of bounds since the step is 2."
+  },
+  {
+    "code": "def calculate_running_average_buggy(numbers):\n    averages = []\n    total = 0\n    for i, num in enumerate(numbers):\n        total += num\n        avg = total / i\n        averages.append(avg)\n    return averages",
+    "bugLine": 21,
+    "bugDescription": "Dividing by i when i starts at 0 causes a ZeroDivisionError; should use (i + 1) for the running count."
+  },
+  {
+    "code": "def merge_sorted_lists_buggy(list1, list2):\n    merged = []\n    i, j = 0, 0\n    while i < len(list1) and j < len(list2):\n        if list1[i] < list2[j]:\n            merged.append(list1[i])\n            i += 1\n        else:\n            merged.append(list2[j])\n            j += 1\n    merged += list1[i:]\n    return merged",
+    "bugLine": 28,
+    "bugDescription": "Only appends remaining elements from list1, forgetting to append remaining elements from list2 after the while loop."
+  },
+  {
+    "code": "def generate_pattern_buggy(n):\n    pattern = []\n    for i in range(1, n + 1):\n        line = ''\n        for j in range(i + 1):\n            line += str(j + 1) + ' '\n        pattern.append(line.strip())\n    return pattern",
+    "bugLine": 24,
+    "bugDescription": "The inner loop uses range(i + 1) instead of range(i), adding an extra number to each line (e.g., '1 2 3 4 5' for the last line)."
+  },
+  {
+    "code": "def sum_diagonals_buggy(matrix):\n    n = len(matrix)\n    primary = 0\n    secondary = 0\n    for i in range(n + 1):\n        primary += matrix[i][i]\n        secondary += matrix[i][n - 1 - i]\n    return primary + secondary",
+    "bugLine": 22,
+    "bugDescription": "The loop runs to n + 1, causing an IndexError when accessing matrix[n][n] beyond the matrix size."
+  },
+  {
+    "code": "def rotate_list_buggy(lst, k):\n    if not lst:\n        return lst\n    k = k % len(lst)\n    return lst[k:] + lst[:k]",
+    "bugLine": 20,
+    "bugDescription": "Rotates the list in the wrong direction (left instead of right) by using lst[k:] + lst[:k] instead of lst[-k:] + lst[:-k]."
+  },
+  {
+    "code": "def calculate_profit_buggy(sales, costs):\n    profit = 0\n    for i in range(len(sales)):\n        profit += sales[i] - costs[i + 1]\n    return profit",
+    "bugLine": 19,
+    "bugDescription": "Accesses costs[i + 1] instead of costs[i], leading to an IndexError when i reaches the last index, and misaligns cost subtraction."
+  },
+  {
+    "code": "def extract_evens_buggy(numbers):\n    evens = []\n    for i in range(len(numbers)):\n        if numbers[i] % 2 == 0:\n            evens.append(i)\n    return evens",
+    "bugLine": 21,
+    "bugDescription": "Appends the index i instead of the number numbers[i], so it collects even indices rather than even numbers."
+  },
+  {
+    "code": "def build_histogram_buggy(data):\n    hist = {}\n    for num in data:\n        if num in hist:\n            hist[num] += 1\n        else:\n            hist[num] = 0\n    return hist",
+    "bugLine": 24,
+    "bugDescription": "Sets hist[num] to 0 instead of 1 when first encountered, undercounting each number’s frequency by 1."
+  },
+  {
+    "code": "def reverse_words_buggy(sentence):\n    words = sentence.split()\n    for i in range(len(words)):\n        words[i], words[-i - 1] = words[-i - 1], words[i]\n    return ' '.join(words)",
+    "bugLine": 3,
+    "bugDescription": "The loop runs for the full length, swapping words back to their original positions; should use len(words) // 2."
+  },
+  {
+    "code": "def cumulative_sum_buggy(numbers):\n    result = []\n    total = 0\n    for num in numbers:\n        total += num\n        result.append(num)\n    return result",
+    "bugLine": 22,
+    "bugDescription": "Appends the current number num instead of the cumulative total, returning the original list instead of cumulative sums."
+  },
+  {
+    "code": "def find_max_min_buggy(numbers):\n    max_num = min_num = numbers[0]\n    for num in numbers:\n        if num > max_num:\n            max_num = num\n        if num < min_num:\n            min_num = num\n    return max_num, min_num",
+    "bugLine": 20,
+    "bugDescription": "The first element is compared to itself, which is unnecessary; should start from the second element."
+  },
+  {
+    "code": "def flatten_dict_buggy(d):\n    flat = {}\n    for key, value in d.items():\n        if isinstance(value, dict):\n            for subkey, subvalue in value.items():\n                flat[f'{key}.{subkey}'] = subvalue\n        else:\n            flat[key] = value\n    return flat",
+    "bugLine": 24,
+    "bugDescription": "The function does not handle nested dictionaries correctly; it flattens only one level deep."
+  },
+  {
+    "code": "def find_pairs_buggy(target, numbers):\n    pairs = []\n    seen = set()\n    for num in numbers:\n        complement = target - num\n        if complement in seen:\n            pairs.append((complement, num))\n        seen.add(complement)\n    return pairs",
+    "bugLine": 27,
+    "bugDescription": "Adds the complement to seen instead of the current number, so it never finds matching pairs correctly."
+  },
+  {
+    "code": "def transpose_matrix_buggy(matrix):\n    n = len(matrix)\n    m = len(matrix[0])\n    transposed = [[0] * n for _ in range(m)]\n    for i in range(n):\n        for j in range(m):\n            transposed[i][j] = matrix[i][j]\n    return transposed",
+    "bugLine": 24,
+    "bugDescription": "Assigns to transposed[i][j] instead of transposed[j][i], failing to swap rows and columns correctly."
+  },
+  {
+    "code": "def split_into_chunks_buggy(lst, size):\n    if size <= 0:\n        return []\n    chunks = []\n    for i in range(0, len(lst) + 1, size):\n        chunks.append(lst[i:i + size])\n    return chunks",
+    "bugLine": 20,
+    "bugDescription": "The range goes to len(lst) + 1, potentially adding an extra chunk that may be shorter than size or empty, altering the expected sums."
+  },
+  {
+    "code": "def count_vowels_buggy(text):\n    vowels = 'aeiou'\n    count = 0\n    for char in text:\n        if char in vowels:\n            count += 1\n    return count",
+    "bugLine": 18,
+    "bugDescription": "Only counts lowercase vowels, missing uppercase vowels like 'I' in 'is'."
+  },
+  {
+    "code": "def fibonacci_with_limit_buggy(limit):\n    fib = [0, 1]\n    while True:\n        next_fib = fib[-1] + fib[-2]\n        fib.append(next_fib)\n        if next_fib > limit:\n            break\n    return fib",
+    "bugLine": 21,
+    "bugDescription": "Appends next_fib before checking the limit, including a value greater than the limit (13 in this case) in the sequence."
+  },
+  {
+    "code": "def remove_outliers_buggy(data):\n    if len(data) < 3:\n        return data\n    sorted_data = sorted(data)\n    return sorted_data[1:-2]",
+    "bugLine": 19,
+    "bugDescription": "Removes two elements from the end instead of one (-2 instead of -1), excluding more data than intended."
+  },
+  {
+    "code": "def interleave_lists_buggy(list1, list2):\n    result = []\n    for i in range(len(list1)):\n        if i < len(list1):\n            result.append(list1[i])\n        if i < len(list2):\n            result.append(list2[i])\n    return result",
+    "bugLine": 20,
+    "bugDescription": "The loop only runs for len(list1), missing elements from list2 if it’s longer."
+  },
+  {
+    "code": "def calculate_power_buggy(base, exp):\n    if exp == 0:\n        return 1\n    result = base\n    for _ in range(exp):\n        result *= base\n    return result",
+    "bugLine": 19,
+    "bugDescription": "Loops exp times instead of exp - 1, computing base^(exp+1) instead of base^exp, affecting the series sum."
+  },
+  {
+    "code": "def longest_increasing_subsequence_buggy(numbers):\n    if not numbers:\n        return 0\n    lengths = [1] * len(numbers)\n    for i in range(1, len(numbers)):\n        if numbers[i] > numbers[i - 1]:\n            lengths[i] += 1\n    return max(lengths)",
+    "bugLine": 23,
+    "bugDescription": "Increments lengths[i] by 1 instead of adding lengths[i - 1] + 1, underestimating the subsequence length."
+  },
+  {
+    "code": "def compress_string_buggy(s):\n    if not s:\n        return \"\"\n    result = []\n    count = 1\n    for i in range(len(s)):\n        if s[i] == s[i - 1]:\n            count += 1\n        else:\n            result.append(s[i - 1] + str(count))\n            count = 1\n    return ''.join(result)",
+    "bugLine": 27,
+    "bugDescription": "Accesses s[i - 1] when i=0, causing an IndexError; the loop logic also misses the last character group."
+  },
+  {
+    "code": "def max_subarray_sum_buggy(numbers):\n    max_sum = current_sum = 0\n    for num in numbers:\n        current_sum = max(num, current_sum + num)\n        max_sum = max(max_sum, current_sum)\n    return max_sum",
+    "bugLine": 17,
+    "bugDescription": "Initializes max_sum and current_sum to 0 instead of the first element, potentially overestimating the sum if all numbers are negative."
+  },
+  {
+    "code": "def count_unique_chars_buggy(s):\n    char_set = set()\n    for i in range(len(s)):\n        char_set.add(i)\n    return len(char_set)",
+    "bugLine": 18,
+    "bugDescription": "Adds indices to the set instead of characters, counting positions rather than unique characters."
+  },
+  {
+    "code": "def sliding_window_max_buggy(numbers, k):\n    if not numbers or k <= 0:\n        return []\n    result = []\n    for i in range(len(numbers) - k):\n        window = numbers[i:i + k]\n        result.append(max(window))\n    return result",
+    "bugLine": 20,
+    "bugDescription": "The range stops at len(numbers) - k instead of len(numbers) - k + 1, missing the last window."
+  },
+  {
+    "code": "def generate_primes_buggy(n):\n    primes = []\n    for num in range(2, n + 1):\n        is_prime = True\n        for i in range(2, num - 1):\n            if num % i == 0:\n                is_prime = False\n                break\n        if is_prime:\n            primes.append(num)\n    return primes",
+    "bugLine": 24,
+    "bugDescription": "The primality test stops at num - 1, missing the check for num - 1 as a divisor, incorrectly including 4, 6, 8, 9, 10 as primes."
+  },
+  {
+    "code": "def partition_list_buggy(lst, pivot):\n    left = []\n    right = []\n    for x in lst:\n        if x < pivot:\n            left.append(x)\n        if x > pivot:\n            right.append(x)\n    return left, right",
+    "bugLine": 23,
+    "bugDescription": "Uses separate if statements, excluding the pivot value (4) from both lists, reducing the product of lengths."
+  },
+  {
+    "code": "def binary_to_decimal_buggy(binary):\n    decimal = 0\n    for i, digit in enumerate(binary):\n        decimal += int(digit) * (2 ** i)\n    return decimal",
+    "bugLine": 17,
+    "bugDescription": "Iterates over the binary string from left to right without reversing, calculating powers in the wrong order (e.g., 1*2^0 + 0*2^1 + 1*2^2 + 0*2^3 = 5)."
+  },
+  {
+    "code": "def find_median_buggy(numbers):\n    sorted_nums = sorted(numbers)\n    n = len(sorted_nums)\n    mid = n // 2\n    if n % 2 == 0:\n        return sorted_nums[mid]\n    return sorted_nums[mid]",
+    "bugLine": 21,
+    "bugDescription": "For even-length lists, returns only sorted_nums[mid] instead of averaging with sorted_nums[mid - 1], giving 3 instead of 2.5."
+  },
+  {
+    "code": "def rotate_matrix_buggy(matrix):\n    n = len(matrix)\n    for i in range(n):\n        for j in range(i, n):\n            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]\n    return matrix",
+    "bugLine": 18,
+    "bugDescription": "Only swaps elements across the main diagonal, performing a transpose instead of a 90-degree rotation."
+  },
+  {
+    "code": "def word_lengths_buggy(text):\n    lengths = {}\n    words = text.split()\n    for word in words:\n        length = len(word) - 1\n        if length in lengths:\n            lengths[length] += 1\n        else:\n            lengths[length] = 1\n    return lengths",
+    "bugLine": 22,
+    "bugDescription": "Subtracts 1 from each word’s length, shifting all counts and potentially reducing the maximum frequency."
+  },
+  {
+    "code": "def group_by_first_letter_buggy(words):\n    groups = {}\n    for word in words:\n        first = word[1].lower()\n        if first in groups:\n            groups[first].append(word)\n        else:\n            groups[first] = [word]\n    return groups",
+    "bugLine": 21,
+    "bugDescription": "Uses word[1] instead of word[0], grouping by the second letter instead of the first."
+  },
+  {
+    "code": "def count_pairs_buggy(numbers, target):\n    count = 0\n    seen = {}\n    for num in numbers:\n        complement = target - num\n        if complement in seen:\n            count += 1\n        seen[num] = 1\n    return count",
+    "bugLine": 25,
+    "bugDescription": "Always sets seen[num] to 1, ignoring multiple occurrences of numbers, and doesn’t use seen[complement]’s count."
+  },
+  {
+    "code": "def flatten_nested_list_buggy(nested):\n    flat = []\n    def flatten(lst):\n        for item in lst:\n            if isinstance(item, list):\n                flat.append(item)\n            else:\n                flat.append(item)\n    flatten(nested)\n    return flat",
+    "bugLine": 24,
+    "bugDescription": "Appends nested lists as is instead of recursing into them, causing a TypeError when summing mixed types."
+  },
+  {
+    "code": "def pascal_triangle_buggy(n):\n    triangle = [[1]]\n    for i in range(1, n):\n        prev = triangle[-1]\n        new_row = [0]\n        for j in range(len(prev) - 1):\n            new_row.append(prev[j] + prev[j + 1])\n        new_row.append(0)\n    triangle.append(new_row)\n    return triangle",
+    "bugLine": 23,
+    "bugDescription": "Starts and ends each row with 0 instead of 1, reducing the total sum of the triangle."
+  },
+  {
+    "code": "def find_cycle_length_buggy(numbers):\n    seen = {}\n    for i, num in enumerate(numbers):\n        if num in seen:\n            return i\n        seen[num] = i\n    return 0",
+    "bugLine": 20,
+    "bugDescription": "Returns the index of the repeated element instead of the cycle length (i - seen[num]), overestimating the cycle size."
+  },
+  {
+    "code": "def evaluate_expression_buggy(expr):\n    stack = []\n    for token in expr.split():\n        if token in '+-*/':\n            b = stack.pop()\n            a = stack.pop()\n            if token == '+':\n                stack.append(a + b)\n            elif token == '-':\n                stack.append(a - b)\n            elif token == '*':\n                stack.append(a + b)\n            elif token == '/':\n                stack.append(a / b)\n        else:\n            stack.append(int(token))\n    return stack[0]",
+    "bugLine": 34,
+    "bugDescription": "Uses + instead of * for the multiplication operator, computing (3+4)+2 instead of (3+4)*2."
+  },
+  {
+    "code": "def kth_smallest_buggy(numbers, k):\n    sorted_nums = sorted(numbers)\n    return sorted_nums[k]",
+    "bugLine": 14,
+    "bugDescription": "Uses k as the index instead of k - 1, selecting the (k+1)th smallest element (3 instead of 2)."
+  },
+  {
+    "code": "def remove_spaces_buggy(text):\n    result = ''\n    for char in text:\n        if char == ' ':\n            result += char\n    return result",
+    "bugLine": 18,
+    "bugDescription": "Keeps only spaces instead of removing them, inverting the intended logic."
+  },
+  {
+    "code": "def count_inversions_buggy(numbers):\n    count = 0\n    for i in range(len(numbers)):\n        for j in range(i, len(numbers)):\n            if numbers[i] > numbers[j]:\n                count += 1\n    return count",
+    "bugLine": 19,
+    "bugDescription": "Inner loop starts at i instead of i + 1, counting pairs where i == j, which aren’t inversions."
+  },
+  {
+    "code": "def shortest_path_buggy(graph, start, end):\n    distances = {start: 0}\n    queue = [start]\n    while queue:\n        node = queue.pop(0)\n        for neighbor, weight in graph[node]:\n            dist = distances[node] + 1\n            if neighbor not in distances or dist < distances[neighbor]:\n                distances[neighbor] = dist\n                queue.append(neighbor)\n    return distances.get(end, -1)",
+    "bugLine": 27,
+    "bugDescription": "Uses a fixed weight of 1 instead of the actual weight from the graph, computing the number of edges instead of the shortest weighted path."
+  },
+  {
+    "code": "def topological_sort_buggy(graph):\n    indegree = {node: 0 for node in graph}\n    for node in graph:\n        for neighbor in graph[node]:\n            indegree[neighbor] = indegree.get(neighbor, 0) + 1\n    queue = [node for node in indegree if indegree[node] == 0]\n    result = []\n    while queue:\n        node = queue.pop(0)\n        result.append(node)\n        for neighbor in graph[node]:\n            indegree[neighbor] = 0\n            if indegree[neighbor] == 0:\n                queue.append(neighbor)\n    return result",
+    "bugLine": 34,
+    "bugDescription": "Sets indegree[neighbor] to 0 instead of decrementing it, disrupting the topological sort and potentially omitting nodes."
+  }
+]

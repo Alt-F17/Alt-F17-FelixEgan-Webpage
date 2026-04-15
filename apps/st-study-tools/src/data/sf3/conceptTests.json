@@ -1,0 +1,475 @@
+[
+  {
+    "code": "flask run --debug",
+    "choices": [
+      "Prints 'debug' to the console",
+      "Creates a static HTML file",
+      "Starts a Flask server on port 8080",
+      "Starts a Flask server in debug mode"
+    ],
+    "correct": 3,
+    "language": "bash"
+  },
+  {
+    "code": "@app.route('/user/<name>')\ndef user(name):\n    return f'Hello {name}'",
+    "choices": [
+      "Defines a dynamic route that accepts a name parameter",
+      "Defines a static route for '/user/name'",
+      "Returns a JSON object with the name",
+      "Redirects the user to the login page"
+    ],
+    "correct": 0,
+    "language": "python"
+  },
+  {
+    "code": "from flask import render_template\n\n@app.route('/hello')\ndef hello():\n    return render_template('hello.html', name='Alice')",
+    "choices": [
+      "Returns the string 'hello.html'",
+      "Redirects to the 'hello.html' page",
+      "Downloads the 'hello.html' file",
+      "Renders the 'hello.html' template passing 'Alice' as the name variable"
+    ],
+    "correct": 3,
+    "language": "python"
+  },
+  {
+    "code": "<h1>Hello {{ name }}!</h1>",
+    "choices": [
+      "Creates a JavaScript variable named name",
+      "Is invalid HTML syntax",
+      "Displays 'Hello ' followed by the value of the name variable",
+      "Displays 'Hello {{ name }}!' literally"
+    ],
+    "correct": 2,
+    "language": "django"
+  },
+  {
+    "code": "<ul>\n{% for item in items %}\n  <li>{{ item }}</li>\n{% endfor %}\n</ul>",
+    "choices": [
+      "Creates a single list item containing all items",
+      "Is invalid Jinja2 syntax",
+      "Loops infinitely if 'items' is empty",
+      "Creates an unordered list with one item for each element in 'items'"
+    ],
+    "correct": 3,
+    "language": "django"
+  },
+  {
+    "code": "{% if user.is_logged_in %}\n  <p>Welcome back!</p>\n{% else %}\n  <a href='/login'>Login</a>\n{% endif %}",
+    "choices": [
+      "Displays both the message and the link",
+      "Throws an error if user is None",
+      "Always displays 'Welcome back!'",
+      "Displays 'Welcome back!' if user.is_logged_in is true, otherwise a login link"
+    ],
+    "correct": 3,
+    "language": "django"
+  },
+  {
+    "code": "document.getElementById('myBtn').addEventListener('click', function() {\n  alert('Button Clicked!');\n});",
+    "choices": [
+      "Changes the button text to 'Button Clicked!'",
+      "Alerts 'Button Clicked!' when the element with id 'myBtn' is clicked",
+      "Does nothing",
+      "Alerts 'Button Clicked!' immediately when the page loads"
+    ],
+    "correct": 1,
+    "language": "javascript"
+  },
+  {
+    "code": "const numbers = [1, 2, 3];\nconst doubled = numbers.map(n => n * 2);\nconsole.log(doubled);",
+    "choices": [
+      "[1, 2, 3]",
+      "[1, 2, 3, 1, 2, 3]",
+      "Error",
+      "[2, 4, 6]"
+    ],
+    "correct": 3,
+    "language": "javascript"
+  },
+  {
+    "code": "let count = 0;\nfunction increment() {\n  count++;\n  console.log(count);\n}\nincrement();\nincrement();",
+    "choices": [
+      "Logs undefined",
+      "Logs 1 then 1",
+      "Logs 1 then 2",
+      "Logs 0 then 1"
+    ],
+    "correct": 2,
+    "language": "javascript"
+  },
+  {
+    "code": ".container {\n  display: flex;\n  justify-content: center;\n}",
+    "choices": [
+      "Centers items horizontally within the container",
+      "Aligns items to the left",
+      "Spaces items evenly",
+      "Centers items vertically within the container"
+    ],
+    "correct": 0,
+    "language": "css"
+  },
+  {
+    "code": "p {\n  color: red;\n}\n\n#special {\n  color: blue;\n}\n\n<p id='special'>Text</p>",
+    "choices": [
+      "Text is black",
+      "Text is blue",
+      "Text is red",
+      "Text is purple"
+    ],
+    "correct": 1,
+    "language": "css"
+  },
+  {
+    "code": "div:hover {\n  background-color: yellow;\n}",
+    "choices": [
+      "Sets the background to yellow always",
+      "Sets the background to yellow when the div is focused",
+      "Sets the background to yellow when the div is clicked",
+      "Sets the background to yellow when the mouse is over the div"
+    ],
+    "correct": 3,
+    "language": "css"
+  },
+  {
+    "code": "from flask import request\n\n@app.route('/submit', methods=['POST'])\ndef submit():\n    username = request.form['username']\n    return f'User: {username}'",
+    "choices": [
+      "Gets 'username' from the JSON body",
+      "Gets 'username' from the submitted form data",
+      "Gets 'username' from the headers",
+      "Gets 'username' from the URL query parameters"
+    ],
+    "correct": 1,
+    "language": "python"
+  },
+  {
+    "code": "{{ url_for('static', filename='style.css') }}",
+    "choices": [
+      "Is invalid syntax",
+      "Generates the URL for the static file 'style.css'",
+      "Links to an external CDN",
+      "Includes the content of 'style.css' directly"
+    ],
+    "correct": 1,
+    "language": "django"
+  },
+  {
+    "code": "const element = document.querySelector('.active');",
+    "choices": [
+      "Selects the first element with class 'active'",
+      "Selects the element with tag name 'active'",
+      "Selects the element with id 'active'",
+      "Selects all elements with class 'active'"
+    ],
+    "correct": 0,
+    "language": "javascript"
+  },
+  {
+    "code": "@media (max-width: 600px) {\n  body {\n    background-color: lightblue;\n  }\n}",
+    "choices": [
+      "Sets background to lightblue on screens 600px wide or narrower",
+      "Sets background to lightblue for printing",
+      "Sets background to lightblue on screens wider than 600px",
+      "Sets background to lightblue on screens exactly 600px wide"
+    ],
+    "correct": 0,
+    "language": "css"
+  },
+  {
+    "code": "z-index: 10;",
+    "choices": [
+      "Sets the zoom level",
+      "Sets the font size to 10",
+      "Controls the stack order of positioned elements",
+      "Sets the transparency to 10%"
+    ],
+    "correct": 2,
+    "language": "css"
+  },
+  {
+    "code": "return redirect(url_for('login'))",
+    "choices": [
+      "Sends an HTTP redirect response to the login route",
+      "Calls the login function internally",
+      "Opens a new tab with the login page",
+      "Renders the login template"
+    ],
+    "correct": 0,
+    "language": "python"
+  },
+  {
+    "code": "{% block title %}Home{% endblock %}",
+    "choices": [
+      "Defines a block named title with default content 'Home'",
+      "Defines a variable named title",
+      "Stops the rendering process",
+      "Includes the file named Home"
+    ],
+    "correct": 0,
+    "language": "django"
+  },
+  {
+    "code": "fetch('/api/data')\n  .then(response => response.json())\n  .then(data => console.log(data));",
+    "choices": [
+      "Is synchronous code",
+      "Sends a GET request and logs the JSON response",
+      "Reads a local file named '/api/data'",
+      "Sends a POST request and logs the JSON response"
+    ],
+    "correct": 1,
+    "language": "javascript"
+  },
+  {
+    "code": "box-sizing: border-box;",
+    "choices": [
+      "Makes the box square",
+      "Adds a border to the box",
+      "Includes padding and border in the element's total width and height",
+      "Excludes padding and border from the element's total width and height"
+    ],
+    "correct": 2,
+    "language": "css"
+  },
+  {
+    "code": "position: absolute;\ntop: 0;\nleft: 0;",
+    "choices": [
+      "Positions element at top-left of the nearest positioned ancestor",
+      "Positions element relatively to its normal position",
+      "Positions element at top-left of the viewport",
+      "Positions element at top-left of the document body"
+    ],
+    "correct": 0,
+    "language": "css"
+  },
+  {
+    "code": "from flask import jsonify\n\n@app.route('/api')\ndef api():\n    return jsonify({'status': 'ok'})",
+    "choices": [
+      "Returns an HTML string",
+      "Returns a JSON response with correct headers",
+      "Returns a Python dictionary",
+      "Returns a JavaScript file"
+    ],
+    "correct": 1,
+    "language": "python"
+  },
+  {
+    "code": "@app.errorhandler(404)\ndef page_not_found(e):\n    return render_template('404.html'), 404",
+    "choices": [
+      "Logs 404 errors to a file",
+      "Handles 404 errors by rendering a custom template",
+      "Redirects all 404 errors to the home page",
+      "Crashes the app on 404 error"
+    ],
+    "correct": 1,
+    "language": "python"
+  },
+  {
+    "code": "{{ my_list | length }}",
+    "choices": [
+      "Outputs the string 'length'",
+      "Sorts the list by length",
+      "Is invalid syntax",
+      "Outputs the length of my_list"
+    ],
+    "correct": 3,
+    "language": "django"
+  },
+  {
+    "code": "{# This is a comment #}",
+    "choices": [
+      "Is removed from the output completely",
+      "Is rendered as <!-- This is a comment --> in HTML",
+      "Throws a syntax error",
+      "Is rendered as visible text"
+    ],
+    "correct": 0,
+    "language": "django"
+  },
+  {
+    "code": "console.log(`Hello ${name}`);",
+    "choices": [
+      "Is invalid syntax",
+      "Logs 'Hello ${name}' literally",
+      "Logs 'Hello ' followed by the value of name (Template Literal)",
+      "Requires a library to work"
+    ],
+    "correct": 2,
+    "language": "javascript"
+  },
+  {
+    "code": "flex-direction: column;",
+    "choices": [
+      "Arranges flex items in a row",
+      "Arranges flex items in a column (vertically)",
+      "Reverses the order of items",
+      "Wraps items to the next line"
+    ],
+    "correct": 1,
+    "language": "css"
+  },
+  {
+    "code": "{% include 'header.html' %}",
+    "choices": [
+      "Links to header.html",
+      "Includes the content of header.html at this position",
+      "Redirects to header.html",
+      "Inherits from header.html"
+    ],
+    "correct": 1,
+    "language": "django"
+  },
+  {
+    "code": "document.body.classList.toggle('dark-mode');",
+    "choices": [
+      "Always adds 'dark-mode' class",
+      "Always removes 'dark-mode' class",
+      "Adds 'dark-mode' class if missing, removes it if present",
+      "Checks if 'dark-mode' class exists"
+    ],
+    "correct": 2,
+    "language": "javascript"
+  },
+  {
+    "code": "if request.method == 'POST':",
+    "choices": [
+      "Checks if the request is secure",
+      "Checks if the request is a GET request",
+      "Checks if the request is a POST request",
+      "Checks if the request has a body"
+    ],
+    "correct": 2,
+    "language": "python"
+  },
+  {
+    "code": "const arr = [1, 2, 3];\narr.push(4);",
+    "choices": [
+      "Replaces the array with [4]",
+      "Adds 4 to the beginning of the array",
+      "Removes the last element",
+      "Adds 4 to the end of the array"
+    ],
+    "correct": 3,
+    "language": "javascript"
+  },
+  {
+    "code": "display: none;",
+    "choices": [
+      "Moves the element off-screen",
+      "Hides the element but it still takes up space",
+      "Removes the element from the document flow (takes no space)",
+      "Makes the element transparent"
+    ],
+    "correct": 2,
+    "language": "css"
+  },
+  {
+    "code": "visibility: hidden;",
+    "choices": [
+      "Hides the element but it still takes up space",
+      "Makes the element black",
+      "Removes the element from the document flow",
+      "Disables the element"
+    ],
+    "correct": 0,
+    "language": "css"
+  },
+  {
+    "code": "pip install flask",
+    "choices": [
+      "Runs the Flask app",
+      "Updates Flask",
+      "Uninstalls Flask",
+      "Installs the Flask package"
+    ],
+    "correct": 3,
+    "language": "bash"
+  },
+  {
+    "code": "/* CSS */\n#special {\n  color: blue;\n}\n\n/* HTML */\n<p id='special' style='color: red;'>Text</p>",
+    "choices": [
+      "Text is blue",
+      "Text is purple",
+      "Text is black",
+      "Text is red"
+    ],
+    "correct": 3,
+    "language": "css"
+  },
+  {
+    "code": "/* CSS */\n.container .item {\n  color: green;\n}\n\n#featured {\n  color: orange;\n}\n\n/* HTML */\n<div class='container'>\n  <p id='featured' class='item'>News</p>\n</div>",
+    "choices": [
+      "Text is orange because ID has higher specificity",
+      "Text is green because it has two classes",
+      "Text is black",
+      "Text is blue"
+    ],
+    "correct": 0,
+    "language": "css"
+  },
+  {
+    "code": "/* CSS */\n.error {\n  color: red !important;\n}\n\n#login-error {\n  color: blue;\n}\n\n/* HTML */\n<span id='login-error' class='error'>Failed</span>",
+    "choices": [
+      "Text is blue because ID is more specific",
+      "Text is red because !important overrides ID",
+      "Text is purple",
+      "Text is black"
+    ],
+    "correct": 1,
+    "language": "css"
+  },
+  {
+    "code": "/* CSS */\nul li.active {\n  color: blue;\n}\n\n.menu .active {\n  color: red;\n}\n\n/* HTML */\n<ul class='menu'>\n  <li class='active'>Home</li>\n</ul>",
+    "choices": [
+      "Depends on the order in the file",
+      "Text is blue",
+      "Text is black",
+      "Text is red"
+    ],
+    "correct": 3,
+    "language": "css"
+  },
+  {
+    "code": "/* CSS */\ndiv.content {\n  color: green;\n}\n\n.main .content {\n  color: purple;\n}\n\n/* HTML */\n<div class='main'>\n  <div class='content'>Text</div>\n</div>",
+    "choices": [
+      "Depends on source order",
+      "Text is green (Element + Class > Two Classes)",
+      "Text is black",
+      "Text is purple (Two Classes > Element + Class)"
+    ],
+    "correct": 3,
+    "language": "css"
+  },
+  {
+    "code": "/* CSS */\n#header {\n  background-color: black;\n}\n\n/* HTML */\n<div id='header' style='background-color: white;'>Logo</div>",
+    "choices": [
+      "Background is gray",
+      "Background is white",
+      "Background is transparent",
+      "Background is black"
+    ],
+    "correct": 1,
+    "language": "css"
+  },
+  {
+    "code": "/* CSS */\n.nav.primary.active {\n  color: orange;\n}\n\n#home {\n  color: teal;\n}\n\n/* HTML */\n<a id='home' class='nav primary active'>Link</a>",
+    "choices": [
+      "Text is blue (default link color)",
+      "Text is teal (1 ID > 3 classes)",
+      "Text is black",
+      "Text is orange (3 classes > 1 ID)"
+    ],
+    "correct": 1,
+    "language": "css"
+  },
+  {
+    "code": "/* CSS */\ndiv#modal {\n  border-color: red;\n}\n\n#modal.open {\n  border-color: blue;\n}\n\n/* HTML */\n<div id='modal' class='open'>Box</div>",
+    "choices": [
+      "Border is red",
+      "Border is black",
+      "Border is blue",
+      "Border is purple"
+    ],
+    "correct": 2,
+    "language": "css"
+  }
+]

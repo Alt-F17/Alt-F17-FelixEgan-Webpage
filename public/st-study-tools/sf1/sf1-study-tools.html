@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SF1 Study Tools</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-button:hover {
+            background: #f8f9fa;
+        }
+        .progress-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .problem {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .cards-layout {
+            display: flex;
+            gap: 20px;
+        }
+        .editor {
+            height: 670px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .test-output {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            margin-top: 15px;
+            border: 1px solid #e9ecef;
+        }
+        .test-case {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 5px solid;
+            background-color: #f8f9fa;
+        }
+        .test-case.pass {
+            border-left-color: #28a745;
+        }
+        .test-case.fail {
+            border-left-color: #dc3545;
+        }
+        .error {
+            color: #dc3545;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+        .passed { color: #28a745; }
+        .failed { color: #dc3545; }
+        .summary {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .test-results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .test-results-table th, 
+        .test-results-table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        .test-results-table th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .test-results-table tr.pass {
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+        .test-results-table tr.fail {
+            background-color: rgba(220, 53, 69, 0.1);
+        }
+        .test-results-table td.truncate {
+            max-width: 200px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .test-results-table td.truncate:hover {
+            white-space: normal;
+            overflow: visible;
+        }
+        .cards-list {
+            width: 200px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        svg {
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        .cards-list h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        #terms-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        #terms-list li {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-bottom: 4px;
+        }
+        #terms-list li:hover {
+            background: #e6e6e6;
+        }
+        #terms-list li.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .card-content-area {
+            flex: 1;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s ease-in-out;
+        }
+        .progress-text {
+            margin-top: 5px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .terminal {
+            background: #2d2d2d;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .terminal-header {
+            display: flex;
+            gap: 8px;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #444;
+            margin-bottom: 1rem;
+        }
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+        .terminal-content {
+            color: #fff;
+            font-family: monospace;
+        }
+        .game-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        .game-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .game-card:hover {
+            transform: translateY(-2px);
+        }
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-button:hover {
+            background: #f8f9fa;
+        }
+        .input-area {
+            margin-top: 1rem;
+        }
+        input[type="text"] {
+            padding: 0.5rem;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            max-width: 300px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0.5rem 0;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .flash-card {
+            padding: 2rem;
+            text-align: center;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 1rem 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        #lives {
+            margin: 1rem 0;
+            font-size: 1.2rem;
+        }
+        .node {
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+        }
+        .cli {
+            margin-top: 20px;
+        }
+        .cli input {
+            width: 300px;
+            padding: 5px;
+        }
+        .cli button {
+            padding: 5px 10px;
+        }
+        .label {
+            font-size: 22px;
+            fill: #000;
+        }
+        .blue {
+            fill: #1f77b4;
+        }
+        .grey {
+            fill: #808080;
+        }
+        .selected {
+            stroke: #ff7300;
+            stroke-width: 3px;
+        }
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, #3498db, #06e2fb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loader-content {
+            text-align: center;
+            color: white;
+        }
+        .loader-content h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        .loading-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        .progress {
+            width: 0%;
+            height: 100%;
+            background: white;
+            animation: loading 3s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes loading {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+
+    <div id="loadingScreen">
+        <div class="loader-content">
+            <h1>SF1 Study Tools</h1>
+            <div class="loading-bar">
+                <div class="progress"></div>
+            </div>
+            <p>Loading Python Environment...</p>
+            <p>This may take some time...</p>
+            <p>This tool works better in full-screen mode (F11)</p>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1>SF1 Interactive Study Tools</h1>
+        <div class="game-selector">
+            <div class="game-card" onclick="switchGame('word-jumble')">
+                <h3>Word Jumble</h3>
+                <p>Unscramble all SF1 terms before you run out of lives</p>
+            </div>
+            
+            <div class="game-card" onclick="switchGame('coding-problems')">
+                <h3>Coding Problems: Final Bosses</h3>
+                <p>Practice your coding skills with these summative coding assessments</p>
+            </div>
+            
+            <div class="game-card" onclick="switchGame('flash-cards')">
+                <h3>Flash Cards</h3>
+                <p>Test your knowledge of key concepts</p>
+            </div>
+
+            <div class="game-card" onclick="switchGame('file-graph')">
+                <h3>File Graph Visualizer</h3>
+                <p>Visualize the file structure of a project and practice CLI navigation</p>
+            </div>
+            
+            <div class="game-card" onclick="switchGame('ressources')">
+                <h3>A Few More Ressources</h3>
+                <p>A few more ressources to perfect your Python understanding before the final</p>
+            </div>
+        </div>
+
+        <div id="game-area">
+            <div id="word-jumble" style="display: none;">
+                <h2>SF1 Word Jumble!</h2>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-button red"></div>
+                        <div class="terminal-button yellow"></div>
+                        <div class="terminal-button green"></div>
+                    </div>
+                    <div class="terminal-content">
+                        <div class="terminal-content" id="output">Loading Python environment...<span class="loader"></span></div>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="word-progress"></div>
+                            </div>
+                            <div class="progress-text">
+                                Word <span id="current-word-num">0</span> of <span id="total-words">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="lives"></div>
+                <div class="input-area">
+                    <input type="text" id="input" placeholder="Enter your guess..." disabled>
+                    <button id="submitGuess" onclick="submitGuess()" disabled>Guess</button>
+                    <button onclick="initGame()">Restart</button>
+                </div>
+                <script>
+                    pyodide = null;
+                    let gameState = null;
+                    
+                    async function initGame() {
+                        try {
+                            // Show loading state
+                            const output = document.getElementById('output');
+                            output.innerHTML = 'Loading Python environment...<span class="loader"></span>';
+                            
+                            // Load Pyodide
+                            console.log('Starting Pyodide load...');
+                            pyodide = await loadPyodide({
+                                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/"
+                            });
+                            
+                            // Initialize Python game state
+                            await pyodide.runPythonAsync(`
+                                import random
+                                from js import document
+                                word_list = {
+                                    "python": "A programming language named after a snake",
+                                    "github": "A web-based platform for version control",
+                                    "git": "A distributed version control system",
+                                    "CPU": "Central Processing Unit",
+                                    "RAM": "Random Access Memory",
+                                    "motherboard": "The main circuit board of a computer",
+                                    "hard_drive": "A device for storing digital data",
+                                    "solid_state_drive": "A storage device that uses flash memory",
+                                    "network": "A group of interconnected computers",
+                                    "packet": "A unit of data transmitted over a network",
+                                    "remote_origin": "A default name for the remote repository",
+                                    "branch": "A parallel version of a repository",
+                                    "merge": "To combine two or more branches",
+                                    "pull_request": "A request to merge changes into a repository",
+                                    "repository": "A location where files are stored",
+                                    "commit": "A saved change in a repository",
+                                    "router": "A device that forwards data packets between computer networks",
+                                    "node": "A device connected to a network",
+                                    "ISP": "Internet Service Provider",
+                                    "linkrot": "The process by which links on a website become broken",
+                                    "ip_address": "A unique string of numbers separated by periods that identifies each computer using the Internet Protocol to communicate over a network",
+                                    "DNS": "Domain Name System",
+                                    "tcp_handshake": "The process of establishing a connection between two computers",
+                                    "http": "Hypertext Transfer Protocol",
+                                    "curl": "A command-line tool for transferring data with URLs",
+                                    "html": "Hypertext Markup Language",
+                                    "ssh": "Secure Shell",
+                                    "transistor": "A semiconductor device used to amplify or switch electronic signals",
+                                    "binary": "A number system with a base of 2 (0s and 1s)",
+                                    "integrated_circuit": "A set of electronic circuits on one small flat piece of semiconductor material",
+                                    "logic_gate": "A component made of a set of transistors that performs a basic operation on electrical signals",
+                                    "kernel": "The core component of an operating system",
+                                    "foss": "Free and Open Source Software",
+                                    "lookup_table": "A data structure used to store key-value pairs",
+                                    "tracing": "A method of debugging code by printing messages to a log",
+                                    "data": "Information in a form suitable for use with a computer (e.g., numbers, text, images, boolean values, etc...)",
+                                    "function": "A block of code that performs a specific task",
+                                    "append()": "To add an element to the end of a list",
+                                    "insert()": "To add an element at a specific index in a list",
+                                    "remove()": "To delete an element from a list",
+                                    "pop": "To remove and return the last element from a list",
+                                    "index": "The position of an element in a list",
+                                    "list": "A collection of items in a specific order",
+                                    "tuple": "An immutable collection of items",
+                                    "vim": "A highly configurable text editor (that everyone despises)",
+                                    "silicon": "A material used in the production of semiconductors and integrated circuits",
+                                    "trace_route": "A network diagnostic tool that shows the path of data packets",
+                                    "Eric_J_Mayhew": "An amazing programming teacher with a middlename unknown to this day...",
+                                    "API_call": "A request to a server for information",
+                                    "programming_language": "A formal language comprising a set of instructions that produce various kinds of output",
+                                    "compiled_language": "A programming language that is translated into machine code before execution",
+                                    "interpreted_language": "A programming language that is executed line by line",
+                                    "print()": "A function that displays output to the console",
+                                    "input()": "A function that takes user input",
+                                    "type()": "A function that returns the type of an object",
+                                    "len()": "A function that returns the length of an object",
+                                    "range()": "A function that generates a sequence of numbers",
+                                    "for_loop": "A control flow statement for specifying iteration",
+                                    "while_loop": "A control flow statement that allows code to be executed repeatedly",
+                                    "if_statement": "A control flow statement that executes code based on a condition",
+                                    "else_statement": "A control flow statement that executes code if the condition of an if statement is false",
+                                    "elif_statement": "A control flow statement that executes code if the condition of an if statement is false and its own condition is true",
+                                    "int": "A data type that represents whole numbers",
+                                    "float": "A data type that represents decimal numbers",
+                                    "string": "A data type that represents text",
+                                    "boolean": "A data type that represents True or False values",
+                                    "casting": "Converting a variable from one data type to another",
+                                    "variable": "A named storage location for data",
+                                    "int()": "A function that converts a value to an integer",
+                                    "float()": "A function that converts a value to a float",
+                                    "str()": "A function that converts a value to a string",
+                                    "bool()": "A function that converts a value to a boolean",
+                                    "list()": "A function that converts a value to a list",
+                                    "tuple()": "A function that converts a value to a tuple",
+                                    "None": "A special value in Python that represents the absence of a value",
+                                    "True": "A boolean value that represents true",
+                                    "False": "A boolean value that represents false",
+                                    "and": "A logical operator that returns True if both statements are true",
+                                    "or": "A logical operator that returns True if one of the statements is true",
+                                    "not": "A logical operator that returns the opposite of the statement",
+                                    "if": "A keyword that starts a conditional statement",
+                                    "else": "A keyword that executes code if the condition of an if statement is false",
+                                    "elif": "A keyword that executes code if the condition of an if statement is false and its own condition is true",
+                                    "while": "A keyword that starts a while loop",
+                                    "for": "A keyword that starts a for loop",
+                                    "def": "A keyword that defines a function",
+                                    "return": "A keyword that returns a value from a function",
+                                    "git_add": "A command to add changes to the staging area",
+                                    "git_commit": "A command to save changes to the local repository",
+                                    "git_push": "A command to push changes to a remote repository",
+                                    "git_pull": "A command to fetch and merge changes from a remote repository",
+                                    "git_clone": "A command to copy a repository from a remote server",
+                                    "peer_to_peer": "A network where each computer can act as a client or server",
+                                    "server": "A computer or software that provides services to other computers",
+                                    "client": "A computer or software that requests services from a server",
+                                    "cloud": "A network of remote servers hosted on the Internet to store, manage, and process data",
+                                    "database": "A structured set of data stored electronically",
+                                    "client_server": "A network architecture where clients request services from servers",
+                                    "web_server": "A server that hosts websites and web applications",
+                                    "link_layer": "Layer responsible for physical transmission of data between directly connected devices. This is managed by the network hardware.",
+                                    "network_layer": "Layer responsible for routing data packets to their destination. This is managed by the operating system.",
+                                    "transport_layer": "Layer responsible for end-to-end communication between devices. Apps are built on top of this layer.",
+                                    "application_layer": "Layer responsible for providing network services to applications. This is managed by the application software.",
+                                    "cascading_request":  "A single webpage often requires multiple HTTP requests to load completely.",
+                                    "HTTP_request": "A message sent from a client to a server to request a resource.",
+                                    "cd": "A command to change the current directory",
+                                    "ls": "A command to list files and directories",
+                                    "pwd": "A command to print the current working directory",
+                                    "mkdir": "A command to create a new directory",
+                                    "rm": "A command to remove files or directories",
+                                    "cp": "A command to copy files or directories",
+                                    "mv": "A command to move files or directories",
+                                    "cat": "A command to display the contents of a file",
+                                    "touch": "A command to create an empty file",
+                                    "cd..": "A command to move up one directory",
+                                    "insert_mode": "A mode in Vim that allows you to insert text",
+                                    "normal_mode": "The default mode in Vim for navigating and editing text",
+                                    "hjkl": "The keys used in Vim for navigation (left, down, up, right)",
+                                    ":wq": "A command in Vim to save and exit",
+                                }
+        
+                                class GameState:
+                                    def __init__(self):
+                                        self.lives = 3
+                                        self.score = 0
+                                        self.current_word = ""
+                                        self.current_jumble = ""
+                                        self.current_hint = ""
+                                        self.word_sequence = []
+                                        self.current_index = 0
+                                        self.initialize_sequence()
+                                        self.update_progress()
+                                        
+                                    def initialize_sequence(self):
+                                        self.word_sequence = list(word_list.keys())
+                                        random.shuffle(self.word_sequence)
+                                        self.current_index = 0
+
+                                    def update_progress(self):
+                                        progress = (self.current_index / len(self.word_sequence)) * 100
+                                        document.querySelector('#word-progress').style.width = f"{progress}%"
+                                        document.querySelector('#current-word-num').textContent = str(self.current_index + 1)
+                                        document.querySelector('#total-words').textContent = str(len(self.word_sequence))
+                                        
+                                    def new_word(self):
+                                        if self.current_index < len(self.word_sequence):
+                                            self.current_word = self.word_sequence[self.current_index]
+                                            self.current_hint = word_list[self.current_word]
+                                            word_list_temp = list(self.current_word)
+                                            random.shuffle(word_list_temp)
+                                            self.current_jumble = ''.join(word_list_temp)
+                                            while self.current_jumble == self.current_word:
+                                                random.shuffle(word_list_temp)
+                                                self.current_jumble = ''.join(word_list_temp)
+                                            self.update_progress()
+                                            return self.current_jumble
+                                        return None
+                                        
+                                    def check_guess(self, guess):
+                                        if guess.lower().strip() == self.current_word.lower():
+                                            self.score += 1
+                                            self.current_index += 1
+                                            self.update_progress()
+                                            
+                                            if self.current_index >= len(self.word_sequence):
+                                                document.querySelector('#output').textContent = "Congratulations! You've unscrambled all the words!"
+                                                document.querySelector('#word-guess').disabled = True
+                                                guess_button = document.querySelector('button') 
+                                                guess_button.disabled = True
+                                                return True
+                                                
+                                            self.new_word()
+                                            return True
+                                            
+                                        self.lives -= 1
+                                        if self.lives <= 0:
+                                            document.querySelector('#output').textContent = "Game Over! Out of lives."
+                                            document.querySelector('#word-guess').disabled = True
+                                            guess_button = document.querySelector('button')
+                                            guess_button.disabled = True
+                                            return False
+                                        return False
+
+                                game_state = GameState()
+                                game_state.new_word()
+                            `);
+                            
+                            gameState = pyodide.globals.get('game_state');
+                            
+                            // Enable UI
+                            document.getElementById('input').disabled = false;
+                            document.getElementById('submitGuess').disabled = false;
+                            document.getElementById('submitGuess').textContent = 'Guess';
+                            
+                            // Show first word
+                            updateGameDisplay();
+
+                            document.getElementById('loadingScreen').style.opacity = '0';
+                            document.getElementById('loadingScreen').style.transition = 'opacity 0.5s';
+                            setTimeout(() => {
+                                document.getElementById('loadingScreen').style.display = 'none';
+                            }, 500);
+                            
+                        } catch (error) {
+                            console.error('Game initialization error:', error);
+                            output.innerHTML = 'Error loading game: ' + error.message;
+                        }
+                    }
+        
+                    function updateGameDisplay() {
+                        const lives = pyodide.runPython('game_state.lives');
+                        const score = pyodide.runPython('game_state.score');
+                        const jumble = pyodide.runPython('game_state.current_jumble');
+                        const hint = pyodide.runPython('game_state.current_hint');
+                        
+                        document.getElementById('lives').innerHTML = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives);
+                        document.getElementById('output').innerHTML = 
+                            `Score: ${score}<br>Unscramble this word: ${jumble}<br>Hint: ${hint}`;
+                        
+                        if (lives <= 0) {
+                            gameOver();
+                        }
+                    }
+        
+                    function gameOver() {
+                        const score = pyodide.runPython('game_state.score');
+                        const word = pyodide.runPython('game_state.current_word');
+                        const hint = pyodide.runPython('game_state.current_hint');
+                        document.getElementById('output').innerHTML = 
+                            `Game Over!<br>Final Score: ${score}<br>The last word was: ${hint}: ${word}`;
+                        document.getElementById('input').disabled = true;
+                        document.getElementById('submitGuess').disabled = true;
+                    }
+        
+                    async function submitGuess() {
+                        const input = document.getElementById('input');
+                        const guess = input.value;
+                        
+                        if (guess.trim() === '') return;
+                        
+                        const correct = pyodide.runPython(`game_state.check_guess("${guess}")`);
+                        
+                        if (correct) {
+                            pyodide.runPython('game_state.new_word()');
+                        }
+                        
+                        input.value = '';
+                        updateGameDisplay();
+                    }
+        
+                    // Handle Enter key
+                    document.getElementById('input').addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            submitGuess();
+                        }
+                    });
+        
+                    // Start the game
+                    window.addEventListener('load', initGame);
+                </script>
+            </div>
+
+            <div id="coding-problems" style="display: none;">
+                <h2>Summative Coding Problems</h2>
+                <div class="problem">
+                    <h2>1. E-Commerce Order💲</h2>
+                    <p>Calculate the final price for an E-Commerce order based on where it is being shipped. You will have to write 2 functions. The first takes in a list of tuples, which represent the items and their prices (and discounts, if any).
+                    The second function takes in the list of items and the shipping address and calculates the total cost of the order including tax and delivery.</p>
+                    <div id="editor1" class="editor"></div>
+                    <button onclick="runTests(1)">Run Tests</button>
+                    <div class="test-output" id="output1"></div>
+                </div>
+            
+                <div class="problem">
+                    <h2>2. Pizza Time! Pizzeria™️🍕</h2>
+                    <p>Calculate the price of a pizza order from the world famous Pizza Time! Pizzaria™️. Your first function will require you to calculate the base price for a pizza depending on its size and topping count.
+                    The second function will take in a list of pizzas and calculate the total cost of the order after applying any deals.
+                    </p>
+                    <div id="editor2" class="editor"></div>
+                    <button onclick="runTests(2)">Run Tests</button>
+                    <div class="test-output" id="output2"></div>
+                </div>
+            
+                <div class="problem">
+                    <h2>3. Ultimate Gamer 🎮</h2>
+                    <p>Output the rank of a player based on their recent game sessions. The first function will calculate the points earned in a battle royale game session based on eliminations, survival time, and final placement.
+                    The second function will update the player's rank based on their recent performance.</p>
+                    <div id="editor3" class="editor"></div>
+                    <button onclick="runTests(3)">Run Tests</button>
+                    <div class="test-output" id="output3"></div>
+                </div>
+
+                <script>
+                    // Initialize editors with default solutions
+                    const editors = {
+                        1: ace.edit("editor1"),
+                        2: ace.edit("editor2"),
+                        3: ace.edit("editor3")
+                    };
+            
+                    const defaultSolutions = {
+                        1: `def calculate_subtotal(items):
+            
+    """
+    Calculate subtotal (sum) of an e-commerce order.
+    
+    Args:
+        items: List of tuples (price, quantity, discount (decimal number))
+
+    Returns:   
+        float: Subtotal of order
+    """
+    # Start coding here...
+
+
+
+
+
+def process_checkout(items, shipping_address):
+
+    """
+    Process an e-commerce checkout with items and shipping address.
+    
+    Args:
+        items: List of tuples (price, quantity, discount (decimal number))
+        shipping_address (str): Destination address
+
+    Returns:
+        float: Total cost of order including tax and delivery
+
+    Shipping addresses:
+        Montreal: 10 km away, 14.975% tax
+        Toronto: 542 km away, 13% tax
+        Vancouver: 4924 km away, 12% tax
+        Edmonton: 3584 km away, 5% tax
+        Charlottetown: 1149 km away, 15% tax
+
+    Delivery cost:
+        1.80$ per 100 km = 0.018$/km
+    """
+    addresses = [("Montreal", 10, 14.975), ("Toronto", 542, 13), ("Vancouver", 4924, 12), ("Edmonton", 3584, 5), ("Charlottetown", 1149, 15)]
+    # Start coding here...`,
+            
+                        2: `def calculate_pizza_price(size, toppings):
+    """
+    Calculate price of a single pizza.
+    
+    Args:
+        size (str): 'S', 'M', or 'L'
+        toppings (list): List of toppings
+        
+    Returns:
+        float: Price of pizza
+        
+    Base prices:
+    - Small: $8
+    - Medium: $10 
+    - Large: $12
+    Each topping: $1.50
+    """
+    pizza_prices = [('S', 8), ('M', 10), ('L', 12)]
+    # Start coding here...
+
+
+
+
+
+def calculate_order_total(pizzas):
+    """
+    Calculate total order cost with deals applied.
+    
+    Args:
+        pizzas: List of tuples (size, [toppings])
+        
+    Returns:
+        float: Total order cost after deals
+        
+    Deals:
+    - Order 2+ pizzas: 10% off
+    - Large pizza with 3+ toppings: $2 off
+    """     
+    # Start coding here...`,
+            
+                        3: `def calculate_session_points(kills, time_alive, position):
+    """
+    Calculate points earned in a battle royale game session.
+    
+    Args:
+        kills (int): Number of eliminations
+        time_alive (int): Survival time in minutes
+        position (int): Final placement (1-100)
+        
+    Returns:
+        int: Points earned this session
+        
+    Points system:
+    - Each kill: 50 points
+    - Every minute survived: 10 points
+    - Top 10 placement bonus: 300 points
+    - Victory bonus: 500 points
+    """
+    # Start coding here...
+
+
+
+
+def update_player_rank(current_rank, recent_sessions):
+    """
+    Update player rank based on recent game sessions.
+    
+    Args:
+        current_rank (str): Current rank EG: ('Bronze')
+        recent_sessions: List of tuples (kills, time_alive, position)
+        
+    Returns:
+        str: New rank after calculating the average of points aquired in recent performances: "<old rank> => <new rank>"
+            Hint: use '//' to floor divide the total points by the number of sessions to get the average
+        
+    Ranks: Bronze (0-999), Silver (1000-1999), Gold (2000-2999), Diamond (3000+)
+    """
+    # Start coding here...`
+                    };
+            
+                    // Configure editors
+                    Object.values(editors).forEach((editor, index) => {
+                        editor.setTheme("ace/theme/dracula");
+                        editor.session.setMode("ace/mode/python");
+                        editor.setFontSize(14);
+                        editor.setValue(defaultSolutions[index + 1], -1);
+                    });
+            
+                    let pyodide = null;
+            
+                    async function initPyodide() {
+                        if (!pyodide) {
+                            pyodide = await loadPyodide({
+                                indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/"
+                            });
+                        }
+                        return pyodide;
+                    }
+            
+                    async function testEcommerceCalculator(pyodide) {
+                        return await pyodide.runPython(`
+                            import json
+                            test_cases = []
+                            
+                            # Test 1: Vancouver maximum distance shipping with large order
+                            input_data = ([(999.99, 5, 0.5), (499.99, 3, 0.25)], "Vancouver")
+                            result = process_checkout(*input_data)
+                            test_cases.append({
+                                "description": "Large order to furthest city with discounts",
+                                "input": input_data,
+                                "passed": abs(result - 4148.58) < 0.1,
+                                "expected": "~4148.58",
+                                "actual": f"{result:.2f}"
+                            })
+            
+                            # Test 2: Minimum purchase with no discount
+                            input_data = ([(0.01, 1, 0)], "Montreal")
+                            result = process_checkout(*input_data)
+                            test_cases.append({
+                                "description": "Minimum possible purchase",
+                                "input": input_data,
+                                "passed": abs(result - 0.19) < 0.1,
+                                "expected": "~0.19",
+                                "actual": f"{result:.2f}"
+                            })
+            
+                            # Test 3: Another Casual Test
+                            input_data = ([(50.00, 1, 0)], "Charlottetown")
+                            result = process_checkout(*input_data)
+                            test_cases.append({
+                                "description": "Casual test, realistic",
+                                "input": input_data,
+                                "passed": abs(result - 78.18) < 0.1,
+                                "expected": "~78.18",
+                                "actual": f"{result:.2f}"
+                            })
+            
+                            # Test 4: High quantity, no discount
+                            input_data = ([(1.00, 1000, 0)], "Edmonton")
+                            result = process_checkout(*input_data)
+                            test_cases.append({
+                                "description": "Bulk order with no discount",
+                                "input": input_data,
+                                "passed": abs(result - 1114.51) < 0.1,
+                                "expected": "~1114.51",
+                                "actual": f"{result:.2f}"
+                            })
+            
+                            # Test 5: Multiple items with varying discounts
+                            input_data = ([(100.00, 2, 0.1), (50.00, 3, 0.2), (75.00, 1, 0.5)], "Toronto")
+                            result = process_checkout(*input_data)
+                            test_cases.append({
+                                "description": "Complex order with mixed discounts",
+                                "input": input_data,
+                                "passed": abs(result - 391.13) < 0.1,
+                                "expected": "~391.13",
+                                "actual": f"{result:.2f}"
+                            })
+            
+                            # Test 6: Casual Test with Random Values
+                            input_data = ([(25.99, 2, 0.1), (10.00, 1, 0)], "Montreal")
+                            result = process_checkout(*input_data)
+                            test_cases.append({
+                                "description": "Another casual test with random values",
+                                "input": input_data,
+                                "passed": abs(result - 65.47) < 0.1,
+                                "expected": "~65.47",
+                                "actual": f"{result:.2f}"
+                            })
+            
+                            json.dumps({"cases": test_cases})
+                        `);
+                    }
+            
+                    async function testPizzaCalculator(pyodide) {
+                        return await pyodide.runPython(`
+                            import json
+                            test_cases = []
+                            
+                            # Test 1: Basic order with multiple deals
+                            input_data = [('L', ['pepperoni', 'mushrooms', 'olives']), ('M', ['cheese'])]
+                            result = calculate_order_total(input_data)
+                            test_cases.append({
+                                "description": "Calculate pizza order with multiple deals",
+                                "input": input_data,
+                                "passed": result == 23.4,
+                                "expected": 23.4,
+                                "actual": result
+                            })
+            
+                            # Test 2: Large order with many toppings
+                            input_data = [
+                                ('L', ['pepperoni', 'mushrooms', 'olives', 'bacon', 'onions', 'peppers']),
+                                ('L', ['cheese', 'ham', 'pineapple', 'bacon']),
+                                ('L', ['mushrooms', 'olives', 'onions'])
+                            ]
+                            result = calculate_order_total(input_data)
+                            test_cases.append({
+                                "description": "Large order with maximum toppings",
+                                "input": input_data,
+                                "passed": result == 44.55,
+                                "expected": 44.55,
+                                "actual": result
+                            })
+            
+                            # Test 3: Single pizza no deals
+                            input_data = [('S', ['cheese'])]
+                            result = calculate_order_total(input_data)
+                            test_cases.append({
+                                "description": "Single small pizza no deals",
+                                "input": input_data,
+                                "passed": result == 9.50,
+                                "expected": 9.50,
+                                "actual": result
+                            })
+            
+                            # Test 4: Empty toppings
+                            input_data = [('M', []), ('S', [])]
+                            result = calculate_order_total(input_data)
+                            test_cases.append({
+                                "description": "Multiple pizzas with no toppings",
+                                "input": input_data,
+                                "passed": result == 16.20,
+                                "expected": 16.20,
+                                "actual": result
+                            })
+            
+                            # Test 5: Mixed sizes with deal threshold
+                            input_data = [
+                                ('L', ['pepperoni', 'mushrooms', 'olives']),
+                                ('M', ['cheese', 'ham']),
+                                ('S', ['pepperoni'])
+                            ]
+                            result = calculate_order_total(input_data)
+                            test_cases.append({
+                                "description": "Mixed sizes hitting all deal conditions",
+                                "input": input_data,
+                                "passed": result == 33.3,
+                                "expected": 33.3,
+                                "actual": result
+                            })
+            
+                            # Test 6: Edge case with maximum possible order
+                            input_data = [
+                                ('L', ['t1', 't2', 't3', 't4', 't5', 't6', 't7', 't8']),
+                                ('L', ['t1', 't2', 't3', 't4', 't5']),
+                                ('L', ['t1', 't2', 't3'])
+                            ]
+                            result = calculate_order_total(input_data)
+                            test_cases.append({
+                                "description": "Maximum possible order with all deals",
+                                "input": input_data,
+                                "passed": result == 48.6,
+                                "expected": 48.6,
+                                "actual": result
+                            })
+            
+                            json.dumps({"cases": test_cases})
+                        `);
+                    }
+            
+                    async function testGameRanking(pyodide) {
+                        return await pyodide.runPython(`
+                            import json
+                            test_cases = []
+                            
+                            # Test 1: Baseline rank up case
+                            input_data = ("Silver", [(5, 18, 3), (2, 12, 15), (8, 22, 1)])
+                            result = update_player_rank(*input_data)
+                            test_cases.append({
+                                "description": "Calculate new rank from game sessions",
+                                "input": input_data,
+                                "passed": result == "Silver => Bronze",
+                                "expected": "Silver => Bronze",
+                                "actual": result
+                            })
+            
+                            # Test 2: Maximum possible points
+                            input_data = ("Bronze", [(99, 45, 1), (99, 40, 1), (99, 42, 1)])
+                            result = update_player_rank(*input_data)
+                            test_cases.append({
+                                "description": "Maximum performance - high kills, wins, long survival",
+                                "input": input_data,
+                                "passed": result == "Bronze => Diamond",
+                                "expected": "Bronze => Diamond",
+                                "actual": result
+                            })
+            
+                            # Test 3: Rank threshold edge case
+                            input_data = ("Silver", [(13, 25, 5), (14, 25, 5), (13, 25, 5)])
+                            result = update_player_rank(*input_data)
+                            test_cases.append({
+                                "description": "Points exactly at Gold threshold",
+                                "input": input_data,
+                                "passed": result == "Silver => Silver",
+                                "expected": "Silver => Silver",
+                                "actual": result
+                            })
+            
+                            # Test 4: Minimum values
+                            input_data = ("Gold", [(0, 1, 100), (0, 1, 100), (0, 1, 100)])
+                            result = update_player_rank(*input_data)
+                            test_cases.append({
+                                "description": "Minimum possible performance",
+                                "input": input_data,
+                                "passed": result == "Gold => Bronze",
+                                "expected": "Gold => Bronze",
+                                "actual": result
+                            })
+            
+                            # Test 5: Many sessions average
+                            input_data = ("Silver", [(5, 15, 10), (4, 12, 15), (6, 18, 8), 
+                                                    (3, 10, 20), (7, 20, 5), (2, 8, 25)])
+                            result = update_player_rank(*input_data)
+                            test_cases.append({
+                                "description": "Large number of sessions with varied performance",
+                                "input": input_data,
+                                "passed": result == "Silver => Bronze",
+                                "expected": "Silver => Bronze",
+                                "actual": result
+                            })
+            
+                            # Test 6: Perfect consistency
+                            input_data = ("Bronze", [(10, 20, 1), (10, 20, 1), (10, 20, 1), (10, 20, 1)])
+                            result = update_player_rank(*input_data)
+                            test_cases.append({
+                                "description": "Consistent high performance across sessions",
+                                "input": input_data,
+                                "passed": result == "Bronze => Silver",
+                                "expected": "Bronze => Silver",
+                                "actual": result
+                            })
+            
+                            json.dumps({"cases": test_cases})
+                        `);
+                    }
+            
+                    async function runTests(problemNumber) {
+                        const outputElement = document.getElementById(`output${problemNumber}`);
+                        
+                        // Clear previous results
+                        outputElement.innerHTML = 'Initializing Python environment...';
+                        
+                        try {
+                            // Initialize new Pyodide instance each time
+                            self.pyodide = undefined;
+                            const pyodide = await initPyodide();
+                            
+                            // Get fresh code from editor
+                            const code = editors[problemNumber].getValue();
+                            
+                            // Clear previous Python state and execute new code
+                            await pyodide.runPython('import sys; sys.modules.clear()');
+                            await pyodide.runPython(code);
+            
+                            // Check if required functions exist
+                            const functionCheck = await pyodide.runPython(`
+                                import json
+                                functions = {
+                                    1: ['calculate_subtotal', 'process_checkout'],
+                                    2: ['calculate_pizza_price', 'calculate_order_total'],
+                                    3: ['calculate_session_points', 'update_player_rank']
+                                }
+                                
+                                missing = [f for f in functions[${problemNumber}] 
+                                          if f not in globals() or not callable(globals()[f])]
+                                
+                                json.dumps(missing)
+                            `);
+                            
+                            const missingFunctions = JSON.parse(functionCheck);
+                            if (missingFunctions.length > 0) {
+                                throw new Error(`Missing or incomplete functions: ${missingFunctions.join(', ')}`);
+                            }
+            
+                            // Run tests with fresh environment
+                            let testResults;
+                            switch(problemNumber) {
+                                case 1:
+                                    testResults = await testEcommerceCalculator(pyodide);
+                                    break;
+                                case 2:
+                                    testResults = await testPizzaCalculator(pyodide);
+                                    break;
+                                case 3:
+                                    testResults = await testGameRanking(pyodide);
+                                    break;
+                            }
+            
+                            // Verify test results exist
+                            if (!testResults) {
+                                throw new Error("Test results undefined - check function implementation");
+                            }
+            
+                            // Parse and display fresh results
+                            testResults = JSON.parse(testResults);
+                            outputElement.innerHTML = formatTestResults(testResults);
+                            
+                        } catch (error) {
+                            outputElement.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+                            console.error(error);
+                        }
+                    }
+            
+                    function formatTestResults(results) {
+                        if (!results || !results.cases) {
+                            return '<div class="error">Invalid test results</div>';
+                        }
+            
+                        let html = '<div class="table-container"><table class="test-results-table">';
+                        
+                        // Add table header
+                        html += `
+                            <tr>
+                                <th>#</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Input</th>
+                                <th>Expected</th>
+                                <th>Actual</th>
+                            </tr>
+                        `;
+            
+                        // Add test cases
+                        results.cases.forEach((test, index) => {
+                            const statusClass = test.passed ? 'pass' : 'fail';
+                            const icon = test.passed ? '✅' : '❌';
+                            
+                            html += `
+                                <tr class="${statusClass}">
+                                    <td>${index + 1}</td>
+                                    <td>${icon}</td>
+                                    <td class="truncate">${test.description}</td>
+                                    <td class="truncate">${JSON.stringify(test.input)}</td>
+                                    <td class="truncate">${JSON.stringify(test.expected)}</td>
+                                    <td class="truncate">${JSON.stringify(test.actual)}</td>
+                                </tr>
+                            `;
+                        });
+            
+                        html += '</table></div>';
+            
+                        // Add summary footer
+                        const passedTests = results.cases.filter(t => t.passed).length;
+                        html += `
+                            <div class="summary" style="margin-top: 10px; font-weight: bold;">
+                                Total: ${results.cases.length}  
+                                <span class="passed">✅ ${passedTests}</span>  
+                                <span class="failed">❌ ${results.cases.length - passedTests}</span>
+                            </div>
+                        `;
+            
+                        return html;
+                    }
+                </script>
+            </div>
+
+            <div id="flash-cards" style="display: none;">
+                <h2>SF1 Flash Cards</h2>
+                <div class="cards-layout">
+                    <!-- Add this new sidebar -->
+                    <div class="cards-list">
+                        <h3>All Terms</h3>
+                        <ul id="terms-list">
+                            <!-- Will be populated by JavaScript -->
+                        </ul>
+                    </div>
+                    
+                    <!-- Wrap existing card content in a main content div -->
+                    <div class="card-content-area">
+                        <div id="card-content" class="flash-card">
+                            Click 'Next Card' to begin!
+                        </div>
+                
+                        <div class="card-controls">
+                            <button onclick="cardState.prevCard()">Previous Card</button>
+                            <button onclick="cardState.flipCard()">Flip Card</button>
+                            <button onclick="cardState.nextCard()">Next Card</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="file-graph" style="display: none;">
+                <h2>File Graph Visualizer</h2>
+                <div style="width: 100%; position: relative; padding-bottom: 39.3%;">
+                    <!-- 39.3% comes from (550/1400 * 100) to maintain the original aspect ratio -->
+                    <svg style="position: absolute; width: 100%; height: 100%; top: 0; left: 0;"></svg>
+                </div>
+                <div class="cli">
+                    <input type="text" id="cli-input-GRAPH" placeholder="Enter command">
+                    <button onclick="executeCommand()">Execute</button>
+                </div>
+                <div class="terminal">
+                    <div class="terminal-content">
+                        <div class="terminal-content" id="cli-output-GRAPH">Enter a command... (e.g., cd 1, touch 2, mkdir 3, rm 4, rmdir 5, vim 6, cat 7) (This tool works best in fullscreen F11)<span class="loader"></span></div>
+                        <div class="progress-container">
+                        </div>
+                    </div>
+                </div>
+                
+                <h2>Instructions:</h2>
+                <ul>
+                    <li>Orange Dot = CWD, Current Working Directory</li>
+                    <li>cd [id]: Change directory to [id]</li>
+                    <li>cd .. : Change directory to parent directory</li>
+                    <li>touch [id]: Create a file with [id]</li>
+                    <li>mkdir [id]: Create a folder with [id]</li>
+                    <li>rm [id]: Remove a file with [id]</li>
+                    <li>rmdir [id]: Remove a folder with [id]</li>
+                    <li>vim [id]: Edit a file with [id] (does not actually use vim)</li>
+                    <li>cat [id]: View the contents of a file with [id]</li>
+                </ul>
+            </div>
+
+            <div id="ressources" style="display: none;">
+                <h2>External Resources</h2>
+                <p>These links open in a new tab for better performance.</p>
+                <ul>
+                    <li><a href="https://coding-cat.club" target="_blank" rel="noopener noreferrer">Coding Cat</a></li>
+                    <li><a href="https://vim-adventures.com/" target="_blank" rel="noopener noreferrer">VIM Adventures</a></li>
+                </ul>
+
+                <h2>Notes and PDFs</h2>
+                <ul>
+                    <li><a href="https://cdn.discordapp.com/attachments/1285364223936827433/1315030940510064650/Programming_notes_and_questions_and_answers.pdf?ex=67569640&is=675544c0&hm=08bd68302bd65c443176931887bfd0894e8ac3898fe5e21feeebc0eb7941b225&" target="_blank" rel="noopener noreferrer">Pranjwal Singh's Notes</a></li>
+                    <li><a href="https://cdn.discordapp.com/attachments/1289352834998992968/1315497621011562559/Programming_Notes.pdf?ex=6757a021&is=67564ea1&hm=a5f3fc95bd3a42a3e093864a4c4cb8ab0a0da317295c2c2e865fd8f8041a0ef3&" target="_blank" rel="noopener noreferrer">Ke Yin Ji's Notes</a></li>
+                    <li><a href="https://drive.google.com/file/d/1_0qbUG-_GI12yOKlUjDFWbzH9BQL98Nx/preview" target="_blank" rel="noopener noreferrer">Final Boss Problems Solutions</a></li>
+                </ul>
+
+                <h2>Credits:</h2>
+                <li>A tool made by: Felix Egan (SF1 - F24)</li>
+                <li>Pranjwal Singh for kindly sharing his notes and validating some code</li>
+                <li>Ke Yin Ji, also for kindly sharing his notes</li>
+                <li>Eric Mayhew for his amazing teaching</li>
+                <li>Eric and Jacob for making Coding-Cat.club</li>
+                <li>The creators of VIM Adventures</li>
+                <li>The makers of GPT 4o and Claude 3.5</li>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // File Graph Constants
+        const nodes = { '/': { id: '/', type: 'grey', children: [] } };
+        const links = [];
+        let selectedNode = '/';
+        const fileContents = {};
+
+        // function resetGraph() {
+        //     nodes['/'] = { id: '/', type: 'grey', children: [] };
+        //     selectedNode = '/';
+        //     fileContents = {};
+        //     updateGraph();
+        // }
+
+        document.getElementById('cli-input-GRAPH').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                executeCommand();
+            }
+        });
+
+        function executeCommand() {
+            const input = document.getElementById('cli-input-GRAPH').value;
+            const [command, ...args] = input.split(' ');
+
+            switch (command) {
+                case 'cd':
+                    changeDirectory(args[0]);
+                    break;
+                case 'touch':
+                    createFile(args[0]);
+                    break;
+                case 'mkdir':
+                    createFolder(args[0]);
+                    break;
+                case 'rm':
+                    removeFile(args[0]);
+                    break;
+                case 'rmdir':
+                    removeFolder(args[0]);
+                    break;
+                case 'vim':
+                    editFile(args[0]);
+                    break;
+                case 'cat':
+                    viewFile(args[0]);
+                    break;
+                default:
+                    alert('Unknown command: ' + input);
+            }
+            document.getElementById('cli-input-GRAPH').value = '';
+            updateGraph();
+        }
+
+        function changeDirectory(id) {
+            if (id === '..') {
+                if (selectedNode === '/') {
+                    document.getElementById('cli-output-GRAPH').textContent = 'Error: Cannot go higher than root';
+                } else {
+                    selectedNode = nodes[selectedNode].parent;
+                }
+            } else if (nodes[id] && nodes[id].type === 'grey' && nodes[id].parent === selectedNode) {
+                selectedNode = id;
+                document.getElementById('cli-output-GRAPH').textContent = 'Changed directory to: ' + id;
+            } else {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: Invalid directory';
+            }
+        }
+
+        function createFile(id) {
+            if (nodes[id]) {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: File already exists';
+                return;
+            }
+            document.getElementById('cli-output-GRAPH').textContent = 'File created: ' + id;
+            nodes[id] = { id, type: 'blue', parent: selectedNode, children: [] };
+            nodes[selectedNode].children.push(id);
+            links.push({ source: selectedNode, target: id });
+        }
+
+        function createFolder(id) {
+            if (nodes[id]) {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: Folder already exists';
+                return;
+            }
+            document.getElementById('cli-output-GRAPH').textContent = 'Folder created: ' + id;
+            nodes[id] = { id, type: 'grey', parent: selectedNode, children: [] };
+            nodes[selectedNode].children.push(id);
+            links.push({ source: selectedNode, target: id });
+        }
+
+        function removeFile(id) {
+            if (!nodes[id] || nodes[id].type !== 'blue' || nodes[id].parent !== selectedNode) {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: Invalid file';
+                return;
+            }
+            document.getElementById('cli-output-GRAPH').textContent = 'File removed: ' + id;
+            delete nodes[id];
+            nodes[selectedNode].children = nodes[selectedNode].children.filter(child => child !== id);
+            links.splice(links.findIndex(link => link.source === selectedNode && link.target === id), 1);
+        }
+
+        function removeFolder(id) {
+            if (!nodes[id] || nodes[id].type !== 'grey' || nodes[id].parent !== selectedNode) {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: Invalid folder';
+                return;
+            }
+            if (nodes[id].children.length > 0) {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: Folder is not empty';
+                return;
+            }
+            document.getElementById('cli-output-GRAPH').textContent = 'Folder removed: ' + id;
+            delete nodes[id];
+            nodes[selectedNode].children = nodes[selectedNode].children.filter(child => child !== id);
+            links.splice(links.findIndex(link => link.source === selectedNode && link.target === id), 1)
+        }
+
+        function editFile(id) {
+            if (!nodes[id] || nodes[id].type !== 'blue' || nodes[id].parent !== selectedNode) {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: Invalid file';
+                return;
+            }
+            const content = prompt('Enter file content:', fileContents[id] || '');
+            if (content !== null) {
+                fileContents[id] = content;
+            }
+            document.getElementById('cli-output-GRAPH').textContent = 'File edited: ' + id;
+        }
+
+        function viewFile(id) {
+            if (!nodes[id] || nodes[id].type !== 'blue' || nodes[id].parent !== selectedNode) {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: Invalid file';
+                return;
+            }
+            if (!fileContents[id]) {
+                document.getElementById('cli-output-GRAPH').textContent = 'Error: File is empty';
+                return;
+            }
+            document.getElementById('cli-output-GRAPH').textContent = id + ': ' + fileContents[id];
+        }
+
+        const svg = d3.select("svg");
+
+        function updateGraph() {
+            // Clear existing graph elements
+            svg.selectAll("*").remove();
+
+            const container = svg.node().parentNode;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            svg.attr("viewBox", `0 0 1400 550`);
+
+
+
+            const g = svg.append("g").attr("transform", "translate(0, 10)");
+
+            const root = d3.hierarchy(nodes['/'], d => d.children.map(child => nodes[child]));
+
+            const treeLayout = d3.tree().size([1400, 450]); 
+            treeLayout(root);
+
+            const link = g.append("g")
+                .attr("class", "links")
+                .selectAll("line")
+                .data(root.links())
+                .enter().append("line")
+                .attr("class", "link")
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            const node = g.append("g")
+                .attr("class", "nodes")
+                .selectAll("circle")
+                .data(root.descendants())
+                .enter().append("circle")
+                .attr("class", d => `node ${d.data.type} ${d.data.id === selectedNode ? 'selected' : ''}`)
+                .attr("r", 5)
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+
+            const label = g.append("g")
+                .attr("class", "labels")
+                .selectAll("text")
+                .data(root.descendants())
+                .enter().append("text")
+                .attr("class", "label")
+                .attr("x", d => d.x + 8)
+                .attr("y", d => d.y + 3)
+                .text(d => d.data.id);
+        }
+
+        updateGraph();
+
+        // Flash cards data
+        const flashCards = [
+        { front:"python", back: "A programming language named after a snake" },
+        { front:"github", back: "A web-based platform for version control" },
+        { front:"git", back: "A distributed version control system" },
+        { front:"CPU", back: "Central Processing Unit" },
+        { front:"RAM", back: "Random Access Memory" },
+        { front:"motherboard", back: "The main circuit board of a computer" },
+        { front:"hard drive", back: "A device for storing digital data" },
+        { front:"solid state drive", back: "A storage device that uses flash memory" },
+        { front:"network", back: "A group of interconnected computers" },
+        { front:"packet", back: "A unit of data transmitted over a network" },
+        { front:"remote origin", back: "A default name for the remote repository" },
+        { front:"branch", back: "A parallel version of a repository" },
+        { front:"merge", back: "To combine two or more branches" },
+        { front:"pull request", back: "A request to merge changes into a repository" },
+        { front:"repository", back: "A location where files are stored" },
+        { front:"commit", back: "A saved change in a repository" },
+        { front:"router", back: "A device that forwards data packets between computer networks" },
+        { front:"node", back: "A device connected to a network" },
+        { front:"ISP", back: "Internet Service Provider" },
+        { front:"linkrot", back: "The process by which links on a website become broken" },
+        { front:"ip address", back: "A unique string of numbers separated by periods that identifies each computer using the Internet Protocol to communicate over a network" },
+        { front:"DNS", back: "Domain Name System" },
+        { front:"tcp handshake", back: "The process of establishing a connection between two computers" },
+        { front:"http", back: "Hypertext Transfer Protocol" },
+        { front:"curl", back: "A command-line tool for transferring data with URLs" },
+        { front:"html", back: "Hypertext Markup Language" },
+        { front:"ssh", back: "Secure Shell" },
+        { front:"transistor", back: "A semiconductor device used to amplify or switch electronic signals" },
+        { front:"binary", back: "A number system with a base of 2 (0s and 1s)" },
+        { front:"integrated circuit", back: "A set of electronic circuits on one small flat piece of semiconductor material" },
+        { front:"logic gate", back: "A component made of a set of transistors that performs a basic operation on electrical signals" },
+        { front:"kernel", back: "The core component of an operating system" },
+        { front:"FOSS", back: "Free and Open Source Software" },
+        { front:"lookup table", back: "A data structure used to store key-value pairs" },
+        { front:"tracing", back: "A method of debugging code by printing messages to a log" },
+        { front:"data", back: "Information in a form suitable for use with a computer (e.g. numbers, text, images, boolean values, etc...)" },
+        { front:"function", back: "A block of code that performs a specific task" },
+        { front:"append()", back: "To add an element to the end of a list" },
+        { front:"insert()", back: "To add an element at a specific index in a list" },
+        { front:"remove()", back: "To delete an element from a list" },
+        { front:"pop", back: "To remove and return the last element from a list" },
+        { front:"index", back: "The position of an element in a list" },
+        { front:"list", back: "A collection of items in a specific order" },
+        { front:"tuple", back: "An immutable collection of items" },
+        { front:"vim", back: "A highly configurable text editor (that everyone despises)" },
+        { front:"silicon", back: "A material used in the production of semiconductors and integrated circuits" },
+        { front:"trace route", back: "A network diagnostic tool that shows the path of data packets" },
+        { front:"Eric J. Mayhew", back: "An amazing programming teacher with a middlename unknown to this day..." },
+        { front:"API call", back: "A request to a server for information" },
+        { front:"programming language", back: "A formal language comprising a set of instructions that produce various kinds of output" },
+        { front:"compiled language", back: "A programming language that is translated into machine code before execution" },
+        { front:"interpreted language", back: "A programming language that is executed line by line" },
+        { front:"print()", back: "A function that displays output to the console" },
+        { front:"input()", back: "A function that takes user input" },
+        { front:"type()", back: "A function that returns the type of an object" },
+        { front:"len()", back: "A function that returns the length of an object" },
+        { front:"range()", back: "A function that generates a sequence of numbers" },
+        { front:"for loop", back: "A control flow statement for specifying iteration" },
+        { front:"while loop", back: "A control flow statement that allows code to be executed repeatedly" },
+        { front:"if statement", back: "A control flow statement that executes code based on a condition" },
+        { front:"else statement", back: "A control flow statement that executes code if the condition of an if statement is false" },
+        { front:"elif statement", back: "A control flow statement that executes code if the condition of an if statement is false and its own condition is true" },
+        { front:"int", back: "A data type that represents whole numbers" },
+        { front:"float", back: "A data type that represents decimal numbers" },
+        { front:"string", back: "A data type that represents text" },
+        { front:"boolean", back: "A data type that represents True or False values" },
+        { front:"casting", back: "Converting a variable from one data type to another" },
+        { front:"variable", back: "A named storage location for data" },
+        { front:"int()", back: "A function that converts a value to an integer" },
+        { front:"float()", back: "A function that converts a value to a float" },
+        { front:"str()", back: "A function that converts a value to a string" },
+        { front:"bool()", back: "A function that converts a value to a boolean" },
+        { front:"list()", back: "A function that converts a value to a list" },
+        { front:"tuple()", back: "A function that converts a value to a tuple" },
+        { front:"None", back: "A special value in Python that represents the absence of a value" },
+        { front:"True", back: "A boolean value that represents true" },
+        { front:"False", back: "A boolean value that represents false" },
+        { front:"and", back: "A logical operator that returns True if both statements are true" },
+        { front:"or", back: "A logical operator that returns True if one of the statements is true" },
+        { front:"not", back: "A logical operator that returns the opposite of the statement" },
+        { front:"if", back: "A keyword that starts a conditional statement" },
+        { front:"else", back: "A keyword that executes code if the condition of an if statement is false" },
+        { front:"elif", back: "A keyword that executes code if the condition of an if statement is false and its own condition is true" },
+        { front:"while", back: "A keyword that starts a while loop" },
+        { front:"for", back: "A keyword that starts a for loop" },
+        { front:"def", back: "A keyword that defines a function" },
+        { front:"return", back: "A keyword that returns a value from a function" },
+        { front:"git add", back:"A command to add changes to the staging area" },
+        { front:"git commit", back: "A command to save changes to the local repository" },
+        { front:"git push", back: "A command to push changes to a remote repository" },
+        { front:"git pull", back: "A command to fetch and merge changes from a remote repository" },
+        { front:"git clone", back: "A command to copy a repository from a remote server" },
+        { front:"peer-to-peer", back: "A network where each computer can act as a client or server" },
+        { front:"server", back: "A computer or software that provides services to other computers" },
+        { front:"client", back: "A computer or software that requests services from a server" },
+        { front:"cloud", back: "A network of remote servers hosted on the Internet to store, manage and process data" },
+        { front:"database", back: "A structured set of data stored electronically" },
+        { front:"client-server", back: "A network architecture where clients request services from servers" },
+        { front:"web server", back: "A server that hosts websites and web applications" },
+        { front:"link layer", back: "Layer responsible for physical transmission of data between directly connected devices. This is managed by the network hardware." },
+        { front:"network layer", back: "Layer responsible for routing data packets to their destination. This is managed by the operating system." },
+        { front:"transport layer", back: "Layer responsible for end-to-end communication between devices. Apps are built on top of this layer." },
+        { front:"application layer", back: "Layer responsible for providing network services to applications. This is managed by the application software." },
+        { front:"cascading request", back: "A single webpage often requires multiple HTTP requests to load completely." },
+        { front:"HTTP request", back: "A message sent from a client to a server to request a resource." },
+        { front:"cd", back: "A command to change the current directory" },
+        { front:"ls", back: "A command to list files and directories" },
+        { front:"pwd", back: "A command to print the current working directory" },
+        { front:"mkdir", back: "A command to create a new directory" },
+        { front:"rm", back: "A command to remove files or directories" },
+        { front:"cp", back: "A command to copy files or directories" },
+        { front:"mv", back: "A command to move files or directories" },
+        { front:"cat", back: "A command to display the contents of a file" },
+        { front:"touch", back: "A command to create an empty file" },
+        { front:"cd..", back: "A command to move up one directory" },
+        { front:"insert mode", back: "A mode in Vim that allows you to insert text" },
+        { front:"normal mode", back: "The default mode in Vim for navigating and editing text" },
+        { front:"hjkl", back:"The keys used in Vim for navigation (left, down, up, right)" },
+        { front:":wq", back:"A command in Vim to save and exit" },
+        ];
+
+
+        // Game switching logic
+        function switchGame(gameName) {
+            const games = ['word-jumble', 'coding-problems', 'flash-cards', 'file-graph' , 'ressources'];
+            games.forEach(game => {
+                document.getElementById(game).style.display = 'none';
+            });
+            document.getElementById(gameName).style.display = 'block';
+            if (gameName === 'file-graph') {
+                setTimeout(updateGraph, 70);
+            }
+        }
+        
+        // Flash card logic
+        class FlashCardState {
+            constructor() {
+                this.cards = flashCards;
+                this.currentIndex = 0;
+                this.isFront = true;
+                this.initializeCards();
+            }
+
+            initializeCards() {
+                // Create the list of terms
+                const termsList = document.querySelector('#terms-list');
+                termsList.innerHTML = '';  // Clear existing
+
+                // Add each term as a clickable item
+                this.cards.forEach((card, i) => {
+                    const li = document.createElement('li');
+                    li.textContent = card.front;
+                    li.onclick = () => this.jumpToCard(i);
+                    if (i === this.currentIndex) {
+                        li.className = 'active';
+                    }
+                    termsList.appendChild(li);
+                });
+            }
+
+            updateActiveTerm() {
+                const items = document.querySelectorAll('#terms-list li');
+                items.forEach((item, i) => {
+                    item.className = i === this.currentIndex ? 'active' : '';
+                });
+            }
+
+            jumpToCard(index) {
+                this.currentIndex = index;
+                this.isFront = true;
+                this.updateCard();
+                this.updateActiveTerm();
+            }
+
+            updateCard() {
+                const card = this.cards[this.currentIndex];
+                const content = this.isFront ? card.front : card.back;
+                document.querySelector('#card-content').textContent = content;
+                const currentTerm = document.querySelectorAll('#terms-list li')[this.currentIndex]; 
+                currentTerm.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+            }
+
+            nextCard() {
+                if (this.currentIndex < this.cards.length - 1) {
+                    this.currentIndex++;
+                    this.isFront = true;
+                    this.updateCard();
+                    this.updateActiveTerm();
+                }
+            }
+
+            prevCard() {
+                if (this.currentIndex > 0) {
+                    this.currentIndex--;
+                    this.isFront = true;
+                    this.updateCard();
+                    this.updateActiveTerm();
+                }
+            }
+
+            flipCard() {
+                this.isFront = !this.isFront;
+                this.updateCard();
+            }
+        }
+
+        // Initialize the flash cards
+        const cardState = new FlashCardState();
+        cardState.updateCard();
+
+        // Initialize with word jumble
+        switchGame('word-jumble');
+    </script>
+</body>
+</html>

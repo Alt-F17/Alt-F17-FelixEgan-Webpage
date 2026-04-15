@@ -1,0 +1,291 @@
+[
+  {
+    "code": "# What is the value of s after the following code runs?\n\ns = 'cat'\ns = s + '-'*3\ns = ''*2 + s\ns = s + 'dog'",
+    "choices": ["cat--- dog", "---catdog", "dog ---cat", " cat---dog", "cat---dog"],
+    "correct": 4
+  },
+  {
+    "code": "# What is the output of the following code?\n\ns ='It\\'s a beautiful day!'\nd =\"Let's go\\t outside and play.\"\ns =s+ '!!!\\n' +d\nprint(s)",
+    "choices": ["It's a beautiful day!!! Let's got outside and play.", "It's a beautiful day!!!\nLet's got outside and play.", "It's a beautiful day!!!!\nLet's go     outside and play.", "It's a beautiful day!!!\nLet's go     outside and play.", "This code produces a SyntaxError."],
+    "correct": 2
+  },
+  {
+    "code": "# What is the output of the following code?\n\nnum=3\nresult = num == 8 or 3\nprint(result)",
+    "choices": ["False", "True", "3", "8", "This code produces a TypeError."],
+    "correct": 2
+  },
+  {
+    "code": "# What is the string produced by the following code?\n\n'cave'.center(8, 'x')",
+    "choices": ["'xxcavexx'", "'  cave  '", "'xxxxcavexxxx'", "'    cave    '", "'cave'", "'x cave x'"],
+    "correct": 0
+  },
+  {
+    "code": "# What is the output of the following code?\n\na = True\nb = False\nc = True\n\nprint(c or b and not a)",
+    "choices": ["True", "False", "This code produces a SyntaxError."],
+    "correct": 0
+  },
+  {
+    "code": "# In the following expression, which parts are evaluated?\n\n(5 > 2) or ( (12 < 7) and (72 > 25) )",
+    "choices": ["(5 > 2)", "(12 < 7)", "(72 > 25)", "(5 > 2) and (72 > 25)", "All of the above"],
+    "correct": 0
+  },
+  {
+    "code": "# In the following expression, which parts are evaluated?\n\n( (5 > 2) and (12 < 7) ) or (72 > 25)",
+    "choices": ["(5 > 2)", "(12 < 7)", "(72 > 25)", "(5 > 2) and (72 > 25)", "All of the above"],
+    "correct": 4
+  },
+  {
+    "code": "# How many lines are output by this nested loop?\n\nletters = 'abc'\nnumbers = '1234'\nfor letter in letters:\n    for number in numbers:\n        print(letter, number)",
+    "choices": ["3", "6", "9", "12", "64", "This code produces a SyntaxError."],
+    "correct": 0
+  },
+  {
+    "code": "# What is the output of the following code?\n\ncount = 5\nwhile count > 0:\n    print(f'iteration {count%5}')\n    count -= 1",
+    "choices": ["iteration 0\niteration 1\niteration 2\niteration 3\niteration 4", "iteration 1\niteration 2\niteration 3\niteration 4\niteration 5", "iteration 4\niteration 3\niteration 2\niteration 1\niteration 0", "iteration 5\niteration 4\niteration 3\niteration 2\niteration 1", "iteration 0\niteration 4\niteration 3\niteration 2\niteration 1", "This code produces a SyntaxError."],
+    "correct": 0
+  },
+  {
+    "code": "# What is the value of lst1?\n\nlst1 = [1, 2, 3]\nlst2 = lst1 + lst1\nlst2[0] = 99\n\nprint(lst1)",
+    "choices": ["[99, 2, 3]", "[1, 2, 3]", "[99, 1, 2, 3]", "[1, 99, 3]", "[1, 2, 99]", "[1, 2, 3, 1, 2, 3]"],
+    "correct": 1
+  },
+  {
+    "code": "# What is the value of lst2?\n\nlst1 = [1, 2, 3]\nlst2 = lst1 + lst1\nlst2[0] = 99\n\nprint(lst2)",
+    "choices": ["[99, 2, 3, 1, 2, 3]", "[1, 2, 3, 99, 2, 3]", "[99, 1, 2, 3]", "[1, 99, 3, 1, 2, 3]", "[1, 2, 99, 1, 2, 3]", "[1, 2, 3, 1, 2, 3]"],
+    "correct": 0
+  },
+  {
+    "code": "# What is the value of lst2?\n\nlst1 = [1, 2, 3]\nlst2 = [lst1] + [lst1]\nlst2[0] = 99\n\nprint(lst2)",
+    "choices": ["[99], 2, 3]", "[1, 2, 3]", "[99, [1, 2, 3]]", "[1, 99, 3]", "[1, 2, [99]]", "[1, 2, 3, [1, 2, 3]]"],
+    "correct": 2
+  },
+  {
+    "code": "# What is the value of lst1?\n\nlst1 = [1, 2, 3]\nlst2 = [lst1] + [lst1]\nlst2[0] = 99\n\nprint(lst1)",
+    "choices": ["[99, 2, 3]", "[1, 2, 3]", "[99, 1, 2, 3]", "[1, 99, 3]", "[1, 2, 99]", "[1, 2, 3, 1, 2, 3]"],
+    "correct": 1
+  },
+  {
+    "code": "# Is the following code correct?\n\ndef product(x,y):\nreturn x * y\n\nx = 2\ny = 3\nx = product(x,y)\nprint(x)",
+    "choices": ["Yup, no problem", "No, there is an IndentationError", "No, there is a SyntaxError", "No, there is a TypeError", "No, there is a NameError", "All of the above"],
+    "correct": 1
+  },
+  {
+    "code": "# What is the output of the following code?\n\ndef result(x,y,z):\n    a = x + z\n    b = y * a\n    return a + b - 4\n\nprint(result(3, 2, 4))",
+    "choices": ["10", "14", "12", "8", "17", "This code produces a SyntaxError."],
+    "correct": 4
+  },
+  {
+    "code": "# What is the output of this code?\n\ndef a(num):\n    return val + num + 3\n\ndef b(val):\n    return a(1)\n\nprint(b(5))",
+    "choices": ["2", "7", "6", "5", "This code produces a ValueError", "This code produces a NameError."],
+    "correct": 5
+  },
+  {
+    "code": "# What is the output of this code?\n\ndef a(num):\n    return val + num + 3\n\ndef b(val):\n    return val*2\n\nprint(b(2))",
+    "choices": ["4", "7", "6", "5", "This code produces a ValueError", "This code produces a NameError."],
+    "correct": 0
+  },
+  {
+    "code": "# Do the following code snippets do the same thing?\n\ndef mystery(s, lst):\n    s = s.upper()\n    lst = lst + [2]\n\ns = 'a'\nlst = [7]\nmystery(s, lst)\nprint(s, lst)\n\n# == ?\n\ndef mystery(s, lst):\n    s = s.upper()\n    lst.append(2)\n\ns = 'a'\nlst = [7]\nmystery(s, lst)\nprint(s, lst)",
+    "choices": ["Yup, mirror image", "No, they do different things", "Yeah, they both produce errors", "No, one of them produces an error"],
+    "correct": 1
+  },
+  {
+    "code": "# What prints?\n\ndef add(x, y):\n    print(f'x + y = {x + y}')\n\nx = 5\ny = 7\nadd(x, y)\n\nprint('Hopefully that was correct')",
+    "choices": ["x + y = {x + y}\nHopefully that was correct", "x + y = 12", "x + y = 12\nHopefully that was correct\nNone", "Hopefully that was correct", "x + y = 12\nHopefully that was correct", "This code produces a SyntaxError."],
+    "correct": 4
+  },
+  {
+    "code": "# What prints?\n\ndef trickyAdd(x, y):\n    y += 2\n    print(f'x + y = {x + x + y}')\n\nx = 5\ny = 7\ntrickyAdd(x, y)\n\nprint('Hopefully that was correct')",
+    "choices": ["x + y = 19\nHopefully that was correct", "x + y = 12\nHopefully that was correct", "Hopefully that was correct\nx + y = 19", "Hopefully that was correct"],
+    "correct": 0
+  },
+  {
+    "code": "# What prints?\n\n def trickierAdd(x, y):\n    y += 2\n    print(f'x + y = {x + y}')\n    return x + x + y\n\nx = 5\ny = 7\ntrickierAdd(x, y)\n\nprint(f'x + y = {x + y}')",
+    "choices": ["x + y = 14\nx + y = 12", "x + y = 14\nx + y = 19", "x + y = 14\nx + y = 28", "x + y = 18\nx + y = 24", "This code produces a SyntaxError.", "This code produces a NameError."],
+    "correct": 2
+  },
+  {
+    "code": "# What prints\n\ndef trickierAdd(x, y):\n    y += 2\n    trickiestAdd(x, y)\n    print(f'x + y = {x + y}')\n    return x + x + y\n\ndef trickiestAdd(x, y):\n    x += 4\n    print(f'x + y = {x + y}')\n\nx = 5\ny = 7\n\nprint(f'x + y = {trickierAdd(x, y)}')",
+    "choices": ["x + y = 14\nx + y = 21\nx + y = 18", "x + y = 18\nx + y = 21\nx + y = 14", "x + y = 19\nx + y = 18\nx + y = 14", "x + y = 19\nx + y = 14\nx + y = 18", "x + y = 18\nx + y = 19\nx + y = 14", "x + y = 18\nx + y = 14\nx + y = 19"],
+    "correct": 5
+  },
+  {
+    "code": "# What is the output of the following code?\n\nnum1 = 2\nnum2 = 3\nnum3 = 12\nprint(f'P = {num1*num2*num3}')",
+    "choices": ["P = num1*num2*num3", "P = 18", "P = 72", "This code produces a SyntaxError.", "This code produces a RuntimeError.", "This code produces a SemanticError."],
+    "correct": 2
+  },
+  {
+    "code": "# What is the output of the following code?\n\nnum1 = 2\nnum2 = 3\nnum3 = 12\nprint('S = ' + num1+num2+num3)",
+    "choices": ["S = 17", "S = + num1+num2+num3", "This code produces a RuntimeError.", "This code produces a SemanticError.", "This code produces a TypeError.", "MORE than one of the above"],
+    "correct": 4
+  },
+  {
+    "code": "# What is the output of the following code?\n\nnum1 = 2\nnum2 = 3\nnum3 = 12\nprint('S = ', num1+num2+num3)",
+    "choices": ["S = 17", "S = + num1+num2+num3", "This code produces a RuntimeError.", "This code produces a SemanticError.", "This code produces a TypeError.", "MORE than one of the above"],
+    "correct": 0
+  },
+  {
+    "code": "# What is the output after the following code runs?\n\nnum = [1, 2, 3, 4, 5]\nfor i in range(len(num)):\n    num[i] = num[i] * 2\nnum = num + (6, 7)\nprint(num)",
+    "choices": ["[1, 2, 3, 4, 5, 6, 7]", "[2, 4, 6, 8, 10, 6, 7]", "[2, 4, 6, 7, 10], (6, 7)", "[2, 4, 6, 8, 10, (6,7)]", "[2, 4, 6, 8, 10, [6, 7]]", "This code produces a TypeError."],
+    "correct": 5
+  },
+  {
+    "code": "# What is the output after the following code runs?\n\nnum = [1, 2, 3, 4, 5]\nnum += (2,3)\nfor i in range(len(num)):\n    num[i] = num[i] * 2\nprint(num)",
+    "choices": ["[1, 2, 3, 4, 5, 2, 3]", "[2, 4, 6, 8, 10, (2, 3)]", "[2, 4, 6, 8, 10, 4, 6]", "[2, 4, 6, 8, 10, (4, 6)]", "[[2, 4, 6, 8, 10], [4,6]]", "This code produces a TypeError."],
+    "correct": 2
+  },
+  {
+    "code": "# What prints?\n\nt = ('Feb', 17, 2025)\nt2 = ('Mar', 7, 2025)\n\nprint(t+t2)\nt[0] = 'Apr'\nprint(t)",
+    "choices": ["TypeError", "('Feb', 17, 2025, 'Mar', 7, 2025)", "('Feb', 17, 2025), ('Mar', 7, 2025)", "('Apr', 17, 2025), ('Mar', 7, 2025)", "('Feb', 17, 2025, 'Mar', 7, 2025)\nTypeError", "('Feb', 17, 2025), ('Mar', 7, 2025)\nTypeError"],
+    "correct": 4
+  },
+  {
+    "code": "# What prints?\n\nt = ('apple', 17.3, [99,98])\nt2 = (33.77, [7,8])\n\nprint(t[2] + t2[1])",
+    "choices": ["[99, 98]", "[99, 98, 7, 8]", "[99, 98] + [7, 8]", "[99, 98] + (7, 8)", "This code produces a TypeError.", "This code produces a SyntaxError."],
+    "correct": 1
+  },
+  {
+    "code": "# What prints?\n\nt = ('apple', 17.3, [99,98])\ntup = (t[2], ) + (3, ['apricot', 'pear'])\ntup[2] = 'banana'\nprint(tup)",
+    "choices": ["('banana', 17.3, [99, 98])", "('apple', 17.3, [99, 98])", "('apple', 17.3, ['banana', 98])", "('apple', 17.3, [99, 'banana'])", "This code produces a TypeError.", "This code produces a SyntaxError."],
+    "correct": 4
+  },
+  {
+    "code": "# What prints?\n\nt=('apple', 17.3, [99,98])\nnum = t[2]\nnum[1] = 0\nprint(t)",
+    "choices": ["('apple', 17.3, [99, 0])", "('apple', 17.3, [99, 98])", "('apple', 17.3, [0, 98])", "('apple', 17.3, [99, 98])\nTypeError", "This code produces a TypeError.", "This code produces a SyntaxError."],
+    "correct": 0
+  },
+  {
+    "code": "# What prints?\n\nt=('apple', 17.3, [99,98])\nlst = t[2]\nt[2][0] = 12\nlst.append('pear')\nprint(t)\nprint(lst)",
+    "choices": ["('apple', 17.3, [12, 98])\n[12, 98, 'pear']", "('apple', 17.3, [12, 98, 'pear'])\n[12, 98, 'pear']", "('apple', 17.3, [99, 98])\n['pear']", "('apple', 17.3, [99, 98])\nTypeError", "This code produces a TypeError.", "This code produces a SyntaxError."],
+    "correct": 1
+  },
+  {
+    "code": "# What is the output of the following code?\n\nlst = ['cat', 'dog', 'p']\nlst[1] = lst[0][0]\nprint(len(lst) + len(lst[1]))",
+    "choices": ["3", "7", "8", "4", "This code produces an IndexError.", "This code produces a TypeError."],
+    "correct": 3
+  },
+  {
+    "code": "# What is the value of lst?\n\nlst = [2, 3, 5, 7, 11, 17, 19]\nlst.pop(3)\nlst.remove(2)\nprint(lst)",
+    "choices": ["[3, 5, 7, 11, 17, 19]", "[3, 5, 7, 11, 19]", "[3, 5, 7, 11]", "[3, 5, 7]", "[3, 5]"],
+    "correct": 1
+  },
+  {
+    "code": "# What is the output of the following code\n\nlst = [20, 15.5, 12.0, 7, 33]\nminimum = min(lst)\nmaximum = max('whale')\nprint(minimum, maximum)",
+    "choices": ["7 119", "7119", "7w", "7 w", "This code produces a TypeError.", "This code produces a SyntaxError."],
+    "correct": 3
+  },
+  {
+    "code": "# What does this code do?\n\nlst = [...] # Arbitrary list\ngood = True\ni = 0\nwhile good and i < len(lst) - 1:\n    good = lst[i] < lst[i+1]\n    i += 2\nprint(good)",
+    "choices": ["prints whether the list is sorted", "prints whether each pair of elements in the list is in increasing order", "prints whether the first pair of elements in the list is in increasing order", "works fine for a non-empty list", "Produces a TypeError", "This code produces a SyntaxError."],
+    "correct": 1
+  },
+  {
+    "code": "# What is the output of the following code?\n\nlst = [[2, 3, 4], [1, 1]]\nx = 0\nfor i in range(len(lst)):\n    for j in range(len(lst[0])):\n        x += lst[i][j]\nprint(x)",
+    "choices": ["2", "7", "11", "This code produces a TypeError.", "This code produces a SyntaxError.", "This code produces an IndexError."],
+    "correct": 5
+  },
+  {
+    "code": "# What is the list referred to by 'a' after the following code runs?\n\na = [[1, 2, 3],[4, 5]]\nb = a[:]\nb.append(8)",
+    "choices": ["[[1, 2, 3], [4, 5]]", "[[1, 2, 3], [4, 5], 8]", "[[1, 2, 3], [4, 5, 8]]", "[[1, 2, 3], [4, 5], [8]]"],
+    "correct": 0
+  },
+  {
+    "code": "# When does this code fail?\n\nlst = input().split()\nvalue = input()\n\ni = 0\nnum = lst[i]\nwhile num != value:\n    i += 1\n    num = lst[i]\nif i < len(lst):\n    print(i)\nelse:\n    print('-1')",
+    "choices": ["It never fails", "It fails when the input list is empty", "It fails when the value is not in the list", "It fails for both of the above reasons"],
+    "correct": 3
+  },
+  {
+    "code": "# What is the output of the following code?\n\nd = {3: 33}\nd[5] = d.get(4, 12)\nd[4] = d.get(3, 8)\nprint(d)",
+    "choices": ["{3: 33, 5: 12, 4: 8}", "{3: 33, 5: 12, 4: 33}", "{3: 33, 5: 4, 4: 3}", "'This code produces a TypeError.'", "'This code produces a SyntaxError.'", "'This code produces a KeyError.'"],
+    "correct": 1
+  },
+  {
+    "code": "# What is the output of the following code?\n\ns1 = {1, 3, 5, 7, 9, 11}\ns2 = {11, 22, 33}\ns1.update(s2)\ns2.add(44)\ns1.remove(3)\nprint(f'{s1}\\n{s2.intersection(s1)}')",
+    "choices": ["{1, 3, 7, 9, 11, 11, 22, 33}\n{33, 11, 22}", "{1, 3, 7, 9, 11, 11, 22, 33}\n{11, 22, 33}", "{1, 3, 5, 7, 9, 11, 22, 33}\n{11, 22, 33}", "{1, 5, 7, 9, 11, 22, 33}\n{11, 22, 33}", "This code produces a TypeError.", "This code produces a KeyError."],
+    "correct": 3
+  },
+  {
+    "code": "# What is the output of the following code?\n\nd = {\n'seedling': {'Paper Birch': 1000, 'White Spruce': 200, 'Red Oak': 567}, 'sapling': {'Paper Birch': 500, 'Lodgepole Pine': 400, 'Red Oak': 1212},\n'adult': {'Paper Birch': 400, 'Lodgepole Pine': 20, 'White Spruce': 789, 'Sugar Maple': 873},\n'mature': {'White Spruce': 1111, 'Sugar Maple': 1277}}\nt = 0\nfor i in d:\n    for j in d[i]:\n        if d[i][j] == 'Paper Birch':\n            t = t - 100\n        elif j == 'Paper Birch':\n            t += d[i][j]\n        else:\n            d[i][j] = d[i].get(j, -1)\nprint(t)\nprint(d)",
+    "choices": [
+      "1900\n{'seedling': {'Paper Birch': 1000, 'White Spruce': 200, 'Red Oak': 567}, 'sapling': {'Paper Birch': 500, 'Lodgepole Pine': 400, 'Red Oak': 1212}, 'adult': {'Paper Birch': 400, 'Lodgepole Pine': 20, 'White Spruce': 789, 'Sugar Maple': 873}, 'mature': {'White Spruce': 1111, 'Sugar Maple': 1277}}",
+      "-300\n{'seedling': {'Paper Birch': 1000, 'White Spruce': 200, 'Red Oak': 567}, 'sapling': {'Paper Birch': 500, 'Lodgepole Pine': 400, 'Red Oak': 1212}, 'adult': {'Paper Birch': 400, 'Lodgepole Pine': 20, 'White Spruce': 789, 'Sugar Maple': 873}, 'mature': {'White Spruce': 1111, 'Sugar Maple': 1277}}",
+      "1000\n{'seedling': {'Paper Birch': 1000, 'White Spruce': 200, 'Red Oak': 567}, 'sapling': {'Paper Birch': 500, 'Lodgepole Pine': 400, 'Red Oak': 1212}, 'adult': {'Paper Birch': 400, 'Lodgepole Pine': 20, 'White Spruce': 789, 'Sugar Maple': 873}, 'mature': {'White Spruce': 1111, 'Sugar Maple': 1277}}",
+      "1900\n{'seedling': {'Paper Birch': -1, 'White Spruce': -1, 'Red Oak': -1}, 'sapling': {'Paper Birch': -1, 'Lodgepole Pine': -1, 'Red Oak': -1}, 'adult': {'Paper Birch': -1, 'Lodgepole Pine': -1, 'White Spruce': -1, 'Sugar Maple': -1}, 'mature': {'White Spruce': -1, 'Sugar Maple': -1}}",
+      "This code produces a KeyError.",
+      "This code produces a TypeError."
+    ],
+    "correct": 0
+  },
+  {
+    "code": "# What are the contents of book.txt assuming the file did not exist before?\n\nf = open('book.txt', 'w')\nf.write('Once upon a time...')\nf.write('In a galaxy far far away...')\nf.write('SF2 Finals')\nf.close()",
+    "choices": ["Once upon a time...In a galaxy far far away...SF2 Finals", "Once upon a time...\nIn a galaxy far far away...\nSF2 Finals", "Once upon a time...", "This code produces a SyntaxError."],
+    "correct": 1
+  },
+  {
+    "code": "# Assuming log.txt already exists, what are its contents after the following code runs?\n\n# log.txt:\n#log created\n#log written\n#log accessed\n#log closed\n\nf = open('log.txt', 'r')\nf.write('log.txt accessed')\nf.close()",
+    "choices": ["#log created\n#log written\n#log accessed\n#log closed\n#log.txt accessed", "#log created\n#log written\n#log accessed\n#log closed", "#log created\n#log written\n#log accessed", "#log created\n#log written", "#log created", "This code produces a IOError."],
+    "correct": 5
+  },
+  {
+  "code": "# Let book.txt have the following 2 lines:\n# 12 13\n# Perhaps better poetry will be written in...\n# After the execution of the code below, what prints?\ntxt_file = open('book.txt', 'r')\nwhile txt_file.readline() != '':\n    print(txt_file.readline().rstrip())\ntxt_file.close()",
+  "choices": ["Perhaps better poetry will be written in...", "12 13", "12 13\nPerhaps better poetry will be written in...", "Perhaps better poetry will be written in...\n", "This code produces a FileNotFoundError."],
+  "correct": 0
+  },
+  {
+    "code": "# Let book.txt have the following 2 lines:\n# 12 13\n# Perhaps better poetry will be written in...\n# After the execution of the code below, what prints?\ntxt_file = open('book.txt', 'r')\nline = 'x'\nwhile line != '':\n    line = txt_file.readline()\n    print(line.rstrip())\ntxt_file.close()",
+    "choices": [
+      "12 13",
+      "12 13\nPerhaps better poetry will be written in...",
+      "Perhaps better poetry will be written in...",
+      "12 13\nPerhaps better poetry will be written in...\\n",
+      "This code produces an error."
+    ],
+    "correct": 1
+  },
+  {
+    "code": "# Let book.txt have the following 2 lines:\n# 12 13\n# Perhaps better poetry will be written in...\n# After the execution of the code below, what prints?\ntxt_file = open('book.txt', 'r')\nline = txt_file.readline()\nwhile line != '':\n    line = txt_file.readline()\n    print(line.rstrip())\ntxt_file.close()",
+    "choices": [
+      "Perhaps better poetry will be written in...\\n",
+      "12 13\nPerhaps better poetry will be written in...",
+      "12 13",
+      "Perhaps better poetry will be written in...",
+      "This code produces an error."
+    ],
+    "correct": 2
+  },
+  {
+    "code": "# Let book.txt have the following 2 lines:\n# 12 13\n# Perhaps better poetry will be written in...\n# After the execution of the code below, what prints?\ntxt_file = open('book.txt', 'r')\nline = txt_file.readline()\nwhile line != '':\n    print(line.rstrip())\n    line = txt_file.readline()\ntxt_file.close()",
+    "choices": [
+      "12 13\nPerhaps better poetry will be written in...",
+      "12 13\nPerhaps better poetry will be written in...\\n",
+      "Perhaps better poetry will be written in...",
+      "12 13",
+      "This code produces an error."
+    ],
+    "correct": 0
+  },
+  {
+    "code": "# What does the following code do?\ntxt_file = open('book.txt', 'r+')\nlst = []\nfor line in txt_file:\n    lst.append(line.rstrip().split())\ntxt_file.close()\ns = ''\nfor item in lst:\n    if len(item) < 10:\n        s = s + ' ' + item + '\\n'\ntxt_file.write(s)\nprint(s*5)\ntxt_file.close()",
+    "choices": [
+      "Prints the lines with fewer than 10 words, repeated 5 times",
+      "Writes to the file and prints the lines with fewer than 10 words, repeated 5 times",
+      "Raises a TypeError",
+      "Raises an io.UnsupportedOperation",
+      "Prints nothing",
+      "Writes nothing to the file"
+    ],
+    "correct": 2
+  },
+  {
+    "code": "# What does the snippet of code below do? Will it work correctly for all input?\nphrase = input('enter a string: ')\nfile_name = 'data.txt'\ncount = 0\nfor char in phrase:\n    if char == 'a':\n        count += 1\ntry:\n    num = int(input())\n    output_file = open(file_name, 'r')\nexcept FileNotFoundError:\n    print(f'{file_name} file does not exist in the directory')\n    output_file = open(file_name, 'w')\nelse:\n    for i in range(count):\n        print('*' * i)\n    print(num + phrase)\nfinally:\n    output_file.write(f'the phrase entered by user is: {phrase}')\n    print('written to file successfully')",
+    "choices": [
+      "It works correctly for all input, writing the phrase to the file",
+      "No, it raises TypeError if the file exists due to num + phrase",
+      "No, it only raises io.UnsupportedOperation if the file exists",
+      "It works only if the file exists initially",
+      "It always raises an error",
+      "It never writes to the file"
+    ],
+    "correct": 1
+  }
+]

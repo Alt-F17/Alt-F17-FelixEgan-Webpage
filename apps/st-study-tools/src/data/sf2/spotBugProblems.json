@@ -1,0 +1,117 @@
+[
+  {
+    "code": "def calculate_average(numbers):\n    total = 0\n    for num in numbers:\n        total += num\n    return total / len(numbers)\n\nprint(calculate_average([]))",
+    "bugLine": 5,
+    "bugDescription": "ZeroDivisionError: Division by zero occurs if an empty list is passed, as len(numbers) will be 0."
+  },
+  {
+    "code": "def remove_duplicates(items):\n    result = []\n    for item in items:\n        if item not in result:\n            result.append(item)\n    return results\n\nprint(remove_duplicates([1, 2, 2, 3]))",
+    "bugLine": 6,
+    "bugDescription": "NameError: The variable 'results' is referenced before assignment (typo, should be 'result')."
+  },
+  {
+    "code": "numbers = [1, 2, 3]\nnumbers[len(numbers)] = 4\nprint(numbers)",
+    "bugLine": 2,
+    "bugDescription": "IndexError: list index out of range because the list has only three elements (indices 0-2)."
+  },
+  {
+    "code": "def concat(elem1, elem2):\n    return elem1 + elem2\n\nprint(concat('Hello', 5))",
+    "bugLine": 2,
+    "bugDescription": "TypeError: can only concatenate str (not \"int\") to str"
+  },
+  {
+    "code": "print(unknown_var) # This one should be fairly easy XD",
+    "bugLine": 1,
+    "bugDescription": "NameError: name 'unknown_var' is not defined"
+  },
+  {
+    "code": "def dictprint(d, y, z='x'):\n    return d[z]\n\nprint(dictprint({'y': 1, 'z': 2}, 'y', 'x'))",
+    "bugLine": 2,
+    "bugDescription": "KeyError: 'x'"
+  },
+  {
+    "code": "my_list = [1, 2, 3]\nmy_set = {1, 2, 3}\nmy_set.add(4)\nmy_list.add(4)\nprint(my_list)\nprint(my_set)",
+    "bugLine": 4,
+    "bugDescription": "AttributeError: 'list' object has no attribute 'add'"
+  },
+  {
+    "code": "num = 49\nroot_exp = num ** 0.5\nroot_sqrt = math.sqrt(num)\nprint(root_exp == root_sqrt)",
+    "bugLine": 3,
+    "bugDescription": "NameError: name 'math' is not defined (missing import statement for math module)"
+  },
+  {
+    "code": "def fibonacci(n)\n    if n < 0: return 'Incorrect input'\n    a, b = 0, 1\n    for _ in range(n): a, b = b, a + b\n    return a\n\nprint(fibonacci(5))",
+    "bugLine": 1,
+    "bugDescription": "SyntaxError: invalid syntax (missing colon after function definition)"
+  },
+  {
+    "code": "try:\n    if True:\n        print('Try\\nThis?')\n    if 1:print('Or\\nThis')\n    if 'false':print('Or');print('This')\n    elif [1]:print('Or give up...')\n",
+    "bugLine": 7,
+    "bugDescription": "SyntaxError: expected 'except' or 'finally' block"
+  },
+  {
+    "code": "def multiply(a, b=1):\n    return a * b\n\nprint(multiply(5, 2, 3))",
+    "bugLine": 4,
+    "bugDescription": "TypeError: multiply() takes from 1 to 2 positional arguments but 3 were given"
+  },
+  {
+    "code": "class Test:\n    pass\nobj = Test()\nobj.missing",
+    "bugLine": 4,
+    "bugDescription": "AttributeError: 'Test' object has no attribute 'missing'"
+  },
+  {
+    "code": "x, y = [1, 2, 3]",
+    "bugLine": 1,
+    "bugDescription": "ValueError: too many values to unpack (expected 2)"
+  },
+  {
+    "code": "s = 'text'\ns[1] = 'a'",
+    "bugLine": 2,
+    "bugDescription": "TypeError: 'str' object does not support item assignment"
+  },
+  {
+    "code": "[10 / x for x in [2, 1, 0]]",
+    "bugLine": 1,
+    "bugDescription": "ZeroDivisionError: division by zero"
+  },
+  {
+    "code": "x = None\nx.upper()",
+    "bugLine": 2,
+    "bugDescription": "AttributeError: 'NoneType' object has no attribute 'upper'"
+  },
+  {
+    "code": "class Example:\n    pass\ne = Example()\ne.no_attr",
+    "bugLine": 4,
+    "bugDescription": "AttributeError: 'Example' object has no attribute 'no_attr'"
+  },
+  {
+    "code": "def remove_duplicates_in_place(lst):\n    seen = set()\n    for i in range(len(lst)):\n        if lst[i] in seen:\n            lst.remove(lst[i])\n        else:\n            seen.add(lst[i])\n    return lst",
+    "bugLine": 5,
+    "bugDescription": "Deleting elements from the list while iterating over it with a fixed range causes the loop to skip elements or raise an IndexError because the list length changes but the range does not adjust."
+  },
+  {
+    "code": "def factorial_with_check(n):\n    def factorial(n):\n        if n <= 1:\n            return n\n        return n * factorial(n - 1)\n    if n < 0:\n        return \"Negative numbers not allowed\"\n    result = factorial(n)\n    return result",
+    "bugLine": 4,
+    "bugDescription": "The base case returns `n` when `n <= 1`, so `factorial(0)` returns 0 instead of 1, which is incorrect for factorial where 0! = 1."
+  },
+  {
+    "code": "def count_words(text):\n    word_dict = {}\n    lines = text.split('\\n')\n    for line in lines:\n        words = line.split()\n        for word in words:\n            if word in word_dict:\n                word_dict[word] += 1\n            else:\n                word_dict[word] = 1\n    return word_dict",
+    "bugLine": 7,
+    "bugDescription": "The function does not convert words to a consistent case (e.g., lowercase) before counting, treating 'Hello' and 'HELLO' as different keys."
+  },
+  {
+    "code": "def calculate_average_grades(grades):\n    total = 0\n    count = 0\n    for student in grades:\n        for grade in student:\n            total += grade\n        count += len(student)\n    if count > 0:\n        return total / count\n    return 0",
+    "bugLine": 22,
+    "bugDescription": "The count is incremented by the length of each sublist, even empty ones, but total only includes actual grades, leading to an incorrect average."
+  },
+  {
+    "code": "def find_longest_sequence(numbers):\n    if not numbers:\n        return 0\n    current_length = 1\n    max_length = 1\n    for i in range(1, len(numbers)):\n        if numbers[i] == numbers[i - 1] + 1:\n            current_length += 1\n            max_length = max(max_length, current_length)\n        else:\n            current_length = 1\n    return max_length",
+    "bugLine": 7,
+    "bugDescription": "The `max_length` update is inside the if block, so it only updates when the sequence continues, missing the final sequence length when it ends."
+  },
+  {
+    "code": "def process_data(data):\n    result = []\n    temp = 0\n    for i in range(len(data)):\n        if i % 2 == 0:\n            temp += data[i]\n        else:\n            temp *= data[i]\n            result.append(temp)\n            temp = 0\n    return result",
+    "bugLine": 9,
+    "bugDescription": "The function only appends when i is odd, so if the list has an odd length, the last even-indexed element’s computation is never added to result."
+  }
+]
