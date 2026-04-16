@@ -9,6 +9,9 @@ const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..");
 const subAppDir = path.join(repoRoot, "apps", "st-study-tools");
 const subAppDistDir = path.join(subAppDir, "dist");
+const subAppNodeModulesDir = path.join(subAppDir, "node_modules");
+const subAppReactAceModuleDir = path.join(subAppNodeModulesDir, "react-ace");
+const subAppLockFile = path.join(subAppDir, "package-lock.json");
 const outputDir = path.join(repoRoot, "public", "st-study-tools");
 
 const runNpm = (args, cwd) => {
@@ -30,6 +33,13 @@ const runNpm = (args, cwd) => {
     process.exit(result.status ?? 1);
   }
 };
+
+if (!existsSync(subAppReactAceModuleDir)) {
+  const installArgs = existsSync(subAppLockFile)
+    ? ["ci", "--production=false", "--no-audit", "--no-fund"]
+    : ["install", "--production=false", "--no-audit", "--no-fund"];
+  runNpm(installArgs, subAppDir);
+}
 
 runNpm(["run", "build"], subAppDir);
 
