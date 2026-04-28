@@ -28,7 +28,7 @@ const projects: Project[] = [
   {
     title: "Portfolio Website",
     description: "A space-themed portfolio website showcasing my projects and skills using Three.js and React.",
-    technologies: ["React", "Next.js", "Three.js", "Tailwind CSS"],
+    technologies: ["React", "Vite", "Three.js", "Tailwind CSS"],
     status: "completed",
     id: "portfolio-website"
   },

@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { portfolioCopy } from '@/content/portfolioCopy';
+import { getAge } from '@/lib/utils';
 
 export const About = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -72,7 +73,7 @@ export const About = () => {
             <div className="mt-8 space-y-2 border-4 border-[#3b82f6]/20 p-4 rounded-lg bg-space-darker">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[#3b82f6]">{copy.labels.age[locale]}:</span>
-                <span>18</span>
+                <span>{getAge()}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[#3b82f6]">{copy.labels.education[locale]}:</span>
