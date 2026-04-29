@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -65,15 +65,41 @@ const projects: Project[] = [
 ];
 
 export const Projects = () => {
-  const [activeProject, setActiveProject] = useState<number | null>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<HTMLDivElement[]>([]);
   const { locale } = useLanguage();
   const copy = portfolioCopy.projects;
-  
+
   const addToCardRefs = (el: HTMLDivElement) => {
     if (el && !cardRefs.current.includes(el)) {
       cardRefs.current.push(el);
+    }
+  };
+
+  const handleTiltMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rotX = ((y - rect.height / 2) / (rect.height / 2)) * -7;
+    const rotY = ((x - rect.width / 2) / (rect.width / 2)) * 7;
+    el.style.transitionDelay = '0ms';
+    el.style.transition = 'transform 0.1s ease-out';
+    el.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.02)`;
+    const glow = el.querySelector<HTMLDivElement>('.card-glow');
+    if (glow) {
+      glow.style.background = `radial-gradient(300px circle at ${x}px ${y}px, rgba(59,130,246,0.15), transparent 70%)`;
+    }
+  };
+
+  const handleTiltLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = e.currentTarget;
+    el.style.transitionDelay = '0ms';
+    el.style.transition = 'transform 0.4s ease-out';
+    el.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)';
+    const glow = el.querySelector<HTMLDivElement>('.card-glow');
+    if (glow) {
+      glow.style.background = 'transparent';
     }
   };
 
@@ -118,11 +144,12 @@ export const Projects = () => {
               ref={addToCardRefs}
               className="opacity-0 transform translate-y-4 transition-all duration-700 group"
               style={{ transitionDelay: `${index * 150}ms` }}
-              onMouseEnter={() => setActiveProject(index)}
-              onMouseLeave={() => setActiveProject(null)}
+              onMouseMove={handleTiltMove}
+              onMouseLeave={handleTiltLeave}
             >
               <Link to={`/projects/${project.id}`} className="block h-full">
-                <Card className={`h-full border-2 border-[#3b82f6]/20 bg-space-darker hover:border-[#3b82f6]/50 transition-all duration-300 ${activeProject === index ? 'transform scale-[1.02]' : ''}`}>  
+                <Card className="h-full border-2 border-[#3b82f6]/20 bg-space-darker hover:border-[#3b82f6]/50 transition-colors duration-300 relative overflow-hidden">
+                  <div className="card-glow absolute inset-0 pointer-events-none transition-none" />
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-xl">{project.title}</CardTitle>

@@ -101,3 +101,25 @@
     background: #3f3f46;
   }
 }
+
+@keyframes shimmer-sweep {
+  from { transform: translateX(-150%); }
+  to   { transform: translateX(150%); }
+}
+
+.skill-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(59, 130, 246, 0.1) 50%,
+    transparent 60%
+  );
+  transform: translateX(-150%);
+  pointer-events: none;
+}
+
+.group:hover .skill-shimmer {
+  animation: shimmer-sweep 0.55s ease-out forwards;
+}

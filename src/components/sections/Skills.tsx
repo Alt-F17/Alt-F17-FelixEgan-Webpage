@@ -57,10 +57,11 @@ export const Skills = () => {
 						<div
 							key={skill.name}
 							ref={addToCardsRef}
-							className="opacity-0 transform translate-y-4 transition-all duration-700"
+							className="opacity-0 transform translate-y-4 transition-all duration-700 group"
 							style={{ transitionDelay: `${index * 100}ms` }}
 						>
-							<Card className="bg-space-darker border-space-accent/20 lg:border-4 overflow-hidden">
+							<Card className="bg-space-darker border-space-accent/20 lg:border-4 overflow-hidden relative">
+								<div className="skill-shimmer" />
 								<CardContent className="p-6">
 									<div className="flex items-center mb-2">
 										<skill.icon className="w-6 h-6 text-space-accent mr-3" />
