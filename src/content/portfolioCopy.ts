@@ -21,8 +21,8 @@ export const portfolioCopy = {
       fr: "Developpeur Python et passionne de ML",
     } satisfies ByLocale,
     description: {
-      en: "I'm an 18-year-old developer passionate about creating innovative solutions to real-world problems. Currently studying Science, Computer Science, and Mathematics at Dawson College in Montreal and working on various projects.",
-      fr: "Je suis un developpeur de 18 ans passionne par la creation de solutions innovantes a des problemes reels. J'etudie presentement en sciences, informatique et mathematiques au College Dawson a Montreal et je travaille sur plusieurs projets.",
+      en: "I'm a developer passionate about creating innovative solutions to real-world problems. Currently studying Science, Computer Science, and Mathematics at Dawson College in Montreal and working on various projects.",
+      fr: "Je suis un developpeur passionne par la creation de solutions innovantes a des problemes reels. J'etudie presentement en sciences, informatique et mathematiques au College Dawson a Montreal et je travaille sur plusieurs projets.",
     } satisfies ByLocale,
     viewProjects: { en: "View My Projects", fr: "Voir mes projets" } satisfies ByLocale,
     contact: { en: "Contact Me", fr: "Me contacter" } satisfies ByLocale,

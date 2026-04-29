@@ -5,12 +5,12 @@ import { useLanguage } from '@/i18n/LanguageProvider';
 import { portfolioCopy } from '@/content/portfolioCopy';
 
 const skills = [
-	{ name: 'Python Development', icon: FaPython },
-	{ name: 'HTML/CSS', icon: FaHtml5 },
-	{ name: 'Machine Learning', icon: FaMicrochip },
-	{ name: 'Windows & Linux CLI', icon: FaLinux },
-	{ name: 'Git and Github', icon: FaGitAlt },
-	{ name: 'HackTheBox Academy', icon: FaUserSecret },
+	{ name: 'Python Development', icon: FaPython, description: 'Scripting, automation, data pipelines, and application development.' },
+	{ name: 'HTML/CSS', icon: FaHtml5, description: 'Responsive layouts, animations, and modern UI design.' },
+	{ name: 'Machine Learning', icon: FaMicrochip, description: 'Model training, NLP, and working with local and cloud LLMs.' },
+	{ name: 'Windows & Linux CLI', icon: FaLinux, description: 'Shell scripting, system administration, and terminal-first workflows.' },
+	{ name: 'Git and Github', icon: FaGitAlt, description: 'Version control, branching strategies, and open-source collaboration.' },
+	{ name: 'HackTheBox Academy', icon: FaUserSecret, description: 'Ethical hacking, penetration testing, and CTF challenges.' },
 ];
 
 export const Skills = () => {
@@ -57,15 +57,17 @@ export const Skills = () => {
 						<div
 							key={skill.name}
 							ref={addToCardsRef}
-							className="opacity-0 transform translate-y-4 transition-all duration-700"
+							className="opacity-0 transform translate-y-4 transition-all duration-700 group"
 							style={{ transitionDelay: `${index * 100}ms` }}
 						>
-							<Card className="bg-space-darker border-space-accent/20 lg:border-4 overflow-hidden">
+							<Card className="bg-space-darker border-space-accent/20 lg:border-4 overflow-hidden relative">
+								<div className="skill-shimmer" />
 								<CardContent className="p-6">
 									<div className="flex items-center mb-2">
 										<skill.icon className="w-6 h-6 text-space-accent mr-3" />
 										<h3 className="text-lg font-medium">{skill.name}</h3>
 									</div>
+									<p className="text-sm text-space-text/60">{skill.description}</p>
 								</CardContent>
 							</Card>
 						</div>
