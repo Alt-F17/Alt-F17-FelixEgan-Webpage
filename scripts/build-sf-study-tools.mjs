@@ -7,12 +7,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const repoRoot = path.resolve(__dirname, "..");
-const subAppDir = path.join(repoRoot, "apps", "st-study-tools");
+const subAppDir = path.join(repoRoot, "apps", "sf-study-tools");
 const subAppDistDir = path.join(subAppDir, "dist");
 const subAppNodeModulesDir = path.join(subAppDir, "node_modules");
 const subAppReactAceModuleDir = path.join(subAppNodeModulesDir, "react-ace");
 const subAppLockFile = path.join(subAppDir, "package-lock.json");
-const outputDir = path.join(repoRoot, "public", "st-study-tools");
+const outputDir = path.join(repoRoot, "public", "sf-study-tools");
 
 const runNpm = (args, cwd) => {
   const isWindows = process.platform === "win32";
@@ -51,4 +51,4 @@ if (!existsSync(subAppDistDir)) {
 rmSync(outputDir, { recursive: true, force: true });
 cpSync(subAppDistDir, outputDir, { recursive: true, force: true });
 
-console.log("Synced st-study-tools build output to public/st-study-tools.");
+console.log("Synced sf-study-tools build output to public/sf-study-tools.");
