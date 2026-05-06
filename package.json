@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:st-study-tools && vite build",
+    "build": "npm run build:sf-study-tools && vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "build:st-study-tools": "node scripts/build-st-study-tools.mjs"
+    "build:sf-study-tools": "node scripts/build-sf-study-tools.mjs"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
