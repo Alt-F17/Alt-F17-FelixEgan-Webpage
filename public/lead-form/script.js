@@ -1020,7 +1020,7 @@ Address: ${address}
 Service: ${service}
 PR: ${pr}
 DM? ${dm}
-  10%? ${ten}` + (notes ? `\n---\nNotes:\n${notes}` : '') + `\n---\nEstimate Booked by ${bookedBy}`;
+10%? ${ten}` + (notes ? `\n---\nNotes:\n${notes}` : '') + `\n---\nEstimate Booked by ${bookedBy}`;
 
     document.getElementById('output').value = out;
   }
