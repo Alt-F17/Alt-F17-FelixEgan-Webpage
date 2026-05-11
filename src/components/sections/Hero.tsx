@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowDown } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { portfolioCopy } from '@/content/portfolioCopy';
+import ScrambledText from '@/components/ScrambledText';
 
 export const Hero = () => {
   const textRef = useRef<HTMLDivElement>(null);
@@ -43,7 +44,15 @@ export const Hero = () => {
             Felix Egan
           </h1>
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold mb-6 text-space-text/80">
-            {copy.role[locale]}
+            <span className="hidden lg:inline">
+              <ScrambledText
+                key={locale}
+                initialText=""
+                targetText={copy.role[locale]}
+                speed={40}
+              />
+            </span>
+            <span className="lg:hidden">{copy.role[locale]}</span>
           </h2>
           <p className="max-w-2xl text-base sm:text-lg mb-8 text-space-text/70">
             {copy.description[locale]}

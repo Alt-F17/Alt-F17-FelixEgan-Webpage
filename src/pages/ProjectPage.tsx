@@ -29,9 +29,9 @@ const ProjectPage = () => {
                     SF Study Tools has moved to a dedicated subpage on this domain.
                   </p>
                   <div className="mb-8 rounded-md border border-[#3b82f6]/30 bg-[#3b82f6]/10 p-6">
-                    <p className="mb-4 text-space-text/80">New path: <strong>/st-study-tools/</strong></p>
+                    <p className="mb-4 text-space-text/80">New path: <strong>/sf-study-tools/</strong></p>
                     <Button className="bg-[#3b82f6] hover:bg-[#3b82f6]/80 text-white" asChild>
-                      <a href="/st-study-tools/">Open SF Study Tools</a>
+                      <a href="/sf-study-tools/">Open SF Study Tools</a>
                     </Button>
                   </div>
                 </>
