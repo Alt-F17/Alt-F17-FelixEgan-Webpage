@@ -16,11 +16,33 @@ async function checkLogin() {
     }
   }
 
+  const DISABLE_CLIENT_HISTORY = true;
+
+  function disableClientHistoryUI() {
+    localStorage.removeItem('pastClients');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggleBtn = document.querySelector('.sidebar-btn');
+    const clientList = document.getElementById('clients-container') || document.getElementById('client-list');
+    const clientSearch = document.getElementById('clientSearch');
+
+    if (clientList) clientList.innerHTML = '';
+    if (clientSearch) clientSearch.value = '';
+    if (sidebar) sidebar.classList.remove('open');
+    if (sidebar) sidebar.style.display = 'none';
+    if (overlay) overlay.style.display = 'none';
+    if (toggleBtn) toggleBtn.style.display = 'none';
+  }
+
   // Check auth on load
   document.addEventListener("DOMContentLoaded", () => {
     const loginOverlay = document.getElementById("login-overlay");
     if (loginOverlay && document.cookie.split(';').some((item) => item.trim().startsWith('swwc_auth='))) {
       loginOverlay.style.display = "none";
+    }
+    if (DISABLE_CLIENT_HISTORY) {
+      disableClientHistoryUI();
+      return;
     }
     try {
       renderClients();
@@ -38,11 +60,16 @@ async function checkLogin() {
   });
 
   function toggleSidebar() {
+    if (DISABLE_CLIENT_HISTORY) return;
     const sidebar = document.getElementById('sidebar');
     sidebar.classList.toggle('open');
   }
 
   function renderClients() {
+    if (DISABLE_CLIENT_HISTORY) {
+      disableClientHistoryUI();
+      return;
+    }
     let clientList = document.getElementById('clients-container') || document.getElementById('client-list');
     if (!clientList) {
       const sidebar = document.getElementById('sidebar');
@@ -73,6 +100,7 @@ async function checkLogin() {
   }
 
   function saveClient(clientData) {
+    if (DISABLE_CLIENT_HISTORY) return;
     if (!clientData.first_name || !clientData.last_name) return; // Need at least a name
     
     let pastClients = JSON.parse(localStorage.getItem('pastClients') || "[]");
@@ -531,12 +559,37 @@ async function checkLogin() {
   // Authorized JavaScript origins must include: https://felixegan.me
   const CLIENT_ID = '645892232656-8m0uup2rn2jjcj0r1mf6ttrvhr46bp5h.apps.googleusercontent.com';
   const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
-  const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+  const SCOPES = 'openid profile email https://www.googleapis.com/auth/calendar.readonly';
+  const USERINFO_URL = 'https://www.googleapis.com/oauth2/v3/userinfo';
 
   let tokenClient;
   let gapiInited = false;
   let gisInited = false;
   let isAuthenticated = false;
+  let googleFirstName = localStorage.getItem('google_user_first_name') || '';
+
+  async function fetchGoogleFirstName() {
+    try {
+      const token = gapi?.client?.getToken()?.access_token;
+      if (!token) return;
+      const resp = await fetch(USERINFO_URL, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!resp.ok) return;
+      const data = await resp.json();
+      const givenName = data.given_name || (data.name ? data.name.split(' ')[0] : '');
+      if (givenName) {
+        googleFirstName = givenName;
+        localStorage.setItem('google_user_first_name', givenName);
+      }
+    } catch (err) {
+      console.warn('Failed to fetch Google profile:', err);
+    }
+  }
+
+  function getBookedByName() {
+    return googleFirstName || localStorage.getItem('google_user_first_name') || '—';
+  }
 
   // Initialize the API client library
   function gapiLoaded() {
@@ -638,6 +691,7 @@ async function checkLogin() {
     btn.textContent = 'Calendar Connected';
     btn.style.background = 'var(--accent)';
     btn.style.color = '#000';
+    fetchGoogleFirstName();
     if (selectedDateStr) renderTimeSlots(selectedDateStr); // Refresh times if date already selected
   }
 
@@ -956,6 +1010,7 @@ async function checkLogin() {
       bookBtn.style.display = 'none';
     }
 
+    const bookedBy = getBookedByName();
     const out =
 `Name: ${first} ${last}
 Phone Number: ${phone}
@@ -965,7 +1020,7 @@ Address: ${address}
 Service: ${service}
 PR: ${pr}
 DM? ${dm}
-10%? ${ten}` + (notes ? `\n---\nNotes:\n${notes}` : '');
+  10%? ${ten}` + (notes ? `\n---\nNotes:\n${notes}` : '') + `\n---\nEstimate Booked by ${bookedBy}`;
 
     document.getElementById('output').value = out;
   }
