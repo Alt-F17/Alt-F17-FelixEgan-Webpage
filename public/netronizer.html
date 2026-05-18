@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><style>
+@charset "utf-8";
+
+:root { --bg: #0a0a0a; --panel: #0c0c0c; --panel-2: #101010; --line: #1b1b1b; --txt: #dddddd; --muted: #7a7a7a; --accent: #f0e68c; --accent-2: #b7b17a; --danger: #c0392b; --shadow: 0 8px 22px rgba(0,0,0,0.28); }
+
+* { box-sizing: border-box; margin: 0px; padding: 0px; }
+
+body { font-family: "Courier New", monospace; color: var(--txt); background: radial-gradient(1200px 700px at 6% -8%, rgba(240, 230, 140, 0.06), transparent 62%),
+    radial-gradient(900px 540px at 100% 0%, rgba(192, 57, 43, 0.05), transparent 58%),
+    var(--bg); min-height: 100vh; }
+
+.wrapper { width: min(1560px, 95vw); margin: 28px auto 36px; }
+
+.topbar { border: 1px solid var(--line); border-radius: 3px; background: linear-gradient(rgba(14, 14, 14, 0.96), rgba(10, 10, 10, 0.98)); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 18px; }
+
+.topline { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+.badge { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--accent); }
+
+.badge-dot { width: 8px; height: 8px; border-radius: 2px; background: linear-gradient(120deg, var(--accent), #9f9960); box-shadow: rgba(240, 230, 140, 0.35) 0px 0px 12px; }
+
+.title { font-size: clamp(18px, 2.4vw, 28px); font-weight: 700; letter-spacing: 0.8px; }
+
+.subtitle { margin-top: 7px; font-size: 11px; color: var(--muted); font-family: "IBM Plex Mono", monospace; }
+
+.kpi-grid { margin-top: 16px; display: grid; grid-template-columns: repeat(6, minmax(0px, 1fr)); gap: 10px; }
+
+.kpi { border: 1px solid var(--line); border-radius: 2px; background: rgba(16, 16, 16, 0.9); padding: 10px 12px; }
+
+.kpi label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+.kpi .value { margin-top: 6px; font-size: 19px; font-weight: 700; color: var(--accent); }
+
+.main { display: grid; grid-template-columns: 1.05fr 1.55fr; gap: 14px; }
+
+.panel { border: 1px solid var(--line); border-radius: 3px; background: linear-gradient(rgba(14, 14, 14, 0.96), rgba(10, 10, 10, 0.98)); box-shadow: var(--shadow); }
+
+.section { padding: 16px 18px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+
+.section:last-child { border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; }
+
+.h2 { font-size: 11px; text-transform: uppercase; letter-spacing: 1.3px; color: var(--accent-2); margin-bottom: 10px; }
+
+.metric-row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0px; border-bottom: 1px dashed rgba(255, 255, 255, 0.08); font-size: 12px; }
+
+.metric-row:last-child { border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; }
+
+.metric-row .k { color: var(--muted); }
+
+.metric-row .v { font-family: "IBM Plex Mono", monospace; }
+
+.op-list { display: grid; gap: 8px; }
+
+.op-item { border: 1px solid rgba(240, 230, 140, 0.18); background: rgba(12, 12, 12, 0.86); border-radius: 2px; padding: 8px 10px; }
+
+.op-head { display: flex; justify-content: space-between; align-items: center; font-size: 12px; margin-bottom: 6px; }
+
+.op-head .op-name { font-weight: 700; color: rgb(215, 215, 215); }
+
+.op-head .op-meta { color: var(--muted); font-family: "IBM Plex Mono", monospace; }
+
+.op-bar { height: 6px; border-radius: 1px; background: rgba(240, 230, 140, 0.13); overflow: hidden; }
+
+.op-bar > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), #9a935f); }
+
+.note-list { display: grid; gap: 8px; list-style: none; }
+
+.note-list li { border: 1px solid rgba(192, 57, 43, 0.22); background: rgba(18, 10, 10, 0.62); border-radius: 2px; padding: 8px 10px; font-size: 12px; color: rgb(195, 184, 184); line-height: 1.45; }
+
+.table-wrap { border: 1px solid var(--line); border-radius: 2px; overflow: hidden; background: rgba(10, 10, 10, 0.86); }
+
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+
+th, td { padding: 8px 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); text-align: left; }
+
+th { color: rgb(183, 177, 122); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; background: rgba(15, 15, 15, 0.95); }
+
+tr:last-child td { border-bottom-width: medium; border-bottom-style: none; border-bottom-color: currentcolor; }
+
+.small { color: var(--muted); font-family: "IBM Plex Mono", monospace; font-size: 11px; }
+
+.right-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+
+.quick-actions { display: flex; align-items: center; gap: 8px; }
+
+.status { border: 1px solid rgba(240, 230, 140, 0.45); border-radius: 2px; padding: 4px 10px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); font-family: "IBM Plex Mono", monospace; }
+
+.control-btn { border: 1px solid rgba(240, 230, 140, 0.45); background: rgba(18, 18, 18, 0.95); color: var(--accent); font-family: "IBM Plex Mono", monospace; font-size: 10px; letter-spacing: 0.9px; text-transform: uppercase; border-radius: 2px; padding: 5px 10px; cursor: pointer; }
+
+.control-btn:hover { background: rgba(240, 230, 140, 0.12); }
+
+.frame-wrap { border: 1px solid var(--line); border-radius: 2px; overflow: hidden; height: min(76vh, 980px); min-height: 520px; background: rgb(9, 9, 9); }
+
+iframe { width: 100%; height: 100%; border: 0px; background: rgb(9, 9, 9); }
+
+.footer { margin-top: 12px; color: var(--muted); font-size: 11px; font-family: "IBM Plex Mono", monospace; }
+
+@keyframes rise { 
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0px); }
+}
+
+.panel, .topbar { animation: 0.35s ease-out 0s 1 normal none running rise; }
+
+@media (max-width: 1220px) {
+  .kpi-grid { grid-template-columns: repeat(3, minmax(0px, 1fr)); }
+  .main { grid-template-columns: 1fr; }
+  .frame-wrap { min-height: 420px; }
+}
+
+@media (max-width: 760px) {
+  .wrapper { width: 96vw; margin-top: 14px; }
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0px, 1fr)); }
+  .topbar { padding: 14px; }
+  .section { padding: 12px; }
+}
+
+</style>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Netronizer - RobotArm.onnx</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+
+</head>
+<body>
+<div class="wrapper">
+  <section class="topbar">
+    <div class="topline">
+      <div>
+        <div class="badge"><span class="badge-dot"></span>Netronizer · Netron Backend Active</div>
+        <div class="title" id="model-title">RobotArm.onnx</div>
+        <div class="subtitle" id="model-subtitle">pytorch 1.13.1 · graph torch_jit · opset 9 · IR v4</div>
+      </div>
+      <div class="status" id="backend-status" style="color: rgb(240, 230, 140); border-color: rgba(240, 230, 140, 0.5);">Backend Synced</div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi"><label>Parameters</label><div class="value" id="kpi-params">140,614</div></div>
+      <div class="kpi"><label>Nodes</label><div class="value" id="kpi-nodes">31</div></div>
+      <div class="kpi"><label>Edges</label><div class="value" id="kpi-edges">32</div></div>
+      <div class="kpi"><label>Tensors</label><div class="value" id="kpi-tensors">19</div></div>
+      <div class="kpi"><label>Inputs / Outputs</label><div class="value" id="kpi-io">1x31 / 5</div></div>
+      <div class="kpi"><label>Stages</label><div class="value" id="kpi-stages">10</div></div>
+    </div>
+  </section>
+
+  <section class="main">
+    <div class="panel">
+      <div class="section">
+        <div class="h2">Topology Signals</div>
+        <div class="metric-row"><span class="k">Producer</span><span class="v" id="m-producer">pytorch 1.13.1</span></div>
+        <div class="metric-row"><span class="k">Graph</span><span class="v" id="m-graph">torch_jit</span></div>
+        <div class="metric-row"><span class="k">ONNX Opset / IR</span><span class="v" id="m-onnx">9 / 4</span></div>
+        <div class="metric-row"><span class="k">Max Fan-In / Fan-Out</span><span class="v" id="m-fan">2 / 4</span></div>
+        <div class="metric-row"><span class="k">Mean Fan-In / Fan-Out</span><span class="v" id="m-fan-mean">1.03 / 1.03</span></div>
+        <div class="metric-row"><span class="k">Branch-Critical Nodes</span><span class="v" id="m-branch">14</span></div>
+      </div>
+
+      <div class="section">
+        <div class="h2">Operator Distribution</div>
+        <div class="op-list" id="op-list"><div class="op-item"><div class="op-head"><span class="op-name">Mul</span><span class="op-meta">5 · 16.13%</span></div><div class="op-bar"><span style="width:16.13%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Gemm</span><span class="op-meta">4 · 12.9%</span></div><div class="op-bar"><span style="width:12.9%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Identity</span><span class="op-meta">4 · 12.9%</span></div><div class="op-bar"><span style="width:12.9%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Clip</span><span class="op-meta">3 · 9.68%</span></div><div class="op-bar"><span style="width:9.68%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Constant</span><span class="op-meta">3 · 9.68%</span></div><div class="op-bar"><span style="width:9.68%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Div</span><span class="op-meta">3 · 9.68%</span></div><div class="op-bar"><span style="width:9.68%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Sigmoid</span><span class="op-meta">3 · 9.68%</span></div><div class="op-bar"><span style="width:9.68%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Add</span><span class="op-meta">2 · 6.45%</span></div><div class="op-bar"><span style="width:6.45%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Concat</span><span class="op-meta">1 · 3.23%</span></div><div class="op-bar"><span style="width:3.23%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Exp</span><span class="op-meta">1 · 3.23%</span></div><div class="op-bar"><span style="width:3.23%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">RandomNormalLike</span><span class="op-meta">1 · 3.23%</span></div><div class="op-bar"><span style="width:3.23%"></span></div></div><div class="op-item"><div class="op-head"><span class="op-name">Sub</span><span class="op-meta">1 · 3.23%</span></div><div class="op-bar"><span style="width:3.23%"></span></div></div></div>
+      </div>
+
+      <div class="section">
+        <div class="h2">Architecture Notes</div>
+        <ul class="note-list" id="note-list"><li>Dominant operator family: Mul at 16.13% of all node ops.</li><li>Parameter concentration: top 3 param-heavy nodes carry 99.4% of model parameters.</li><li>Branching complexity: 14 nodes feed multiple output lanes.</li><li>Strong broadcast behavior detected (max fan-out = 4); these nodes are graph-critical.</li></ul>
+      </div>
+
+      <div class="section">
+        <div class="h2">Model Boundaries</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Direction</th><th>Name</th><th>DType</th><th>Shape</th></tr></thead>
+            <tbody id="io-table"><tr><td>Input</td><td title="obs_0">obs_0</td><td>FLOAT</td><td>batchx31</td></tr><tr><td>Output</td><td title="version_number">version_number</td><td>FLOAT</td><td>1</td></tr><tr><td>Output</td><td title="memory_size">memory_size</td><td>FLOAT</td><td>1</td></tr><tr><td>Output</td><td title="continuous_actions">continuous_actions</td><td>FLOAT</td><td>batchx3</td></tr><tr><td>Output</td><td title="continuous_action_output_shape">continuous_action_output_shape</td><td>FLOAT</td><td>1</td></tr><tr><td>Output</td><td title="deterministic_continuous_actions">deterministic_continuous_actions</td><td>FLOAT</td><td>batchx3</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="section">
+        <div class="right-top">
+          <div>
+            <div class="h2">Netron Surface</div>
+            <div class="small">Live backend visualization with curated telemetry on the left.</div>
+          </div>
+          <div class="quick-actions">
+            <a class="small" id="netron-link" target="_blank" rel="noopener" href="https://netron.app/?url=https://felixegan.me/RobotArm.onnx">https://netron.app/?url=https://felixegan.me/RobotArm.onnx</a>
+            <button type="button" class="control-btn" id="netron-fullscreen">Fullscreen</button>
+          </div>
+        </div>
+        <div class="frame-wrap" id="frame-wrap">
+          <iframe id="netron-frame" title="Netron Backend" loading="eager" src="https://netron.app/?url=https://felixegan.me/RobotArm.onnx"></iframe>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="h2">Parameter Hotspots</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Node</th><th>Op</th><th>Stage</th><th>Params</th><th>Fan</th></tr></thead>
+            <tbody id="heavy-table"><tr><td title="Gemm">Gemm</td><td>Gemm</td><td>3</td><td>65,792</td><td>1 / 2</td></tr><tr><td title="Gemm">Gemm</td><td>Gemm</td><td>4</td><td>65,792</td><td>1 / 2</td></tr><tr><td title="Gemm">Gemm</td><td>Gemm</td><td>2</td><td>8,192</td><td>1 / 2</td></tr><tr><td title="Gemm">Gemm</td><td>Gemm</td><td>6</td><td>771</td><td>1 / 4</td></tr><tr><td title="Sub">Sub</td><td>Sub</td><td>0</td><td>31</td><td>0 / 1</td></tr><tr><td title="Div">Div</td><td>Div</td><td>0</td><td>31</td><td>1 / 1</td></tr><tr><td title="Add">Add</td><td>Add</td><td>7</td><td>3</td><td>1 / 1</td></tr><tr><td title="Identity_0">Identity_0</td><td>Identity</td><td>0</td><td>1</td><td>0 / 1</td></tr><tr><td title="Identity_28">Identity_28</td><td>Identity</td><td>0</td><td>1</td><td>0 / 0</td></tr><tr><td title="Identity_29">Identity_29</td><td>Identity</td><td>0</td><td>1</td><td>0 / 0</td></tr></tbody>
+          </table>
+        </div>
+        <div class="footer">Backend endpoint: <span id="backend-url">https://netron.app/?url=https://felixegan.me/RobotArm.onnx</span></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+
+
+</body></html>
