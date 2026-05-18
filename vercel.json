@@ -1,0 +1,10 @@
+{
+  "headers": [
+    {
+      "source": "/RobotArm.onnx",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
+  ]
+}
