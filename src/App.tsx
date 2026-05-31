@@ -15,6 +15,7 @@ import QRPage from "@/pages/QRPage";
 import NotFound from "./pages/NotFound";
 import { captureUtmFromLocation } from "@/lib/utm";
 import { useEffect } from "react";
+import { Toaster } from "@/components/ui/toaster";
 
 const StudioLayout = () => {
   return (
@@ -53,9 +54,10 @@ const App = () => {
   return (
     <HelmetProvider>
       <LanguageProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+        <Toaster />
       </LanguageProvider>
     </HelmetProvider>
   );

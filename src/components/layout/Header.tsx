@@ -45,7 +45,7 @@ export const Header = () => {
       <div className="container-padding max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center">
           <ScrollLink to="hero" spy={true} smooth={true} duration={500} className="cursor-pointer">
-            <h1 className="text-2xl font-bold text-white">Felix Egan</h1>
+            <span className="text-2xl font-bold text-white">Felix Egan</span>
           </ScrollLink>
         </div>
 
@@ -100,14 +100,6 @@ export const Header = () => {
             </svg>
           </RouterLink>
           <LanguageToggle />
-          <Button
-            variant="outline"
-            className="border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white"
-          >
-            <a href="/CV.pdf" target="_blank" rel="noopener noreferrer">
-              {copy.resume[locale]}
-            </a>
-          </Button>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -199,14 +191,6 @@ export const Header = () => {
             <div className="py-1">
               <LanguageToggle />
             </div>
-            <Button
-              variant="outline"
-              className="w-full border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white mt-2"
-            >
-              <a href="/resume_template.pdf" target="_blank" rel="noopener noreferrer">
-                {copy.resume[locale]}
-              </a>
-            </Button>
           </div>
         </div>
       )}

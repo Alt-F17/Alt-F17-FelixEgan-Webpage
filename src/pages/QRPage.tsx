@@ -3,7 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { Link } from "react-router-dom";
 import { Seo } from "@/components/seo/Seo";
 
-const SITE_URL = "https://felixegan.me";
+const SITE_URL = "https://www.felixegan.me";
 
 function useWakeLock() {
   const ref = useRef<WakeLockSentinel | null>(null);

@@ -8,6 +8,8 @@ import { FaGithub, FaInstagram, FaDiscord, FaEnvelope, FaPaypal, FaCoffee } from
 import { SiHackthebox } from 'react-icons/si';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { portfolioCopy } from '@/content/portfolioCopy';
+import { submitLead } from '@/lib/leadApi';
+import { trackEvent } from '@/lib/plausible';
 
 export const Contact = () => {
   const { toast } = useToast();
@@ -23,6 +25,7 @@ export const Contact = () => {
     email: '',
     message: ''
   });
+  const [status, setStatus] = useState<'idle' | 'loading'>('idle');
   
   const isFormValid = formData.name.trim() !== '' && 
                      formData.email.trim() !== '' && 
@@ -40,19 +43,43 @@ export const Contact = () => {
     { name: 'HTB Academy', username: '@AltF17', url: 'https://app.hackthebox.com/profile/AltF17', icon: 'hackthebox' },
     { name: 'Instagram', username: '@felixegan_', url: 'https://instagram.com/felixegan_', icon: 'instagram' },
     { name: 'Discord', username: 'Alt_F17', url: 'https://discord.com/users/707956607123718174', icon: 'discord' },
-    { name: 'Email', username: 'felix.egan@icloud.com', url: 'mailto:felix.egan@icloud.com', icon: 'email' }
+    { name: 'Email', username: 'hello@felixegan.me', url: 'mailto:hello@felixegan.me', icon: 'email' }
   ];
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    toast({
-      title: copy.sentTitle[locale],
-      description: copy.sentBody[locale],
-    });
-    
-    if (formRef.current) {
-      formRef.current.reset();
+    if (!isFormValid || status === 'loading') return;
+
+    setStatus('loading');
+    try {
+      await submitLead('quote', locale, {
+        fullName: formData.name,
+        email: formData.email,
+        company: 'Portfolio contact form',
+        phone: null,
+        preferredContact: 'email',
+        websiteUrl: null,
+        budgetRange: 'unknown',
+        timeline: 'flexible',
+        services: [],
+        message: formData.message,
+        honeypot: '',
+      });
+
       setFormData({ name: '', email: '', message: '' });
+      trackEvent('lead_submit_success', { leadType: 'quote', placement: 'portfolio_contact' });
+      toast({
+        title: copy.sentTitle[locale],
+        description: copy.sentBody[locale],
+      });
+    } catch {
+      toast({
+        variant: 'destructive',
+        title: copy.errorTitle[locale],
+        description: copy.errorBody[locale],
+      });
+    } finally {
+      setStatus('idle');
     }
   };
 
@@ -140,25 +167,15 @@ export const Contact = () => {
                   </div>
                   
                   <Button
-                    type="button"
-                    disabled={!isFormValid}
-                    onClick={() => {
-                      if (!formRef.current || !isFormValid) return;
-                      const name = formData.name;
-                      const email = formData.email;
-                      const message = formData.message;
-                      const subject = `Message from ${name}`;
-                      const body = `From: ${name}\n@: ${email}\n\n${message}`;
-                      const mailtoLink = `mailto:felix.egan@icloud.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                      window.location.href = mailtoLink;
-                    }}
+                    type="submit"
+                    disabled={!isFormValid || status === 'loading'}
                     className={`w-full transition-all ${
                       isFormValid 
                         ? 'bg-space-accent hover:bg-space-accent/80 text-white' 
                         : 'bg-gray-500 text-gray-300 cursor-not-allowed'
                     }`}
                   >
-                    {copy.send[locale]}
+                    {status === 'loading' ? copy.sending[locale] : copy.send[locale]}
                   </Button>
                 </form>
               </CardContent>

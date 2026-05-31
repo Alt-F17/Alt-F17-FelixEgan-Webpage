@@ -1,16 +1,75 @@
 import { useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { FaPython, FaHtml5, FaLinux, FaGitAlt, FaUserSecret, FaMicrochip } from 'react-icons/fa';
+import { FaGitAlt, FaLanguage, FaPython, FaReact } from 'react-icons/fa';
+import { SiNextdotjs, SiTailwindcss, SiTypescript } from 'react-icons/si';
+import type { IconType } from 'react-icons';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { portfolioCopy } from '@/content/portfolioCopy';
+import type { Locale } from '@/i18n/types';
 
-const skills = [
-	{ name: 'Python Development', icon: FaPython, description: 'Scripting, automation, data pipelines, and application development.' },
-	{ name: 'HTML/CSS', icon: FaHtml5, description: 'Responsive layouts, animations, and modern UI design.' },
-	{ name: 'Machine Learning', icon: FaMicrochip, description: 'Model training, NLP, and working with local and cloud LLMs.' },
-	{ name: 'Windows & Linux CLI', icon: FaLinux, description: 'Shell scripting, system administration, and terminal-first workflows.' },
-	{ name: 'Git and Github', icon: FaGitAlt, description: 'Version control, branching strategies, and open-source collaboration.' },
-	{ name: 'HackTheBox Academy', icon: FaUserSecret, description: 'Ethical hacking, penetration testing, and CTF challenges.' },
+type Skill = {
+	name: string;
+	icon: IconType;
+	description: Record<Locale, string>;
+};
+
+const skills: Skill[] = [
+	{
+		name: 'React / Next.js',
+		icon: FaReact,
+		description: {
+			en: 'Fast, SEO-friendly sites. The modern alternative to WordPress.',
+			fr: "Sites rapides et optimisés pour le SEO. L'alternative moderne à WordPress.",
+		},
+	},
+	{
+		name: 'Tailwind CSS',
+		icon: SiTailwindcss,
+		description: {
+			en: 'Clean, responsive design without a page builder.',
+			fr: 'Design propre et responsive sans page builder.',
+		},
+	},
+	{
+		name: 'TypeScript',
+		icon: SiTypescript,
+		description: {
+			en: 'Reliable, maintainable codebases for long-term projects.',
+			fr: 'Bases de code fiables et maintenables pour les projets à long terme.',
+		},
+	},
+	{
+		name: 'Bilingual Development',
+		icon: FaLanguage,
+		description: {
+			en: 'FR/EN sites with proper i18n routing. A rare edge in Montreal.',
+			fr: 'Sites FR/EN avec routage i18n propre. Un avantage rare à Montréal.',
+		},
+	},
+	{
+		name: 'Next.js Delivery',
+		icon: SiNextdotjs,
+		description: {
+			en: 'Production-ready routing, metadata, and performance patterns.',
+			fr: 'Routage, métadonnées et performance prêts pour la production.',
+		},
+	},
+	{
+		name: 'Python & Git',
+		icon: FaPython,
+		description: {
+			en: 'Automation, version control, and reliable developer workflows.',
+			fr: 'Automatisation, contrôle de version et workflows développeur fiables.',
+		},
+	},
+	{
+		name: 'GitHub Collaboration',
+		icon: FaGitAlt,
+		description: {
+			en: 'Clear reviews, branching, and project history for maintainable work.',
+			fr: 'Revues claires, branches et historique de projet pour un travail maintenable.',
+		},
+	},
 ];
 
 export const Skills = () => {
@@ -67,7 +126,7 @@ export const Skills = () => {
 										<skill.icon className="w-6 h-6 text-space-accent mr-3" />
 										<h3 className="text-lg font-medium">{skill.name}</h3>
 									</div>
-									<p className="text-sm text-space-text/60">{skill.description}</p>
+									<p className="text-sm text-space-text/60">{skill.description[locale]}</p>
 								</CardContent>
 							</Card>
 						</div>

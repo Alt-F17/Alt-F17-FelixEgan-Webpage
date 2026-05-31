@@ -81,11 +81,11 @@ export const About = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[#3b82f6]">{copy.labels.focus[locale]}:</span>
-                <span>Python, Machine Learning</span>
+                <span>{copy.values.focus[locale]}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[#3b82f6]">{copy.labels.hobbies[locale]}:</span>
-                <span>Rock Climbing, Music, Writing</span>
+                <span>{copy.values.hobbies[locale]}</span>
               </div>
             </div>
           </div>

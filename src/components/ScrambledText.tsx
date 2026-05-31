@@ -76,9 +76,9 @@ const ScrambledText = ({
 
   // Render each character in a fixed-width inline-block to ensure uniform width
   return (
-    <span className={className} style={{ whiteSpace: 'nowrap' }}>
+    <span className={className} style={{ whiteSpace: 'normal' }}>
       {displayText.split('').map((char, idx) => (
-        <span key={idx} className="inline-block w-[1ch] text-center">
+        <span key={idx} className="inline-block w-[1ch] max-w-full text-center">
           {char}
         </span>
       ))}

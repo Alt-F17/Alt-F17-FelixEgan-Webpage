@@ -14,7 +14,7 @@ const siteJsonLd = [
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: "Felix Egan Studio",
-    url: "https://felixegan.me",
+    url: "https://www.felixegan.me",
     email: "hello@felixegan.me",
     areaServed: ["Montreal", "Laval", "Longueuil"],
     address: {
@@ -67,12 +67,48 @@ const HomePage = () => {
 
   const featuredCases = useMemo(() => caseStudies.slice(0, 2), []);
   const featuredPosts = useMemo(() => [...blogPosts].sort(byNewest).slice(0, 3), []);
+  const proofStats =
+    locale === "fr"
+      ? [
+          {
+            label: "Délai",
+            value: "Livraison en 2–3 semaines",
+            description: "Un calendrier clair pour lancer sans traîner.",
+          },
+          {
+            label: "Langues",
+            value: "Français et anglais",
+            description: "Structure bilingue pour les clients de Montréal.",
+          },
+          {
+            label: "Approche",
+            value: "Codé à la main — sans WordPress",
+            description: "React et Next.js au lieu d’un page builder lourd.",
+          },
+        ]
+      : [
+          {
+            label: "Timeline",
+            value: "2–3 week delivery",
+            description: "A clear schedule for launching without drag.",
+          },
+          {
+            label: "Languages",
+            value: "French & English",
+            description: "Bilingual structure for Montreal customers.",
+          },
+          {
+            label: "Approach",
+            value: "Hand-coded — no WordPress",
+            description: "React and Next.js instead of page-builder bloat.",
+          },
+        ];
 
   return (
     <>
       <Seo
         title="Felix Egan Studio | Montreal Website Development for SMBs"
-        description="Bilingual websites for local Montreal businesses. Book a discovery call, request a quote, and launch a conversion-focused site."
+        description="Bilingual freelance web developer in Montreal. Fast, hand-coded websites for local businesses — starting at $600. French and English. Felix Egan Studio."
         canonicalPath="/studio"
         jsonLd={siteJsonLd}
       />
@@ -109,21 +145,13 @@ const HomePage = () => {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-              <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Local market</p>
-              <p className="mt-2 text-2xl font-semibold text-zinc-100">{marketStats.montrealSmallBusinesses}</p>
-              <p className="text-sm text-zinc-400">Estimated small businesses in greater Montreal</p>
-            </div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-              <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Underserved pool</p>
-              <p className="mt-2 text-2xl font-semibold text-zinc-100">{marketStats.underservedWebsitePool}</p>
-              <p className="text-sm text-zinc-400">Potential businesses needing modern websites</p>
-            </div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
-              <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">Retainer baseline</p>
-              <p className="mt-2 text-2xl font-semibold text-zinc-100">{marketStats.monthlyRetainerRangeCad}</p>
-              <p className="text-sm text-zinc-400">Monthly maintenance pricing target</p>
-            </div>
+            {proofStats.map((stat) => (
+              <div key={stat.label} className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">{stat.label}</p>
+                <p className="mt-2 text-2xl font-semibold text-zinc-100">{stat.value}</p>
+                <p className="text-sm text-zinc-400">{stat.description}</p>
+              </div>
+            ))}
           </div>
         </section>
 

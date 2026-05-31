@@ -8,7 +8,9 @@ type SeoProps = {
 };
 
 export const Seo = ({ title, description, canonicalPath = "/", jsonLd }: SeoProps) => {
-  const canonical = `https://felixegan.me${canonicalPath}`;
+  const siteUrl = "https://www.felixegan.me";
+  const canonical = `${siteUrl}${canonicalPath}`;
+  const ogImage = `${siteUrl}/og-image.png`;
 
   return (
     <Helmet>
@@ -19,6 +21,9 @@ export const Seo = ({ title, description, canonicalPath = "/", jsonLd }: SeoProp
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonical} />
       <meta property="og:type" content="website" />
+      <meta property="og:image" content={ogImage} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content={ogImage} />
       {jsonLd ? <script type="application/ld+json">{JSON.stringify(jsonLd)}</script> : null}
     </Helmet>
   );

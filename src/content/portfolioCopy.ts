@@ -6,8 +6,8 @@ export const portfolioCopy = {
   header: {
     nav: {
       home: { en: "Home", fr: "Accueil" } satisfies ByLocale,
-      about: { en: "About", fr: "A propos" } satisfies ByLocale,
-      skills: { en: "Skills", fr: "Competences" } satisfies ByLocale,
+      about: { en: "About", fr: "À propos" } satisfies ByLocale,
+      skills: { en: "Skills", fr: "Compétences" } satisfies ByLocale,
       projects: { en: "Projects", fr: "Projets" } satisfies ByLocale,
       contact: { en: "Contact", fr: "Contact" } satisfies ByLocale,
       studio: { en: "Studio", fr: "Studio" } satisfies ByLocale,
@@ -17,18 +17,18 @@ export const portfolioCopy = {
   hero: {
     eyebrow: { en: "Hi, my name is", fr: "Salut, je m'appelle" } satisfies ByLocale,
     role: {
-      en: "Python Developer & ML Enthusiast",
-      fr: "Developpeur Python et passionne de ML",
+      en: "Freelance Web Developer — Montreal",
+      fr: "Développeur Web Freelance — Montréal",
     } satisfies ByLocale,
     description: {
-      en: "I'm a developer passionate about creating innovative solutions to real-world problems. Currently studying Science, Computer Science, and Mathematics at Dawson College in Montreal and working on various projects.",
-      fr: "Je suis un developpeur passionne par la creation de solutions innovantes a des problemes reels. J'etudie presentement en sciences, informatique et mathematiques au College Dawson a Montreal et je travaille sur plusieurs projets.",
+      en: "I build fast, bilingual websites for local Montreal businesses — trades, contractors, health & wellness, and professional services. Hand-coded in React and Next.js. No WordPress.",
+      fr: "Je crée des sites web rapides et bilingues pour les entreprises locales de Montréal — construction, santé, services professionnels. Codés à la main en React et Next.js. Sans WordPress.",
     } satisfies ByLocale,
     viewProjects: { en: "View My Projects", fr: "Voir mes projets" } satisfies ByLocale,
     contact: { en: "Contact Me", fr: "Me contacter" } satisfies ByLocale,
   },
   about: {
-    title: { en: "About Me", fr: "A propos de moi" } satisfies ByLocale,
+    title: { en: "About Me", fr: "À propos de moi" } satisfies ByLocale,
     paragraphs: {
       en: [
         "I'm Felix, a software developer with a passion for creating fun, new solutions to real-world problems. I love making fun projects that help people and aim to make the world more innovative, efficient, and technologically accessible to all.",
@@ -37,21 +37,31 @@ export const portfolioCopy = {
         "When I'm not coding, I'm probably rock climbing, making music, creating content on my social media page, or riding through the city on my OneWheel. I believe that tech can create a positive change in the world and I am committed to using my skills to contribute to that vision.",
       ],
       fr: [
-        "Je suis Felix, un developpeur logiciel passionne par la creation de nouvelles solutions a des problemes concrets. J'aime creer des projets utiles qui aident les gens et rendent la technologie plus accessible.",
-        "Je suis presentement en sciences, informatique et mathematiques au College Dawson a Montreal, et j'aide la prochaine generation de developpeurs via du mentorat et des evenements comme DawsHacks.",
-        "Mon parcours en programmation a commence en 2019 avec Python pendant la pandemie. Depuis, j'ai elargi mes competences en developpement web, apprentissage machine, orchestration MCP et cybers securite.",
-        "Quand je ne code pas, je fais souvent de l'escalade, de la musique, du contenu web ou des rides en OneWheel. Je crois que la technologie peut avoir un impact positif et je veux contribuer a cette vision.",
+        "Je suis Félix, un développeur logiciel passionné par la création de nouvelles solutions à des problèmes concrets. J'aime créer des projets utiles qui aident les gens et rendent la technologie plus accessible.",
+        "Je suis présentement en sciences, informatique et mathématiques au Collège Dawson à Montréal, et j'aide la prochaine génération de développeurs via du mentorat et des événements comme DawsHacks.",
+        "Mon parcours en programmation a commencé en 2019 avec Python pendant la pandémie. Depuis, j'ai élargi mes compétences en développement web, apprentissage machine, orchestration MCP et cybersécurité.",
+        "Quand je ne code pas, je fais souvent de l'escalade, de la musique, du contenu web ou des rides en OneWheel. Je crois que la technologie peut avoir un impact positif et je veux contribuer à cette vision.",
       ],
     },
     labels: {
-      age: { en: "age", fr: "age" } satisfies ByLocale,
-      education: { en: "education", fr: "education" } satisfies ByLocale,
+      age: { en: "age", fr: "âge" } satisfies ByLocale,
+      education: { en: "education", fr: "formation" } satisfies ByLocale,
       focus: { en: "focus", fr: "focus" } satisfies ByLocale,
       hobbies: { en: "hobbies", fr: "loisirs" } satisfies ByLocale,
     },
+    values: {
+      focus: {
+        en: "React, Next.js, Web Development",
+        fr: "React, Next.js, développement web",
+      } satisfies ByLocale,
+      hobbies: {
+        en: "Rock Climbing, Music, Writing",
+        fr: "Escalade, Musique, Écriture",
+      } satisfies ByLocale,
+    },
   },
   skills: {
-    title: { en: "Skills & Interests", fr: "Competences et interets" } satisfies ByLocale,
+    title: { en: "Skills & Interests", fr: "Compétences et intérêts" } satisfies ByLocale,
     subtitle: { en: "What I bring to the table", fr: "Ce que j'apporte" } satisfies ByLocale,
     focusTitle: {
       en: "Current Focus & Aspirations",
@@ -59,16 +69,16 @@ export const portfolioCopy = {
     } satisfies ByLocale,
     focusItems: {
       en: [
-        "Working on PLUTO - a personal AI assistant that's local, open-source, customizable, and privacy-focused.",
-        "Daily work on improving ethical hacking and cybersecurity skills through HackTheBox Academy.",
-        "Aspiring to become a part-time ethical hacker (HTB Academy certified) and machine learning engineer.",
-        "Active in Dawson College community, working on founding Dawson Coding & DawsHack Dawson Hackathon clubs.",
+        "Building fast React and Next.js websites for local service businesses.",
+        "Designing bilingual French and English site structures for Montreal customers.",
+        "Keeping projects hand-coded, maintainable, and free from WordPress page-builder bloat.",
+        "Active in the Dawson College community, including developer mentorship and DawsHacks.",
       ],
       fr: [
-        "Travail sur PLUTO - un assistant IA personnel, local, open-source, personnalisable et axe sur la vie privee.",
-        "Travail quotidien pour ameliorer mes competences en cybers securite via HackTheBox Academy.",
-        "Objectif de devenir hacker ethique a temps partiel (certifie HTB Academy) et ingenieur en apprentissage machine.",
-        "Actif dans la communaute du College Dawson, avec Dawson Coding et DawsHack.",
+        "Création de sites React et Next.js rapides pour les entreprises de services locales.",
+        "Conception de structures bilingues français et anglais pour les clients de Montréal.",
+        "Projets codés à la main, maintenables et sans lourdeur de page builder WordPress.",
+        "Actif dans la communauté du Collège Dawson, notamment en mentorat développeur et avec DawsHacks.",
       ],
     },
   },
@@ -87,26 +97,32 @@ export const portfolioCopy = {
     message: { en: "Message", fr: "Message" } satisfies ByLocale,
     messagePlaceholder: {
       en: "Feel free to reach out with any questions or just to say hi!",
-      fr: "N'hesitez pas a me contacter pour toute question ou simplement pour dire bonjour.",
+      fr: "N'hésitez pas à me contacter pour toute question ou simplement pour dire bonjour.",
     } satisfies ByLocale,
     send: { en: "Send Message", fr: "Envoyer" } satisfies ByLocale,
+    sending: { en: "Sending...", fr: "Envoi..." } satisfies ByLocale,
     connect: { en: "Connect with me", fr: "Me rejoindre" } satisfies ByLocale,
     support: { en: "Support My Work", fr: "Soutenir mon travail" } satisfies ByLocale,
-    sentTitle: { en: "Message Sent!", fr: "Message envoye!" } satisfies ByLocale,
+    sentTitle: { en: "Message Sent!", fr: "Message envoyé!" } satisfies ByLocale,
     sentBody: {
       en: "Thanks for reaching out. I'll get back to you soon.",
       fr: "Merci pour votre message. Je reviens vers vous rapidement.",
     } satisfies ByLocale,
-    buyCoffee: { en: "Buy Me A Coffee:", fr: "Buy Me A Coffee:" } satisfies ByLocale,
+    errorTitle: { en: "Message not sent", fr: "Message non envoyé" } satisfies ByLocale,
+    errorBody: {
+      en: "Please try again or email me directly at hello@felixegan.me.",
+      fr: "Veuillez réessayer ou m'écrire directement à hello@felixegan.me.",
+    } satisfies ByLocale,
+    buyCoffee: { en: "Buy Me A Coffee:", fr: "Acheter un café:" } satisfies ByLocale,
   },
   footer: {
     description: {
-      en: "Python Developer & ML Enthusiast based in Montreal, creating innovative solutions to real-world problems.",
-      fr: "Developpeur Python et passionne de ML a Montreal, je cree des solutions innovantes a des problemes reels.",
+      en: "Freelance web developer in Montreal building fast, bilingual websites for local businesses.",
+      fr: "Développeur web freelance à Montréal, je crée des sites rapides et bilingues pour les entreprises locales.",
     } satisfies ByLocale,
     quickLinks: { en: "Quick Links", fr: "Liens rapides" } satisfies ByLocale,
-    aboutMe: { en: "About Me", fr: "A propos" } satisfies ByLocale,
-    skills: { en: "Skills", fr: "Competences" } satisfies ByLocale,
+    aboutMe: { en: "About Me", fr: "À propos" } satisfies ByLocale,
+    skills: { en: "Skills", fr: "Compétences" } satisfies ByLocale,
     projects: { en: "Projects", fr: "Projets" } satisfies ByLocale,
     contact: { en: "Contact", fr: "Contact" } satisfies ByLocale,
     connect: { en: "Connect", fr: "Reseaux" } satisfies ByLocale,

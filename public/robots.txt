@@ -10,4 +10,4 @@ Disallow: /previousWebpagePleaseNoOneFindThis.html
 Disallow: /PDGE.html
 Disallow: /aura.html
 
-Sitemap: https://felixegan.me/sitemap.xml
+Sitemap: https://www.felixegan.me/sitemap.xml

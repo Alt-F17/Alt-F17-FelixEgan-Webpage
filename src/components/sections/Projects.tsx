@@ -4,64 +4,83 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { portfolioCopy } from '@/content/portfolioCopy';
+import type { Locale } from '@/i18n/types';
 
 type Project = {
   title: string;
-  description: string;
+  description: Record<Locale, string>;
   technologies: string[];
   githubUrl?: string;
   liveUrl?: string;
   image?: string;
   status: 'completed' | 'in-progress';
-  id: string; // Added ID for routing
+  id: string;
 };
 
 const projects: Project[] = [
   {
     title: "PLUTO AI Assistant",
-    description: "Personal AI assistant that is fully local, open-source, customizable, and privacy-focused.",
+    description: {
+      en: "Personal AI assistant that is fully local, open-source, customizable, and privacy-focused.",
+      fr: "Assistant IA personnel entièrement local, open source, personnalisable et axé sur la vie privée.",
+    },
     technologies: ["Python", "Machine Learning", "Natural Language Processing"],
     githubUrl: "https://github.com/Alt-F17/PLUTO",
     status: "in-progress",
-    id: "pluto-ai"
+    id: "pluto-ai",
   },
   {
     title: "Portfolio Website",
-    description: "A space-themed portfolio website showcasing my projects and skills using Three.js and React.",
+    description: {
+      en: "A space-themed portfolio website showcasing my projects and skills using Three.js and React.",
+      fr: "Portfolio à thème spatial qui présente mes projets et compétences avec Three.js et React.",
+    },
     technologies: ["React", "Vite", "Three.js", "Tailwind CSS"],
     status: "completed",
-    id: "portfolio-website"
+    id: "portfolio-website",
   },
   {
     title: "Cybersecurity Tools",
-    description: "Collection of ethical hacking and security assessment tools developed during my HTB Academy training.",
+    description: {
+      en: "Collection of ethical hacking and security assessment tools developed during my HTB Academy training.",
+      fr: "Collection d’outils de hacking éthique et d’évaluation de sécurité développés pendant ma formation HTB Academy.",
+    },
     technologies: ["Python", "Bash", "Networking"],
     status: "in-progress",
-    id: "cybersecurity-tools"
+    id: "cybersecurity-tools",
   },
   {
     title: "DawsHacks Website",
-    description: "Website for DawsHacks, a hackathon event at Dawson College, showcasing event details, schedules, and registration.",
+    description: {
+      en: "Website for DawsHacks, a hackathon event at Dawson College, showcasing event details, schedules, and registration.",
+      fr: "Site web pour DawsHacks, un hackathon au Collège Dawson, avec détails de l’événement, horaires et inscription.",
+    },
     technologies: ["React", "Next.js", "Tailwind CSS"],
     status: "in-progress",
-    id: "dawshacks-website"
+    id: "dawshacks-website",
   },
   {
     title: "STM stat.us",
-    description: "Online social platform where users can report real-time downtimes on the STM (Société de transport de Montréal) network, providing a community-driven solution for public transit issues.",
+    description: {
+      en: "Online social platform where users can report real-time downtimes on the STM network, providing a community-driven solution for public transit issues.",
+      fr: "Plateforme sociale où les utilisateurs signalent en temps réel les interruptions du réseau STM pour aider la communauté.",
+    },
     technologies: ["React", "Node.js", "Express", "MongoDB"],
     status: "in-progress",
     id: "stm-status",
-    githubUrl: "https://github.com/Alt-F17/stm-status"
+    githubUrl: "https://github.com/Alt-F17/stm-status",
   },
   {
     title: "SF Study Tools",
-    description: "A collection of study tools for Dawson College's Science, Computer Science, and Mathematics students to help with their studies, including flashcards, quizzes, and resources.",
+    description: {
+      en: "A collection of study tools for Dawson College's Science, Computer Science, and Mathematics students to help with their studies, including flashcards, quizzes, and resources.",
+      fr: "Collection d’outils d’étude pour les étudiants en sciences, informatique et mathématiques du Collège Dawson, avec flashcards, quiz et ressources.",
+    },
     technologies: ["React", "Next.js", "Tailwind CSS"],
     status: "completed",
     id: "sf-study-tools",
-    githubUrl: "https://github.com/Alt-F17/sf-study-tools"
-  }
+    githubUrl: "https://github.com/Alt-F17/sf-study-tools",
+  },
 ];
 
 export const Projects = () => {
@@ -127,7 +146,7 @@ export const Projects = () => {
   return (
     <section id="projects" className="section">
       <div className="container-padding max-w-5xl mx-auto">
-        <div 
+        <div
           ref={projectsRef}
           className="opacity-0 transform translate-y-4 transition-all duration-700"
         >
@@ -161,11 +180,11 @@ export const Projects = () => {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-space-text/70 mb-4">{project.description}</p>
+                    <p className="text-space-text/70 mb-4">{project.description[locale]}</p>
                     <div className="flex flex-wrap gap-2">
                       {project.technologies.map(tech => (
-                        <span 
-                          key={tech} 
+                        <span
+                          key={tech}
                           className="text-xs py-1 px-2 rounded bg-space-darker border-2 border-[#3b82f6]/30 text-space-text/80"
                         >
                           {tech}
@@ -175,7 +194,7 @@ export const Projects = () => {
                   </CardContent>
                   <CardFooter className="flex justify-start gap-4">
                     {project.githubUrl && (
-                      <Button 
+                      <Button
                         variant="ghost"
                         className="text-[#3b82f6] hover:bg-[#3b82f6]/20"
                         asChild
