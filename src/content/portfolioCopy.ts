@@ -11,7 +11,6 @@ export const portfolioCopy = {
       projects: { en: "Projects", fr: "Projets" } satisfies ByLocale,
       contact: { en: "Contact", fr: "Contact" } satisfies ByLocale,
       studio: { en: "Studio", fr: "Studio" } satisfies ByLocale,
-      resume: { en: "Resume", fr: "CV" } satisfies ByLocale,
     },
   },
   hero: {
@@ -110,8 +109,8 @@ export const portfolioCopy = {
     } satisfies ByLocale,
     errorTitle: { en: "Message not sent", fr: "Message non envoyé" } satisfies ByLocale,
     errorBody: {
-      en: "Please try again or email me directly at hello@felixegan.me.",
-      fr: "Veuillez réessayer ou m'écrire directement à hello@felixegan.me.",
+      en: "Please try again or email me directly at felix.egan.dev@gmail.com.",
+      fr: "Veuillez réessayer ou m'écrire directement à felix.egan.dev@gmail.com.",
     } satisfies ByLocale,
     buyCoffee: { en: "Buy Me A Coffee:", fr: "Acheter un café:" } satisfies ByLocale,
   },
@@ -125,6 +124,6 @@ export const portfolioCopy = {
     skills: { en: "Skills", fr: "Compétences" } satisfies ByLocale,
     projects: { en: "Projects", fr: "Projets" } satisfies ByLocale,
     contact: { en: "Contact", fr: "Contact" } satisfies ByLocale,
-    connect: { en: "Connect", fr: "Reseaux" } satisfies ByLocale,
+    connect: { en: "Connect", fr: "Réseaux" } satisfies ByLocale,
   },
 };

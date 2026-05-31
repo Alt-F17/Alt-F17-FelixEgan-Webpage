@@ -117,7 +117,7 @@ export const enMessages: AppMessages = {
     title: "Start a Project",
     subtitle: "Book a call, request a quote, or email directly",
     napTitle: "Business Details",
-    napBody: "Felix Egan Studio - Montreal, QC - hello@felixegan.me",
+    napBody: "Felix Egan Studio - Montreal, QC - felix.egan.dev@gmail.com",
     serviceArea: "Service area: Montreal, Laval, Longueuil, and remote projects.",
   },
   leadForm: {

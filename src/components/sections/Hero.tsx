@@ -34,10 +34,10 @@ export const Hero = () => {
 
   return (
     <section id="hero" className="section min-h-[100svh] flex items-center relative">
-      <div className="container-padding max-w-5xl mx-auto">
+      <div className="container-padding mx-auto w-full max-w-5xl min-w-0">
         <div 
           ref={textRef} 
-          className="opacity-0 transform translate-y-4 transition-all duration-1000 border-4 border-[#3b82f6]/20 p-5 sm:p-8 rounded-lg bg-space-darker/50 backdrop-blur-sm"
+          className="min-w-0 opacity-0 transform translate-y-4 transition-all duration-1000 border-4 border-[#3b82f6]/20 p-5 sm:p-8 rounded-lg bg-space-darker/50 backdrop-blur-sm"
         >
           <p className="text-[#3b82f6] mb-4 font-mono text-sm sm:text-base">{copy.eyebrow[locale]}</p>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 text-white">
@@ -58,10 +58,10 @@ export const Hero = () => {
             </span>
             <span className="lg:hidden" aria-hidden="true">{copy.role[locale]}</span>
           </h2>
-          <p className="max-w-2xl text-base sm:text-lg mb-8 text-space-text/70">
+          <p className="max-w-2xl break-words text-base sm:text-lg mb-8 text-space-text/70">
             {copy.description[locale]}
           </p>
-          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
+          <div className="flex min-w-0 flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
             <Button 
               className="bg-[#3b82f6] hover:bg-[#3b82f6]/80 text-white w-full sm:w-auto"
               size="lg"

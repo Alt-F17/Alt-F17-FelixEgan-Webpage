@@ -97,7 +97,7 @@ export const Footer = () => {
                 <FaDiscord className="w-5 h-5" />
               </a>
 
-              <a href="mailto:hello@felixegan.me" className="w-10 h-10 rounded-full bg-space-darker border-4 border-space-accent/30 flex items-center justify-center text-space-accent hover:bg-space-accent hover:text-white transition-colors">
+              <a href="mailto:felix.egan.dev@gmail.com" className="w-10 h-10 rounded-full bg-space-darker border-4 border-space-accent/30 flex items-center justify-center text-space-accent hover:bg-space-accent hover:text-white transition-colors">
                 <FaEnvelope className="w-5 h-5" />
               </a>
             </div>

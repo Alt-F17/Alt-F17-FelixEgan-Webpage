@@ -43,7 +43,7 @@ export const frMessages: AppMessages = {
       },
       {
         name: "Growth",
-        description: "Generer plus de leads avec un meilleur tunnel.",
+        description: "Générer plus de leads avec un meilleur tunnel.",
         price: "CAD $2,000-$2,800",
         timeline: "3-5 semaines",
         deliverables: [
@@ -117,7 +117,7 @@ export const frMessages: AppMessages = {
     title: "Démarrer un projet",
     subtitle: "Réserver un appel, demander un devis, ou écrire par email",
     napTitle: "Informations entreprise",
-    napBody: "Felix Egan Studio - Montréal, QC - hello@felixegan.me",
+    napBody: "Felix Egan Studio - Montréal, QC - felix.egan.dev@gmail.com",
     serviceArea: "Zone de service: Montréal, Laval, Longueuil, et projets à distance.",
   },
   leadForm: {
@@ -131,7 +131,7 @@ export const frMessages: AppMessages = {
     websiteUrl: "Site actuel",
     budgetRange: "Budget",
     timeline: "Échéancier",
-    services: "Services souhaites",
+    services: "Services souhaités",
     message: "Détails du projet",
     optionEmail: "Email",
     optionPhone: "Téléphone",

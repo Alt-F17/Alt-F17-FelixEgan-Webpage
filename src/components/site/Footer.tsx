@@ -23,8 +23,8 @@ export const Footer = () => {
           <Link className="hover:text-zinc-100" to="/studio/testimonials">
             {messages.nav.testimonials}
           </Link>
-          <a className="hover:text-zinc-100" href="mailto:hello@felixegan.me">
-            hello@felixegan.me
+          <a className="hover:text-zinc-100" href="mailto:felix.egan.dev@gmail.com">
+            felix.egan.dev@gmail.com
           </a>
         </div>
         <p className="text-xs text-zinc-500">Copyright {year} Felix Egan Studio. All rights reserved.</p>

@@ -43,7 +43,7 @@ export const Contact = () => {
     { name: 'HTB Academy', username: '@AltF17', url: 'https://app.hackthebox.com/profile/AltF17', icon: 'hackthebox' },
     { name: 'Instagram', username: '@felixegan_', url: 'https://instagram.com/felixegan_', icon: 'instagram' },
     { name: 'Discord', username: 'Alt_F17', url: 'https://discord.com/users/707956607123718174', icon: 'discord' },
-    { name: 'Email', username: 'hello@felixegan.me', url: 'mailto:hello@felixegan.me', icon: 'email' }
+    { name: 'Email', username: 'felix.egan.dev@gmail.com', url: 'mailto:felix.egan.dev@gmail.com', icon: 'email' }
   ];
 
   const handleSubmit = async (e: FormEvent) => {

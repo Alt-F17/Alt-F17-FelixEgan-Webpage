@@ -7,7 +7,6 @@ import { useLanguage } from "@/i18n/LanguageProvider";
 import { trackEvent } from "@/lib/plausible";
 import { caseStudies } from "@/content/caseStudies";
 import { blogPosts } from "@/content/blog";
-import { marketStats } from "@/content/marketStats";
 
 const siteJsonLd = [
   {
@@ -15,7 +14,7 @@ const siteJsonLd = [
     "@type": "LocalBusiness",
     name: "Felix Egan Studio",
     url: "https://www.felixegan.me",
-    email: "hello@felixegan.me",
+    email: "felix.egan.dev@gmail.com",
     areaServed: ["Montreal", "Laval", "Longueuil"],
     address: {
       "@type": "PostalAddress",
@@ -113,31 +112,31 @@ const HomePage = () => {
         jsonLd={siteJsonLd}
       />
       <main>
-        <section className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pb-16 pt-20 sm:px-6 lg:px-8">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8 shadow-[0_0_80px_-30px_rgba(59,130,246,0.45)]">
+        <section className="mx-auto flex w-full max-w-6xl min-w-0 flex-col gap-8 px-4 pb-16 pt-20 sm:px-6 lg:px-8">
+          <div className="min-w-0 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 shadow-[0_0_80px_-30px_rgba(59,130,246,0.45)] sm:p-8">
             <p className="mb-3 text-xs uppercase tracking-[0.2em] text-blue-300">{messages.hero.eyebrow}</p>
-            <h1 className="text-3xl font-semibold text-zinc-100 sm:text-5xl">{messages.hero.title}</h1>
-            <p className="mt-4 text-lg text-zinc-300">{messages.hero.subtitle}</p>
-            <p className="mt-4 max-w-3xl text-zinc-400">{messages.hero.description}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <h1 className="break-words text-3xl font-semibold text-zinc-100 sm:text-5xl">{messages.hero.title}</h1>
+            <p className="mt-4 break-words text-lg text-zinc-300">{messages.hero.subtitle}</p>
+            <p className="mt-4 max-w-3xl break-words text-zinc-400">{messages.hero.description}</p>
+            <div className="mt-8 flex min-w-0 flex-col gap-3 min-[420px]:flex-row min-[420px]:flex-wrap">
               <a
                 id="book-call"
                 href="#book-call-panel"
                 onClick={() => trackEvent("cta_book_call_click", { placement: "hero" })}
-                className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
+                className="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
               >
                 {messages.cta.bookCall}
               </a>
               <a
                 href="#contact"
                 onClick={() => trackEvent("cta_quote_click", { placement: "hero" })}
-                className="rounded-md border border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-100 hover:border-zinc-500"
+                className="inline-flex justify-center rounded-md border border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-100 hover:border-zinc-500"
               >
                 {messages.cta.requestQuote}
               </a>
               <a
-                href="mailto:hello@felixegan.me"
-                className="rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-zinc-300 hover:text-zinc-100"
+                href="mailto:felix.egan.dev@gmail.com"
+                className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-zinc-300 hover:text-zinc-100"
               >
                 {messages.cta.emailDirect}
               </a>
@@ -272,11 +271,8 @@ const HomePage = () => {
                 </h3>
                 <p className="mt-2 text-sm text-zinc-400">{messages.contact.napBody}</p>
                 <p className="mt-2 text-sm text-zinc-400">{messages.contact.serviceArea}</p>
-                <p className="mt-2 text-sm text-zinc-400">
-                  Founding client discount: {marketStats.foundingClientDiscount}
-                </p>
-                <a className="mt-3 inline-flex text-sm text-blue-300 hover:text-blue-200" href="mailto:hello@felixegan.me">
-                  hello@felixegan.me
+                <a className="mt-3 inline-flex text-sm text-blue-300 hover:text-blue-200" href="mailto:felix.egan.dev@gmail.com">
+                  felix.egan.dev@gmail.com
                 </a>
               </div>
             </div>
