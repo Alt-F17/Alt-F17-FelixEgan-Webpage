@@ -55,16 +55,16 @@ export const Hero = () => {
             Felix Egan
           </h1>
           <h2
-            className="max-w-full overflow-visible break-words text-2xl sm:text-3xl md:text-5xl font-bold mb-6 text-space-text/80"
+            className="max-w-full overflow-visible whitespace-normal break-normal text-balance text-2xl sm:text-3xl md:text-5xl font-bold leading-tight tracking-normal mb-6 text-space-text/80"
             aria-label={copy.role[locale]}
           >
             {isDesktop ? (
-              <span className="max-w-full whitespace-normal" aria-hidden="true">
+              <span className="max-w-full whitespace-normal break-normal" aria-hidden="true">
                 <ScrambledText
                   key={locale}
                   initialText=""
                   targetText={copy.role[locale]}
-                  className="max-w-full whitespace-normal break-words"
+                  className="max-w-full whitespace-normal break-normal"
                   speed={40}
                 />
               </span>

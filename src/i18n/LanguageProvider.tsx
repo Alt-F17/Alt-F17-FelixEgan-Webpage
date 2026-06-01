@@ -29,8 +29,7 @@ const detectInitialLocale = (): Locale => {
     return saved;
   }
 
-  const browserLocale = window.navigator.language.toLowerCase();
-  return browserLocale.startsWith("fr") ? "fr" : "en";
+  return "en";
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
