@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-scroll';
 import { Button } from '@/components/ui/button';
 import { ArrowDown } from 'lucide-react';
@@ -10,6 +10,7 @@ export const Hero = () => {
   const textRef = useRef<HTMLDivElement>(null);
   const { locale } = useLanguage();
   const copy = portfolioCopy.hero;
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,6 +33,16 @@ export const Hero = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 1024px)');
+    const handleChange = () => setIsDesktop(media.matches);
+
+    handleChange();
+    media.addEventListener('change', handleChange);
+
+    return () => media.removeEventListener('change', handleChange);
+  }, []);
+
   return (
     <section id="hero" className="section min-h-[100svh] flex items-center relative">
       <div className="container-padding mx-auto w-full max-w-5xl min-w-0">
@@ -47,16 +58,19 @@ export const Hero = () => {
             className="max-w-full overflow-visible break-words text-2xl sm:text-3xl md:text-5xl font-bold mb-6 text-space-text/80"
             aria-label={copy.role[locale]}
           >
-            <span className="hidden max-w-full whitespace-normal lg:inline">
-              <ScrambledText
-                key={locale}
-                initialText=""
-                targetText={copy.role[locale]}
-                className="max-w-full whitespace-normal break-words"
-                speed={40}
-              />
-            </span>
-            <span className="lg:hidden" aria-hidden="true">{copy.role[locale]}</span>
+            {isDesktop ? (
+              <span className="max-w-full whitespace-normal" aria-hidden="true">
+                <ScrambledText
+                  key={locale}
+                  initialText=""
+                  targetText={copy.role[locale]}
+                  className="max-w-full whitespace-normal break-words"
+                  speed={40}
+                />
+              </span>
+            ) : (
+              <span aria-hidden="true">{copy.role[locale]}</span>
+            )}
           </h2>
           <p className="max-w-2xl break-words text-base sm:text-lg mb-8 text-space-text/70">
             {copy.description[locale]}
