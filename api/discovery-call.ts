@@ -43,6 +43,7 @@ type VercelResponse = {
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
+const TWENTY_REQUEST_TIMEOUT_MS = 8000;
 const rateLimitBuckets = new Map<string, number[]>();
 
 const compact = <T extends Record<string, unknown>>(input: T) =>
@@ -109,6 +110,9 @@ const twentyRequest = async <T>(
   const apiKey = getRequiredEnv("TWENTY_API_KEY");
   const query = options.query?.toString();
   const url = `${baseUrl}${path}${query ? `?${query}` : ""}`;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), TWENTY_REQUEST_TIMEOUT_MS);
+
   const response = await fetch(url, {
     method: options.method ?? "GET",
     headers: {
@@ -116,7 +120,8 @@ const twentyRequest = async <T>(
       "Content-Type": "application/json",
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
-  });
+    signal: controller.signal,
+  }).finally(() => clearTimeout(timeout));
 
   const text = await response.text();
   const json = text ? JSON.parse(text) : null;
@@ -355,6 +360,13 @@ export default async function handler(request: VercelRequest, response: VercelRe
     response.status(200).json({ success: true, leadId: opportunity?.id ?? person?.id ?? "accepted" });
   } catch (error) {
     console.error("Discovery call submission failed", error);
-    response.status(502).json({ error: "CRM submission failed" });
+    const message = error instanceof Error ? error.message : String(error);
+    const code = message.includes("Missing server environment variable")
+      ? "crm_configuration_missing"
+      : message.includes("aborted")
+        ? "crm_timeout"
+        : "crm_submission_failed";
+
+    response.status(502).json({ error: code });
   }
 }
