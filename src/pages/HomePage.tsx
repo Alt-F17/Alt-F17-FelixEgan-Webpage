@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import { CalendarEmbed } from "@/components/lead/CalendarEmbed";
 import { LeadForm } from "@/components/lead/LeadForm";
 import { Seo } from "@/components/seo/Seo";
 import { useLanguage } from "@/i18n/LanguageProvider";
@@ -62,7 +61,6 @@ const byNewest = (a: { publishedAt: string }, b: { publishedAt: string }) =>
 
 const HomePage = () => {
   const { locale, messages } = useLanguage();
-  const [showCallFallback, setShowCallFallback] = useState(false);
 
   const featuredCases = useMemo(() => caseStudies.slice(0, 2), []);
   const featuredPosts = useMemo(() => [...blogPosts].sort(byNewest).slice(0, 3), []);
@@ -121,22 +119,15 @@ const HomePage = () => {
             <div className="mt-8 flex min-w-0 flex-col gap-3 min-[420px]:flex-row min-[420px]:flex-wrap">
               <a
                 id="book-call"
-                href="#book-call-panel"
+                href="#contact"
                 onClick={() => trackEvent("cta_book_call_click", { placement: "hero" })}
                 className="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
               >
                 {messages.cta.bookCall}
               </a>
               <a
-                href="#contact"
-                onClick={() => trackEvent("cta_quote_click", { placement: "hero" })}
-                className="inline-flex justify-center rounded-md border border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-100 hover:border-zinc-500"
-              >
-                {messages.cta.requestQuote}
-              </a>
-              <a
                 href="mailto:felix.egan.dev@gmail.com"
-                className="inline-flex justify-center rounded-md border border-transparent px-4 py-2 text-sm font-semibold text-zinc-300 hover:text-zinc-100"
+                className="inline-flex justify-center rounded-md border border-zinc-700 px-4 py-2 text-sm font-semibold text-zinc-100 hover:border-zinc-500"
               >
                 {messages.cta.emailDirect}
               </a>
@@ -251,30 +242,19 @@ const HomePage = () => {
         <section id="contact" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-semibold text-zinc-100 sm:text-3xl">{messages.contact.title}</h2>
           <p className="mt-2 text-zinc-400">{messages.contact.subtitle}</p>
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
-            <div id="book-call-panel" className="space-y-4">
-              <CalendarEmbed />
-              <button
-                type="button"
-                onClick={() => setShowCallFallback((prev) => !prev)}
-                className="rounded-md border border-zinc-700 px-4 py-2 text-sm text-zinc-200 hover:border-zinc-500"
-              >
-                {showCallFallback ? "Hide fallback form" : "Use fallback call request form"}
-              </button>
-              {showCallFallback ? <LeadForm leadType="discovery_call" submitLabel={messages.cta.bookCall} /> : null}
+          <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div id="book-call-panel">
+              <LeadForm leadType="discovery_call" submitLabel={messages.cta.bookCall} />
             </div>
-            <div className="space-y-4">
-              <LeadForm leadType="quote" submitLabel={messages.cta.requestQuote} />
-              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-                <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-300">
-                  {messages.contact.napTitle}
-                </h3>
-                <p className="mt-2 text-sm text-zinc-400">{messages.contact.napBody}</p>
-                <p className="mt-2 text-sm text-zinc-400">{messages.contact.serviceArea}</p>
-                <a className="mt-3 inline-flex text-sm text-blue-300 hover:text-blue-200" href="mailto:felix.egan.dev@gmail.com">
-                  felix.egan.dev@gmail.com
-                </a>
-              </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+              <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-zinc-300">
+                {messages.contact.napTitle}
+              </h3>
+              <p className="mt-2 text-sm text-zinc-400">{messages.contact.napBody}</p>
+              <p className="mt-2 text-sm text-zinc-400">{messages.contact.serviceArea}</p>
+              <a className="mt-3 inline-flex text-sm text-blue-300 hover:text-blue-200" href="mailto:felix.egan.dev@gmail.com">
+                felix.egan.dev@gmail.com
+              </a>
             </div>
           </div>
         </section>

@@ -23,7 +23,8 @@ Hybrid personal + studio website focused on local SMB web development in Montrea
 
 - React + TypeScript + Vite
 - Tailwind CSS
-- Supabase (lead intake edge function + Postgres)
+- Vercel API route for Studio discovery-call intake
+- Supabase (quote/testimonial lead intake edge function + Postgres)
 - Plausible analytics
 - `react-helmet-async` for route-level SEO
 
@@ -44,10 +45,16 @@ Create `.env`:
 ```bash
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
-VITE_CALENDLY_URL=
 ```
 
-Edge function environment:
+Server-only environment:
+
+```bash
+TWENTY_API_BASE_URL=
+TWENTY_API_KEY=
+```
+
+Supabase edge function environment:
 
 ```bash
 SUPABASE_URL=

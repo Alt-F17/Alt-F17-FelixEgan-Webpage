@@ -132,7 +132,6 @@ export const LeadForm = ({ leadType, submitLabel }: LeadFormProps) => {
         <label className="text-sm text-zinc-300">
           {messages.leadForm.company}
           <input
-            required
             value={form.company}
             onChange={(e) => update("company", e.target.value)}
             className="mt-1 w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100"
