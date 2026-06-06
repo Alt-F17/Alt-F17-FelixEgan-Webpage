@@ -318,6 +318,7 @@ const createLeadNote = async (payload: LeadPayload, opportunityId?: string | nul
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   response.setHeader("Cache-Control", "no-store");
+  response.setHeader("X-Discovery-Api-Version", "standard-intake-v2");
 
   if (request.method === "OPTIONS") {
     response.status(204).end();
