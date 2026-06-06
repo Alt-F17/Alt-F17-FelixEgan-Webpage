@@ -50,7 +50,7 @@ VITE_SUPABASE_ANON_KEY=
 Server-only environment:
 
 ```bash
-TWENTY_API_BASE_URL=
+TWENTY_INTAKE_BASE_URL=
 TWENTY_API_KEY=
 ```
 

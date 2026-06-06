@@ -43,7 +43,8 @@ type VercelResponse = {
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
-const TWENTY_REQUEST_TIMEOUT_MS = 8000;
+const TWENTY_REQUEST_TIMEOUT_MS = 5000;
+const DEFAULT_TWENTY_INTAKE_URL = "https://theta.wampus-tyrannosaurus.ts.net/felix-discovery";
 const rateLimitBuckets = new Map<string, number[]>();
 
 const compact = <T extends Record<string, unknown>>(input: T) =>
@@ -106,7 +107,7 @@ const twentyRequest = async <T>(
     body?: Record<string, unknown>;
   } = {},
 ): Promise<T> => {
-  const baseUrl = getRequiredEnv("TWENTY_API_BASE_URL").replace(/\/$/, "");
+  const baseUrl = (process.env.TWENTY_INTAKE_BASE_URL ?? DEFAULT_TWENTY_INTAKE_URL).replace(/\/$/, "");
   const apiKey = getRequiredEnv("TWENTY_API_KEY");
   const query = options.query?.toString();
   const url = `${baseUrl}${path}${query ? `?${query}` : ""}`;
