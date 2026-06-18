@@ -33,7 +33,7 @@ export const enMessages: AppMessages = {
       {
         name: "Starter",
         description: "Launch a credible website fast.",
-        price: "CAD $1,200-$1,800",
+        price: " ",
         timeline: "2-3 weeks",
         deliverables: [
           "Up to 5 pages",
@@ -44,7 +44,7 @@ export const enMessages: AppMessages = {
       {
         name: "Growth",
         description: "Drive more leads with better conversion flows.",
-        price: "CAD $2,000-$2,800",
+        price: " ",
         timeline: "3-5 weeks",
         deliverables: [
           "Up to 12 pages",
@@ -55,7 +55,7 @@ export const enMessages: AppMessages = {
       {
         name: "Premium",
         description: "Full-site system for scaling operations.",
-        price: "CAD $3,000-$4,500",
+        price: " ",
         timeline: "4-7 weeks",
         deliverables: [
           "Custom integrations",
@@ -66,7 +66,7 @@ export const enMessages: AppMessages = {
       {
         name: "Custom",
         description: "Tailored engagement for unusual constraints.",
-        price: "From CAD $1,200",
+        price: " ",
         timeline: "Custom scope",
         deliverables: [
           "Flexible scope",
