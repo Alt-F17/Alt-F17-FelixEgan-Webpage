@@ -161,6 +161,13 @@ const collectionRecords = <T>(response: unknown, collectionName: string): T[] =>
   return Array.isArray(collection) ? (collection as T[]) : [];
 };
 
+const normalizePhone = (raw: string): string => {
+  const digits = raw.replace(/[^\d]/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return raw.startsWith("+") ? `+${digits}` : `+${digits}`;
+};
+
 const splitName = (fullName: string) => {
   const [firstName, ...lastNameParts] = fullName.trim().split(/\s+/);
   return {
@@ -238,9 +245,9 @@ const createPerson = async (payload: LeadPayload, companyId?: string | null) => 
       },
       phones: payload.phone
         ? {
-            primaryPhoneNumber: payload.phone,
+            primaryPhoneNumber: normalizePhone(payload.phone),
             primaryPhoneCountryCode: "",
-            primaryPhoneCallingCode: "",
+            primaryPhoneCallingCode: "+1",
             additionalPhones: [],
           }
         : undefined,
