@@ -33,7 +33,7 @@ export const frMessages: AppMessages = {
       {
         name: "Starter",
         description: "Lancer rapidement un site crédible.",
-        price: "CAD $1,200-$1,800",
+        price: " ",
         timeline: "2-3 semaines",
         deliverables: [
           "Jusqu'à 5 pages",
@@ -44,7 +44,7 @@ export const frMessages: AppMessages = {
       {
         name: "Growth",
         description: "Générer plus de leads avec un meilleur tunnel.",
-        price: "CAD $2,000-$2,800",
+        price: " ",
         timeline: "3-5 semaines",
         deliverables: [
           "Jusqu'à 12 pages",
@@ -55,7 +55,7 @@ export const frMessages: AppMessages = {
       {
         name: "Premium",
         description: "Système complet pour évoluer.",
-        price: "CAD $3,000-$4,500",
+        price: " ",
         timeline: "4-7 semaines",
         deliverables: [
           "Intégrations personnalisées",
@@ -66,7 +66,7 @@ export const frMessages: AppMessages = {
       {
         name: "Custom",
         description: "Mandat adapté aux contraintes spécifiques.",
-        price: "À partir de CAD $1,200",
+        price: " ",
         timeline: "Portée personnalisée",
         deliverables: [
           "Portée flexible",
