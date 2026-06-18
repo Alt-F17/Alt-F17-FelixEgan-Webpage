@@ -222,6 +222,7 @@ export const LeadForm = ({ leadType, submitLabel }: LeadFormProps) => {
         {messages.leadForm.message}
         <textarea
           required
+          minLength={8}
           value={form.message}
           onChange={(e) => update("message", e.target.value)}
           rows={4}
