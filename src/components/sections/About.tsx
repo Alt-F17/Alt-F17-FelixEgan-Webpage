@@ -59,7 +59,7 @@ export const About = () => {
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center">
                     <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 mx-auto rounded-full overflow-hidden border-4 border-[#3b82f6]/30">
-                      <img src="pfp.JPEG" alt="Felix Egan" className="w-full h-full object-cover" />
+                      <img src="pfp2.jpg" alt="Felix Egan" className="w-full h-full object-contain" />
                     </div>
                     <h3 className="mt-4 text-xl font-medium">Felix Egan</h3>
                     <p className="text-space-text/70">Montreal, Canada</p>
