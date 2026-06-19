@@ -77,7 +77,7 @@ export const About = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[#3b82f6]">{copy.labels.education[locale]}:</span>
-                <span>Dawson College</span>
+                <span>UBC Okanagan</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[#3b82f6]">{copy.labels.focus[locale]}:</span>

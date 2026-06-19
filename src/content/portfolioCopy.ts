@@ -31,16 +31,16 @@ export const portfolioCopy = {
     title: { en: "About Me", fr: "À propos de moi" } satisfies ByLocale,
     paragraphs: {
       en: [
-        "I'm Felix, a software developer with a passion for creating fun, new solutions to real-world problems. I love making fun projects that help people and aim to make the world more innovative, efficient, and technologically accessible to all.",
-        "Currently studying Science, Computer Science, and Mathematics at Dawson College in Montreal, I'm helping the next generation of developers through mentorship and events like DawsHacks.",
-        "My journey in programming began in 2019, where I discovered my passion for coding through Python during the pandemic. Since then, I've expanded my skills to web development, machine learning, MCP orchestration, and cybersecurity.",
-        "When I'm not coding, I'm probably rock climbing, making music, creating content on my social media page, or riding through the city on my OneWheel. I believe that tech can create a positive change in the world and I am committed to using my skills to contribute to that vision.",
+        "I'm Felix — a developer and designer driven by a passion for crafting seamless, aesthetically refined digital experiences. I care deeply about the details: clean interfaces, fluid interactions, and code that's built to last.",
+        "Currently pursuing a Computer Science degree at UBC's Okanagan campus, I bring a strong foundation in software engineering, AI, and cybersecurity to every project I take on.",
+        "I started programming in 2019 and haven't looked back. From building performant React and Next.js applications to exploring machine learning and MCP orchestration, I'm always pushing the boundaries of what I can create.",
+        "I believe great technology should feel invisible — intuitive, fast, and purposeful. That philosophy drives everything I build, whether it's a client website, an open-source tool, or a personal experiment.",
       ],
       fr: [
-        "Je suis Félix, un développeur logiciel passionné par la création de nouvelles solutions à des problèmes concrets. J'aime créer des projets utiles qui aident les gens et rendent la technologie plus accessible.",
-        "Je suis présentement en sciences, informatique et mathématiques au Collège Dawson à Montréal, et j'aide la prochaine génération de développeurs via du mentorat et des événements comme DawsHacks.",
-        "Mon parcours en programmation a commencé en 2019 avec Python pendant la pandémie. Depuis, j'ai élargi mes compétences en développement web, apprentissage machine, orchestration MCP et cybersécurité.",
-        "Quand je ne code pas, je fais souvent de l'escalade, de la musique, du contenu web ou des rides en OneWheel. Je crois que la technologie peut avoir un impact positif et je veux contribuer à cette vision.",
+        "Je suis Félix — développeur et designer animé par une passion pour la création d'expériences numériques fluides et esthétiquement soignées. Je porte une attention particulière aux détails : interfaces épurées, interactions fluides et code durable.",
+        "Présentement en baccalauréat en informatique à l'UBC campus Okanagan, j'apporte une solide formation en génie logiciel, IA et cybersécurité à chacun de mes projets.",
+        "J'ai commencé à programmer en 2019 et je n'ai jamais arrêté. De la création d'applications React et Next.js performantes à l'exploration de l'apprentissage machine et de l'orchestration MCP, je repousse constamment mes limites.",
+        "Je crois que la bonne technologie doit être invisible — intuitive, rapide et intentionnelle. Cette philosophie guide tout ce que je construis, qu'il s'agisse d'un site client, d'un outil open source ou d'une expérience personnelle.",
       ],
     },
     labels: {
@@ -51,12 +51,12 @@ export const portfolioCopy = {
     },
     values: {
       focus: {
-        en: "React, Next.js, Web Development",
-        fr: "React, Next.js, développement web",
+        en: "Web Development, AI, Cybersecurity",
+        fr: "Développement web, IA, Cybersécurité",
       } satisfies ByLocale,
       hobbies: {
-        en: "Rock Climbing, Music, Writing",
-        fr: "Escalade, Musique, Écriture",
+        en: "Rock Climbing, Music, Design",
+        fr: "Escalade, Musique, Design",
       } satisfies ByLocale,
     },
   },
