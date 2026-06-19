@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-scroll';
+import { Link as RouterLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowDown } from 'lucide-react';
 import { useLanguage } from '@/i18n/LanguageProvider';
@@ -84,14 +85,24 @@ export const Hero = () => {
                 {copy.viewProjects[locale]}
               </Link>
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="border-[#3b82f6] text-[#3b82f6] hover:bg-[#3b82f6] hover:text-white w-full sm:w-auto"
               size="lg"
             >
               <Link to="contact" spy={true} smooth={true} duration={800} offset={-100}>
                 {copy.contact[locale]}
               </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="border-[#3b82f6]/60 text-[#3b82f6]/80 hover:bg-[#3b82f6]/10 hover:text-[#3b82f6] w-full sm:w-auto"
+              size="lg"
+              asChild
+            >
+              <RouterLink to="/studio">
+                {copy.studio[locale]}
+              </RouterLink>
             </Button>
           </div>
         </div>

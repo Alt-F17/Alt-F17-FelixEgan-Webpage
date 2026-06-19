@@ -20,11 +20,12 @@ export const portfolioCopy = {
       fr: "Développeur Web Freelance — Montréal",
     } satisfies ByLocale,
     description: {
-      en: "I build fast, bilingual websites for local Montreal businesses — trades, contractors, health & wellness, and professional services. Hand-coded in React and Next.js. No WordPress.",
-      fr: "Je crée des sites web rapides et bilingues pour les entreprises locales de Montréal — construction, santé, services professionnels. Codés à la main en React et Next.js. Sans WordPress.",
+      en: "I build fast, bilingual websites for local Montreal businesses — trades, contractors, health & wellness, and professional services. Hand-coded in React and Next.js with a broader passion for AI, cybersecurity, and open-source tools.",
+      fr: "Je crée des sites web rapides et bilingues pour les entreprises locales de Montréal — construction, santé, services professionnels. Codés à la main en React et Next.js, avec une passion pour l'IA, la cybersécurité et les outils open source.",
     } satisfies ByLocale,
     viewProjects: { en: "View My Projects", fr: "Voir mes projets" } satisfies ByLocale,
     contact: { en: "Contact Me", fr: "Me contacter" } satisfies ByLocale,
+    studio: { en: "Studio", fr: "Studio" } satisfies ByLocale,
   },
   about: {
     title: { en: "About Me", fr: "À propos de moi" } satisfies ByLocale,
