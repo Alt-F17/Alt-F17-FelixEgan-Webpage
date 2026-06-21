@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { FaGithub, FaInstagram, FaDiscord, FaEnvelope, FaPaypal, FaCoffee } from 'react-icons/fa';
+import { FaGithub, FaInstagram, FaDiscord, FaEnvelope, FaLinkedin, FaPaypal, FaCoffee } from 'react-icons/fa';
 import { SiHackthebox } from 'react-icons/si';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { portfolioCopy } from '@/content/portfolioCopy';
@@ -43,6 +43,7 @@ export const Contact = () => {
     { name: 'HTB Academy', username: '@AltF17', url: 'https://app.hackthebox.com/profile/AltF17', icon: 'hackthebox' },
     { name: 'Instagram', username: '@felixegan_', url: 'https://instagram.com/felixegan_', icon: 'instagram' },
     { name: 'Discord', username: 'Alt_F17', url: 'https://discord.com/users/707956607123718174', icon: 'discord' },
+    { name: 'LinkedIn', username: 'felixegan-', url: 'https://linkedin.com/in/felixegan-', icon: 'linkedin' },
     { name: 'Email', username: 'felix.egan.dev@gmail.com', url: 'mailto:felix.egan.dev@gmail.com', icon: 'email' }
   ];
 
@@ -204,6 +205,7 @@ export const Contact = () => {
                         {social.icon === 'github' && <FaGithub className="w-5 h-5 text-space-accent" />}
                         {social.icon === 'instagram' && <FaInstagram className="w-5 h-5 text-space-accent" />}
                         {social.icon === 'discord' && <FaDiscord className="w-5 h-5 text-space-accent" />}
+                        {social.icon === 'linkedin' && <FaLinkedin className="w-5 h-5 text-space-accent" />}
                         {social.icon === 'email' && <FaEnvelope className="w-5 h-5 text-space-accent" />}
                         {social.icon === 'hackthebox' && <SiHackthebox className="w-5 h-5 text-space-accent" />}
                       </div>

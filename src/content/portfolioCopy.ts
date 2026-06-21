@@ -117,8 +117,8 @@ export const portfolioCopy = {
   },
   footer: {
     description: {
-      en: "Freelance web developer in Montreal building fast, bilingual websites for local businesses.",
-      fr: "Développeur web freelance à Montréal, je crée des sites rapides et bilingues pour les entreprises locales.",
+      en: "Developer and designer in Montreal — building web apps, exploring AI and cybersecurity, and contributing to open source.",
+      fr: "Développeur et designer à Montréal — création d'applications web, exploration de l'IA et de la cybersécurité, et contribution à l'open source.",
     } satisfies ByLocale,
     quickLinks: { en: "Quick Links", fr: "Liens rapides" } satisfies ByLocale,
     aboutMe: { en: "About Me", fr: "À propos" } satisfies ByLocale,
