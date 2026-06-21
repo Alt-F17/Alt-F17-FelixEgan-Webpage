@@ -13,73 +13,71 @@ type Project = {
   githubUrl?: string;
   liveUrl?: string;
   image?: string;
-  status: 'completed' | 'in-progress';
   id: string;
 };
 
 const projects: Project[] = [
   {
+    title: "NPUtella",
+    description: {
+      en: "Local NPU-powered dictation for Snapdragon Windows PCs. Offline English, French, and bilingual speech-to-text packaged as a standalone ARM64 installer.",
+      fr: "Dictée locale propulsée par NPU pour PC Windows Snapdragon. Transcription hors ligne anglais, français et bilingue en installateur ARM64 autonome.",
+    },
+    technologies: ["Rust", "NPU", "Speech-to-Text", "AI"],
+    githubUrl: "https://github.com/Alt-F17/NPUtella",
+    id: "nputella",
+  },
+  {
     title: "PLUTO AI Assistant",
     description: {
-      en: "Personal AI assistant that is fully local, open-source, customizable, and privacy-focused.",
-      fr: "Assistant IA personnel entièrement local, open source, personnalisable et axé sur la vie privée.",
+      en: "Personal & Logical Utility Task Organizer — a fully local, open-source, customizable AI assistant built with privacy in mind.",
+      fr: "Personal & Logical Utility Task Organizer — un assistant IA entièrement local, open source, personnalisable et axé sur la vie privée.",
     },
-    technologies: ["Python", "Machine Learning", "Natural Language Processing"],
-    githubUrl: "https://github.com/Alt-F17/PLUTO",
-    status: "in-progress",
+    technologies: ["Python", "AI", "NLP"],
+    githubUrl: "https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant",
+    liveUrl: "https://felixegan.me/pluto-report.html",
     id: "pluto-ai",
+  },
+  {
+    title: "AURA — Unity Robot Analysis",
+    description: {
+      en: "Final robotics project using Unity and ML-Agents to train autonomous robots through reinforcement learning. Simulated environments with reward-driven behavior and real-time performance analysis.",
+      fr: "Projet final de robotique utilisant Unity et ML-Agents pour entraîner des robots autonomes par apprentissage par renforcement. Environnements simulés avec comportement guidé par récompenses et analyse de performance en temps réel.",
+    },
+    technologies: ["C#", "Unity", "ML-Agents", "Reinforcement Learning"],
+    githubUrl: "https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis",
+    id: "aura-robot",
+  },
+  {
+    title: "CloudSource",
+    description: {
+      en: "Collaborative cloud platform built during a hackathon with my girlfriend. Designed for real-time resource sharing and teamwork.",
+      fr: "Plateforme cloud collaborative construite lors d’un hackathon avec ma copine. Conçue pour le partage de ressources et le travail d’équipe en temps réel.",
+    },
+    technologies: ["TypeScript", "React", "Cloud"],
+    githubUrl: "https://github.com/Alt-F17/CloudSource",
+    liveUrl: "https://cloud-source-eta.vercel.app/",
+    id: "cloudsource",
   },
   {
     title: "Portfolio Website",
     description: {
-      en: "A space-themed portfolio website showcasing my projects and skills using Three.js and React.",
-      fr: "Portfolio à thème spatial qui présente mes projets et compétences avec Three.js et React.",
+      en: "A space-themed portfolio website showcasing my projects and skills, built with Three.js and React.",
+      fr: "Portfolio à thème spatial présentant mes projets et compétences, construit avec Three.js et React.",
     },
     technologies: ["React", "Vite", "Three.js", "Tailwind CSS"],
-    status: "completed",
+    githubUrl: "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage",
     id: "portfolio-website",
-  },
-  {
-    title: "Cybersecurity Tools",
-    description: {
-      en: "Collection of ethical hacking and security assessment tools developed during my HTB Academy training.",
-      fr: "Collection d’outils de hacking éthique et d’évaluation de sécurité développés pendant ma formation HTB Academy.",
-    },
-    technologies: ["Python", "Bash", "Networking"],
-    status: "in-progress",
-    id: "cybersecurity-tools",
-  },
-  {
-    title: "DawsHacks Website",
-    description: {
-      en: "Website for DawsHacks, a hackathon event at Dawson College, showcasing event details, schedules, and registration.",
-      fr: "Site web pour DawsHacks, un hackathon au Collège Dawson, avec détails de l’événement, horaires et inscription.",
-    },
-    technologies: ["React", "Next.js", "Tailwind CSS"],
-    status: "in-progress",
-    id: "dawshacks-website",
-  },
-  {
-    title: "STM stat.us",
-    description: {
-      en: "Online social platform where users can report real-time downtimes on the STM network, providing a community-driven solution for public transit issues.",
-      fr: "Plateforme sociale où les utilisateurs signalent en temps réel les interruptions du réseau STM pour aider la communauté.",
-    },
-    technologies: ["React", "Node.js", "Express", "MongoDB"],
-    status: "in-progress",
-    id: "stm-status",
-    githubUrl: "https://github.com/Alt-F17/stm-status",
   },
   {
     title: "SF Study Tools",
     description: {
-      en: "A collection of study tools for Dawson College's Science, Computer Science, and Mathematics students to help with their studies, including flashcards, quizzes, and resources.",
-      fr: "Collection d’outils d’étude pour les étudiants en sciences, informatique et mathématiques du Collège Dawson, avec flashcards, quiz et ressources.",
+      en: "Study tools for Science, Computer Science, and Mathematics students — flashcards, quizzes, and curated resources.",
+      fr: "Outils d’étude pour les étudiants en sciences, informatique et mathématiques — flashcards, quiz et ressources.",
     },
     technologies: ["React", "Next.js", "Tailwind CSS"],
-    status: "completed",
-    id: "sf-study-tools",
     githubUrl: "https://github.com/Alt-F17/sf-study-tools",
+    id: "sf-study-tools",
   },
 ];
 
@@ -170,14 +168,7 @@ export const Projects = () => {
                 <Card className="h-full border-2 border-[#3b82f6]/20 bg-space-darker hover:border-[#3b82f6]/50 transition-colors duration-300 relative overflow-hidden">
                   <div className="card-glow absolute inset-0 pointer-events-none transition-none" />
                   <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl">{project.title}</CardTitle>
-                      {project.status === "in-progress" && (
-                        <span className="text-xs py-1 px-2 rounded bg-[#3b82f6]/20 text-[#3b82f6] border-2 border-[#3b82f6]/30">
-                          {copy.inProgress[locale]}
-                        </span>
-                      )}
-                    </div>
+                    <CardTitle className="text-xl">{project.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-space-text/70 mb-4">{project.description[locale]}</p>
@@ -199,11 +190,27 @@ export const Projects = () => {
                         className="text-[#3b82f6] hover:bg-[#3b82f6]/20"
                         asChild
                       >
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
                           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                             <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
                           </svg>
                           {copy.github[locale]}
+                        </a>
+                      </Button>
+                    )}
+                    {project.liveUrl && (
+                      <Button
+                        variant="ghost"
+                        className="text-[#3b82f6] hover:bg-[#3b82f6]/20"
+                        asChild
+                      >
+                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                          </svg>
+                          {copy.live[locale]}
                         </a>
                       </Button>
                     )}
