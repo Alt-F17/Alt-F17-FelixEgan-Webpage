@@ -40,6 +40,7 @@ export const projectDetails: Record<string, ProjectDetail> = {
     },
     links: [
       { label: "GitHub", url: "https://github.com/Alt-F17/NPUtella", type: "github" },
+      { label: "nputella.app", url: "https://nputella.app", type: "live" },
     ],
   },
 
@@ -100,6 +101,8 @@ export const projectDetails: Record<string, ProjectDetail> = {
     },
     links: [
       { label: "GitHub", url: "https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis", type: "github" },
+      { label: "Website", url: "https://aura-project-monorepo.vercel.app/", type: "live" },
+      { label: "ONNX Breakdown", url: "https://felixegan.me/netronizer.html", type: "live" },
     ],
   },
 

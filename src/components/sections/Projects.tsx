@@ -25,6 +25,7 @@ const projects: Project[] = [
     },
     technologies: ["Rust", "NPU", "Speech-to-Text", "AI"],
     githubUrl: "https://github.com/Alt-F17/NPUtella",
+    liveUrl: "https://nputella.app",
     id: "nputella",
   },
   {
@@ -46,6 +47,7 @@ const projects: Project[] = [
     },
     technologies: ["C#", "Unity", "ML-Agents", "Reinforcement Learning"],
     githubUrl: "https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis",
+    liveUrl: "https://aura-project-monorepo.vercel.app/",
     id: "aura-robot",
   },
   {
