@@ -1,0 +1,108 @@
+# portfolio.ai.map
+# Machine-readable sitemap for AI agents navigating Felix Egan's portfolio.
+# Base URL: https://felixegan.me
+
+## Identity
+
+name: Felix Egan
+role: Developer, Designer
+location: Montreal, QC, Canada
+education: Computer Science @ UBC Okanagan
+focus: Web Development, AI, Cybersecurity, Open Source
+email: felix.egan.dev@gmail.com
+github: https://github.com/Alt-F17
+linkedin: https://linkedin.com/in/felixegan-
+instagram: https://instagram.com/felixegan_
+discord: Alt_F17
+
+## Site Structure
+
+/ → Portfolio (personal site, space-themed, Three.js background)
+/studio → Studio (freelance business site, see studio.ai.map)
+/qr → QR code landing page
+/404 → Not found
+
+## Portfolio Sections (all on / as scroll sections)
+
+/#hero → Introduction, name, role, CTA buttons
+/#about → Bio, education (UBC Okanagan), age, focus areas, hobbies, profile photo
+/#skills → 7 skill cards + focus area card
+/#projects → 6 project cards (link to /projects/:id subpages)
+/#contact → Contact form, social links, support links
+
+## Skills
+
+1. React & Next.js — Modern, performant web apps
+2. TypeScript & Tailwind — Type-safe code and responsive design
+3. Python & Automation — Scripting, tooling, backend workflows
+4. AI & Machine Learning — LLM integration, MCP orchestration, intelligent tooling
+5. Cybersecurity — Security-first development, vulnerability-aware engineering
+6. Open-Source & Git — Building and contributing to open-source projects
+7. Bilingual Development — FR/EN sites with i18n routing
+
+## Projects
+
+/projects/nputella → NPUtella
+  description: Local NPU-powered speech-to-text for Snapdragon Windows PCs. Offline EN/FR/bilingual dictation.
+  tech: Rust, ONNX Runtime, QNN, Whisper, WiX
+  github: https://github.com/Alt-F17/NPUtella
+  live: https://nputella.app
+
+/projects/pluto-ai → PLUTO AI Assistant
+  description: Personal & Logical Utility Task Organizer — fully local, open-source, privacy-focused AI assistant.
+  tech: Python, NLP, Local Inference
+  github: https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant
+  live: https://felixegan.me/pluto-report.html
+
+/projects/aura-robot → AURA — Unity Robot Analysis
+  description: Reinforcement learning robot training in Unity with ML-Agents. Python analysis pipeline for model mutation and visualization.
+  tech: C#, Unity, ML-Agents, Python, Reinforcement Learning
+  github: https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis
+  live: https://aura-project-monorepo.vercel.app/
+  extra: https://felixegan.me/netronizer.html (ONNX model breakdown)
+
+/projects/cloudsource → CloudSource
+  description: Globe-first AI travel planner built during a hackathon. 3D Cesium globe with orbiting panels for flights, culture, budget, and AI assistant.
+  tech: Next.js 15, React 19, TypeScript, Cesium, Framer Motion, Google AI
+  github: https://github.com/Alt-F17/CloudSource
+  live: https://cloud-source-eta.vercel.app/
+
+/projects/portfolio-website → Portfolio Website
+  description: This site — space-themed portfolio with Three.js starfield, bilingual FR/EN support, tilt-on-hover cards.
+  tech: React, Vite, TypeScript, Three.js, Tailwind CSS, i18n
+  github: https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage
+
+/projects/sf-study-tools → SF Study Tools
+  description: Study platform for science, CS, and math students. Interactive quizzes, flashcards, code snippets, debugging challenges.
+  tech: React, TypeScript, Next.js, Node.js, Express
+  github: https://github.com/Alt-F17/sf-study-tools
+  live: https://sf-study-tools.com
+
+## Project Subpage Sections (each /projects/:id page has)
+
+- Overview — What the project is and why it exists
+- Tech Stack — Technologies used and why each was chosen
+- Challenges & Solutions — Problems solved and lessons learned
+- Links & Resources — GitHub, live demo, reports
+
+## Contact
+
+form: /#contact (name, email, message → submits to lead API)
+email: felix.egan.dev@gmail.com
+github: https://github.com/Alt-F17
+htb: https://app.hackthebox.com/profile/AltF17
+instagram: https://instagram.com/felixegan_
+discord: https://discord.com/users/707956607123718174
+linkedin: https://linkedin.com/in/felixegan-
+paypal: https://paypal.me/altf17
+coffee: https://coff.ee/alt.f17
+
+## Technical
+
+framework: React + Vite + TypeScript
+styling: Tailwind CSS
+3d: Three.js (starfield background)
+i18n: Custom LanguageProvider (EN/FR)
+analytics: Plausible
+hosting: Vercel
+domain: felixegan.me

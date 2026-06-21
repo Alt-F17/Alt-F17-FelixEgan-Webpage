@@ -1,0 +1,75 @@
+# studio.ai.map
+# Machine-readable sitemap for AI agents navigating Felix Egan Studio.
+# Base URL: https://felixegan.me/studio
+
+## Identity
+
+business: Felix Egan Studio
+owner: Felix Egan
+type: Freelance web development studio
+location: Montreal, QC, Canada
+service-area: Montreal, Laval, Longueuil
+email: felix.egan.dev@gmail.com
+portfolio: https://felixegan.me (see portfolio.ai.map)
+
+## Site Structure
+
+/studio → Studio homepage (services, process, case studies, blog, contact)
+/studio/case-studies/:slug → Individual case study pages
+/studio/blog → Blog listing
+/studio/blog/:slug → Individual blog posts
+/studio/testimonials → Client testimonials
+
+## Studio Homepage Sections (all on /studio as scroll sections)
+
+/studio#hero → Business intro, CTAs (Book a Call, Email Direct)
+/studio#services → Service tiers with pricing and deliverables
+/studio#process → How the engagement works (step by step)
+/studio#case-studies → Featured case studies (2 shown, link to more)
+/studio#testimonials-preview → Testimonials preview with link to full page
+/studio#blog → Featured blog posts (3 shown, link to full blog)
+/studio#contact → Lead form (discovery call) + contact info
+
+## Services
+
+Offered to small/medium businesses in Montreal.
+Bilingual (French & English) websites.
+Hand-coded in React and Next.js — no WordPress.
+Typical delivery: 2–3 weeks.
+
+## Case Studies
+
+/studio/case-studies/dawshacks-event-site
+  topic: DawsHacks event website
+
+/studio/case-studies/sf-study-tools-platform
+  topic: SF Study Tools platform
+
+/studio/case-studies/portfolio-to-studio-shift
+  topic: Portfolio to Studio shift — evolving from portfolio to business site
+
+## Blog Posts
+
+/studio/blog/local-smb-homepage-checklist
+  topic: Homepage checklist for local small businesses
+
+/studio/blog/small-business-seo-basics
+  topic: SEO basics for small businesses
+
+/studio/blog/when-to-redesign-company-site
+  topic: When to redesign your company website
+
+## Contact
+
+form: /studio#contact (discovery call lead form)
+email: felix.egan.dev@gmail.com
+
+## Technical
+
+framework: React + Vite + TypeScript
+styling: Tailwind CSS (zinc/blue theme, no Three.js)
+layout: StudioLayout wrapper with shared nav/footer
+i18n: Custom LanguageProvider (EN/FR)
+analytics: Plausible
+hosting: Vercel
+domain: felixegan.me/studio
