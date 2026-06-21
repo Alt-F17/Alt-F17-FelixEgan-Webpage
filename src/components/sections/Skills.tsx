@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { FaGitAlt, FaLanguage, FaPython, FaReact } from 'react-icons/fa';
-import { SiNextdotjs, SiTailwindcss, SiTypescript } from 'react-icons/si';
+import { FaBrain, FaGitAlt, FaLanguage, FaPython, FaReact, FaShieldAlt } from 'react-icons/fa';
+import { SiTypescript } from 'react-icons/si';
 import type { IconType } from 'react-icons';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { portfolioCopy } from '@/content/portfolioCopy';
@@ -15,59 +15,59 @@ type Skill = {
 
 const skills: Skill[] = [
 	{
-		name: 'React / Next.js',
+		name: 'React & Next.js',
 		icon: FaReact,
 		description: {
-			en: 'Fast, SEO-friendly sites. The modern alternative to WordPress.',
-			fr: "Sites rapides et optimisés pour le SEO. L'alternative moderne à WordPress.",
+			en: 'Modern, performant web apps — from client sites to full-stack projects.',
+			fr: 'Applications web modernes et performantes — des sites clients aux projets full-stack.',
 		},
 	},
 	{
-		name: 'Tailwind CSS',
-		icon: SiTailwindcss,
-		description: {
-			en: 'Clean, responsive design without a page builder.',
-			fr: 'Design propre et responsive sans page builder.',
-		},
-	},
-	{
-		name: 'TypeScript',
+		name: 'TypeScript & Tailwind',
 		icon: SiTypescript,
 		description: {
-			en: 'Reliable, maintainable codebases for long-term projects.',
-			fr: 'Bases de code fiables et maintenables pour les projets à long terme.',
+			en: 'Type-safe code and responsive design without the bloat.',
+			fr: 'Code typé et design responsive sans lourdeur.',
+		},
+	},
+	{
+		name: 'Python & Automation',
+		icon: FaPython,
+		description: {
+			en: 'Scripting, tooling, and backend workflows that save time.',
+			fr: 'Scripts, outillage et workflows backend qui font gagner du temps.',
+		},
+	},
+	{
+		name: 'AI & Machine Learning',
+		icon: FaBrain,
+		description: {
+			en: 'LLM integration, MCP orchestration, and intelligent tooling.',
+			fr: "Intégration LLM, orchestration MCP et outillage intelligent.",
+		},
+	},
+	{
+		name: 'Cybersecurity',
+		icon: FaShieldAlt,
+		description: {
+			en: 'Security-first development and vulnerability-aware engineering.',
+			fr: 'Développement axé sécurité et ingénierie consciente des vulnérabilités.',
+		},
+	},
+	{
+		name: 'Open-Source & Git',
+		icon: FaGitAlt,
+		description: {
+			en: 'Building and contributing to open-source projects with clean collaboration.',
+			fr: 'Création et contribution à des projets open source avec une collaboration soignée.',
 		},
 	},
 	{
 		name: 'Bilingual Development',
 		icon: FaLanguage,
 		description: {
-			en: 'FR/EN sites with proper i18n routing. A rare edge in Montreal.',
-			fr: 'Sites FR/EN avec routage i18n propre. Un avantage rare à Montréal.',
-		},
-	},
-	{
-		name: 'Next.js Delivery',
-		icon: SiNextdotjs,
-		description: {
-			en: 'Production-ready routing, metadata, and performance patterns.',
-			fr: 'Routage, métadonnées et performance prêts pour la production.',
-		},
-	},
-	{
-		name: 'Python & Git',
-		icon: FaPython,
-		description: {
-			en: 'Automation, version control, and reliable developer workflows.',
-			fr: 'Automatisation, contrôle de version et workflows développeur fiables.',
-		},
-	},
-	{
-		name: 'GitHub Collaboration',
-		icon: FaGitAlt,
-		description: {
-			en: 'Clear reviews, branching, and project history for maintainable work.',
-			fr: 'Revues claires, branches et historique de projet pour un travail maintenable.',
+			en: 'FR/EN sites with proper i18n routing — a rare edge in Montreal.',
+			fr: 'Sites FR/EN avec routage i18n propre — un avantage rare à Montréal.',
 		},
 	},
 ];

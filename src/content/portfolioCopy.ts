@@ -61,32 +61,32 @@ export const portfolioCopy = {
     },
   },
   skills: {
-    title: { en: "Skills & Interests", fr: "Compétences et intérêts" } satisfies ByLocale,
-    subtitle: { en: "What I bring to the table", fr: "Ce que j'apporte" } satisfies ByLocale,
+    title: { en: "Skills & Expertise", fr: "Compétences et expertise" } satisfies ByLocale,
+    subtitle: { en: "What I work with", fr: "Ce avec quoi je travaille" } satisfies ByLocale,
     focusTitle: {
-      en: "Current Focus & Aspirations",
-      fr: "Focus actuel et aspirations",
+      en: "Current Focus",
+      fr: "Focus actuel",
     } satisfies ByLocale,
     focusItems: {
       en: [
-        "Building fast React and Next.js websites for local service businesses.",
-        "Designing bilingual French and English site structures for Montreal customers.",
-        "Keeping projects hand-coded, maintainable, and free from WordPress page-builder bloat.",
-        "Active in the Dawson College community, including developer mentorship and DawsHacks.",
+        "Pursuing a Computer Science degree at UBC Okanagan, with a foundation in software engineering and AI.",
+        "Building modern web applications with React and Next.js for real-world clients.",
+        "Exploring machine learning, LLM tooling, and MCP orchestration.",
+        "Developing security-aware habits and contributing to open-source projects.",
       ],
       fr: [
-        "Création de sites React et Next.js rapides pour les entreprises de services locales.",
-        "Conception de structures bilingues français et anglais pour les clients de Montréal.",
-        "Projets codés à la main, maintenables et sans lourdeur de page builder WordPress.",
-        "Actif dans la communauté du Collège Dawson, notamment en mentorat développeur et avec DawsHacks.",
+        "Baccalauréat en informatique à l'UBC Okanagan, avec une base en génie logiciel et IA.",
+        "Création d'applications web modernes avec React et Next.js pour des clients réels.",
+        "Exploration de l'apprentissage machine, des outils LLM et de l'orchestration MCP.",
+        "Développement de pratiques sécuritaires et contribution à des projets open source.",
       ],
     },
   },
   projects: {
     title: { en: "Projects", fr: "Projets" } satisfies ByLocale,
     subtitle: { en: "What I've been working on", fr: "Ce sur quoi je travaille" } satisfies ByLocale,
-    inProgress: { en: "In Progress", fr: "En cours" } satisfies ByLocale,
     github: { en: "GitHub", fr: "GitHub" } satisfies ByLocale,
+    live: { en: "Live", fr: "Voir" } satisfies ByLocale,
   },
   contact: {
     title: { en: "Contact", fr: "Contact" } satisfies ByLocale,
@@ -117,8 +117,8 @@ export const portfolioCopy = {
   },
   footer: {
     description: {
-      en: "Freelance web developer in Montreal building fast, bilingual websites for local businesses.",
-      fr: "Développeur web freelance à Montréal, je crée des sites rapides et bilingues pour les entreprises locales.",
+      en: "Developer and designer in Montreal — building web apps, exploring AI and cybersecurity, and contributing to open source.",
+      fr: "Développeur et designer à Montréal — création d'applications web, exploration de l'IA et de la cybersécurité, et contribution à l'open source.",
     } satisfies ByLocale,
     quickLinks: { en: "Quick Links", fr: "Liens rapides" } satisfies ByLocale,
     aboutMe: { en: "About Me", fr: "À propos" } satisfies ByLocale,
