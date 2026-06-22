@@ -51,7 +51,7 @@ export const portfolioCopy = {
     },
     values: {
       focus: {
-        en: "Web Development, AI, Cybersecurity",
+        en: "WebDev, AI, CyberSec",
         fr: "Développement web, IA, Cybersécurité",
       } satisfies ByLocale,
       hobbies: {
