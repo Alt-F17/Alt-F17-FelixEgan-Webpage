@@ -1,0 +1,1742 @@
+{
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\components.json": {
+    "mtime": 1784838396.328017,
+    "ast_hash": "bfe8fda7814d7c5a44aff2aef2dd86ec",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\eslint.config.js": {
+    "mtime": 1784838396.328017,
+    "ast_hash": "2e240281bad56fce6a86cb0e49590ae9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\package.json": {
+    "mtime": 1784838396.3317664,
+    "ast_hash": "a10ece15277e26cfb79096d1b798c603",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\postcss.config.js": {
+    "mtime": 1784838396.3317664,
+    "ast_hash": "5b84f4567208c7c747079c0477373231",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\tailwind.config.ts": {
+    "mtime": 1784838397.3814144,
+    "ast_hash": "4e688500f60ff38b8574b797db533ee8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\test.js": {
+    "mtime": 1784838397.3822806,
+    "ast_hash": "e05a8ae7a1c6179282fc6204dbbefc46",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\tsconfig.app.json": {
+    "mtime": 1784838397.382787,
+    "ast_hash": "6c04dfb791a50ff9687909eeb983c71b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\tsconfig.json": {
+    "mtime": 1784838397.382787,
+    "ast_hash": "e6507e4dacff04ffab3132794978b7f2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\tsconfig.node.json": {
+    "mtime": 1784838397.3834598,
+    "ast_hash": "ea3b5c2d9c1cc5d2b3fb3af706f2ca1a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\vercel.json": {
+    "mtime": 1784838397.3834598,
+    "ast_hash": "78a8951e243d8f1af30ebaeaad9d3f3f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\vite.config.ts": {
+    "mtime": 1784838397.3834598,
+    "ast_hash": "91f7ebe1a9ceb495413ce2b4d46ac1f5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\api\\discovery-call.ts": {
+    "mtime": 1784838396.209949,
+    "ast_hash": "41f39c6dbc99351d333bb63e3442a8cb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\components.json": {
+    "mtime": 1784838396.2119565,
+    "ast_hash": "bfe8fda7814d7c5a44aff2aef2dd86ec",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\eslint.config.js": {
+    "mtime": 1784838396.2119565,
+    "ast_hash": "2e240281bad56fce6a86cb0e49590ae9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\package.json": {
+    "mtime": 1784838396.2179694,
+    "ast_hash": "2464f13b29165012e1b2465408656887",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\postcss.config.js": {
+    "mtime": 1784838396.218472,
+    "ast_hash": "5b84f4567208c7c747079c0477373231",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\tailwind.config.ts": {
+    "mtime": 1784838396.3260112,
+    "ast_hash": "9cd7a6c04da3f1263b02aec22e6ce5fa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\tsconfig.app.json": {
+    "mtime": 1784838396.3260112,
+    "ast_hash": "79e98449596e490883e82f8a725d8efa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\tsconfig.json": {
+    "mtime": 1784838396.3260112,
+    "ast_hash": "9d63d9b4e08d6b8a8e612909cd1bbb36",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\tsconfig.node.json": {
+    "mtime": 1784838396.3260112,
+    "ast_hash": "ea3b5c2d9c1cc5d2b3fb3af706f2ca1a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\vite.config.ts": {
+    "mtime": 1784838396.3260112,
+    "ast_hash": "fb7e47f19f3750d75c04a6896cdcb1ca",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\scripts\\format_questions.py": {
+    "mtime": 1784838396.2492702,
+    "ast_hash": "605bc7a25822dcae2fa7b96abfc4dabb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\scripts\\format_spot_bug_to_py.py": {
+    "mtime": 1784838396.2492702,
+    "ast_hash": "2a38c8371bb57f8a62056eeb54dde2db",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\scripts\\questions.py": {
+    "mtime": 1784838396.2512736,
+    "ast_hash": "7fff28174bf5be14777ca720897db244",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\App.tsx": {
+    "mtime": 1784838396.2528114,
+    "ast_hash": "fc0d8c1c056d03110fd635829def9935",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\main.tsx": {
+    "mtime": 1784838396.323414,
+    "ast_hash": "e4391189ffe1f9e692260fb7dbdd9737",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\vite-env.d.ts": {
+    "mtime": 1784838396.3255067,
+    "ast_hash": "8f68c27c3fc38817b2726b20e2d4f1ee",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\layouts\\MainLayout.tsx": {
+    "mtime": 1784838396.2548144,
+    "ast_hash": "50f70ba0f9fd5640f297d2df926fc5e1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\AdditionalResources.tsx": {
+    "mtime": 1784838396.2548144,
+    "ast_hash": "510e495e879946ed6d6a2efd5bdff2bb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\BoxModelInteractive.tsx": {
+    "mtime": 1784838396.2548144,
+    "ast_hash": "ba8c1593251a67aeea6b7b8eacd651bf",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\ComplexityCalc.tsx": {
+    "mtime": 1784838396.2568233,
+    "ast_hash": "309cb27aa28e808083f6f1ffe1272eb3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\ConceptTests.tsx": {
+    "mtime": 1784838396.2574806,
+    "ast_hash": "4324ada9734b879e8b1dde0f913795f6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\CSSSpecificityWars.tsx": {
+    "mtime": 1784838396.2548144,
+    "ast_hash": "d7d2803399d400904376307051d5d18c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\EventListenerPlayground.tsx": {
+    "mtime": 1784838396.2574806,
+    "ast_hash": "8c3b0e93b4be5fdb17ed47b45a785be4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\Flashcards.tsx": {
+    "mtime": 1784838396.2574806,
+    "ast_hash": "fda127a35640f858d9761aecab214c8a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\GitStateVisualizer.tsx": {
+    "mtime": 1784838396.2586265,
+    "ast_hash": "eafc0115c6530d2b6f306340c9a55985",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\HTTPRequestSimulator.tsx": {
+    "mtime": 1784838396.2586265,
+    "ast_hash": "79484127ca80bad0996057d32a881eee",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\HTTPStatusQuiz.tsx": {
+    "mtime": 1784838396.2586265,
+    "ast_hash": "463031edfb63a1ea5274db19632116a7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\Jinja2Preview.tsx": {
+    "mtime": 1784838396.2586265,
+    "ast_hash": "1cc397d20f59f53b53ab7d80ee326f8e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\OOPDiagram.tsx": {
+    "mtime": 1784838396.259631,
+    "ast_hash": "1f82d27caba3fa0bed41630743e6c573",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\PandasPlayground.tsx": {
+    "mtime": 1784838396.259631,
+    "ast_hash": "1e028430d6b07424e72f0e292703a8da",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\PlaceholderTool.tsx": {
+    "mtime": 1784838396.259631,
+    "ast_hash": "d16b5d515520d768f0b20e7a127ddc0b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\PythonMindMap.tsx": {
+    "mtime": 1784838396.259631,
+    "ast_hash": "0067d6e158ce722a62edc8f84b8d4d8d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\PythonTerminal.tsx": {
+    "mtime": 1784838396.259631,
+    "ast_hash": "2a4392d9d9aabe6781490a355aea2493",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\SF1Tools.tsx": {
+    "mtime": 1784838396.259631,
+    "ast_hash": "28c1afa24ca00e4ef9dc5631bc7a08b4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\SpotBug.tsx": {
+    "mtime": 1784838396.259631,
+    "ast_hash": "36880e9cb6c23b8cc9f990feca6f4520",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\StackOrQueue.tsx": {
+    "mtime": 1784838396.2616334,
+    "ast_hash": "821e2c1b88d00bb68cd55a6379e71bf1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\StepByStepAnimator.tsx": {
+    "mtime": 1784838396.2616334,
+    "ast_hash": "91e9255287306a0d4f2d53b76b377f5d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\SuperHardProblems.tsx": {
+    "mtime": 1784838396.2630568,
+    "ast_hash": "98b0e7d957d893498791ff77dbc2ffff",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\tools\\WordJumble.tsx": {
+    "mtime": 1784838396.2630568,
+    "ast_hash": "fb513f4549f612650eb6afa94096e741",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\accordion.tsx": {
+    "mtime": 1784838396.2630568,
+    "ast_hash": "1a18877296af9e613340447038cb8cb1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\alert-dialog.tsx": {
+    "mtime": 1784838396.2630568,
+    "ast_hash": "18a643a884fd4f2832ef3abe20b35eb6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\alert.tsx": {
+    "mtime": 1784838396.2630568,
+    "ast_hash": "59e3895ea793fed08d8d9f0f83ad13df",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\aspect-ratio.tsx": {
+    "mtime": 1784838396.265088,
+    "ast_hash": "114d53f29a18d0e8b5e48f5ff3811e15",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\avatar.tsx": {
+    "mtime": 1784838396.265088,
+    "ast_hash": "8f44230e5058b7ace8269c971da7189e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\badge.tsx": {
+    "mtime": 1784838396.265088,
+    "ast_hash": "2ba8b44541085f725b216267f9feb892",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\breadcrumb.tsx": {
+    "mtime": 1784838396.265088,
+    "ast_hash": "9fca9864de9b9b15e088c2a237c8594b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\button.tsx": {
+    "mtime": 1784838396.265088,
+    "ast_hash": "55bae00127c054032e205b63a62802db",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\calendar.tsx": {
+    "mtime": 1784838396.2670937,
+    "ast_hash": "476dc9f9aa1ea81ac3dd0138011ac442",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\card.tsx": {
+    "mtime": 1784838396.2670937,
+    "ast_hash": "aed5be3990f288c539122080ef55490c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\carousel.tsx": {
+    "mtime": 1784838396.2670937,
+    "ast_hash": "14a5dcc894d9bc2b7730372507ed1b43",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\chart.tsx": {
+    "mtime": 1784838396.2670937,
+    "ast_hash": "145e8ee7e39401d9b5d59f0e9f05318f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\checkbox.tsx": {
+    "mtime": 1784838396.2670937,
+    "ast_hash": "e8850db2b4357ce03822d84c54b72633",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\collapsible.tsx": {
+    "mtime": 1784838396.2670937,
+    "ast_hash": "1048c23a2aadd5fdbbde0b04ec61e5cf",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\command.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "ddaf5f8eb7775107668d1a8175ea32f8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\context-menu.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "45f2a0aa025bab9b8f9965b24a73b970",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\dialog.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "3d8d7b8910a4fc37afd0cf021e16edde",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\drawer.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "2a1e7b21cfd5c0043e6abc45a9117d4e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\dropdown-menu.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "feacc91c0a5b8640b6f5cc8a98699c50",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\form.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "d6d30c3aae6f6d8d6299d67745504b48",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\hover-card.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "d7a103b77cc23f719887c6c90abef8a4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\input-otp.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "feb9e193d5c6666a5682df9fbba1536b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\input.tsx": {
+    "mtime": 1784838396.2681005,
+    "ast_hash": "f5c3f6115f14eb06180e98b0e302bc00",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\label.tsx": {
+    "mtime": 1784838396.2701051,
+    "ast_hash": "99b8b7244860ecba9ce05f5a644e0360",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\menubar.tsx": {
+    "mtime": 1784838396.2701051,
+    "ast_hash": "791b0aa130a5be6588b3710a5ab704dd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\navigation-menu.tsx": {
+    "mtime": 1784838396.2701051,
+    "ast_hash": "595bbede1d5900b44f8f101f40b51ae2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\pagination.tsx": {
+    "mtime": 1784838396.2701051,
+    "ast_hash": "fbe4e3289596434c7135c536a71887d1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\popover.tsx": {
+    "mtime": 1784838396.2701051,
+    "ast_hash": "686fa6dc4c8e3f0e5c0e542b2a62ec4f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\progress.tsx": {
+    "mtime": 1784838396.2701051,
+    "ast_hash": "7a84c9ee8e9cd63771d4b472704d8d80",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\radio-group.tsx": {
+    "mtime": 1784838396.2701051,
+    "ast_hash": "e59c6e8ca6130d694a2cae82a83cb8dc",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\resizable.tsx": {
+    "mtime": 1784838396.2701051,
+    "ast_hash": "a2f25b7becb25ae05252b81ca564bc5e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\scroll-area.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "6399ea030114b4a772f03f7dae127708",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\select.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "d5bc9af6e00c50edda84c80201516bd0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\separator.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "14b352d106f7c90830cea0ce57cdbde5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\sheet.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "2e1504ca5868ca649a2e79fc0891057e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\sidebar.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "1a26aa46e0801e649150dc50e3851bfe",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\skeleton.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "0166abaa35206d438bd5ac705fb5dfb7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\slider.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "e8f00aaf3fa17aeaab4f63145045be78",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\sonner.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "86a425e27fb4e58a48d9cfb6868fb715",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\switch.tsx": {
+    "mtime": 1784838396.2722929,
+    "ast_hash": "c86b3514e573211535c13444639bcc30",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\table.tsx": {
+    "mtime": 1784838396.2742977,
+    "ast_hash": "554e91a3c4302c898342d712f80c3718",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\tabs.tsx": {
+    "mtime": 1784838396.2742977,
+    "ast_hash": "3e664ca1ea5a9fbedaba0c2a4c0ca2d2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\textarea.tsx": {
+    "mtime": 1784838396.2749903,
+    "ast_hash": "31f5d6d52ea14c1411296ee63003e4d7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\toast.tsx": {
+    "mtime": 1784838396.275604,
+    "ast_hash": "dbe9a151d339d621290dd6b42406e5fe",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\toaster.tsx": {
+    "mtime": 1784838396.275604,
+    "ast_hash": "daf7b04904d77303dd96a17236e24fbb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\toggle-group.tsx": {
+    "mtime": 1784838396.275604,
+    "ast_hash": "9cdf37fe38d53d66fd4c7131599fd6f1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\toggle.tsx": {
+    "mtime": 1784838396.275604,
+    "ast_hash": "3914f58aeec727c94dfb13b6a25487c1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\tooltip.tsx": {
+    "mtime": 1784838396.275604,
+    "ast_hash": "57dbf3a262604092e7b52ffe1b715c5c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\components\\ui\\use-toast.ts": {
+    "mtime": 1784838396.275604,
+    "ast_hash": "5bff9ea3904b15a9e1908b128c88e75f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf2\\additionalResources.json": {
+    "mtime": 1784838396.275604,
+    "ast_hash": "e9ed8e24d9b7f73a5586ec50ef4e22ed",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf2\\conceptTests.json": {
+    "mtime": 1784838396.277623,
+    "ast_hash": "1cc3bbc3668ba2cac0f7e57acb4f74e0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf2\\flashcards.json": {
+    "mtime": 1784838396.27817,
+    "ast_hash": "c224914c105af132c4fdc9c9c2ae2108",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf2\\spotBugProblems.json": {
+    "mtime": 1784838396.27817,
+    "ast_hash": "fdcfab79d783766a95897c3f2cfba060",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf2\\spotBugProblemsExtended.json": {
+    "mtime": 1784838396.27817,
+    "ast_hash": "2ffae539f9039644fac48effb865daa2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf2\\superHardProblems.ts": {
+    "mtime": 1784838396.27817,
+    "ast_hash": "875a6e6c5d9280cebcfa6a2685a463a6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf2\\wordJumbleWords.json": {
+    "mtime": 1784838396.27817,
+    "ast_hash": "b45fc8335ba68eda86d23cdecc34e2e6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf3\\additionalResources.json": {
+    "mtime": 1784838396.3194015,
+    "ast_hash": "5cabda87bd66208bee01946251d7e8b0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf3\\conceptTests.json": {
+    "mtime": 1784838396.321409,
+    "ast_hash": "802d054ac3b0ddbbd4bc46cead126a6f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf3\\flashcards.json": {
+    "mtime": 1784838396.321409,
+    "ast_hash": "89b3b4ef486ed5e4ef65b64969c92e5b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf3\\spotBugProblems.json": {
+    "mtime": 1784838396.321409,
+    "ast_hash": "0232f89553d6f5d26cc567ecedba62cd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf3\\wordJumbleWords.json": {
+    "mtime": 1784838396.321409,
+    "ast_hash": "a74df5b50b810c604af9bda9732b7d3b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\hooks\\use-mobile.tsx": {
+    "mtime": 1784838396.321409,
+    "ast_hash": "654e2ca2e9fddc27eb7e3954900dc48e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\hooks\\use-toast.ts": {
+    "mtime": 1784838396.323414,
+    "ast_hash": "e69924e5c597f9350d681937b80afc51",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\lib\\utils.ts": {
+    "mtime": 1784838396.323414,
+    "ast_hash": "1d8011eb18769078bf77502b220daa5e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\pages\\Index.tsx": {
+    "mtime": 1784838396.323414,
+    "ast_hash": "cf434367d4ca1109b48646f9783c2dc9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\pages\\NotFound.tsx": {
+    "mtime": 1784838396.3246763,
+    "ast_hash": "ae75445e38e704549f03c920e728d506",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\pages\\SF2.tsx": {
+    "mtime": 1784838396.324996,
+    "ast_hash": "5e8b18d319325e5d3948d160a9f2be36",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\pages\\SF3.tsx": {
+    "mtime": 1784838396.324996,
+    "ast_hash": "214adf42d55dfeaa283da5242048ebb9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\store\\toolsStore.ts": {
+    "mtime": 1784838396.3255067,
+    "ast_hash": "af85acae2daa5b32714f0e6f550f10f2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\lead-form\\script.js": {
+    "mtime": 1784838396.659208,
+    "ast_hash": "876c36397c7f0ac7d1bb49873208cc98",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\arc-D8YWFjfl.js": {
+    "mtime": 1784838396.7986846,
+    "ast_hash": "c1342d407f6263d9a59b3a52c961c47f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\architectureDiagram-IEHRJDOE-CxTUpktW.js": {
+    "mtime": 1784838396.862183,
+    "ast_hash": "bf245ea05b90468b6fc6913d5fa53642",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\blockDiagram-JOT3LUYC-_RPiPU3p.js": {
+    "mtime": 1784838396.8750958,
+    "ast_hash": "1a4737bf02efad0c33007e40d30a3012",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\c4Diagram-VJAJSXHY-ZrFhBqv3.js": {
+    "mtime": 1784838396.8750958,
+    "ast_hash": "1180bffba68b81e1e7be791d5459efc5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\channel-CdcA67sK.js": {
+    "mtime": 1784838396.8771029,
+    "ast_hash": "261b4a92b25a0d878a5c5e58aeb2dcf8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\chunk-4BMEZGHF-B4AUVb8q.js": {
+    "mtime": 1784838396.8771029,
+    "ast_hash": "549c8cc15f99ae458f1f99b8fb9a627c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\chunk-A2AXSNBT-Dyz84-qj.js": {
+    "mtime": 1784838396.879109,
+    "ast_hash": "7f9ad795d1c6b31e01a90b011febb839",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\chunk-AEK57VVT-BCIIB7M0.js": {
+    "mtime": 1784838396.8811228,
+    "ast_hash": "03e3d141a90901068eccc2c56f3c94d0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\chunk-D6G4REZN-DK4jZ88Y.js": {
+    "mtime": 1784838396.8811228,
+    "ast_hash": "77889658c4871366beca81d6a4df2486",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\chunk-RZ5BOZE2-uZaVMfHF.js": {
+    "mtime": 1784838396.8811228,
+    "ast_hash": "0d24bdb35a299487dd95bb3d2bdfbfdd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\chunk-XZIHB7SX-B07C0c1D.js": {
+    "mtime": 1784838396.8831313,
+    "ast_hash": "d712e7253fdb3e50012147a79827b351",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\classDiagram-GIVACNV2-B2tR5kT-.js": {
+    "mtime": 1784838396.8831313,
+    "ast_hash": "b12d4a18f4edce525d6a0773c728d7bb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\classDiagram-v2-COTLJTTW-B2tR5kT-.js": {
+    "mtime": 1784838396.884639,
+    "ast_hash": "b12d4a18f4edce525d6a0773c728d7bb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\clone-DVwXWKfs.js": {
+    "mtime": 1784838396.884639,
+    "ast_hash": "ca9f6e71671a40ea8d60b777e41d3191",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\cytoscape.esm-BY7v1xhs.js": {
+    "mtime": 1784838396.8932185,
+    "ast_hash": "2d7cb231e12531c890c32eb40856161c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\dagre-OKDRZEBW-CblUxI7L.js": {
+    "mtime": 1784838396.9037828,
+    "ast_hash": "4b4bb74be59a152dbbd31cd8fe450341",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\diagram-SSKATNLV-CryjH2Hd.js": {
+    "mtime": 1784838396.9037828,
+    "ast_hash": "7fe819196a656c32c7624f20a1ba9b1d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\diagram-VNBRO52H-D56joZrJ.js": {
+    "mtime": 1784838396.9057975,
+    "ast_hash": "fdc36369f8f7dbe0b5ec34e796311dcd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\erDiagram-Q7BY3M3F-CqgjI3Lv.js": {
+    "mtime": 1784838396.9078047,
+    "ast_hash": "78a57136894a8a0f8bf68169b688d8fa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\flowDiagram-4HSFHLVR-DwI6T0H2.js": {
+    "mtime": 1784838396.9098191,
+    "ast_hash": "21cade5666337d9e50b07d70d050d72e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\ganttDiagram-APWFNJXF-QEeXPbRN.js": {
+    "mtime": 1784838396.9103665,
+    "ast_hash": "4989d1b2dc06eaded5c36f3215391304",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\gitGraphDiagram-7IBYFJ6S-DS12cqdi.js": {
+    "mtime": 1784838396.961017,
+    "ast_hash": "a7ac1510138bf01bd4b798ed17860ade",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\graph-hopvlfgJ.js": {
+    "mtime": 1784838396.961017,
+    "ast_hash": "2b6270fac92805a994a8464f7187011a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\index-BaDRSFNI.js": {
+    "mtime": 1784838396.9846742,
+    "ast_hash": "d4e16665b135ae15028941e61feda3ea",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\infoDiagram-PH2N3AL5-CzS7f4zo.js": {
+    "mtime": 1784838396.9866772,
+    "ast_hash": "d271afcefef46ca9206e3f0cdbe9ad96",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\init-Gi6I4Gst.js": {
+    "mtime": 1784838396.9866772,
+    "ast_hash": "878ab3e8682c0ec0bc86c934fd1796a2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\journeyDiagram-U35MCT3I-DSyj7RBq.js": {
+    "mtime": 1784838396.9866772,
+    "ast_hash": "27f02c24f3a02dfa69762f7ff1a060af",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\kanban-definition-NDS4AKOZ-BQtNhsnE.js": {
+    "mtime": 1784838396.9866772,
+    "ast_hash": "f81f3c641bea596d1be3ce9a53b58b64",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\katex-ChWnQ-fc.js": {
+    "mtime": 1784838396.9907765,
+    "ast_hash": "7cdd368fc0a980aff2f2be342ccecaa0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\layout-CS3S8kRZ.js": {
+    "mtime": 1784838396.9907765,
+    "ast_hash": "70cc6b825c6886fc55cbfad413b9952b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\linear-CxPJeCMZ.js": {
+    "mtime": 1784838397.0291917,
+    "ast_hash": "558d258a6417a58e314a0455e7ae1f91",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\mindmap-definition-ALO5MXBD-BFJunkj-.js": {
+    "mtime": 1784838397.0392036,
+    "ast_hash": "ddc10677e39663cefeb569da5197b106",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\ordinal-Cboi1Yqb.js": {
+    "mtime": 1784838397.0392036,
+    "ast_hash": "8d27cd63d772bc78e16f77b36dd49ec8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\pieDiagram-IB7DONF6-CflRvyuA.js": {
+    "mtime": 1784838397.0392036,
+    "ast_hash": "89d09a53f5d828b7a88b7d29d04c0d87",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\quadrantDiagram-7GDLP6J5-DD1kRmd0.js": {
+    "mtime": 1784838397.0392036,
+    "ast_hash": "9c15fd0984f44c2700f5f7b7f1eea48d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\radar-MK3ICKWK-7dPDsZFX.js": {
+    "mtime": 1784838397.0435228,
+    "ast_hash": "062c38d1fb434ecf82b6376f57bea11e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\requirementDiagram-KVF5MWMF-_1Q3lK1n.js": {
+    "mtime": 1784838397.0435228,
+    "ast_hash": "866dda2b417d7ec179ceef7699a9dccd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\sankeyDiagram-QLVOVGJD-BhYPJrBN.js": {
+    "mtime": 1784838397.044186,
+    "ast_hash": "01eee1cb7fc43843825647a83b0c60ad",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\sequenceDiagram-X6HHIX6F-Da7Fvb4t.js": {
+    "mtime": 1784838397.0450897,
+    "ast_hash": "032ac1758fdb66de96d8f2b3f0230ca4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\stateDiagram-DGXRK772-B1GAP2B4.js": {
+    "mtime": 1784838397.1780794,
+    "ast_hash": "537111c41b3f9146059ceb7a48de08a8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\stateDiagram-v2-YXO3MK2T-hTDbWgRJ.js": {
+    "mtime": 1784838397.1780794,
+    "ast_hash": "e12a78b3c03bf1e84eed2e1d41da9abb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\timeline-definition-BDJGKUSR-BmStYhCJ.js": {
+    "mtime": 1784838397.180082,
+    "ast_hash": "faa3b1adcdda5859b5cf38fa86b51f28",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\xychartDiagram-VJFVF3MP-Bdagh7n5.js": {
+    "mtime": 1784838397.180082,
+    "ast_hash": "aeb924fc3d7dc918a4bc5db9a77e53ef",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\_basePickBy-5G2UtjtQ.js": {
+    "mtime": 1784838396.7986846,
+    "ast_hash": "70d61c0f6f38dbca281b09afe78336a3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\assets\\_baseUniq-By4flB0b.js": {
+    "mtime": 1784838396.7986846,
+    "ast_hash": "b6c74a7d2ef5c4bc8ce7224c50cb35b2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\scripts\\build-sf-study-tools.mjs": {
+    "mtime": 1784838397.2363267,
+    "ast_hash": "2f8a052b5a6c15f5d8b5a55802157813",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-api-wrapper\\filterLeads.py": {
+    "mtime": 1784838397.2368598,
+    "ast_hash": "8599579a19424bf0d9ab489cb195643d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-api-wrapper\\package.json": {
+    "mtime": 1784838397.2577925,
+    "ast_hash": "ac8e69e075e84a42d438fcb201bee095",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-api-wrapper\\simonClient.js": {
+    "mtime": 1784838397.2640429,
+    "ast_hash": "048e983c50f2101f3ea46d3394e7e914",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-api-wrapper\\test.js": {
+    "mtime": 1784838397.2640429,
+    "ast_hash": "d79f9325931f63a615a3d06c80f50d3e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-lead-extension\\background.js": {
+    "mtime": 1784838397.2805178,
+    "ast_hash": "d4a2a9ecf380c666d174a686b3783221",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-lead-extension\\content.js": {
+    "mtime": 1784838397.2911532,
+    "ast_hash": "a7d7f8b450f89206bd933c852f1cef95",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-lead-extension\\manifest.json": {
+    "mtime": 1784838397.2918165,
+    "ast_hash": "0f1a6de2a0fb7514a5099f32cd358b82",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-lead-extension\\popup.js": {
+    "mtime": 1784838397.2924066,
+    "ast_hash": "08ee90015b2a23f43dd79f7f3d7e9e1f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\App.tsx": {
+    "mtime": 1784838397.2936625,
+    "ast_hash": "9b62c374d63dc9f1f204ee4fdac05174",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\global.d.ts": {
+    "mtime": 1784838397.3708622,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\main.tsx": {
+    "mtime": 1784838397.3761857,
+    "ast_hash": "cf567f8f60b7cfe4f5183c0028cf6a3b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\react-jsx-runtime.d.ts": {
+    "mtime": 1784838397.3796942,
+    "ast_hash": "9d5d0c662522b6ff49d31c4b9bd6813f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\vite-env.d.ts": {
+    "mtime": 1784838397.3809116,
+    "ast_hash": "dc661bd8d0073e412511fb9336e9815f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ScrambledText.tsx": {
+    "mtime": 1784838397.294456,
+    "ast_hash": "3d708a06bf2d230a3a3c322a520fb024",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\layout\\Footer.tsx": {
+    "mtime": 1784838397.294456,
+    "ast_hash": "c30c99acffbfaabab74e9656735710bc",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\layout\\Header-GR4V.tsx": {
+    "mtime": 1784838397.295166,
+    "ast_hash": "93eabd60ef843b39de324eac0358d7c0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\layout\\Header.tsx": {
+    "mtime": 1784838397.295166,
+    "ast_hash": "f3e96f7fbce80950fe7133a5d5568f53",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\lead\\LeadForm.tsx": {
+    "mtime": 1784838397.2956972,
+    "ast_hash": "1f25897e8fa1d023db9189354e45e299",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\sections\\About.tsx": {
+    "mtime": 1784838397.296335,
+    "ast_hash": "e54a851907fb6f10d8025d8bded9fc79",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\sections\\Contact.tsx": {
+    "mtime": 1784838397.296335,
+    "ast_hash": "90858daf49a63a5b2cfcb10460b4512f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\sections\\Hero.tsx": {
+    "mtime": 1784838397.3012533,
+    "ast_hash": "67fa65ac897d985e1653c1c437a7bcb4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\sections\\Projects.tsx": {
+    "mtime": 1784838397.3012533,
+    "ast_hash": "568e9a9839dd4b20ede424532ad86d1d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\sections\\Skills.tsx": {
+    "mtime": 1784838397.3032596,
+    "ast_hash": "2f213e99dc0fbefc526731940b0a7290",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\seo\\Seo.tsx": {
+    "mtime": 1784838397.3132799,
+    "ast_hash": "e8d03206441b07fda6a4667c6b4c0cc8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\site\\Footer.tsx": {
+    "mtime": 1784838397.3154426,
+    "ast_hash": "d2133b2e315f9f6da6133098602366fa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\site\\Header.tsx": {
+    "mtime": 1784838397.3160186,
+    "ast_hash": "a0ef3b6535f6ac77d64663d0217b76d9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\site\\LanguageToggle.tsx": {
+    "mtime": 1784838397.3160186,
+    "ast_hash": "2989e005d16602d6fb509700cb42afaa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\three\\SpaceBackground.tsx": {
+    "mtime": 1784838397.317004,
+    "ast_hash": "891e1cf5307e9ecb3d389431ee55553f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\accordion.tsx": {
+    "mtime": 1784838397.317004,
+    "ast_hash": "1a18877296af9e613340447038cb8cb1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\alert-dialog.tsx": {
+    "mtime": 1784838397.317004,
+    "ast_hash": "18a643a884fd4f2832ef3abe20b35eb6",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\alert.tsx": {
+    "mtime": 1784838397.317004,
+    "ast_hash": "59e3895ea793fed08d8d9f0f83ad13df",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\aspect-ratio.tsx": {
+    "mtime": 1784838397.3230586,
+    "ast_hash": "114d53f29a18d0e8b5e48f5ff3811e15",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\avatar.tsx": {
+    "mtime": 1784838397.3230586,
+    "ast_hash": "8f44230e5058b7ace8269c971da7189e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\badge.tsx": {
+    "mtime": 1784838397.3230586,
+    "ast_hash": "2ba8b44541085f725b216267f9feb892",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\breadcrumb.tsx": {
+    "mtime": 1784838397.3252933,
+    "ast_hash": "9fca9864de9b9b15e088c2a237c8594b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\button.tsx": {
+    "mtime": 1784838397.3252933,
+    "ast_hash": "52400650658d73926bc8a25b15196858",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\calendar.tsx": {
+    "mtime": 1784838397.3252933,
+    "ast_hash": "476dc9f9aa1ea81ac3dd0138011ac442",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\card.tsx": {
+    "mtime": 1784838397.3267212,
+    "ast_hash": "aed5be3990f288c539122080ef55490c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\carousel.tsx": {
+    "mtime": 1784838397.3267212,
+    "ast_hash": "14a5dcc894d9bc2b7730372507ed1b43",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\chart.tsx": {
+    "mtime": 1784838397.3267212,
+    "ast_hash": "145e8ee7e39401d9b5d59f0e9f05318f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\checkbox.tsx": {
+    "mtime": 1784838397.3267212,
+    "ast_hash": "e8850db2b4357ce03822d84c54b72633",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\collapsible.tsx": {
+    "mtime": 1784838397.3267212,
+    "ast_hash": "1048c23a2aadd5fdbbde0b04ec61e5cf",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\command.tsx": {
+    "mtime": 1784838397.3382566,
+    "ast_hash": "ddaf5f8eb7775107668d1a8175ea32f8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\context-menu.tsx": {
+    "mtime": 1784838397.3387673,
+    "ast_hash": "45f2a0aa025bab9b8f9965b24a73b970",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\dialog.tsx": {
+    "mtime": 1784838397.345192,
+    "ast_hash": "3d8d7b8910a4fc37afd0cf021e16edde",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\drawer.tsx": {
+    "mtime": 1784838397.3457043,
+    "ast_hash": "2a1e7b21cfd5c0043e6abc45a9117d4e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\dropdown-menu.tsx": {
+    "mtime": 1784838397.3457043,
+    "ast_hash": "feacc91c0a5b8640b6f5cc8a98699c50",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\form.tsx": {
+    "mtime": 1784838397.3462236,
+    "ast_hash": "d6d30c3aae6f6d8d6299d67745504b48",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\hover-card.tsx": {
+    "mtime": 1784838397.346736,
+    "ast_hash": "d7a103b77cc23f719887c6c90abef8a4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\input-otp.tsx": {
+    "mtime": 1784838397.346736,
+    "ast_hash": "feb9e193d5c6666a5682df9fbba1536b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\input.tsx": {
+    "mtime": 1784838397.347247,
+    "ast_hash": "f5c3f6115f14eb06180e98b0e302bc00",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\label.tsx": {
+    "mtime": 1784838397.347247,
+    "ast_hash": "99b8b7244860ecba9ce05f5a644e0360",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\menubar.tsx": {
+    "mtime": 1784838397.348184,
+    "ast_hash": "791b0aa130a5be6588b3710a5ab704dd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\navigation-menu.tsx": {
+    "mtime": 1784838397.348184,
+    "ast_hash": "595bbede1d5900b44f8f101f40b51ae2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\pagination.tsx": {
+    "mtime": 1784838397.354772,
+    "ast_hash": "fbe4e3289596434c7135c536a71887d1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\popover.tsx": {
+    "mtime": 1784838397.354772,
+    "ast_hash": "686fa6dc4c8e3f0e5c0e542b2a62ec4f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\progress.tsx": {
+    "mtime": 1784838397.356636,
+    "ast_hash": "7a84c9ee8e9cd63771d4b472704d8d80",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\radio-group.tsx": {
+    "mtime": 1784838397.3571875,
+    "ast_hash": "e59c6e8ca6130d694a2cae82a83cb8dc",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\resizable.tsx": {
+    "mtime": 1784838397.3571875,
+    "ast_hash": "a2f25b7becb25ae05252b81ca564bc5e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\scroll-area.tsx": {
+    "mtime": 1784838397.3571875,
+    "ast_hash": "6399ea030114b4a772f03f7dae127708",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\select.tsx": {
+    "mtime": 1784838397.3577242,
+    "ast_hash": "d5bc9af6e00c50edda84c80201516bd0",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\separator.tsx": {
+    "mtime": 1784838397.3588414,
+    "ast_hash": "14b352d106f7c90830cea0ce57cdbde5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\sheet.tsx": {
+    "mtime": 1784838397.3588414,
+    "ast_hash": "2e1504ca5868ca649a2e79fc0891057e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\sidebar.tsx": {
+    "mtime": 1784838397.3588414,
+    "ast_hash": "1a26aa46e0801e649150dc50e3851bfe",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\skeleton.tsx": {
+    "mtime": 1784838397.3588414,
+    "ast_hash": "0166abaa35206d438bd5ac705fb5dfb7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\slider.tsx": {
+    "mtime": 1784838397.3588414,
+    "ast_hash": "e8f00aaf3fa17aeaab4f63145045be78",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\sonner.tsx": {
+    "mtime": 1784838397.3600972,
+    "ast_hash": "86a425e27fb4e58a48d9cfb6868fb715",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\switch.tsx": {
+    "mtime": 1784838397.3600972,
+    "ast_hash": "c86b3514e573211535c13444639bcc30",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\table.tsx": {
+    "mtime": 1784838397.3649545,
+    "ast_hash": "554e91a3c4302c898342d712f80c3718",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\tabs.tsx": {
+    "mtime": 1784838397.3662748,
+    "ast_hash": "3e664ca1ea5a9fbedaba0c2a4c0ca2d2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\textarea.tsx": {
+    "mtime": 1784838397.3662748,
+    "ast_hash": "31f5d6d52ea14c1411296ee63003e4d7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\toast.tsx": {
+    "mtime": 1784838397.3668249,
+    "ast_hash": "dbe9a151d339d621290dd6b42406e5fe",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\toaster.tsx": {
+    "mtime": 1784838397.3668249,
+    "ast_hash": "daf7b04904d77303dd96a17236e24fbb",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\toggle-group.tsx": {
+    "mtime": 1784838397.3668249,
+    "ast_hash": "9cdf37fe38d53d66fd4c7131599fd6f1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\toggle.tsx": {
+    "mtime": 1784838397.3688304,
+    "ast_hash": "3914f58aeec727c94dfb13b6a25487c1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\tooltip.tsx": {
+    "mtime": 1784838397.3688304,
+    "ast_hash": "57dbf3a262604092e7b52ffe1b715c5c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\components\\ui\\use-toast.ts": {
+    "mtime": 1784838397.3688304,
+    "ast_hash": "5bff9ea3904b15a9e1908b128c88e75f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\content\\blog.ts": {
+    "mtime": 1784838397.3688304,
+    "ast_hash": "5d951d35c8ef48dbf2ff43d347019f67",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\content\\caseStudies.ts": {
+    "mtime": 1784838397.3688304,
+    "ast_hash": "74c6f29ed2c5e1b1ebd910d8f5b1e64e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\content\\portfolioCopy.ts": {
+    "mtime": 1784838397.3688304,
+    "ast_hash": "5ff981d46a74dab75cea786106192c1e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\content\\projectDetails.ts": {
+    "mtime": 1784838397.3708622,
+    "ast_hash": "d921c2a66139414757dbf6d1b6ed7b93",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\hooks\\use-mobile.tsx": {
+    "mtime": 1784838397.3708622,
+    "ast_hash": "654e2ca2e9fddc27eb7e3954900dc48e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\hooks\\use-toast.ts": {
+    "mtime": 1784838397.3708622,
+    "ast_hash": "e69924e5c597f9350d681937b80afc51",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\i18n\\LanguageProvider.tsx": {
+    "mtime": 1784838397.3722363,
+    "ast_hash": "d75d5162eb7aa7e63f014b9c2d17f5e2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\i18n\\types.ts": {
+    "mtime": 1784838397.3735273,
+    "ast_hash": "11ff4852dd55264d2f71b42b8d40a29d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\i18n\\messages\\en.ts": {
+    "mtime": 1784838397.3722363,
+    "ast_hash": "e4f91c61812e491557943e0e950c9463",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\i18n\\messages\\fr.ts": {
+    "mtime": 1784838397.3735273,
+    "ast_hash": "a0c63001dd5775d2631454711d11f2c4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\lib\\leadApi.ts": {
+    "mtime": 1784838397.3750236,
+    "ast_hash": "2d02ce31ddfe6b26cccaf451103b042d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\lib\\plausible.ts": {
+    "mtime": 1784838397.3750236,
+    "ast_hash": "b9ad4442a2bd86ea49872452f5de2bec",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\lib\\supabase.ts": {
+    "mtime": 1784838397.3761857,
+    "ast_hash": "ec5fc733fd7758ec927ec8b97ef8c847",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\lib\\utils.ts": {
+    "mtime": 1784838397.3761857,
+    "ast_hash": "d0126138204ff486b23e3d8484f4e1b4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\lib\\utm.ts": {
+    "mtime": 1784838397.3761857,
+    "ast_hash": "18eff391efdae542a4ab20f2a7cda735",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\BlogPage.tsx": {
+    "mtime": 1784838397.3761857,
+    "ast_hash": "1c578b31cf15f7b78b2c866711a91e64",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\BlogPostPage.tsx": {
+    "mtime": 1784838397.3761857,
+    "ast_hash": "9b057dd4aa1f332de1494915b1465ea8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\CaseStudyPage.tsx": {
+    "mtime": 1784838397.3761857,
+    "ast_hash": "c30bcce7bc2a0343cc30f3e38335ef97",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\HomePage.tsx": {
+    "mtime": 1784838397.3781915,
+    "ast_hash": "12970cf31f289d2d94b95cea3a0b4a41",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\Index.tsx": {
+    "mtime": 1784838397.3781915,
+    "ast_hash": "4f83cc73efddb5f5ac65e8987a50bd93",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\LegacyProjectRedirect.tsx": {
+    "mtime": 1784838397.37914,
+    "ast_hash": "80387314a54d7751183bdb9cb4f81e83",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\NotFound.tsx": {
+    "mtime": 1784838397.37914,
+    "ast_hash": "aaa80f697ad706e6372fe51a495bd8c9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\ProjectPage.tsx": {
+    "mtime": 1784838397.3796942,
+    "ast_hash": "28a3d9d697a74d462dcc513dd64bd12d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\QRPage.tsx": {
+    "mtime": 1784838397.3796942,
+    "ast_hash": "c755d2c69162d3c322376bf2b48b167e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\pages\\TestimonialsPage.tsx": {
+    "mtime": 1784838397.3796942,
+    "ast_hash": "1dfca925679808c5dc59240a00d0d832",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\src\\types\\lead.ts": {
+    "mtime": 1784838397.3809116,
+    "ast_hash": "29d459eec8e790c8157373066e34b2ae",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\supabase\\functions\\lead-intake\\index.ts": {
+    "mtime": 1784838397.3814144,
+    "ast_hash": "54314ffc6aa2c6b794c1341b945fdb7b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\supabase\\migrations\\20260225_create_leads.sql": {
+    "mtime": 1784838397.3814144,
+    "ast_hash": "5087b6eeb96dc53b71284f72ca476f5b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\APPLE_INSTALLATION.md": {
+    "mtime": 1784838396.2079475,
+    "ast_hash": "eea4f9428bd21cb3a8beeb921b469fd4",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\cal_logo.txt": {
+    "mtime": 1784838396.328017,
+    "ast_hash": "768cb30a1e42363de642b98f623e8ef1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\index.html": {
+    "mtime": 1784838396.328017,
+    "ast_hash": "ec06866ae9011edade15f5f1d06aeef8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\README.md": {
+    "mtime": 1784838396.2079475,
+    "ast_hash": "3a48d5405f67f0acb949f4a46f2be8a2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\requirements.txt": {
+    "mtime": 1784838397.2363267,
+    "ast_hash": "81051bcc2cf1bedf378224b0a93e2877",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\WINDOWS_INSTALLATION.md": {
+    "mtime": 1784838396.209949,
+    "ast_hash": "11cbe149c5a1ae9022d9aa23659afee9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\index.html": {
+    "mtime": 1784838396.2139611,
+    "ast_hash": "a2a4cf3be6a0269dbd1b4025fc1e5170",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\README.md": {
+    "mtime": 1784838396.209949,
+    "ast_hash": "107749d90fcb148d8224cf31c921ba39",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\requirements.txt": {
+    "mtime": 1784838396.2492702,
+    "ast_hash": "81051bcc2cf1bedf378224b0a93e2877",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\public\\robots.txt": {
+    "mtime": 1784838396.2449198,
+    "ast_hash": "a9b03494151fe90e5decd2405400e106",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\public\\sf1\\sf1-study-tools.html": {
+    "mtime": 1784838396.246922,
+    "ast_hash": "d9c2adaefc0dd2546cdc3736fbfe9fdc",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\scripts\\SF2-SHP.md": {
+    "mtime": 1784838396.2492702,
+    "ast_hash": "90af9cde20a3ba86393da9fa52519e94",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\scripts\\SF2-SHP_sols.md": {
+    "mtime": 1784838396.2492702,
+    "ast_hash": "13917f5df58fb4371e891dfbf0af01ef",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf3\\PDGE - SLIDES OCR.txt": {
+    "mtime": 1784838396.3194015,
+    "ast_hash": "e82034c3e1190721cb173ce213ad1e8f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\8ball.html": {
+    "mtime": 1784838396.3627925,
+    "ast_hash": "54274548cf826fc779085e067166a649",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\8ball3d.html": {
+    "mtime": 1784838396.40464,
+    "ast_hash": "b03cc4148a5227d6d37455c91d74db80",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\ArrowPuzzle.html": {
+    "mtime": 1784838396.4066436,
+    "ast_hash": "0eeec6ac040f054354e552069622e20f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\aura.html": {
+    "mtime": 1784838396.4351838,
+    "ast_hash": "a8a0c6dab6f1ec7173547c9c9dafe503",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\fitnessv2.html": {
+    "mtime": 1784838396.6501498,
+    "ast_hash": "da41c7b3bae68c1d35560862719cf91f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\fitnessv3.html": {
+    "mtime": 1784838396.6537685,
+    "ast_hash": "e2c8192546acc43d5436f139c1554cd7",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\IP.html": {
+    "mtime": 1784838396.4106424,
+    "ast_hash": "de9a40e095e86aa19c5256a8dc8d9bdc",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\lead-form.html": {
+    "mtime": 1784838396.659208,
+    "ast_hash": "09b9281afdb2dd3f037e87d9ae87a23f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\netronizer.html": {
+    "mtime": 1784838396.6660838,
+    "ast_hash": "73eac85182f24d920adf205feb770e46",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\PDGE.html": {
+    "mtime": 1784838396.4157784,
+    "ast_hash": "cb340271a96d9ae9697705005d43fd41",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\pluto-presentation.html": {
+    "mtime": 1784838396.7423046,
+    "ast_hash": "90a54a76426cf3a89ddcd9d6806b68e8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\pluto-report.html": {
+    "mtime": 1784838396.7458317,
+    "ast_hash": "26408508c2c61117eb233ae310a83070",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\previousWebpagePleaseNoOneFindThis.html": {
+    "mtime": 1784838396.7478411,
+    "ast_hash": "d06052f84a8f10bcc7f5bba811247f3a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\productdesign.html": {
+    "mtime": 1784838396.7498496,
+    "ast_hash": "b26b25e6dd6a7986641141eed000c90c",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\ProjectProposal - AURA.md": {
+    "mtime": 1784838396.416188,
+    "ast_hash": "52a5b2e3e0020c7b7b5672ba12474920",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\repo-links.html": {
+    "mtime": 1784838396.751858,
+    "ast_hash": "0ca537526df4fa421b5c065ddebb70a8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\robots.txt": {
+    "mtime": 1784838396.751858,
+    "ast_hash": "299fb59f32a3b7eca2bf2ee5e210c849",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\talk.html": {
+    "mtime": 1784838397.2358007,
+    "ast_hash": "5d8ab689d374ac45f247661a7b2c58ba",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\lead-form\\index.html": {
+    "mtime": 1784838396.659208,
+    "ast_hash": "4b52465e1c03b362cd7f4d722cbb9aff",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\index.html": {
+    "mtime": 1784838397.2134767,
+    "ast_hash": "795762a54c02e8cbeb51b3b21ea509ce",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\robots.txt": {
+    "mtime": 1784838397.2154799,
+    "ast_hash": "a9b03494151fe90e5decd2405400e106",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\sf1\\sf1-study-tools.html": {
+    "mtime": 1784838397.2154799,
+    "ast_hash": "d9c2adaefc0dd2546cdc3736fbfe9fdc",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-lead-extension\\popup.html": {
+    "mtime": 1784838397.2924066,
+    "ast_hash": "cb7ea2de4580fbc6db4371efe8825a17",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\public\\final.pdf": {
+    "mtime": 1784838396.2431772,
+    "ast_hash": "541c54d39e2b3649e691af2f2d60bfa1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\public\\SF2-SHP_sols.pdf": {
+    "mtime": 1784838396.2384028,
+    "ast_hash": "76c5de8b3f49f481e67daf203dd549e2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\src\\data\\sf3\\PDGE - ALL SLIDES.pdf": {
+    "mtime": 1784838396.3173962,
+    "ast_hash": "6f34381c6552b68d1d406a4ca3761d97",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\3DOF-bot.pdf": {
+    "mtime": 1784838396.3627925,
+    "ast_hash": "9412afa56fa3098cc8f112f69c0172df",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\APPLE_INSTALLATION.pdf": {
+    "mtime": 1784838396.40464,
+    "ast_hash": "de7d6a5a21960ae2bbb4293b884a201b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\FELIX EGAN - CV - 26.07.pdf": {
+    "mtime": 1784838396.4106424,
+    "ast_hash": "106143136193bf572ee4f83b8c2da94e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\Linear-Reg.pdf": {
+    "mtime": 1784838396.414885,
+    "ast_hash": "8ac567da5296e1a6381e9e84a29f2d16",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\ProjectProposal - AURA.pdf": {
+    "mtime": 1784838396.416692,
+    "ast_hash": "ceec7a3ede1c0790acfbeb07772cf09b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\Real-Time Control in Robotic Arm - ML Agents Unity.pdf": {
+    "mtime": 1784838396.4290006,
+    "ast_hash": "2f20da0d3d20c2bff5fcb90721b48353",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\WINDOWS_INSTALLATION.pdf": {
+    "mtime": 1784838396.4351838,
+    "ast_hash": "25355039d25c1118ede2cac6224c3f74",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\final.pdf": {
+    "mtime": 1784838397.2134767,
+    "ast_hash": "541c54d39e2b3649e691af2f2d60bfa1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\SF2-SHP_sols.pdf": {
+    "mtime": 1784838396.7966805,
+    "ast_hash": "76c5de8b3f49f481e67daf203dd549e2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\cal.svg": {
+    "mtime": 1784838396.328017,
+    "ast_hash": "768cb30a1e42363de642b98f623e8ef1",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\maps.svg": {
+    "mtime": 1784838396.328017,
+    "ast_hash": "8333b23c996d42654c8927e4af5eaeac",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\maps_pin.svg": {
+    "mtime": 1784838396.328017,
+    "ast_hash": "3d2816d7ff03a04c006ce5f151646fff",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\public\\placeholder.svg": {
+    "mtime": 1784838396.2449198,
+    "ast_hash": "35707bd9960ba5281c72af927b79291f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\apps\\sf-study-tools\\public\\sf2.png": {
+    "mtime": 1784838396.2492702,
+    "ast_hash": "772de3ca6d195110b5a257b7f7b647c3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\1-bot.png": {
+    "mtime": 1784838396.3317664,
+    "ast_hash": "37eef424b7dc9edc3d96239862b7ab04",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\100-bots.png": {
+    "mtime": 1784838396.3317664,
+    "ast_hash": "d4be7bd4cc5e2cb6125833be5116b640",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\2dorbit.png": {
+    "mtime": 1784838396.333769,
+    "ast_hash": "eed4f818d4c5dc913f530bd3c56a5961",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\dash.png": {
+    "mtime": 1784838396.4760323,
+    "ast_hash": "28f6ac8870aa0727c816c8e62d583daa",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\diagram-UI.jpg": {
+    "mtime": 1784838396.6501498,
+    "ast_hash": "7793019ec7c636550754781c2986a61a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\favicon.png": {
+    "mtime": 1784838396.6501498,
+    "ast_hash": "66f99d30c2b951c095aab0da511009f2",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\flowchart.svg": {
+    "mtime": 1784838396.6537685,
+    "ast_hash": "32c9cb78d42c2d95b75bb862333fd878",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\Instructions.png": {
+    "mtime": 1784838396.4118464,
+    "ast_hash": "d90a6930baed11478249b6750675612b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\issue.png": {
+    "mtime": 1784838396.6546476,
+    "ast_hash": "1ca4752efe7f283e8c11af0aedfc188e",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\logo-anim.svg": {
+    "mtime": 1784838396.6608212,
+    "ast_hash": "a2acd2258d0cf159757d1428561e46a3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\mile.png": {
+    "mtime": 1784838396.6615777,
+    "ast_hash": "8f42eacafe430cd27adc6b15c405fab9",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\og-image.png": {
+    "mtime": 1784838396.666586,
+    "ast_hash": "8385d372c84b8ae8607e722dfcaf2a9b",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\pfp.JPEG": {
+    "mtime": 1784838396.6818593,
+    "ast_hash": "ced94b15882fd8c09615319eed4dfcf5",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\pfp2.jpg": {
+    "mtime": 1784838396.6865695,
+    "ast_hash": "740eea3fbe95c47987af0b79f83adafd",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\placeholder.svg": {
+    "mtime": 1784838396.6865695,
+    "ast_hash": "35707bd9960ba5281c72af927b79291f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\pluto-loading-v1.svg": {
+    "mtime": 1784838396.6865695,
+    "ast_hash": "47c6ce983194d66bbd542185955d595a",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\pluto-loading-v2.svg": {
+    "mtime": 1784838396.7297153,
+    "ast_hash": "cf32bf20a7788e61e3e3eb13ececc2d8",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\placeholder.svg": {
+    "mtime": 1784838397.2154799,
+    "ast_hash": "35707bd9960ba5281c72af927b79291f",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\sf-study-tools\\sf2.png": {
+    "mtime": 1784838397.2174861,
+    "ast_hash": "772de3ca6d195110b5a257b7f7b647c3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-lead-extension\\128.png": {
+    "mtime": 1784838397.2783163,
+    "ast_hash": "bd46ff54f9ecaacc54de3ddb092193c3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-lead-extension\\16.png": {
+    "mtime": 1784838397.2805178,
+    "ast_hash": "2b1d463069afd17d5408ccbfc64918f3",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\simon-lead-extension\\48.png": {
+    "mtime": 1784838397.2805178,
+    "ast_hash": "62daa82097f8778ab145633fa8572e6d",
+    "semantic_hash": ""
+  },
+  "C:\\Users\\felix\\Nextcloud\\Projects\\Alt-F17-FelixEgan-Webpage\\public\\dawson-shinanigans.mp4": {
+    "mtime": 1784838396.6461418,
+    "ast_hash": "0e73ed24c7d8b28bfdd6d7b0d01e80be",
+    "semantic_hash": ""
+  }
+}

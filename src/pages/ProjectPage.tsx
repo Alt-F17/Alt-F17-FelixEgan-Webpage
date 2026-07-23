@@ -1,149 +1,197 @@
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import SpaceBackground from "@/components/three/SpaceBackground";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/i18n/LanguageProvider";
-import { projectDetails } from "@/content/projectDetails";
+import { useParams, Link } from "react-router-dom";
+import { Seo } from "@/components/seo/Seo";
+import { useSiteContent, resolveProjectSlug } from "@/content/siteContent";
+import { Starfield } from "@/components/portfolio/Starfield";
+import { SiteNav } from "@/components/portfolio/SiteNav";
+import { SiteFooter } from "@/components/portfolio/SiteFooter";
+import { useReveal } from "@/hooks/useReveal";
+import "@/components/portfolio/portfolio.css";
+
+const mono = "'IBM Plex Mono',monospace";
+const press = "'Press Start 2P'";
+const revealStyle: React.CSSProperties = {
+  opacity: 0,
+  transform: "translateY(26px)",
+  transition: "opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)",
+};
+
+const panel: React.CSSProperties = {
+  border: "1px solid rgba(124,179,255,.2)",
+  background: "linear-gradient(180deg,rgba(11,16,30,.75),rgba(8,11,22,.6))",
+  padding: "26px 26px 28px",
+};
+
+const Label = ({ n, t }: { n: string; t: string }) => (
+  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+    <span style={{ fontFamily: press, fontSize: 10, color: "var(--ac,#3b82f6)" }}>{n}</span>
+    <span style={{ fontFamily: mono, fontSize: 12, letterSpacing: 3, color: "#5f6b85" }}>{t}</span>
+    <span style={{ flex: 1, height: 1, background: "linear-gradient(90deg,rgba(59,130,246,.4),transparent)" }} />
+  </div>
+);
 
 const ProjectPage = () => {
-  const { projectId } = useParams<{ projectId: string }>();
-  const { locale } = useLanguage();
-  const detail = projectId ? projectDetails[projectId] : undefined;
+  const { projectId = "" } = useParams<{ projectId: string }>();
+  const { content } = useSiteContent();
 
   useEffect(() => {
     sessionStorage.setItem("visitedSubpage", "true");
-  }, []);
+    window.scrollTo(0, 0);
+  }, [projectId]);
 
-  const sectionLabel = {
-    overview: { en: "Overview", fr: "Aperçu" },
-    techStack: { en: "Tech Stack", fr: "Stack technique" },
-    challenges: { en: "Challenges & Solutions", fr: "Défis et solutions" },
-    links: { en: "Links & Resources", fr: "Liens et ressources" },
-  };
+  const detail = content ? content.projectDetails[resolveProjectSlug(content, projectId)] : undefined;
+  useReveal(!!content);
+
+  if (!content) {
+    return (
+      <div className="fe-root" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh" }}>
+        <span style={{ fontFamily: mono, color: "#3b82f6", fontSize: 15 }}>
+          loading<span style={{ animation: "fe-blink 1.05s step-end infinite" }}>_</span>
+        </span>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative">
-      <SpaceBackground />
-      <div className="relative z-10">
-        <Header />
-        <main className="pt-24 pb-16">
-          <div className="container-padding max-w-4xl mx-auto">
-            {detail ? (
-              <div className="space-y-8">
-                <div>
-                  <Button
-                    variant="ghost"
-                    className="text-space-text/60 hover:text-space-text mb-4"
-                    onClick={() => window.history.back()}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                      <polyline points="15 18 9 12 15 6" />
-                    </svg>
-                    {locale === "en" ? "Back" : "Retour"}
-                  </Button>
-                  <h1 className="text-3xl md:text-4xl font-bold">
-                    <span className="text-space-accent">/</span> {detail.title}
-                  </h1>
+    <div className="fe-root" id="top">
+      <Seo
+        title={detail ? `${detail.title} — Felix Egan` : "Project not found — Felix Egan"}
+        description={detail ? detail.overview.slice(0, 160) : "Project detail."}
+        canonicalPath={`/projects/${projectId}`}
+      />
+      <Starfield theme={content.theme} />
+      <SiteNav nav={content.nav} home={false} />
+
+      <main style={{ position: "relative", zIndex: 2, width: "100%", padding: "128px clamp(18px,5vw,56px) 40px" }}>
+        <div style={{ maxWidth: 940, margin: "0 auto" }}>
+          {detail ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              {/* header */}
+              <div data-reveal style={revealStyle}>
+                <Link
+                  to="/#work"
+                  className="fe-projlink"
+                  style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: mono, fontSize: 13, color: "#aeb6c9", marginBottom: 22 }}
+                >
+                  ← back to work
+                </Link>
+                <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, marginBottom: 10, fontFamily: mono, fontSize: 12 }}>
+                  <span style={{ letterSpacing: 1.5, color: "var(--ac,#3b82f6)", textTransform: "uppercase" }}>{detail.category}</span>
+                  <span style={{ color: "#5f6b85" }}>{detail.year}</span>
+                  <span style={{ color: "var(--green,#35ff8f)", opacity: 0.85 }}>{detail.status}</span>
                 </div>
-
-                <Card className="bg-space-darker border-space-accent/20 lg:border-4">
-                  <CardContent className="p-6 md:p-8">
-                    <h2 className="text-xl font-medium mb-4 text-space-accent">
-                      {sectionLabel.overview[locale]}
-                    </h2>
-                    <p className="text-space-text/80 leading-relaxed">
-                      {detail.overview[locale]}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-space-darker border-space-accent/20 lg:border-4">
-                  <CardContent className="p-6 md:p-8">
-                    <h2 className="text-xl font-medium mb-4 text-space-accent">
-                      {sectionLabel.techStack[locale]}
-                    </h2>
-                    <div className="space-y-4">
-                      {detail.techStack.map((tech) => (
-                        <div key={tech.name} className="flex items-start gap-3">
-                          <span className="text-sm font-mono py-1 px-2 rounded bg-space-accent/10 border border-space-accent/30 text-space-accent whitespace-nowrap mt-0.5">
-                            {tech.name}
-                          </span>
-                          <p className="text-space-text/70 text-sm">
-                            {tech.reason[locale]}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-space-darker border-space-accent/20 lg:border-4">
-                  <CardContent className="p-6 md:p-8">
-                    <h2 className="text-xl font-medium mb-4 text-space-accent">
-                      {sectionLabel.challenges[locale]}
-                    </h2>
-                    <ul className="space-y-3 list-disc list-inside text-space-text/80">
-                      {detail.challenges[locale].map((challenge, i) => (
-                        <li key={i}>{challenge}</li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-space-darker border-space-accent/20 lg:border-4">
-                  <CardContent className="p-6 md:p-8">
-                    <h2 className="text-xl font-medium mb-4 text-space-accent">
-                      {sectionLabel.links[locale]}
-                    </h2>
-                    <div className="flex flex-wrap gap-4">
-                      {detail.links.map((link) => (
-                        <Button
-                          key={link.url}
-                          className="bg-[#3b82f6] hover:bg-[#3b82f6]/80 text-white"
-                          asChild
-                        >
-                          <a href={link.url} target="_blank" rel="noopener noreferrer">
-                            {link.type === "github" ? (
-                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                              </svg>
-                            ) : (
-                              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                                <polyline points="15 3 21 3 21 9" />
-                                <line x1="10" y1="14" x2="21" y2="3" />
-                              </svg>
-                            )}
-                            {link.label}
-                          </a>
-                        </Button>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            ) : (
-              <div className="bg-space-darker bg-opacity-70 backdrop-blur-md rounded-lg p-8 border-4 border-[#3b82f6]/20">
-                <h1 className="text-3xl md:text-4xl font-bold mb-4">
-                  {locale === "en" ? "Project not found" : "Projet introuvable"}
+                <h1 style={{ fontSize: "clamp(38px,7vw,74px)", lineHeight: 0.95, fontWeight: 800, letterSpacing: "-.03em", margin: 0, color: "#fff" }}>
+                  {detail.title}
                 </h1>
-                <p className="mb-8 text-space-text/70">
-                  {locale === "en"
-                    ? "This project page doesn't exist yet."
-                    : "Cette page de projet n'existe pas encore."}
-                </p>
-                <Button className="bg-[#3b82f6] hover:bg-[#3b82f6]/80 text-white" onClick={() => window.history.back()}>
-                  {locale === "en" ? "Back to Portfolio" : "Retour au portfolio"}
-                </Button>
               </div>
-            )}
-          </div>
-        </main>
-        <Footer />
-      </div>
+
+              {/* overview */}
+              <div data-reveal data-delay={80} style={{ ...revealStyle, ...panel }}>
+                <Label n="01" t="// OVERVIEW" />
+                <p style={{ margin: 0, fontSize: "clamp(15px,1.5vw,17.5px)", lineHeight: 1.75, color: "#c4ccdd" }}>{detail.overview}</p>
+              </div>
+
+              {/* tech stack */}
+              <div data-reveal data-delay={120} style={{ ...revealStyle, ...panel }}>
+                <Label n="02" t="// TECH STACK" />
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {detail.techStack.map((tech) => (
+                    <div key={tech.name} style={{ display: "flex", flexWrap: "wrap", alignItems: "flex-start", gap: 12 }}>
+                      <span
+                        style={{
+                          fontFamily: mono,
+                          fontSize: "12.5px",
+                          color: "var(--acb,#7cb3ff)",
+                          padding: "5px 10px",
+                          border: "1px solid rgba(124,179,255,.2)",
+                          background: "rgba(59,130,246,.06)",
+                          whiteSpace: "nowrap",
+                          marginTop: 2,
+                        }}
+                      >
+                        {tech.name}
+                      </span>
+                      <p style={{ margin: 0, flex: 1, minWidth: 220, fontSize: 14.5, lineHeight: 1.6, color: "#9aa3b8" }}>{tech.reason}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* challenges */}
+              <div data-reveal data-delay={160} style={{ ...revealStyle, ...panel }}>
+                <Label n="03" t="// CHALLENGES & SOLUTIONS" />
+                <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                  {detail.challenges.map((c, i) => (
+                    <div key={i} style={{ display: "flex", gap: 11, alignItems: "flex-start" }}>
+                      <span style={{ color: "var(--green,#35ff8f)", fontFamily: mono, fontSize: 13, marginTop: 3 }}>▹</span>
+                      <span style={{ fontSize: 15, lineHeight: 1.65, color: "#b3bccf" }}>{c}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* links */}
+              <div data-reveal data-delay={200} style={{ ...revealStyle, ...panel }}>
+                <Label n="04" t="// LINKS & RESOURCES" />
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                  {detail.links.map((l) => (
+                    <a
+                      key={l.url}
+                      href={l.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={l.type === "github" ? "fe-ghostbtn" : "fe-btn-primary"}
+                      style={
+                        l.type === "github"
+                          ? {
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 8,
+                              padding: "12px 22px",
+                              border: "1px solid rgba(124,179,255,.35)",
+                              color: "#c4ccdd",
+                              fontFamily: mono,
+                              fontSize: 14,
+                            }
+                          : {
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 8,
+                              padding: "12px 22px",
+                              background: "var(--ac,#3b82f6)",
+                              color: "#05060a",
+                              fontWeight: 700,
+                              fontSize: 14,
+                              boxShadow: "0 0 20px rgba(59,130,246,.4)",
+                            }
+                      }
+                    >
+                      {l.type === "github" ? "⌥" : "↗"} {l.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div data-reveal style={{ ...revealStyle, ...panel, textAlign: "center", padding: "60px 26px" }}>
+              <div style={{ fontFamily: press, fontSize: 11, color: "var(--ac,#3b82f6)", marginBottom: 18 }}>404</div>
+              <h1 style={{ fontSize: "clamp(30px,5vw,52px)", fontWeight: 800, margin: "0 0 14px", color: "#fff" }}>Project not found</h1>
+              <p style={{ margin: "0 auto 30px", maxWidth: "32rem", color: "#9aa3b8", lineHeight: 1.7 }}>
+                This project page doesn't exist yet.
+              </p>
+              <Link
+                to="/#work"
+                className="fe-btn-primary"
+                style={{ display: "inline-flex", padding: "13px 26px", background: "var(--ac,#3b82f6)", color: "#05060a", fontWeight: 700, fontSize: 15 }}
+              >
+                ← Back to Portfolio
+              </Link>
+            </div>
+          )}
+        </div>
+      </main>
+
+      <SiteFooter content={content} />
     </div>
   );
 };

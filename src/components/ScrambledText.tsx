@@ -101,7 +101,7 @@ const ScrambledText = ({
           }, 300);
         }
       }, speed);
-    }, 200);
+    }, 30);
 
     return () => {
       clearTimeout(timerId);

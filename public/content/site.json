@@ -1,0 +1,447 @@
+{
+  "$schema": "./site.schema.md",
+  "_readme": "SINGLE SOURCE OF TRUTH for felixegan.me. All page copy, project data, socials, and the hidden terminal easter-egg live here. Edit this file to change site content — no code changes needed. The React app fetches this at runtime from /content/site.json. AI agents: read THIS file to understand the site instead of parsing the DOM.",
+  "meta": {
+    "title": "Felix Egan | Developer & Designer — Montréal",
+    "description": "Felix Egan — designer & developer building fast, bilingual websites for local Montréal businesses, hand-coded in React & Next.js. Off the clock: AI, cybersecurity, and open-source.",
+    "author": "Felix Egan",
+    "siteUrl": "https://www.felixegan.me"
+  },
+  "theme": {
+    "accent": "#3b82f6",
+    "accentBright": "#7cb3ff",
+    "terminalGreen": "#35ff8f",
+    "starDensity": 1
+  },
+  "nav": {
+    "logo": "F17",
+    "wordmark": { "pre": "alt", "sep": "-", "post": "f17" },
+    "links": [
+      { "label": "about", "href": "#about" },
+      { "label": "work", "href": "#work" },
+      { "label": "skills", "href": "#skills" },
+      { "label": "studio ↗", "href": "https://felixegan.me/studio" }
+    ],
+    "cta": { "label": "contact", "href": "#contact" }
+  },
+  "scrollHint": "SCROLL",
+  "hero": {
+    "greeting": "Hi, my name is",
+    "name": "Felix Egan",
+    "role": "Freelance Web Developer — Montréal",
+    "tagline": "Designer & developer building fast, bilingual websites for local Montréal businesses — hand-coded in React & Next.js. Off the clock: AI, cybersecurity, and open-source.",
+    "actions": [
+      { "label": "View Work", "href": "#work", "variant": "primary", "trailing": "→" },
+      { "label": "Contact", "href": "#contact", "variant": "outline" },
+      { "label": "Studio", "href": "https://felixegan.me/studio", "variant": "ghost", "trailing": "↗" }
+    ]
+  },
+  "about": {
+    "index": "01",
+    "label": "// ABOUT",
+    "heading": "About Me",
+    "paragraphs": [
+      "I'm Felix — a developer and designer driven by a passion for crafting seamless, aesthetically refined digital experiences. I care deeply about the details: clean interfaces, fluid interactions, and code that's built to last.",
+      "Currently pursuing a Computer Science degree at UBC's Okanagan campus, I bring a strong foundation in software engineering, AI, and cybersecurity to every project I take on.",
+      "I started programming in 2019 and haven't looked back — from performant React and Next.js apps to machine learning and MCP orchestration, I'm always pushing what I can create.",
+      "I believe great technology should feel invisible — intuitive, fast, and purposeful. That philosophy drives everything I build, whether it's a client website, an open-source tool, or a personal experiment."
+    ],
+    "profile": {
+      "title": "// PROFILE.SYS",
+      "fields": [
+        { "label": "based", "value": "Montréal, QC" },
+        { "label": "education", "value": "UBC Okanagan — Computer Science" },
+        { "label": "coding since", "value": "2019" },
+        { "label": "focus", "value": "Web Dev · AI · CyberSec" },
+        { "label": "off-hours", "value": "Rock Climbing · Music · Design" }
+      ]
+    }
+  },
+  "skills": {
+    "index": "02",
+    "label": "// SKILLS",
+    "heading": "Skills & Expertise",
+    "subhead": "What I work with",
+    "groups": [
+      { "name": "Languages", "icon": "</>", "items": ["TypeScript", "JavaScript", "Python", "Rust", "C++", "SQL"] },
+      { "name": "Frameworks", "icon": "{ }", "items": ["React", "Next.js", "Node.js", "Tailwind", "Three.js", "Vite"] },
+      { "name": "Design", "icon": "▦", "items": ["Figma", "UI/UX", "Motion", "Brand", "Illustrator", "Prototyping"] },
+      { "name": "AI / ML", "icon": "◈", "items": ["PyTorch", "LLMs", "MCP", "RAG", "Prompt Eng.", "Agents"] },
+      { "name": "Infra", "icon": "▤", "items": ["Git", "Docker", "Vercel", "Linux", "CI/CD", "Postgres"] },
+      { "name": "Security", "icon": "⚿", "items": ["Burp Suite", "Nmap", "Wireshark", "Ghidra", "pwntools", "OSINT"] }
+    ],
+    "focus": {
+      "title": "CURRENT FOCUS",
+      "items": [
+        "Shipping bilingual (FR/EN) sites for Montréal small businesses",
+        "Building MCP-powered agent tooling and automations",
+        "Competing in CTFs — web exploitation & reverse engineering",
+        "Exploring generative & real-time 3D on the web"
+      ]
+    }
+  },
+  "work": {
+    "index": "03",
+    "label": "// WORK",
+    "heading": "Selected Projects",
+    "subhead": "What I've been building",
+    "cta": { "label": "$ git clone --all   →   See more on GitHub", "href": "https://github.com/Alt-F17" },
+    "projects": [
+      {
+        "slug": "nputella",
+        "title": "NPUtella",
+        "category": "AI · Native",
+        "year": "2025",
+        "glyph": "NPU",
+        "status": "● live",
+        "overview": "On-device speech recognition that offloads Whisper inference to Qualcomm's NPU in FP16 burst mode. Native, instant, zero cloud.",
+        "tech": ["Rust", "ONNX + QNN", "Whisper", "WiX"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/NPUtella", "icon": "⌥" },
+          { "label": "nputella.app", "url": "https://nputella.app", "icon": "↗" }
+        ]
+      },
+      {
+        "slug": "cloudsource",
+        "title": "CloudSource",
+        "category": "Web · AI",
+        "year": "2025",
+        "glyph": "CS",
+        "status": "● live",
+        "overview": "An AI trip planner rendered on a 3D globe — generates validated itineraries with live flight routes and airport markers.",
+        "tech": ["Next.js 15", "Cesium", "Google AI", "Framer"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/CloudSource", "icon": "⌥" },
+          { "label": "Live", "url": "https://cloud-source-eta.vercel.app/", "icon": "↗" }
+        ]
+      },
+      {
+        "slug": "aura",
+        "title": "AURA",
+        "category": "ML · Robotics",
+        "year": "2024",
+        "glyph": "RL",
+        "status": "● live",
+        "overview": "A reinforcement-learning pipeline that trains and analyzes robot behaviors inside simulated Unity environments.",
+        "tech": ["C# / Unity", "ML-Agents", "Python", "RL"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis", "icon": "⌥" },
+          { "label": "Site", "url": "https://aura-project-monorepo.vercel.app/", "icon": "↗" }
+        ]
+      },
+      {
+        "slug": "pluto",
+        "title": "PLUTO",
+        "category": "AI · Assistant",
+        "year": "2024",
+        "glyph": "AI",
+        "status": "● live",
+        "overview": "A privacy-first personal assistant that parses tasks and recognizes intent — all processing stays on-device, no cloud APIs.",
+        "tech": ["Python", "NLP", "Local Inference"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant", "icon": "⌥" },
+          { "label": "Report", "url": "https://felixegan.me/pluto-report.html", "icon": "↗" }
+        ]
+      },
+      {
+        "slug": "sf-study-tools",
+        "title": "SF Study Tools",
+        "category": "Web · EdTech",
+        "year": "2024",
+        "glyph": "SF",
+        "status": "● live",
+        "overview": "A fast, content-heavy study platform with quiz logic, progress tracking, and server-side rendering for repeat users.",
+        "tech": ["React", "Next.js", "Node + Express"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/sf-study-tools", "icon": "⌥" },
+          { "label": "Live", "url": "https://sf-study-tools.com", "icon": "↗" }
+        ]
+      },
+      {
+        "slug": "portfolio",
+        "title": "Portfolio",
+        "category": "Web · Design",
+        "year": "2025",
+        "glyph": "F17",
+        "status": "● you're here",
+        "overview": "This site — a bilingual FR/EN portfolio with a real-time 3D starfield, hand-built for speed and detail.",
+        "tech": ["React + Vite", "Three.js", "Tailwind", "i18n"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage", "icon": "⌥" }
+        ]
+      }
+    ]
+  },
+  "contact": {
+    "index": "04",
+    "label": "// CONTACT",
+    "heading": "Let's build something",
+    "body": "Got a project, a business that needs a site, or just want to talk shop? My inbox is always open — I'll get back to you fast.",
+    "email": "felix.egan.dev@gmail.com",
+    "cta": { "label": "say hello", "prefix": "$" },
+    "socials": [
+      { "handle": "@Alt-F17", "url": "https://github.com/Alt-F17", "icon": "⌥" },
+      { "handle": "felixegan-", "url": "https://linkedin.com/in/felixegan-", "icon": "in" },
+      { "handle": "@felixegan_", "url": "https://instagram.com/felixegan_", "icon": "◎" },
+      { "handle": "@AltF17 · HTB", "url": "https://app.hackthebox.com/profile/AltF17", "icon": "⬢" },
+      { "handle": "felix.egan.dev@gmail.com", "url": "mailto:felix.egan.dev@gmail.com", "icon": "✉" }
+    ]
+  },
+  "footer": {
+    "copyright": "© 2025 Felix Egan",
+    "tagline": "designed & hand-coded in Montréal",
+    "metaLines": ["built with react · three.js · too much coffee", "montréal, qc · est. 2019"]
+  },
+  "terminal": {
+    "prompt": "root@alt-f17:~#",
+    "banner": [
+      " █████╗ ██╗  ████████╗   ███████╗ ██╗███████╗",
+      "██╔══██╗██║  ╚══██╔══╝   ██╔════╝███║╚════██║",
+      "███████║██║     ██║      █████╗  ╚██║    ██╔╝",
+      "██╔══██║██║     ██║      ██╔══╝   ██║   ██╔╝ ",
+      "██║  ██║███████╗██║      ██║      ██║   ██║  ",
+      "╚═╝  ╚═╝╚══════╝╚═╝      ╚═╝      ╚═╝   ╚═╝  "
+    ],
+    "bootTargetLabel": "felixegan.me",
+    "boot": [
+      { "c": "#35ff8f", "t": "root@alt-f17:~# ./breach --target felixegan.me --exfil profile" },
+      { "c": "#5f6b85", "t": "" },
+      { "c": "#35ff8f", "t": "[  OK  ] reverse tunnel established → 10.10.14.7:4444" },
+      { "c": "#35ff8f", "t": "[  OK  ] escalating privileges …  uid=0(root) gid=0(root)" },
+      { "c": "#35ff8f", "t": "[  OK  ] decrypting ~/.secret/profile.gpg  [████████████] 100%" },
+      { "c": "#ffd23f", "t": "[ WARN ] intrusion successful — you are inside the machine." },
+      { "c": "#5f6b85", "t": "" },
+      { "c": "#35ff8f", "w": 700, "pre": true, "banner": true },
+      { "c": "#7cffb0", "t": "   felix egan · alt-f17 — offensive security, ctf & reverse engineering" },
+      { "c": "#2f7d4f", "t": "   ───────────────────────────────────────────────────────────────" },
+      { "c": "#c9ffe0", "t": "   type 'help' for commands  ·  'exit' (or ESC) to return to reality" },
+      { "c": "#5f6b85", "t": "" }
+    ],
+    "colors": {
+      "dim": "#2f7d4f",
+      "label": "#7cffb0",
+      "val": "#c9ffe0",
+      "ok": "#35ff8f",
+      "warn": "#ffd23f",
+      "err": "#ff5f57"
+    },
+    "completions": ["help", "whoami", "ls", "cat about.txt", "cat contact.txt", "ctf", "certs", "tools", "skills", "banner", "clear", "exit"],
+    "autoRun": "whoami",
+    "commands": {
+      "help": [
+        { "c": "label", "t": "available commands" },
+        { "c": "dim", "t": "  whoami      who you're dealing with" },
+        { "c": "dim", "t": "  ls          list files in ~/breach" },
+        { "c": "dim", "t": "  cat <file>  read a file  (about.txt · contact.txt)" },
+        { "c": "dim", "t": "  ctf         capture-the-flag record" },
+        { "c": "dim", "t": "  certs       certifications & training" },
+        { "c": "dim", "t": "  tools       the loadout" },
+        { "c": "dim", "t": "  skills      offensive skill matrix" },
+        { "c": "dim", "t": "  banner      redraw the header" },
+        { "c": "dim", "t": "  clear       wipe the screen" },
+        { "c": "dim", "t": "  exit        restore the website" }
+      ],
+      "whoami": [
+        { "c": "val", "t": "felix egan  ·  alt-f17" },
+        { "c": "dim", "t": "comp-sci @ UBC Okanagan  ·  montréal, qc" },
+        { "c": "dim", "t": "by day  → designer + full-stack dev  (react · next.js · rust)" },
+        { "c": "dim", "t": "by night → web exploitation · reverse engineering · ctf player" },
+        { "c": "label", "t": "htb → @AltF17   github → Alt-F17" }
+      ],
+      "ls": [
+        { "c": "val", "t": "drwxr-xr-x   about.txt    certs.txt    tools.txt" },
+        { "c": "val", "t": "drwxr-xr-x   ctf/         skills.txt   contact.txt" },
+        { "c": "warn", "t": "-r--------   flags/       .secret/     writeups/" }
+      ],
+      "ctf": [
+        { "c": "label", "t": "~/breach/ctf $ cat record.md" },
+        { "c": "dim", "t": "──────────────────────────────────────────────  [ sample — edit me ]" },
+        { "c": "ok", "t": "  ▸ HTB Cyber Apocalypse ......... top 5% global   · web + rev" },
+        { "c": "ok", "t": "  ▸ picoCTF ...................... 1,400+ pts       · web / forensics" },
+        { "c": "ok", "t": "  ▸ DawgCTF / university CTFs .... 1st place        · team alt-f17" },
+        { "c": "ok", "t": "  ▸ HackTheBox machines .......... 40+ pwned        · @AltF17" },
+        { "c": "ok", "t": "  ▸ OverTheWire .................. bandit + narnia cleared" },
+        { "c": "dim", "t": "  favourite category: web exploitation → chaining auth bypass + ssrf" }
+      ],
+      "certs": [
+        { "c": "label", "t": "~/breach $ cat certs.txt" },
+        { "c": "dim", "t": "──────────────────────────────────────────────  [ sample — edit me ]" },
+        { "c": "ok", "t": "  [x] HTB Academy — Bug Bounty Hunter path" },
+        { "c": "ok", "t": "  [x] TryHackMe — Jr Penetration Tester" },
+        { "c": "ok", "t": "  [x] Google Cybersecurity Professional Certificate" },
+        { "c": "warn", "t": "  [~] eJPT (eLearnSecurity) .......... in progress" },
+        { "c": "dim", "t": "  [ ] OSCP (PEN-200) ................. 2025 target" }
+      ],
+      "tools": [
+        { "c": "label", "t": "~/breach $ cat tools.txt" },
+        { "c": "dim", "t": "loadout ──────────────────────────────────────────" },
+        { "c": "val", "t": "  recon   nmap · amass · ffuf · gobuster · httpx" },
+        { "c": "val", "t": "  web     burp suite · caido · sqlmap · wfuzz" },
+        { "c": "val", "t": "  rev     ghidra · gdb + pwndbg · radare2 · dnSpy" },
+        { "c": "val", "t": "  pwn     pwntools · one_gadget · ROPgadget" },
+        { "c": "val", "t": "  net     wireshark · tcpdump · mitmproxy" },
+        { "c": "val", "t": "  misc    python · bash · CyberChef · linux" }
+      ],
+      "skills": [
+        { "c": "label", "t": "~/breach $ cat skills.txt" },
+        { "c": "ok", "t": "  web exploitation    ████████░░   xss · ssrf · idor · authz bypass" },
+        { "c": "ok", "t": "  reverse engineering ██████░░░░   x86-64 · unpacking · patching" },
+        { "c": "ok", "t": "  binary exploitation █████░░░░░   stack · ret2libc · format string" },
+        { "c": "ok", "t": "  forensics / osint   ███████░░░   pcap · stego · recon" },
+        { "c": "ok", "t": "  scripting / automat █████████░   python · bash · tooling" }
+      ],
+      "cat about.txt": [
+        { "c": "val", "t": "I break things to understand them, then build them better." },
+        { "c": "dim", "t": "Started in web design & dev, then fell down the security rabbit hole" },
+        { "c": "dim", "t": "through CTFs. I like the overlap — the same eye for detail that makes" },
+        { "c": "dim", "t": "a clean interface makes a clean exploit chain." },
+        { "c": "dim", "t": "Focus: web exploitation, reverse engineering, a little pwn." }
+      ],
+      "cat contact.txt": [
+        { "c": "val", "t": "github   github.com/Alt-F17" },
+        { "c": "val", "t": "htb      app.hackthebox.com/profile/AltF17" },
+        { "c": "val", "t": "email    felix.egan.dev@gmail.com" },
+        { "c": "label", "t": "> want the CTF writeups? just ask." }
+      ]
+    }
+  },
+  "projectDetails": {
+    "nputella": {
+      "title": "NPUtella",
+      "category": "AI · Native",
+      "year": "2025",
+      "status": "● live",
+      "overview": "Local NPU-powered speech-to-text for Snapdragon Windows PCs. Hold Ctrl+Win, speak, release — your words are transcribed offline and pasted instantly. Supports English, French, and bilingual dictation with no cloud dependency, zero latency, and total privacy. Built as a native Rust application using ONNX Runtime with Qualcomm's QNN Execution Provider to run Whisper directly on the NPU.",
+      "techStack": [
+        { "name": "Rust", "reason": "Native Windows app with direct hardware access and zero startup latency" },
+        { "name": "ONNX Runtime + QNN", "reason": "Routes Whisper inference to Qualcomm's NPU in FP16 burst mode" },
+        { "name": "Whisper Base", "reason": "Multilingual speech recognition model, exported via Qualcomm AI Hub" },
+        { "name": "WiX Toolset", "reason": "Standalone MSI installer — no dependencies on end-user machines" }
+      ],
+      "challenges": [
+        "Getting Whisper to run on Qualcomm's NPU required ONNX model export through Qualcomm AI Hub with device-specific tensor layouts and context binaries.",
+        "Rewrote the entire app from Python to native Rust to eliminate startup latency and enable direct cpal audio capture and SendInput paste.",
+        "Built a borderless always-on-top overlay that stays visible across all apps while remaining unobtrusive — with recording, transcribing, and error states.",
+        "Implemented local post-processing for bilingual punctuation, code formatting, dictionary expansion, and snippet triggers — all without a network call."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/NPUtella", "type": "github" },
+        { "label": "nputella.app", "url": "https://nputella.app", "type": "live" }
+      ]
+    },
+    "cloudsource": {
+      "title": "CloudSource",
+      "category": "Web · AI",
+      "year": "2025",
+      "status": "● live",
+      "overview": "A globe-first AI travel planner built during a hackathon with my girlfriend. The entire experience orbits around a 3D Cesium globe — panels for flights, culture, hotels, budget, notes, and an AI assistant called Nimbus slide into view as you explore destinations. AI-generated trip plans give you a structured starting point, and shared client-side state keeps everything in sync as you plan.",
+      "techStack": [
+        { "name": "Next.js 15 + React 19", "reason": "Latest full-stack React framework with server actions and streaming" },
+        { "name": "Cesium", "reason": "3D globe rendering with flight route visualization and airport markers" },
+        { "name": "Google AI", "reason": "Structured trip plan generation with validated JSON output" },
+        { "name": "Framer Motion", "reason": "Smooth panel transitions and orbital UI animations" }
+      ],
+      "challenges": [
+        "Integrating a full 3D Cesium globe into a multi-panel React app under hackathon time pressure.",
+        "Keeping trip state synchronized across globe navigation, flight search, budget tracking, and AI chat — all in shared client-side state.",
+        "Building the AI trip generator to return structured, Zod-validated JSON that the planning flow could consume without manual parsing."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/CloudSource", "type": "github" },
+        { "label": "Live", "url": "https://cloud-source-eta.vercel.app/", "type": "live" }
+      ]
+    },
+    "aura": {
+      "title": "AURA — Unity Robot Analysis",
+      "category": "ML · Robotics",
+      "year": "2024",
+      "status": "● live",
+      "overview": "Final robotics project exploring autonomous robot training through reinforcement learning in Unity. Robots learn to navigate and perform tasks in simulated environments using ML-Agents, with reward-driven behavior shaping their decisions over thousands of training iterations. A full Python analysis pipeline handles model mutation, performance parsing, and success-rate visualization.",
+      "techStack": [
+        { "name": "C# / Unity", "reason": "Simulated 3D environments for training and testing robot behaviors" },
+        { "name": "ML-Agents", "reason": "Unity's reinforcement learning toolkit for training autonomous agents" },
+        { "name": "Python", "reason": "Model mutation, training data parsing, and performance visualization" },
+        { "name": "Reinforcement Learning", "reason": "Reward-shaped behavior — agents improve through trial and error, not hardcoded rules" }
+      ],
+      "challenges": [
+        "Designing reward functions that produce meaningful robot behaviors without over-fitting to exploitable shortcuts.",
+        "Iterating on model mutations across multiple generations to evolve better-performing agents — visible in the project's mutation pipeline.",
+        "Parsing and visualizing training data to identify which models actually learned versus which got lucky in specific scenarios.",
+        "Bridging Unity's C# simulation environment with Python analysis scripts for a seamless train-evaluate-mutate loop."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis", "type": "github" },
+        { "label": "Website", "url": "https://aura-project-monorepo.vercel.app/", "type": "live" },
+        { "label": "ONNX Breakdown", "url": "https://felixegan.me/netronizer.html", "type": "live" }
+      ]
+    },
+    "pluto": {
+      "title": "PLUTO AI Assistant",
+      "category": "AI · Assistant",
+      "year": "2024",
+      "status": "● live",
+      "overview": "Personal & Logical Utility Task Organizer — a fully local, open-source AI assistant built with privacy at its core. PLUTO handles personal tasks, reminders, and information retrieval without sending a single byte to external servers. Designed as an extensible framework for anyone who wants an AI assistant they actually own.",
+      "techStack": [
+        { "name": "Python", "reason": "Rapid prototyping and access to the NLP/AI ecosystem" },
+        { "name": "NLP Libraries", "reason": "Natural language understanding for task parsing and intent recognition" },
+        { "name": "Local Inference", "reason": "All processing stays on-device — no cloud APIs, no data leaks" }
+      ],
+      "challenges": [
+        "Building a genuinely useful assistant that runs entirely locally without relying on cloud APIs like GPT or Claude.",
+        "Balancing capability with privacy — local models are smaller and less capable, so the architecture has to compensate with smart task routing.",
+        "Designing an extensible plugin system so new capabilities can be added without rewriting core logic."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant", "type": "github" },
+        { "label": "Report", "url": "https://felixegan.me/pluto-report.html", "type": "live" }
+      ]
+    },
+    "sf-study-tools": {
+      "title": "SF Study Tools",
+      "category": "Web · EdTech",
+      "year": "2024",
+      "status": "● live",
+      "overview": "A study platform for science, computer science, and mathematics students. Features interactive quizzes with instant feedback, flashcard decks, a searchable code snippet library, debugging challenges, data structure exercises, and algorithm complexity analysis — all designed to make studying active instead of passive.",
+      "techStack": [
+        { "name": "React + TypeScript", "reason": "Component-based UI with type safety for complex quiz logic" },
+        { "name": "Next.js", "reason": "Server-side rendering for fast initial loads and SEO on study content" },
+        { "name": "Node.js + Express", "reason": "Backend for quiz state, progress tracking, and content delivery" }
+      ],
+      "challenges": [
+        "Designing interactive exercises that give meaningful instant feedback — not just right/wrong, but explanations of why.",
+        "Organizing diverse content types (flashcards, code snippets, quizzes, debugging challenges) into a cohesive learning flow.",
+        "Building session persistence so students don't lose progress when they close the browser."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/sf-study-tools", "type": "github" },
+        { "label": "Live", "url": "https://sf-study-tools.com", "type": "live" }
+      ]
+    },
+    "portfolio": {
+      "title": "Portfolio Website",
+      "category": "Web · Design",
+      "year": "2025",
+      "status": "● you're here",
+      "overview": "This website — a space-themed developer portfolio built with React, Vite, and Three.js. Features a real-time 3D starfield background, tilt-on-hover project cards, a hidden hacker terminal easter egg, and smooth scroll-triggered animations throughout. All content is driven from a single JSON source of truth.",
+      "techStack": [
+        { "name": "React + Vite", "reason": "Fast builds, instant HMR, and a lean production bundle" },
+        { "name": "Three.js / Canvas", "reason": "Real-time starfield that responds to scroll and mouse movement" },
+        { "name": "Tailwind CSS", "reason": "Utility-first styling with consistent spacing and responsive breakpoints" },
+        { "name": "JSON content layer", "reason": "All copy and data fetched from one file — easy edits, cheap for AI agents to read" }
+      ],
+      "challenges": [
+        "Performance-tuning the starfield and corruption animations to stay smooth on mobile without draining battery.",
+        "Driving every piece of copy from a single fetched JSON document so content changes never require a code edit.",
+        "Keeping the space theme visually cohesive across all sections without sacrificing readability or accessibility."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage", "type": "github" }
+      ]
+    }
+  },
+  "projectAliases": {
+    "pluto-ai": "pluto",
+    "aura-robot": "aura",
+    "portfolio-website": "portfolio"
+  }
+}
