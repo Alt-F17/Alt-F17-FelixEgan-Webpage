@@ -3,7 +3,7 @@
   "_readme": "SINGLE SOURCE OF TRUTH for felixegan.me. All page copy, project data, socials, and the hidden terminal easter-egg live here. Edit this file to change site content — no code changes needed. The React app fetches this at runtime from /content/site.json. AI agents: read THIS file to understand the site instead of parsing the DOM.",
   "meta": {
     "title": "Felix Egan | Developer & Designer — Montréal",
-    "description": "Felix Egan — designer & developer building fast, bilingual websites for local Montréal businesses, hand-coded in React & Next.js. Off the clock: AI, cybersecurity, and open-source.",
+    "description": "Felix Egan — designer & developer building fast, bilingual websites for local Montréal businesses, made with React & Next.js. Off the clock: AI, cybersecurity, and open-source.",
     "author": "Felix Egan",
     "siteUrl": "https://www.felixegan.me"
   },
@@ -11,16 +11,16 @@
     "accent": "#3b82f6",
     "accentBright": "#7cb3ff",
     "terminalGreen": "#35ff8f",
-    "starDensity": 1
+    "starDensity": 2
   },
   "nav": {
     "logo": "F17",
-    "wordmark": { "pre": "alt", "sep": "-", "post": "f17" },
+    "wordmark": { "pre": "Alt", "sep": "-", "post": "F17" },
     "links": [
       { "label": "about", "href": "#about" },
-      { "label": "work", "href": "#work" },
       { "label": "skills", "href": "#skills" },
-      { "label": "studio ↗", "href": "https://felixegan.me/studio" }
+      { "label": "work", "href": "#work" },
+      { "label": "studio", "href": "https://felixegan.me/studio" }
     ],
     "cta": { "label": "contact", "href": "#contact" }
   },
@@ -29,11 +29,11 @@
     "greeting": "Hi, my name is",
     "name": "Felix Egan",
     "role": "Freelance Web Developer — Montréal",
-    "tagline": "Designer & developer building fast, bilingual websites for local Montréal businesses — hand-coded in React & Next.js. Off the clock: AI, cybersecurity, and open-source.",
+    "tagline": "Designer & developer building fast, bilingual websites for local Montréal businesses built with React & Next.js. Off the clock: AI, cybersecurity, and open-source projects.",
     "actions": [
-      { "label": "View Work", "href": "#work", "variant": "primary", "trailing": "→" },
+      { "label": "See my Work", "href": "#work", "variant": "primary", "trailing": "→" },
       { "label": "Contact", "href": "#contact", "variant": "outline" },
-      { "label": "Studio", "href": "https://felixegan.me/studio", "variant": "ghost", "trailing": "↗" }
+      { "label": "Studio ↗", "href": "https://felixegan.me/studio", "variant": "outline" } 
     ]
   },
   "about": {
