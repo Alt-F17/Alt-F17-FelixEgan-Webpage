@@ -195,7 +195,7 @@
   "footer": {
     "copyright": "© 2026 Felix Egan",
     "tagline": "designed & made with <3 in Montréal",
-    "metaLines": ["built with react // three.js // too much coffee", "montréal, qc · est. 2019"]
+    "metaLines": ["built with react // three.js // too much coffee", "montréal, qc // est. 2019"]
   },
   "terminal": {
     "prompt": "root@alt-f17:~#",
