@@ -211,13 +211,13 @@
     "boot": [
       { "c": "#35ff8f", "t": "root@alt-f17:~# ./breach --target felixegan.me --exfil profile" },
       { "c": "#5f6b85", "t": "" },
-      { "c": "#35ff8f", "t": "[  OK  ] reverse tunnel established → 10.10.14.7:4444" },
+      { "c": "#35ff8f", "t": "[  OK  ] reverse tunnel established → 174.105.14.7:4444" },
       { "c": "#35ff8f", "t": "[  OK  ] escalating privileges …  uid=0(root) gid=0(root)" },
       { "c": "#35ff8f", "t": "[  OK  ] decrypting ~/.secret/profile.gpg  [████████████] 100%" },
       { "c": "#ffd23f", "t": "[ WARN ] intrusion successful — you are inside the machine." },
       { "c": "#5f6b85", "t": "" },
       { "c": "#35ff8f", "w": 700, "pre": true, "banner": true },
-      { "c": "#7cffb0", "t": "   felix egan · alt-f17 — offensive security, ctf & reverse engineering" },
+      { "c": "#7cffb0", "t": "   felix egan // alt-f17 | offensive security, ctf & reverse engineering" },
       { "c": "#2f7d4f", "t": "   ───────────────────────────────────────────────────────────────" },
       { "c": "#c9ffe0", "t": "   type 'help' for commands  ·  'exit' (or ESC) to return to reality" },
       { "c": "#5f6b85", "t": "" }
@@ -247,11 +247,11 @@
         { "c": "dim", "t": "  exit        restore the website" }
       ],
       "whoami": [
-        { "c": "val", "t": "felix egan  ·  alt-f17" },
-        { "c": "dim", "t": "comp-sci @ UBC Okanagan  ·  montréal, qc" },
-        { "c": "dim", "t": "by day  → designer + full-stack dev  (react · next.js · rust)" },
-        { "c": "dim", "t": "by night → web exploitation · reverse engineering · ctf player" },
-        { "c": "label", "t": "htb → @AltF17   github → Alt-F17" }
+        { "c": "val", "t": "felix egan  //  alt-f17" },
+        { "c": "dim", "t": "comp-sci @ UBC Okanagan" },
+        { "c": "dim", "t": "by day  → designer + full-stack dev  (react / next.js / rust)" },
+        { "c": "dim", "t": "by night → web exploitation / reverse engineering / ctf player" },
+        { "c": "label", "t": "htb → @AltKeyF17   github → Alt-F17" }
       ],
       "ls": [
         { "c": "val", "t": "drwxr-xr-x   about.txt    certs.txt    tools.txt" },
