@@ -53,6 +53,7 @@ export type SiteContent = {
     heading: string;
     paragraphs: string[];
     profile: { title: string; fields: ProfileField[] };
+    photo?: { src: string; alt: string; caption?: string };
   };
   skills: {
     index: string;

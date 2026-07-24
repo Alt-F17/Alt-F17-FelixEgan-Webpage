@@ -78,6 +78,13 @@
   .fe-about-grid { grid-template-columns: 1fr !important; }
 }
 
+/* About photo — blends into the card language; brightens on hover */
+.fe-pfp:hover { border-color: rgba(59,130,246,.5); }
+.fe-pfp-img { filter: saturate(1.02) contrast(1.02); transition: transform .5s cubic-bezier(.2,.7,.2,1), filter .4s ease; }
+.fe-pfp:hover .fe-pfp-img { transform: scale(1.03); }
+.fe-pfp-tint { transition: opacity .4s ease; }
+.fe-pfp:hover .fe-pfp-tint { opacity: .3; }
+
 /* Intro loader wordmark */
 .fe-intro-text {
   font-family: "IBM Plex Mono", monospace;

@@ -41,20 +41,24 @@
     "label": "// ABOUT",
     "heading": "About Me",
     "paragraphs": [
-      "I'm Felix — a developer and designer driven by a passion for crafting seamless, aesthetically refined digital experiences. I care deeply about the details: clean interfaces, fluid interactions, and code that's built to last.",
+      "I'm Felix, a developer and designer driven by a passion for crafting seamless, aesthetically refined digital experiences. I care deeply about the details: clean interfaces, fluid interactions, and code that's built to last.",
       "Currently pursuing a Computer Science degree at UBC's Okanagan campus, I bring a strong foundation in software engineering, AI, and cybersecurity to every project I take on.",
-      "I started programming in 2019 and haven't looked back — from performant React and Next.js apps to machine learning and MCP orchestration, I'm always pushing what I can create.",
-      "I believe great technology should feel invisible — intuitive, fast, and purposeful. That philosophy drives everything I build, whether it's a client website, an open-source tool, or a personal experiment."
+      "I've been programming for over a decade, from my humble beginnings on Scratch and haven't looked back: from performant React and Next.js apps to machine learning and MCP orchestration, I'm always pushing what I can create and give back to the community.",
+      "I believe great technology should feel seemless: intuitive, fast, and purposeful. That philosophy drives everything I build, whether it's a client website, an open-source tool, or a personal experiment."
     ],
     "profile": {
-      "title": "// PROFILE.SYS",
       "fields": [
         { "label": "based", "value": "Montréal, QC" },
-        { "label": "education", "value": "UBC Okanagan — Computer Science" },
+        { "label": "education", "value": "UBC Okanagan // Computer Science" },
         { "label": "coding since", "value": "2019" },
-        { "label": "focus", "value": "Web Dev · AI · CyberSec" },
-        { "label": "off-hours", "value": "Rock Climbing · Music · Design" }
+        { "label": "focus", "value": "Web Dev // AI // CyberSec" },
+        { "label": "off-hours", "value": "Rock Climbing // Music // Design" }
       ]
+    },
+    "photo": {
+      "src": "/pfp.jpg",
+      "alt": "Felix Egan",
+      "caption": "// FELIX.JPG"
     }
   },
   "skills": {
@@ -66,16 +70,16 @@
       { "name": "Languages", "icon": "</>", "items": ["TypeScript", "JavaScript", "Python", "Rust", "C++", "SQL"] },
       { "name": "Frameworks", "icon": "{ }", "items": ["React", "Next.js", "Node.js", "Tailwind", "Three.js", "Vite"] },
       { "name": "Design", "icon": "▦", "items": ["Figma", "UI/UX", "Motion", "Brand", "Illustrator", "Prototyping"] },
-      { "name": "AI / ML", "icon": "◈", "items": ["PyTorch", "LLMs", "MCP", "RAG", "Prompt Eng.", "Agents"] },
-      { "name": "Infra", "icon": "▤", "items": ["Git", "Docker", "Vercel", "Linux", "CI/CD", "Postgres"] },
+      { "name": "AI / ML", "icon": "☍", "items": ["PyTorch", "LLMs", "MCP", "RAG", "ml-agents", "Agents"] },
+      { "name": "Infra", "icon": "▤", "items": ["Git", "Docker", "Vercel", "Linux", "CI/CD", "Postgres", "SQLite"] },
       { "name": "Security", "icon": "⚿", "items": ["Burp Suite", "Nmap", "Wireshark", "Ghidra", "pwntools", "OSINT"] }
     ],
     "focus": {
       "title": "CURRENT FOCUS",
       "items": [
-        "Shipping bilingual (FR/EN) sites for Montréal small businesses",
+        "Shipping bilingual (FR/EN) sites for Montréal businesses",
         "Building MCP-powered agent tooling and automations",
-        "Competing in CTFs — web exploitation & reverse engineering",
+        "Competing in CTFs: web exploitation & reverse engineering",
         "Exploring generative & real-time 3D on the web"
       ]
     }
@@ -91,11 +95,11 @@
         "slug": "nputella",
         "title": "NPUtella",
         "category": "AI · Native",
-        "year": "2025",
+        "year": "2026",
         "glyph": "NPU",
         "status": "● live",
         "overview": "On-device speech recognition that offloads Whisper inference to Qualcomm's NPU in FP16 burst mode. Native, instant, zero cloud.",
-        "tech": ["Rust", "ONNX + QNN", "Whisper", "WiX"],
+        "tech": ["Rust", "ONNX + QNN", "Whisper", "WinX"],
         "links": [
           { "label": "GitHub", "url": "https://github.com/Alt-F17/NPUtella", "icon": "⌥" },
           { "label": "nputella.app", "url": "https://nputella.app", "icon": "↗" }
@@ -105,10 +109,10 @@
         "slug": "cloudsource",
         "title": "CloudSource",
         "category": "Web · AI",
-        "year": "2025",
+        "year": "2026",
         "glyph": "CS",
         "status": "● live",
-        "overview": "An AI trip planner rendered on a 3D globe — generates validated itineraries with live flight routes and airport markers.",
+        "overview": "HACKATHON PROJECT: An AI trip planner rendered on a 3D globe, generates validated itineraries with live flight routes and airport markers.",
         "tech": ["Next.js 15", "Cesium", "Google AI", "Framer"],
         "links": [
           { "label": "GitHub", "url": "https://github.com/Alt-F17/CloudSource", "icon": "⌥" },
@@ -119,7 +123,7 @@
         "slug": "aura",
         "title": "AURA",
         "category": "ML · Robotics",
-        "year": "2024",
+        "year": "2026",
         "glyph": "RL",
         "status": "● live",
         "overview": "A reinforcement-learning pipeline that trains and analyzes robot behaviors inside simulated Unity environments.",
@@ -136,8 +140,8 @@
         "year": "2024",
         "glyph": "AI",
         "status": "● live",
-        "overview": "A privacy-first personal assistant that parses tasks and recognizes intent — all processing stays on-device, no cloud APIs.",
-        "tech": ["Python", "NLP", "Local Inference"],
+        "overview": "Early MCP orchestrator prototype before the release of MCP servers. Self-improving by generating own skills upon recognition of incapability using OpenAI's Realtime and o3 APIs",
+        "tech": ["Python", "NLP", "OpenAI Realtime API", "Voice Recognition", "Self-Improving"],
         "links": [
           { "label": "GitHub", "url": "https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant", "icon": "⌥" },
           { "label": "Report", "url": "https://felixegan.me/pluto-report.html", "icon": "↗" }
@@ -164,7 +168,7 @@
         "year": "2025",
         "glyph": "F17",
         "status": "● you're here",
-        "overview": "This site — a bilingual FR/EN portfolio with a real-time 3D starfield, hand-built for speed and detail.",
+        "overview": "You're already here! A bilingual FR/EN portfolio with a real-time 3D starfield, hand-built for speed and detail.",
         "tech": ["React + Vite", "Three.js", "Tailwind", "i18n"],
         "links": [
           { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage", "icon": "⌥" }
@@ -184,13 +188,14 @@
       { "handle": "felixegan-", "url": "https://linkedin.com/in/felixegan-", "icon": "in" },
       { "handle": "@felixegan_", "url": "https://instagram.com/felixegan_", "icon": "◎" },
       { "handle": "@AltF17 · HTB", "url": "https://app.hackthebox.com/profile/AltF17", "icon": "⬢" },
-      { "handle": "felix.egan.dev@gmail.com", "url": "mailto:felix.egan.dev@gmail.com", "icon": "✉" }
+      { "handle": "felix.egan.dev@gmail.com", "url": "mailto:felix.egan.dev@gmail.com", "icon": "✉" },
+      { "handle": "buy me a coffee", "url": "https://coff.ee/alt.f17", "icon": "☕︎" }
     ]
   },
   "footer": {
-    "copyright": "© 2025 Felix Egan",
-    "tagline": "designed & hand-coded in Montréal",
-    "metaLines": ["built with react · three.js · too much coffee", "montréal, qc · est. 2019"]
+    "copyright": "© 2026 Felix Egan",
+    "tagline": "designed & made with <3 in Montréal",
+    "metaLines": ["built with react // three.js // too much coffee", "montréal, qc · est. 2019"]
   },
   "terminal": {
     "prompt": "root@alt-f17:~#",

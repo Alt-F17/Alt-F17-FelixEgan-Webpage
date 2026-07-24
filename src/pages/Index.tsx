@@ -371,6 +371,7 @@ const Index = () => {
               <div
                 data-reveal
                 data-delay={160}
+                className="fe-pfp"
                 style={{
                   ...revealStyle,
                   border: "1px solid rgba(124,179,255,.2)",
@@ -378,16 +379,78 @@ const Index = () => {
                   padding: 6,
                 }}
               >
-                <div style={{ border: "1px solid rgba(124,179,255,.1)", padding: 22 }}>
-                  <div style={{ fontFamily: press, fontSize: 8, letterSpacing: 1, color: "#5f6b85", marginBottom: 18 }}>{about.profile.title}</div>
-                  <dl style={{ margin: 0, display: "flex", flexDirection: "column", gap: 16 }}>
-                    {about.profile.fields.map((f) => (
-                      <div key={f.label} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                        <dt style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1, color: "var(--ac,#3b82f6)", textTransform: "uppercase" }}>{f.label}</dt>
-                        <dd style={{ margin: 0, fontSize: 15, color: "#e8ecf5" }}>{f.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
+                <div style={{ border: "1px solid rgba(124,179,255,.1)", overflow: "hidden" }}>
+                  {about.photo && (
+                    <div
+                      style={{
+                        position: "relative",
+                        overflow: "hidden",
+                        width: "52%",
+                        margin: "20px auto 4px",
+                        border: "1px solid rgba(124,179,255,.6)",
+                        boxShadow: "0 0 14px rgba(124,179,255,.18)",
+                      }}
+                    >
+                      <img
+                        src={about.photo.src}
+                        alt={about.photo.alt}
+                        loading="lazy"
+                        className="fe-pfp-img"
+                        style={{ display: "block", width: "100%", aspectRatio: "1 / 1", objectFit: "cover", objectPosition: "center 20%" }}
+                      />
+                      {/* blue duotone tint to blend the photo into the palette */}
+                      <div
+                        className="fe-pfp-tint"
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          pointerEvents: "none",
+                          background: "linear-gradient(180deg,rgba(59,130,246,.22),rgba(8,11,22,.12))",
+                          mixBlendMode: "overlay",
+                          opacity: 0.6,
+                        }}
+                      />
+                      {/* scanlines */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          pointerEvents: "none",
+                          opacity: 0.5,
+                          mixBlendMode: "overlay",
+                          backgroundImage:
+                            "repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0,rgba(255,255,255,.04) 1px,transparent 1px,transparent 3px)",
+                        }}
+                      />
+                      {/* bottom fade for caption legibility */}
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          height: "48%",
+                          pointerEvents: "none",
+                          background: "linear-gradient(180deg,transparent,rgba(8,11,22,.85))",
+                        }}
+                      />
+                      {about.photo.caption && (
+                        <span style={{ position: "absolute", left: 14, bottom: 11, fontFamily: press, fontSize: 8, letterSpacing: 1, color: "var(--ac,#3b82f6)" }}>
+                          {about.photo.caption}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  <div style={{ padding: "6px 22px 22px" }}>
+                    <dl style={{ margin: 0, display: "flex", flexDirection: "column", gap: 16 }}>
+                      {about.profile.fields.map((f) => (
+                        <div key={f.label} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                          <dt style={{ fontFamily: mono, fontSize: 11, letterSpacing: 1, color: "var(--ac,#3b82f6)", textTransform: "uppercase" }}>{f.label}</dt>
+                          <dd style={{ margin: 0, fontSize: 15, color: "#e8ecf5" }}>{f.value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
@@ -398,7 +461,7 @@ const Index = () => {
         <section id="skills" style={{ padding: "clamp(70px,10vw,130px) clamp(18px,5vw,56px)" }}>
           <div style={{ maxWidth: 1180, margin: "0 auto" }}>
             <SectionHeader index={skills.index} label={skills.label} heading={skills.heading} subhead={skills.subhead} />
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(230px,1fr))", gap: 16, marginTop: 40 }}>
+            <div style={{ columnWidth: 300, columnGap: 16, marginTop: 40 }}>
               {skills.groups.map((g, gi) => (
                 <div
                   key={g.name}
@@ -407,6 +470,8 @@ const Index = () => {
                   className="fe-skillcard"
                   style={{
                     ...revealStyle,
+                    breakInside: "avoid",
+                    marginBottom: 16,
                     border: "1px solid rgba(124,179,255,.16)",
                     background: "linear-gradient(180deg,rgba(11,16,30,.66),rgba(8,11,22,.5))",
                     padding: "20px 20px 22px",
