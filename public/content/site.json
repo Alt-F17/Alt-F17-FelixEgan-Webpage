@@ -217,9 +217,9 @@
       { "c": "#ffd23f", "t": "[ WARN ] intrusion successful — you are inside the machine." },
       { "c": "#5f6b85", "t": "" },
       { "c": "#35ff8f", "w": 700, "pre": true, "banner": true },
-      { "c": "#7cffb0", "t": "   felix egan // alt-f17 | offensive security, ctf & reverse engineering" },
-      { "c": "#2f7d4f", "t": "   ───────────────────────────────────────────────────────────────" },
-      { "c": "#c9ffe0", "t": "   type 'help' for commands  ·  'exit' (or ESC) to return to reality" },
+      { "c": "#7cffb0", "t": "felix egan // alt-f17 | offensive security, ctf & reverse engineering" },
+      { "c": "#2f7d4f", "t": "───────────────────────────────────────────────────────────────" },
+      { "c": "#c9ffe0", "t": "type 'help' for commands  ·  'exit' (or ESC) to return to reality" },
       { "c": "#5f6b85", "t": "" }
     ],
     "colors": {
@@ -230,14 +230,14 @@
       "warn": "#ffd23f",
       "err": "#ff5f57"
     },
-    "completions": ["help", "whoami", "ls", "cat about.txt", "cat contact.txt", "ctf", "certs", "tools", "skills", "banner", "clear", "exit"],
+    "completions": ["help", "whoami", "ls", "cat about.txt", "cat contact.txt", "cat certs.txt","cat tools.txt", "cat skills.txt", "cat ctf.txt", "ctf", "certs", "tools", "skills", "banner", "clear", "exit"],
     "autoRun": "whoami",
     "commands": {
       "help": [
         { "c": "label", "t": "available commands" },
         { "c": "dim", "t": "  whoami      who you're dealing with" },
         { "c": "dim", "t": "  ls          list files in ~/breach" },
-        { "c": "dim", "t": "  cat <file>  read a file  (about.txt · contact.txt)" },
+        { "c": "dim", "t": "  cat <file>  read a file" },
         { "c": "dim", "t": "  ctf         capture-the-flag record" },
         { "c": "dim", "t": "  certs       certifications & training" },
         { "c": "dim", "t": "  tools       the loadout" },
@@ -255,13 +255,13 @@
       ],
       "ls": [
         { "c": "val", "t": "drwxr-xr-x   about.txt    certs.txt    tools.txt" },
-        { "c": "val", "t": "drwxr-xr-x   ctf/         skills.txt   contact.txt" },
+        { "c": "val", "t": "drwxr-xr-x   ctf.txt      skills.txt   contact.txt" },
         { "c": "warn", "t": "-r--------   flags/       .secret/     writeups/" }
       ],
       "ctf": [
         { "c": "label", "t": "~/breach/ctf $ cat record.md" },
-        { "c": "dim", "t": "──────────────────────────────────────────────  [ sample — edit me ]" },
-        { "c": "ok", "t": "  ▸ HTB Cyber Apocalypse ......... top 5% global   · web + rev" },
+        { "c": "dim", "t": "─────────────────────────────────────────────────────────────────────" },
+        { "c": "ok", "t": "  ▸ @HACK CTF - UConcordia ....... 2nd Place        · team rm -rf" },
         { "c": "ok", "t": "  ▸ picoCTF ...................... 1,400+ pts       · web / forensics" },
         { "c": "ok", "t": "  ▸ DawgCTF / university CTFs .... 1st place        · team alt-f17" },
         { "c": "ok", "t": "  ▸ HackTheBox machines .......... 40+ pwned        · @AltF17" },
