@@ -54,6 +54,10 @@ TWENTY_INTAKE_BASE_URL=
 TWENTY_API_KEY=
 ```
 
+The production intake base URL is `https://crm.felixegan.me/lead-intake`.
+It is a restricted server-to-server proxy and must not expose the Twenty API
+key to browser code.
+
 Supabase edge function environment:
 
 ```bash
