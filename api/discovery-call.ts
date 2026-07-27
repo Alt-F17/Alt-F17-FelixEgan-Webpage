@@ -47,6 +47,27 @@ const TWENTY_REQUEST_TIMEOUT_MS = 5000;
 const DEFAULT_TWENTY_INTAKE_URL = "https://crm.felixegan.me/lead-intake";
 const rateLimitBuckets = new Map<string, number[]>();
 
+const getTwentyIntakeBaseUrl = () => {
+  const configuredUrl = process.env.TWENTY_INTAKE_BASE_URL?.trim();
+
+  if (!configuredUrl) {
+    return DEFAULT_TWENTY_INTAKE_URL;
+  }
+
+  try {
+    const parsedUrl = new URL(configuredUrl);
+
+    // Migrate stale production configuration away from the retired Tailscale exposure.
+    if (parsedUrl.hostname.endsWith(".ts.net")) {
+      return DEFAULT_TWENTY_INTAKE_URL;
+    }
+
+    return configuredUrl.replace(/\/$/, "");
+  } catch {
+    return DEFAULT_TWENTY_INTAKE_URL;
+  }
+};
+
 const compact = <T extends Record<string, unknown>>(input: T) =>
   Object.fromEntries(
     Object.entries(input).filter(([, value]) => value !== null && value !== undefined && value !== ""),
@@ -107,7 +128,7 @@ const twentyRequest = async <T>(
     body?: Record<string, unknown>;
   } = {},
 ): Promise<T> => {
-  const baseUrl = (process.env.TWENTY_INTAKE_BASE_URL ?? DEFAULT_TWENTY_INTAKE_URL).replace(/\/$/, "");
+  const baseUrl = getTwentyIntakeBaseUrl();
   const apiKey = getRequiredEnv("TWENTY_API_KEY");
   const query = options.query?.toString();
   const url = `${baseUrl}${path}${query ? `?${query}` : ""}`;
@@ -119,6 +140,7 @@ const twentyRequest = async <T>(
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
+      "User-Agent": "FelixEgan-Studio-Lead-Intake/1.0",
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
     signal: controller.signal,
