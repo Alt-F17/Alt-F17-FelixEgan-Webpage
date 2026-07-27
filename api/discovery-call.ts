@@ -43,7 +43,7 @@ type VercelResponse = {
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
-const TWENTY_REQUEST_TIMEOUT_MS = 15000;
+const TWENTY_REQUEST_TIMEOUT_MS = 60000;
 const DEFAULT_TWENTY_INTAKE_URL = "https://crm.felixegan.me/lead-intake";
 const rateLimitBuckets = new Map<string, number[]>();
 
