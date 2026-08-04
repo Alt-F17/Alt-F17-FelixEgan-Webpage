@@ -33,7 +33,7 @@
     "actions": [
       { "label": "See my Work", "href": "#work", "variant": "primary", "trailing": "→" },
       { "label": "Contact", "href": "#contact", "variant": "outline" },
-      { "label": "Studio ↗", "href": "https://felixegan.me/studio", "variant": "outline" } 
+      { "label": "Studio ↗", "href": "https://felixegan.me/studio", "variant": "outline" }
     ]
   },
   "about": {
@@ -171,7 +171,7 @@
         "overview": "You're already here! A bilingual FR/EN portfolio with a real-time 3D starfield, hand-built for speed and detail.",
         "tech": ["React + Vite", "Three.js", "Tailwind", "i18n"],
         "links": [
-          { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage", "icon": "⌥" }
+          { "label": "YouTube", "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "icon": "▶" }
         ]
       }
     ]
@@ -230,7 +230,7 @@
       "warn": "#ffd23f",
       "err": "#ff5f57"
     },
-    "completions": ["help", "whoami", "ls", "cat about.txt", "cat contact.txt", "cat certs.txt","cat tools.txt", "cat skills.txt", "cat ctf.txt", "ctf", "certs", "tools", "skills", "banner", "clear", "exit"],
+    "completions": ["help", "whoami", "ls", "cat about.txt", "cat contact.txt", "cat certs.txt", "cat tools.txt", "cat skills.txt", "cat ctf.txt", "ctf", "certs", "tools", "skills", "banner", "clear", "exit"],
     "autoRun": "whoami",
     "commands": {
       "help": [
