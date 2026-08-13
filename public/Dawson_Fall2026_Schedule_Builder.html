@@ -1,0 +1,1126 @@
+<title>Dawson Fall 2026 — Schedule Builder</title>
+<style>
+  :root {
+    --bg: hsl(230 20% 97%);
+    --surface: hsl(230 30% 100%);
+    --surface-2: hsl(230 24% 93%);
+    --border: hsl(230 15% 87%);
+    --text: hsl(230 25% 15%);
+    --text-muted: hsl(230 10% 42%);
+    --text-faint: hsl(230 10% 60%);
+    --accent: hsl(243 75% 59%);
+    --accent-contrast: hsl(0 0% 100%);
+    --accent-soft: hsl(243 75% 59% / 0.10);
+    --danger: hsl(0 72% 48%);
+    --danger-soft: hsl(0 85% 96%);
+    --danger-border: hsl(0 72% 70%);
+    --warning: hsl(32 90% 40%);
+    --warning-soft: hsl(42 95% 94%);
+    --warning-border: hsl(38 90% 65%);
+    --grid-line: hsl(230 15% 90%);
+    --grid-line-strong: hsl(230 15% 80%);
+    --shadow: 0 1px 2px hsl(230 30% 20% / 0.06), 0 4px 14px hsl(230 30% 20% / 0.06);
+
+    --slot-english: hsl(221 83% 53%);
+    --slot-french: hsl(258 74% 58%);
+    --slot-pe: hsl(175 77% 32%);
+    --slot-humanities: hsl(330 75% 48%);
+    --slot-fixed_comp: hsl(142 62% 35%);
+    --slot-opt_a: hsl(191 82% 38%);
+    --slot-opt_b: hsl(220 9% 42%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: hsl(230 24% 8%);
+      --surface: hsl(230 20% 12%);
+      --surface-2: hsl(230 18% 17%);
+      --border: hsl(230 15% 23%);
+      --text: hsl(230 20% 92%);
+      --text-muted: hsl(230 10% 68%);
+      --text-faint: hsl(230 10% 50%);
+      --accent: hsl(243 90% 74%);
+      --accent-contrast: hsl(230 30% 8%);
+      --accent-soft: hsl(243 90% 74% / 0.14);
+      --danger: hsl(0 85% 68%);
+      --danger-soft: hsl(0 45% 18%);
+      --danger-border: hsl(0 70% 45%);
+      --warning: hsl(40 95% 65%);
+      --warning-soft: hsl(38 55% 16%);
+      --warning-border: hsl(38 70% 42%);
+      --grid-line: hsl(230 15% 20%);
+      --grid-line-strong: hsl(230 15% 28%);
+      --shadow: 0 1px 2px hsl(0 0% 0% / 0.3), 0 8px 20px hsl(0 0% 0% / 0.35);
+
+      --slot-english: hsl(221 90% 68%);
+      --slot-french: hsl(258 85% 76%);
+      --slot-pe: hsl(175 65% 48%);
+      --slot-humanities: hsl(330 80% 68%);
+      --slot-fixed_comp: hsl(142 55% 52%);
+      --slot-opt_a: hsl(191 80% 55%);
+      --slot-opt_b: hsl(220 12% 62%);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: hsl(230 24% 8%);
+    --surface: hsl(230 20% 12%);
+    --surface-2: hsl(230 18% 17%);
+    --border: hsl(230 15% 23%);
+    --text: hsl(230 20% 92%);
+    --text-muted: hsl(230 10% 68%);
+    --text-faint: hsl(230 10% 50%);
+    --accent: hsl(243 90% 74%);
+    --accent-contrast: hsl(230 30% 8%);
+    --accent-soft: hsl(243 90% 74% / 0.14);
+    --danger: hsl(0 85% 68%);
+    --danger-soft: hsl(0 45% 18%);
+    --danger-border: hsl(0 70% 45%);
+    --warning: hsl(40 95% 65%);
+    --warning-soft: hsl(38 55% 16%);
+    --warning-border: hsl(38 70% 42%);
+    --grid-line: hsl(230 15% 20%);
+    --grid-line-strong: hsl(230 15% 28%);
+    --shadow: 0 1px 2px hsl(0 0% 0% / 0.3), 0 8px 20px hsl(0 0% 0% / 0.35);
+
+    --slot-english: hsl(221 90% 68%);
+    --slot-french: hsl(258 85% 76%);
+    --slot-pe: hsl(175 65% 48%);
+    --slot-humanities: hsl(330 80% 68%);
+    --slot-fixed_comp: hsl(142 55% 52%);
+    --slot-opt_a: hsl(191 80% 55%);
+    --slot-opt_b: hsl(220 12% 62%);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", "Inter", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+  .mono, .time-label, .time-str { font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+  h1, h2, h3 { text-wrap: balance; margin: 0; }
+  h1 { font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+
+  button { font: inherit; cursor: pointer; }
+  input { font: inherit; }
+  a { color: inherit; }
+
+  #app {
+    display: grid;
+    grid-template-columns: 330px 1fr;
+    min-height: 100vh;
+    align-items: start;
+  }
+
+  /* ---------- Sidebar ---------- */
+  #sidebar {
+    padding: 22px 18px 40px;
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .brand { display: flex; flex-direction: column; gap: 3px; }
+  .brand h1 { font-size: 19px; font-weight: 700; }
+  .brand p { margin: 0; color: var(--text-muted); font-size: 12.5px; }
+
+  .progress-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 600; padding: 5px 10px;
+    border-radius: 100px; background: var(--accent-soft); color: var(--accent);
+    width: fit-content;
+  }
+  .progress-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .progress-pill.complete { background: hsl(142 55% 90%); color: hsl(142 62% 28%); }
+  :root[data-theme="dark"] .progress-pill.complete,
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .progress-pill.complete { background: hsl(142 40% 18%); color: hsl(142 55% 70%); } }
+
+  .slot-list { display: flex; flex-direction: column; gap: 10px; }
+  .slot-field { display: flex; flex-direction: column; gap: 4px; }
+  .slot-field label {
+    font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-muted); display: flex; align-items: center; gap: 6px;
+  }
+  .slot-swatch { width: 9px; height: 9px; border-radius: 3px; flex: none; }
+
+  .combo { position: relative; }
+  .combo-trigger {
+    width: 100%; text-align: left; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 9px; padding: 9px 11px; color: var(--text); display: flex; flex-direction: column; gap: 1px;
+    transition: border-color .12s ease, background .12s ease;
+  }
+  .combo-trigger:hover { border-color: var(--accent); }
+  .combo-trigger.open { border-color: var(--accent); background: var(--surface); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .combo-trigger .placeholder { color: var(--text-faint); font-size: 13px; }
+  .combo-trigger .picked-main { font-size: 13px; font-weight: 600; }
+  .combo-trigger .picked-sub { font-size: 11.5px; color: var(--text-muted); }
+  .combo-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .combo-panel {
+    /* fixed (not absolute) + JS-computed top/left so it escapes #sidebar's overflow-y:auto,
+       which otherwise implicitly clips overflow-x too and cuts the panel off mid-sidebar */
+    position: fixed; z-index: 40; width: min(420px, 82vw);
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow);
+    display: none; flex-direction: column; overflow: hidden;
+    max-height: min(420px, 70vh);
+  }
+  .combo-panel.open { display: flex; }
+  .combo-search {
+    padding: 9px; border-bottom: 1px solid var(--border);
+  }
+  .combo-search input {
+    width: 100%; padding: 7px 9px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--text);
+  }
+  .combo-search input:focus-visible { outline: 2px solid var(--accent); }
+  .combo-options { max-height: 320px; overflow-y: auto; padding: 5px; overscroll-behavior: contain; }
+  .combo-option {
+    padding: 8px 9px; border-radius: 8px; display: flex; flex-direction: column; gap: 1px; text-align: left;
+    width: 100%; background: none; border: none; color: var(--text);
+  }
+  .combo-option:hover, .combo-option.active { background: var(--surface-2); }
+  .combo-option .opt-top { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; font-weight: 600; }
+  .combo-option .opt-code { color: var(--text-muted); font-weight: 500; }
+  .combo-option .opt-schedule { font-size: 11.5px; color: var(--text-muted); }
+  .combo-option .opt-schedule.irregular { color: var(--warning); }
+  .combo-option .opt-teacher { font-size: 11px; color: var(--text-faint); }
+  .combo-option.conflicted { opacity: 0.5; }
+  .combo-option.conflicted:hover { opacity: 0.8; }
+  .combo-option .opt-conflict {
+    font-size: 10.5px; font-weight: 600; color: var(--danger); margin-top: 2px;
+  }
+  .seat-pill {
+    font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 100px; white-space: nowrap;
+    background: var(--surface); border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .seat-pill.low { background: var(--warning-soft); border-color: var(--warning-border); color: var(--warning); }
+  .seat-pill.full { background: var(--danger-soft); border-color: var(--danger-border); color: var(--danger); }
+  .combo-empty { padding: 16px 10px; text-align: center; color: var(--text-faint); font-size: 12.5px; }
+  .combo-clear { padding: 8px 9px; border-radius: 8px; width: 100%; background: none; border: none; color: var(--danger); font-size: 12px; text-align: left; font-weight: 600; }
+  .combo-clear:hover { background: var(--danger-soft); }
+
+  .sidebar-section { display: flex; flex-direction: column; gap: 9px; padding-top: 18px; border-top: 1px solid var(--border); }
+  .sidebar-section h2 { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+  .btn-row { display: flex; gap: 8px; }
+  .btn {
+    border-radius: 8px; padding: 8px 12px; font-size: 12.5px; font-weight: 600; border: 1px solid var(--border);
+    background: var(--surface-2); color: var(--text); flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.primary { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
+  .btn.primary:hover { filter: brightness(1.06); color: var(--accent-contrast); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn:disabled:hover { border-color: var(--border); color: var(--text); }
+  #file-import { display: none; }
+
+  .saved-list { display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto; }
+  .saved-item { display: flex; align-items: center; gap: 6px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 7px 9px; }
+  .saved-item button.load { flex: 1; text-align: left; background: none; border: none; color: var(--text); display: flex; flex-direction: column; gap: 1px; }
+  .saved-item .name { font-size: 12.5px; font-weight: 600; }
+  .saved-item .meta { font-size: 10.5px; color: var(--text-faint); }
+  .saved-item button.del { background: none; border: none; color: var(--text-faint); padding: 4px 6px; border-radius: 6px; font-size: 13px; line-height: 1; }
+  .saved-item button.del:hover { color: var(--danger); background: var(--danger-soft); }
+  .saved-empty { color: var(--text-faint); font-size: 12px; padding: 6px 2px; }
+
+  .name-prompt { display: none; gap: 6px; }
+  .name-prompt.open { display: flex; }
+  .name-prompt input { flex: 1; border-radius: 7px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); padding: 7px 9px; }
+
+  /* ---------- Main ---------- */
+  #main { padding: 22px 26px 60px; min-width: 0; }
+  .top-strip { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .banner {
+    border-radius: 10px; padding: 11px 14px; font-size: 13px; display: flex; flex-direction: column; gap: 6px;
+    border: 1px solid; box-shadow: var(--shadow);
+  }
+  .banner.danger { background: var(--danger-soft); border-color: var(--danger-border); color: var(--danger); }
+  .banner.warning { background: var(--warning-soft); border-color: var(--warning-border); color: var(--warning); }
+  .banner h3 { font-size: 12.5px; text-transform: uppercase; letter-spacing: .04em; }
+  .banner ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 3px; }
+  .banner li { color: var(--text); }
+  .banner li b { color: inherit; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: 11.5px; color: var(--text-muted); }
+  .legend .item { display: flex; align-items: center; gap: 5px; }
+  .legend .sw { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* ---------- Calendar grid ---------- */
+  .cal-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+  /* overflow-x:auto alone silently computes overflow-y as auto too (CSS can't mix 'visible' with
+     a non-visible axis) — .cal-head's position:sticky then sticks to *this* box instead of the
+     page, but with no max-height the box never actually scrolls, so the sticky header just
+     scrolls away with the page instead of pinning. Giving it a real max-height makes it a genuine
+     scroll container, which is what the sticky header needs to work at all. */
+  .cal-scroll { overflow-x: auto; overflow-y: auto; max-height: 72vh; }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: 64px repeat(5, minmax(150px, 1fr));
+    position: relative;
+    min-width: 720px;
+  }
+  .cal-head {
+    padding: 10px 8px; font-size: 12px; font-weight: 700; text-align: center; color: var(--text-muted);
+    border-bottom: 1px solid var(--grid-line-strong); position: sticky; top: 0; background: var(--surface); z-index: 5;
+  }
+  .cal-head.corner { border-right: 1px solid var(--grid-line-strong); }
+  .cal-body-row-line { border-bottom: 1px solid var(--grid-line); }
+  .cal-body-row-line.hour { border-bottom: 1px solid var(--grid-line-strong); }
+  .time-gutter-cell {
+    font-size: 10px; color: var(--text-faint); text-align: right; padding: 0 8px 0 0;
+    border-right: 1px solid var(--grid-line-strong); position: relative;
+  }
+  .time-gutter-cell span { position: relative; top: -6px; }
+  .day-col { position: relative; border-right: 1px solid var(--grid-line); }
+  .day-col:last-child { border-right: none; }
+
+  .event-block {
+    position: absolute; border-radius: 8px; padding: 5px 7px; overflow: hidden; color: white;
+    box-shadow: 0 1px 3px hsl(0 0% 0% / .18); border: 1px solid hsl(0 0% 0% / .08);
+    display: flex; flex-direction: column; gap: 1px; cursor: default;
+  }
+  .event-block .ev-title { font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event-block .ev-sub { font-size: 10px; opacity: .92; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .event-block .ev-badges { display: flex; gap: 3px; margin-top: auto; }
+  .event-block .badge { font-size: 9px; font-weight: 800; padding: 1px 4px; border-radius: 4px; background: hsl(0 0% 100% / .28); }
+  .event-block.conflict {
+    outline: 2px solid var(--danger); outline-offset: -2px;
+  }
+  .event-block.conflict::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(135deg, hsl(0 90% 96% / .35) 0 6px, transparent 6px 12px);
+  }
+  .event-block.warn-flag { box-shadow: 0 0 0 2px var(--warning), 0 1px 3px hsl(0 0% 0% / .18); }
+
+  .gap-block {
+    position: absolute; border-radius: 6px; background: repeating-linear-gradient(45deg, var(--warning-soft) 0 6px, transparent 6px 12px);
+    border: 1px dashed var(--warning-border);
+  }
+
+  .now-note { font-size: 11px; color: var(--text-faint); padding: 10px 4px 0; }
+
+  /* ---------- Irregular panel ---------- */
+  .irregular-wrap { margin-top: 22px; }
+  .irregular-wrap h2 { font-size: 13px; margin-bottom: 8px; }
+  .irregular-card {
+    background: var(--surface); border: 1px solid var(--warning-border); border-left: 4px solid var(--warning);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; box-shadow: var(--shadow);
+  }
+  .irregular-card .ir-top { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; font-weight: 700; margin-bottom: 4px; }
+  .irregular-card .ir-slot { color: var(--text-muted); font-weight: 500; }
+  .irregular-card .ir-notes { font-size: 12px; color: var(--text-muted); white-space: pre-line; }
+
+  .empty-hint { color: var(--text-faint); font-size: 12.5px; padding: 30px 10px; text-align: center; }
+
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+
+  @media (max-width: 880px) {
+    #app { grid-template-columns: 1fr; }
+    #sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand">
+      <h1>Fall 2026 Schedule Builder</h1>
+      <p>Pick one section per requirement. Conflicts and risky gaps are flagged live.</p>
+      <p id="seats-note" style="margin:0;font-size:11px;color:var(--text-faint);"></p>
+    </div>
+    <div id="progress-pill" class="progress-pill"><span class="dot"></span><span id="progress-text">0 / 7 selected</span></div>
+
+    <div id="slot-list" class="slot-list"></div>
+
+    <div class="sidebar-section">
+      <h2>Save / Export / Import</h2>
+      <div id="storage-note" style="display:none;font-size:11.5px;color:var(--warning);background:var(--warning-soft);border:1px solid var(--warning-border);border-radius:8px;padding:8px 10px;">
+        This browser is blocking local storage (e.g. private/restricted mode), so "Save" and the saved-schedules list won't persist. Export still works — download a file and re-Import it later instead.
+      </div>
+      <div class="name-prompt" id="name-prompt">
+        <input type="text" id="name-input" placeholder="Name this schedule…" maxlength="60" />
+        <button class="btn primary" id="name-confirm">Save</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="btn-save">💾 Save</button>
+        <button class="btn" id="btn-export">⭳ Export</button>
+        <button class="btn" id="btn-import">⭱ Import</button>
+      </div>
+      <input type="file" id="file-import" accept="application/json" />
+    </div>
+
+    <div class="sidebar-section">
+      <h2>Saved schedules</h2>
+      <div id="saved-list" class="saved-list"></div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div class="top-strip">
+      <div id="banners"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <div class="cal-wrap">
+      <div class="cal-scroll">
+        <div id="cal-grid" class="cal-grid"></div>
+      </div>
+    </div>
+    <p class="now-note">Times shown already include the -15min end-time correction (Dawson lists many classes as ending on the hour; they actually end 15 minutes earlier).</p>
+
+    <div class="irregular-wrap" id="irregular-wrap" style="display:none;">
+      <h2>Irregular / Compressed Schedule Sections</h2>
+      <div id="irregular-list"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+const DATA = {"slots":[{"id":"english","label":"English (603-101-MQ)","codes":["603-101-MQ"]},{"id":"french","label":"French (602-A03-MQ)","codes":["602-A03-MQ"]},{"id":"pe","label":"Physical Education","codes":["109-101-MQ","109-102-MQ"]},{"id":"humanities","label":"Humanities (345-101-MQ)","codes":["345-101-MQ"]},{"id":"fixed_comp","label":"Concentration 1 (585-113-DW)","codes":["585-113-DW"]},{"id":"opt_a","label":"Concentration 2","codes":["502-941-DW","511-912-DW","530-911-DW","530-944-DW","550-921-DW","550-934-DW","585-912-DW"]},{"id":"opt_b","label":"Concentration 3","codes":["340-913-DW","502-913-DW","511-913-DW","520-913-DW","530-914-DW","550-901-DW","560-913-DW","603-913-DW"]}],"courses":[{"code":"603-101-MQ","section":"00074","title":"I.C.E. : Introduction to College English","meetings":[{"day":"F","time":"12:00-14:00","room":"4D.3"},{"day":"W","time":"12:00-14:00","room":"4D.1"}],"teachers":["L. Bellon"],"notes":[],"seats":42},{"code":"345-101-MQ","section":"00037","title":"Knowledge : Moral Knowledge","meetings":[{"day":"MW","time":"8:00-10:00","room":"3H.10"}],"teachers":["R. Stephens"],"notes":["(Liberal Arts)"],"seats":9},{"code":"345-101-MQ","section":"14001","title":"Knowledge : Media Knowledge (with New School)","meetings":[{"day":"W","time":"16:00-20:00","room":"8B.13"}],"teachers":["M. Heywood","Heywood, M"],"notes":["(New School)"],"seats":7},{"code":"603-101-MQ","section":"14001","title":"I.C.E. : Introduction to College English with New School","meetings":[{"day":"M","time":"16:00-20:00","room":"8B.13"}],"teachers":["P. Morel","Morel, P"],"notes":["(New School)"],"seats":10},{"code":"345-101-MQ","section":"18001","title":"Knowledge : The Last of Us: An Introduction to Eco Pessimism and Eco Horror","meetings":[{"day":"W","time":"11:30-14:30","room":"4E.13"}],"teachers":["M. Bobiy","Bobiy, M"],"notes":["(Reflections)"],"seats":null},{"code":"345-101-MQ","section":"18002","title":"Knowledge : Hey Dingdong, pay attention","meetings":[{"day":"H","time":"14:30-18:30","room":"4E.13"}],"teachers":["J. Rosen","Rosen, J"],"notes":["(Reflections)"],"seats":null},{"code":"603-101-MQ","section":"18001","title":"I.C.E. : The Last of Us: An Introduction to Eco Pessimism and Eco Horror","meetings":[{"day":"F","time":"10:30-14:30","room":"4E.13"}],"teachers":["K. Woofter","Woofter, K"],"notes":["(Reflections)"],"seats":null},{"code":"603-101-MQ","section":"18002","title":"I.C.E. : Hey Dingdong, pay attention","meetings":[{"day":"T","time":"14:30-17:30","room":"4E.13"}],"teachers":["J. Shea","Shea, J"],"notes":["(Reflections)"],"seats":null},{"code":"109-101-MQ","section":"00005","title":"Physical Activity and Health : Day Hiking (COMPRESSED)","meetings":[],"teachers":["R. Montreuil","Montreuil, R"],"notes":["(COMPRESSED COURSE; TRAVEL TIME IS NOT INCLUDED):","August 20 16:00 - 18:00 3F.5; August 25, 27, September 1, 3 16:00-19:00 3F.5/, 0H.1","INTENSIVE: August 29 8:00-12:00, 12:30-16:30 MONTREAL AREA","August 30 8:00-12:00, 12:30-16:30 MONT TREMBLANT","Withdrawal Date: August 28, 2026","Drop Deadline [with mention on transcript]: August 31, 2026","(COMPRESSED COURSE; TRAVEL TIME IS NOT INCLUDED)"],"seats":13},{"code":"109-101-MQ","section":"00056","title":"Physical Activity and Health : Sports Fitness","meetings":[{"day":"T","time":"10:00-12:00","room":"-1H.4,-1H.6"}],"teachers":["R. Montreuil","Montreuil, R"],"notes":[],"seats":16},{"code":"109-101-MQ","section":"00057","title":"Physical Activity and Health : Sport Fitness","meetings":[{"day":"T","time":"12:00-14:00","room":"-1H.4,-1H.6"}],"teachers":["R. Montreuil","Montreuil, R"],"notes":[],"seats":15},{"code":"109-102-MQ","section":"00003","title":"Physical Activity and Effectiveness : Out On the Land: Wilderness Skills (INTENSIVE)","meetings":[],"teachers":["C. Cantin","Cantin, C"],"notes":["(OUTDOOR EDUCATION INTENSIVE HELD ON TWO CONSECUTIVE DAYS, INCLUDING ONE OVERNIGHT;","TRAVEL TIME IS NOT INCLUDED)","August 24 19:00-21:00 ROOM; September 8 [Monday Schedule], 21 18:00-21:00 3E.1","INTENSIVE: September 19 9:00-12:00, 12:30-15:30 KAHNAWAKE;","October 3 9:00-12:00, 12:30-16:30, 17:00-21:00 KAHNAWAKE;","October 4 7:00-12:00 KAHNAWAKE;","Withdrawal Date: September 21, 2026","Drop Deadline [with mention on transcript]: October 5, 2026","(OUTDOOR EDUCATION INTENSIVE HELD ON TWO CONSECUTIVE DAYS, INCLUDING ONE","OVERNIGHT; TRAVEL TIME IS NOT INCLUDED)"],"seats":6},{"code":"109-102-MQ","section":"00004","title":"Physical Activity and Effectiveness : Canoe Skills (INTENSIVE)","meetings":[],"teachers":["C. Cantin","Cantin, C"],"notes":["(OUTDOOR EDUCATION INTENSIVE HELD ON TWO CONSECUTIVE DAYS, INCLUDING ONE OVERNIGHT;","TRAVEL TIME IS NOT INCLUDED)","August 24 18:00-19:00; August 31, September 14 18:00-21:00 3E.1;","INTENSIVE: September 5 9:30-12:30, 13:00-16:00 RIVIERE DES MILLES ILES","September 26 9 :00-12 :30, 13 :00-18 :00, 19 :00-20 :30 BASE DE PLEIN AIR MONT TREMBLANT;","September 27 8 :00-12 :00, 12 :30-15 :30 BASE DE PLEIN AIR MONT TREMBLANT","Withdrawal Date: September 8, 2026","Drop Deadline [with mention on transcript]: September 28, 2026","(OUTDOOR EDUCATION INTENSIVE HELD ON TWO CONSECUTIVE DAYS, INCLUDING ONE","OVERNIGHT; TRAVEL TIME IS NOT INCLUDED)"],"seats":8},{"code":"109-102-MQ","section":"00031","title":"Physical Activity and Effectiveness : Outdoor Journey (COMPRESSED)","meetings":[],"teachers":["- C. Cantin","C. Cantin","Cantin, C"],"notes":["(Journeys)(COMPRESSED COURSE ON AND OFF CAMPUS; TRAVEL TIME IS NOT INCLUDED):","August 20, 27, October 15, 22 10:00-13:00 4E.18;","September 3, 10, October 1 10:00-14:00 KAHNAWAKE;","September 17 10:00-13:00 4E.18/-1H.2;","October 8 10:00-13:00 BOULDERING GYM;","Withdrawal Date: August 28, 2026","Drop Deadline [with mention on transcript]: October 2, 2026"],"seats":null},{"code":"109-102-MQ","section":"00041","title":"Physical Activity and Effectiveness : Outdoor Journey (COMPRESSED)","meetings":[{"day":"M","time":"14:00-16:00","room":"-1H.2"}],"teachers":["C. Cantin","Cantin, C"],"notes":[],"seats":14},{"code":"345-101-MQ","section":"00013","title":"Knowledge : Critical Thinking: Feminist Ways of Knowing","meetings":[{"day":"MW","time":"10:00-12:00","room":"4P.02"}],"teachers":["S. Hoffmann","Hoffmann, S"],"notes":["(This section will be offered partially online. Students registering for this section are expected to have","individual access to the internet.)","(This section will be offered partially online. Students registering for this section are expected to have individual","access to the internet.)","(This section will be offered partially online. Students registering for this section are expected to","have individual access to the internet.)"],"seats":30},{"code":"345-101-MQ","section":"00015","title":"Knowledge : Justice 1","meetings":[{"day":"TH","time":"14:00-16:00","room":"4E.18"}],"teachers":["A. Choksi","Choksi, A"],"notes":["(Journeys)"],"seats":null},{"code":"345-101-MQ","section":"00016","title":"Knowledge : Justice 1","meetings":[{"day":"MW","time":"14:00-16:00","room":"4E.18"}],"teachers":["A. Choksi","Choksi, A"],"notes":["(Journeys)"],"seats":null},{"code":"345-101-MQ","section":"00022","title":"Knowledge : Revolution and Romanticism","meetings":[{"day":"TH","time":"14:00-16:00","room":"3P.05"}],"teachers":["J. Koopman","Koopman, J"],"notes":[],"seats":21},{"code":"345-101-MQ","section":"00023","title":"Knowledge : Revolution and Romanticism","meetings":[{"day":"H","time":"8:00-10:00","room":"3P.09"},{"day":"M","time":"12:00-14:00","room":"3P.09"}],"teachers":["J. Koopman"],"notes":[],"seats":20},{"code":"345-101-MQ","section":"00040","title":"Knowledge : Revolution and Romanticism","meetings":[{"day":"MW","time":"8:00-10:00","room":"2P.55"}],"teachers":["J. Koopman"],"notes":[],"seats":24},{"code":"345-101-MQ","section":"00035","title":"Knowledge : Art: Interpreting the Past and the Present","meetings":[{"day":"H","time":"8:00-10:00","room":"3B.15"},{"day":"M","time":"12:00-14:00","room":"3B.15"}],"teachers":["L. D'Antoni"],"notes":[],"seats":29},{"code":"520-913-DW","section":"00001","title":"Cave to Renaissance Art","meetings":[{"day":"T","time":"11:30-14:30","room":"3F.5"}],"teachers":["P. Feinberg"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":null},{"code":"585-113-DW","section":"00001","title":"Introduction to Interactive Media","meetings":[{"day":"M","time":"10:00-14:00","room":"3B.4"}],"teachers":["B. Marin Dubuard"],"notes":["(Interactive Media Arts)"],"seats":4},{"code":"585-113-DW","section":"00002","title":"Introduction to Interactive Media","meetings":[{"day":"T","time":"10:00-14:00","room":"3B.4"}],"teachers":["B. Marin Dubuard"],"notes":["(Interactive Media Arts)"],"seats":4},{"code":"603-101-MQ","section":"00086","title":"I.C.E. : Introduction to College English","meetings":[{"day":"MW","time":"10:00-12:00","room":"3F.5"}],"teachers":["R. Million","Million, R"],"notes":[],"seats":34},{"code":"603-101-MQ","section":"00087","title":"I.C.E. : Introduction to College English","meetings":[{"day":"MW","time":"16:00-18:00","room":"3F.45"}],"teachers":["R. Million","Million, R"],"notes":[],"seats":35},{"code":"603-101-MQ","section":"00096","title":"I.C.E. : Introduction to College English","meetings":[{"day":"MW","time":"10:00-12:00","room":"4E.18"}],"teachers":["J. Savard","Savard, J"],"notes":["(Journeys)"],"seats":null},{"code":"603-101-MQ","section":"00097","title":"I.C.E. : Introduction to College English","meetings":[{"day":"MW","time":"8:00-10:00","room":"4P.10"}],"teachers":["L. Roberts"],"notes":[],"seats":32},{"code":"603-101-MQ","section":"00105","title":"I.C.E. : Introduction to College English","meetings":[{"day":"MW","time":"12:00-14:00","room":"4E.18"}],"teachers":["J. Savard","Savard, J"],"notes":["(Journeys)"],"seats":null},{"code":"109-101-MQ","section":"00001","title":"Physical Activity and Health : Eco Landscaping (PRE-SEMESTER)","meetings":[],"teachers":["P. Wasacz","Wasacz, P"],"notes":["(PRE-SEMESTER COMPRESSED COURSE ON CAMPUS):","August 17, 18 8 :00-12 :00, 12 :30-16:00 4E.7","INTENSIVE: August 22, 23 8 :00-12 :00, 12 :30-16:00 4E.7","Withdrawal Date: August 18, 2026","Drop Deadline [with mention on transcript]: August 24, 2026","August 17, 18 8:00-12:00, 12:30-16:00 4E.7","INTENSIVE: August 22, 23 8:00-12:00, 12:30-16:00 4E.7"],"seats":null},{"code":"109-101-MQ","section":"00002","title":"Physical Activity and Health : Eco Landscaping (PRE-SEMESTER)","meetings":[],"teachers":["A. Corinthios","Corinthios, A"],"notes":["(PRE-SEMESTER COMPRESSED COURSE ON CAMPUS):","August 17, 18 8:00-12:00, 12:30-16:00 4E.11","INTENSIVE: August 22, 23 8:00-1 :00, 12:30-16:00 4E.11","Withdrawal Date: August 18, 2026","Drop Deadline [with mention on transcript]: August 24, 2026"],"seats":null},{"code":"109-101-MQ","section":"00003","title":"Physical Activity and Health : Fitness Walking (COMPRESSED)","meetings":[],"teachers":["A. Corinthios","Corinthios, A"],"notes":["(COMPRESSED COURSE; TRAVEL TIME IS NOT INCLUDED):","August 25 16:00-18:00; September 1, 15, 22, 29 16:00-19:00 3E.1/0H.1","INTENSIVE: September 19 8:00-12:00, 12:30-16:30 MONTREAL AREA","September 26 8:00-12:00, 12:30-16:30 MONTREAL AREA","Withdrawal Date: September 16, 2026","Drop Deadline [with mention on transcript]: September 23, 2026"],"seats":7},{"code":"109-101-MQ","section":"00004","title":"Physical Activity and Health : Fitness Walking (COMPRESSED)","meetings":[],"teachers":["A. Corinthios","Corinthios, A"],"notes":["(COMPRESSED COURSE: TRAVEL TIME IS NOT INCLUDED):","August 26 16:00 - 18:00 3E.1; September 2, 16, 23, 30 16:00 - 19:00 3E.1, 0H.1","INTENSIVE: September 20 8:00-12:00, 12:30-16:30 ROOM /MONTREAL AREA","September 27 8:00-12:00, 12:30-16:30 MONTREAL AREA","Withdrawal Date: September 17, 2026","Drop Deadline [with mention on transcript]: September 24, 2026"],"seats":9},{"code":"109-101-MQ","section":"00007","title":"Physical Activity and Health : Fitness Walking (COMPRESSED) (cont.)","meetings":[],"teachers":["V. Di Genova","Di Genova, V"],"notes":["(COMPRESSED COURSE ON AND OFF CAMPUS; TRAVEL TIME IS NOT INCLUDED):","August 25 16:00-18:00; September 1, 15, 22, 29 16:00-19:00 4E.9","INTENSIVE: September 13, 20 8:00-12:00, 12:30-16:30 MONTREAL AREA","Withdrawal Date: September 14, 2026","Drop Deadline [with mention on transcript]: September 21, 2026"],"seats":14},{"code":"109-101-MQ","section":"00006","title":"Physical Activity and Health : Day Hiking (COMPRESSED)","meetings":[],"teachers":["C. Deegan","Deegan, C"],"notes":["(COMPRESSED COURSE; TRAVEL TIME IS NOT INCLUDED)","August 24 16:00 - 18:00 3E.3; August 26 16:00-20:00; August 31, September 2 16:00-19:30 3E.3/0H.1","INTENSIVE: August 29 8:00-12:00, 12:30-17:00 MONTREAL AREA","August 30 8:00-12:00, 12:30-17:00 MONT TREMBLANT","Withdrawal Date: August 27, 2026","Drop Deadline [with mention on transcript]: August 31, 2026","August 24 16:00 - 18:00 3E.3;August 26 16:00-20:00;","August 31, September 2 16:00-19:30 3E.3/0H.1"],"seats":9},{"code":"109-101-MQ","section":"00009","title":"Physical Activity and Health : Outdoor Fitness (COMPRESSED)","meetings":[],"teachers":["C. Deegan","Deegan, C"],"notes":["(COMPRESSED COURSE; TRAVEL TIME IS NOT INCLUDED):","August 25 16:00-18:00, September 1, 3, 10, 15 16:00-19:00 4D.6/0H.1","INTENSIVE: September 12 8:00-12:00, 12:30-16:30 VERDUN RAPIDS/KSF LASALLE","September 13 8:00-12:00, 12:30-16:30 PARC DE LA RIVIERE DES MILLES ILES","Withdrawal Date: September 4, 2026","Drop Deadline [with mention on transcript]: September 14, 2026"],"seats":18},{"code":"109-101-MQ","section":"00012","title":"Physical Activity and Health : Combative Fitness","meetings":[{"day":"M","time":"8:00-10:00","room":"0H.3"}],"teachers":["V. Di Genova"],"notes":[],"seats":13},{"code":"109-101-MQ","section":"00016","title":"Physical Activity and Health : Combative Fitness","meetings":[{"day":"W","time":"16:00-18:00","room":"0H.3"}],"teachers":["V. Di Genova","Di Genova, V"],"notes":[],"seats":18},{"code":"109-101-MQ","section":"00045","title":"Physical Activity and Health : Alternative Fitness","meetings":[{"day":"T","time":"16:00-18:00","room":"0H.1"}],"teachers":["C. Haddad","Haddad, C"],"notes":[],"seats":22},{"code":"109-101-MQ","section":"00053","title":"Physical Activity and Health : Games Fitness","meetings":[{"day":"M","time":"16:00-18:00","room":"-1H.4,-1H.6"}],"teachers":["A. Corinthios","Corinthios, A"],"notes":[],"seats":18},{"code":"109-101-MQ","section":"00061","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"M","time":"12:00-14:00","room":"0H.1"}],"teachers":["C. Cantin","Cantin, C"],"notes":[],"seats":11},{"code":"109-101-MQ","section":"00063","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"T","time":"12:00-14:00","room":"0H.1"}],"teachers":["C. Cantin","Cantin, C"],"notes":[],"seats":17},{"code":"109-101-MQ","section":"00065","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"W","time":"14:00-16:00","room":"0H.1"}],"teachers":["P. Wasacz","Wasacz, P"],"notes":[],"seats":10},{"code":"109-101-MQ","section":"00066","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"F","time":"8:00-10:00","room":"0H.3"}],"teachers":["P. Wasacz"],"notes":[],"seats":6},{"code":"109-101-MQ","section":"00067","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"F","time":"10:00-12:00","room":"0H.1"}],"teachers":["P. Wasacz","Wasacz, P"],"notes":[],"seats":null},{"code":"109-101-MQ","section":"00068","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"T","time":"14:00-16:00","room":"0H.3"}],"teachers":["C. Haddad","Haddad, C"],"notes":[],"seats":11},{"code":"109-101-MQ","section":"00070","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"T","time":"8:00-10:00","room":"-1H.2"}],"teachers":["C. Deegan"],"notes":[],"seats":16},{"code":"109-102-MQ","section":"00015","title":"Physical Activity and Effectiveness : Wilderness Skills (INTENSIVE)","meetings":[],"teachers":["L. Nakhlé","Nakhlé, L"],"notes":["(OUTDOOR EDUCATION INTENSIVE HELD ON THREE CONSECUTIVE DAYS, INCLUDING TWO","OVERNIGHTS [CAMPING]; TRAVEL TIME IS NOT INCLUDED):","August 20 18:00-19:00; September 3, 10 18:00-21:00 3E.11;","INTENSIVE: September 12, 13 8:00-12:00, 12:30-16:00, 18:30-20:00 DOMAINE SAINT BERNARD","September 14 8:00-12:00, 13:00-14:00 DOMANINE SAINT BERNARD","Withdrawal Date: September 11, 2026","Drop Deadline [with mention on transcript]: September 14, 2026"],"seats":12},{"code":"109-102-MQ","section":"00025","title":"Physical Activity and Effectiveness : Outdoor Journey (COMPRESSED)","meetings":[],"teachers":["C. Deegan","Deegan, C"],"notes":["(Journeys)(COMPRESSED COURSE ON AND OFF CAMPUS; TRAVEL TIME IS NOT INCLUDED):","August 20, 27, October 15, 22 10:00-13:00 -2H.1;","September 3, 10, October 1 10:00-14:00 KAHNAWAKE;","September 17 10:00-13:00 -2H.1;/-1H.2;","October 8 10:00-13:00 BOULDERING GYM;","Withdrawal Date: August 28, 2026","Drop Deadline [with mention on transcript]: October 2, 2026","(Journeys)","(COMPRESSED COURSE ON AND OFF CAMPUS; TRAVEL TIME IS NOT INCLUDED):"],"seats":null},{"code":"109-102-MQ","section":"00039","title":"Physical Activity and Effectiveness : Rockclimbing","meetings":[{"day":"M","time":"10:00-12:00","room":"-1H.2"}],"teachers":["C. Deegan","Deegan, C"],"notes":[],"seats":12},{"code":"109-102-MQ","section":"00040","title":"Physical Activity and Effectiveness : Rockclimbing","meetings":[{"day":"M","time":"12:00-14:00","room":"-1H.2"}],"teachers":["C. Deegan","Deegan, C"],"notes":[],"seats":6},{"code":"109-102-MQ","section":"00042","title":"Physical Activity and Effectiveness : Rockclimbing","meetings":[{"day":"T","time":"12:00-14:00","room":"-1H.2"}],"teachers":["J. Egan","Egan, J"],"notes":[],"seats":15},{"code":"109-102-MQ","section":"00043","title":"Physical Activity and Effectiveness : Rockclimbing","meetings":[{"day":"T","time":"14:00-16:00","room":"-1H.2"}],"teachers":["J. Egan","Egan, J"],"notes":[],"seats":18},{"code":"109-102-MQ","section":"00044","title":"Physical Activity and Effectiveness : Rockclimbing","meetings":[{"day":"H","time":"8:00-10:00","room":"-1H.2"}],"teachers":["J. Egan"],"notes":[],"seats":13},{"code":"109-102-MQ","section":"00064","title":"Physical Activity and Effectiveness : Yoga","meetings":[{"day":"W","time":"8:00-10:00","room":"4F.1"}],"teachers":["C. Haddad"],"notes":[],"seats":5},{"code":"502-941-DW","section":"00002","title":"Journalism: Writing News Stories","meetings":[{"day":"W","time":"11:30-14:30","room":"3B.6"}],"teachers":["S. Seronde"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"340-913-DW","section":"00001","title":"Philosophy and Culture : The Philosophy of Love","meetings":[{"day":"TH","time":"13:00-14:30","room":"4H.25"}],"teachers":["S. Allen"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":null},{"code":"345-101-MQ","section":"00020","title":"Knowledge : The Examined Life","meetings":[{"day":"MW","time":"8:00-10:00","room":"4P.09"}],"teachers":["D. Farnham"],"notes":[],"seats":29},{"code":"345-101-MQ","section":"00024","title":"Knowledge : The Examined Life","meetings":[{"day":"TF","time":"10:00-12:00","room":"4P.04"}],"teachers":["D. Farnham","Farnham, D"],"notes":[],"seats":32},{"code":"345-101-MQ","section":"00026","title":"Knowledge : The Examined Life","meetings":[{"day":"TF","time":"8:00-10:00","room":"3P.09"}],"teachers":["D. Farnham"],"notes":[],"seats":29},{"code":"345-101-MQ","section":"00028","title":"Knowledge : Greek Mythology","meetings":[{"day":"H","time":"10:00-12:00","room":"4H.23"},{"day":"M","time":"14:00-16:00","room":"4H.23"}],"teachers":["A. Thorpe","Thorpe, A"],"notes":[],"seats":26},{"code":"345-101-MQ","section":"00006","title":"Knowledge : Critical Thinking, Creative Thinking, Design Thinking","meetings":[{"day":"MW","time":"10:00-12:00","room":"3E.9"}],"teachers":["J. Lim","Lim, J"],"notes":[],"seats":12},{"code":"345-101-MQ","section":"00008","title":"Knowledge : Critical Thinking, Creative Thinking, Design Thinking","meetings":[{"day":"TH","time":"12:00-14:00","room":"4H.15"}],"teachers":["J. Lim","Lim, J"],"notes":[],"seats":23},{"code":"345-101-MQ","section":"00036","title":"Knowledge : Knowledge Beyond Good and Evil","meetings":[{"day":"M","time":"10:00-12:00","room":"4A.3"},{"day":"W","time":"10:00-12:00","room":"2P.04"}],"teachers":["G. Polakoff","Polakoff, G"],"notes":[],"seats":18},{"code":"603-101-MQ","section":"00065","title":"I.C.E. : Introduction to College English","meetings":[{"day":"WF","time":"12:00-14:00","room":"4H.15"}],"teachers":["R. Cartlidge","Cartlidge, R"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00066","title":"I.C.E. : Introduction to College English","meetings":[{"day":"MW","time":"8:00-10:00","room":"3P.09"}],"teachers":["R. Cartlidge"],"notes":[],"seats":35},{"code":"603-101-MQ","section":"00067","title":"I.C.E. : Introduction to College English","meetings":[{"day":"TH","time":"12:00-14:00","room":"4P.09"}],"teachers":["S. Fanning","Fanning, S"],"notes":[],"seats":35},{"code":"345-101-MQ","section":"00004","title":"Knowledge : Men, Women and Culture","meetings":[{"day":"TH","time":"14:00-16:00","room":"3E.9"}],"teachers":["G. Lalonde","Lalonde, G"],"notes":[],"seats":26},{"code":"345-101-MQ","section":"00017","title":"Knowledge : Critical Thinking: Feminist Ways of Knowing","meetings":[{"day":"WF","time":"14:00-16:00","room":"4A.4"}],"teachers":["S. Hoffmann","Hoffmann, S"],"notes":["(This section will be offered partially online. Students registering for this section are expected to have","individual access to the internet.)","(This section will be offered partially online. Students registering for this section are expected to","have individual access to the internet.)"],"seats":26},{"code":"345-101-MQ","section":"00014","title":"Knowledge : What Does It Mean to Be Human?","meetings":[{"day":"TH","time":"16:00-18:00","room":"3P.03"}],"teachers":["E. Van Der Wee","Van Der Wee, E"],"notes":[],"seats":24},{"code":"345-101-MQ","section":"00018","title":"Knowledge : What Does It Mean to Be Human?","meetings":[{"day":"TH","time":"12:00-14:00","room":"3P.07"}],"teachers":["E. Van Der Wee","Van Der Wee, E"],"notes":[],"seats":25},{"code":"345-101-MQ","section":"00027","title":"Knowledge : What Does It Mean to Be Human?","meetings":[{"day":"MW","time":"16:00-18:00","room":"3P.07"}],"teachers":["E. Van Der Wee","Van Der Wee, E"],"notes":[],"seats":30},{"code":"345-101-MQ","section":"00019","title":"Knowledge : From Human to Posthuman: Philosophies of the Self","meetings":[{"day":"H","time":"10:00-12:00","room":"4P.26"},{"day":"M","time":"14:00-16:00","room":"4P.26"}],"teachers":["M. Bobiy","Bobiy, M"],"notes":[],"seats":34},{"code":"345-101-MQ","section":"00021","title":"Knowledge : From Human to Posthuman: Philosophies of the Self","meetings":[{"day":"TH","time":"12:00-14:00","room":"4P.25"}],"teachers":["M. Bobiy","Bobiy, M"],"notes":[],"seats":33},{"code":"603-101-MQ","section":"00029","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"MW","time":"16:00-18:00","room":"4P.06"}],"teachers":["L. Slater"],"notes":["Devine, B"],"seats":null},{"code":"603-101-MQ","section":"00092","title":"I.C.E. : Introduction to College English","meetings":[{"day":"MW","time":"8:00-10:00","room":"3P.01"}],"teachers":["G. Granter"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00093","title":"I.C.E. : Introduction to College English","meetings":[{"day":"WF","time":"12:00-14:00","room":"4A.4"}],"teachers":["G. Granter","Granter, G"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00001","title":"I.C.E. : Writing English","meetings":[{"day":"Tue","time":"14:00-16:00","room":"4P.02"},{"day":"Thu","time":"14:00-16:00","room":"4P.02"}],"teachers":["Proulx, M"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00002","title":"I.C.E. : Writing English","meetings":[{"day":"Mon","time":"12:00-14:00","room":"4P.26"},{"day":"Thu","time":"08:00-10:00","room":"4P.26"}],"teachers":["Atallah, B"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00003","title":"I.C.E. : Writing English","meetings":[{"day":"Tue","time":"12:00-14:00","room":"4P.02"},{"day":"Thu","time":"12:00-14:00","room":"4P.02"}],"teachers":["Atallah, B"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00004","title":"I.C.E. : Writing English","meetings":[{"day":"Tue","time":"08:00-10:00","room":"3D.2"},{"day":"Fri","time":"08:00-10:00","room":"3D.2"}],"teachers":["Lewton-Brain, A"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00005","title":"I.C.E. : Writing English","meetings":[{"day":"Mon","time":"08:00-10:00","room":"4D.1"},{"day":"Wed","time":"08:00-10:00","room":"4D.1"}],"teachers":["Lachance, L"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00006","title":"I.C.E. : Writing English","meetings":[{"day":"Mon","time":"10:00-12:00","room":"4P.08"},{"day":"Wed","time":"10:00-12:00","room":"4P.08"}],"teachers":["Lachance, L"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00007","title":"I.C.E. : Writing English","meetings":[{"day":"Tue","time":"10:00-12:00","room":"5B.7"},{"day":"Fri","time":"10:00-12:00","room":"5B.7"},{"day":"Mon","time":"14:00-16:00","room":null},{"day":"Thu","time":"10:00-12:00","room":null}],"teachers":["Wood, O"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00008","title":"I.C.E. : Writing English","meetings":[{"day":"Mon","time":"14:00-16:00","room":null},{"day":"Thu","time":"10:00-12:00","room":null}],"teachers":["5B.7","Loubert, H"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00009","title":"I.C.E. : Writing English","meetings":[],"teachers":["4P.05"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00010","title":"I.C.E. : Writing English","meetings":[{"day":"Mon","time":"16:00-18:00","room":"5B.7"},{"day":"Wed","time":"16:00-18:00","room":"5B.7"}],"teachers":["Loubert, H"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00011","title":"I.C.E. : Writing English","meetings":[{"day":"Mon","time":"16:00-18:00","room":"4P.05 TBA-603-A,"},{"day":"Wed","time":"16:00-18:00","room":"4P.05 TBA-603-A,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"603-101-MQ","section":"00025","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"10:00-12:00","room":"4P.05"},{"day":"Fri","time":"10:00-12:00","room":"4P.05"}],"teachers":["Slobodzian, G"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00026","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"14:00-16:00","room":"3P.01"},{"day":"Thu","time":"14:00-16:00","room":"3P.01"}],"teachers":["Slobodzian, G"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00027","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"08:00-10:00","room":"4P.09"},{"day":"Fri","time":"08:00-10:00","room":"4P.09"}],"teachers":["Taylor, M"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00028","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"12:00-14:00","room":"4P.22"},{"day":"Thu","time":"08:00-10:00","room":"4P.22"}],"teachers":["Taylor, M"],"notes":["Slater, L"],"seats":null},{"code":"603-101-MQ","section":"00030","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Wed","time":"12:00-14:00","room":"5B.11"},{"day":"Fri","time":"12:00-14:00","room":"5B.11"}],"teachers":[],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00031","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"08:00-10:00","room":"4A.14"},{"day":"Fri","time":"08:00-10:00","room":"4A.14"}],"teachers":["Devine, B"],"notes":["Perry, M"],"seats":null},{"code":"603-101-MQ","section":"00032","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"08:00-10:00","room":"3F.39"},{"day":"Wed","time":"08:00-10:00","room":"3F.39"}],"teachers":[],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00033","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"14:00-16:00","room":"4A.4"},{"day":"Thu","time":"10:00-12:00","room":"4A.4"}],"teachers":["Nault, J"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00034","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"10:00-12:00","room":"4P.04"},{"day":"Wed","time":"10:00-12:00","room":"4P.04"}],"teachers":["Kakon, A"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00035","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"12:00-14:00","room":"4P.08"},{"day":"Thu","time":"08:00-10:00","room":"4P.08"}],"teachers":["Nojoumian, A"],"notes":["Hall, K"],"seats":null},{"code":"603-101-MQ","section":"00036","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"08:00-10:00","room":"3F.37"},{"day":"Fri","time":"08:00-10:00","room":"3F.37"}],"teachers":[],"notes":["Strudensky, A"],"seats":null},{"code":"603-101-MQ","section":"00037","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"08:00-10:00","room":"3F.27"},{"day":"Wed","time":"08:00-10:00","room":"3F.27"}],"teachers":[],"notes":["Kakon, A"],"seats":null},{"code":"603-101-MQ","section":"00038","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Wed","time":"12:00-14:00","room":"4P.22"},{"day":"Fri","time":"12:00-14:00","room":"4P.22"}],"teachers":[],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00039","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"14:00-16:00","room":"3F.7"},{"day":"Thu","time":"10:00-12:00","room":"4P.22"}],"teachers":["Lardy, F"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00040","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"12:00-14:00","room":"4G.2A"},{"day":"Thu","time":"12:00-14:00","room":"3P.01"}],"teachers":["Lardy, F"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00041","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"10:00-12:00","room":"4E.11"},{"day":"Fri","time":"10:00-12:00","room":"4E.11"}],"teachers":["Nojoumian, A"],"notes":["Page Page 5 7 7 08/13/2026 09:48"],"seats":null},{"code":"603-101-MQ","section":"00042","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"16:00-18:00","room":"7B.6"},{"day":"Wed","time":"16:00-18:00","room":"7B.6"}],"teachers":["Shafieesabet, S"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00043","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"16:00-18:00","room":"7B.13"},{"day":"Thu","time":"16:00-18:00","room":"7B.13"}],"teachers":["Shafieesabet, S"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00044","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"10:00-12:00","room":"3H.6"},{"day":"Wed","time":"10:00-12:00","room":"3H.6"}],"teachers":["Cadieux, J"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00045","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"12:00-14:00","room":"3H.6"},{"day":"Thu","time":"12:00-14:00","room":"3H.6"}],"teachers":["Cadieux, J"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00046","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"16:00-18:00","room":"4P.08"},{"day":"Thu","time":"16:00-18:00","room":"4P.08"}],"teachers":["Fuchs, F"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00047","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"10:00-12:00","room":"4P.24"},{"day":"Fri","time":"10:00-12:00","room":"4P.24"}],"teachers":["MacEachern, J"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00048","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"10:00-12:00","room":"4E.11"},{"day":"Wed","time":"10:00-12:00","room":"4E.11"}],"teachers":["Hadley, L"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00049","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"12:00-14:00","room":"3P.03"},{"day":"Thu","time":"08:00-10:00","room":"3P.03"}],"teachers":["Pfefferle, J"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00050","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"12:00-14:00","room":"3P.05"},{"day":"Thu","time":"12:00-14:00","room":"3P.05"}],"teachers":["Pfefferle, J"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00051","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"14:00-16:00","room":"4P.24"},{"day":"Thu","time":"14:00-16:00","room":"4P.24"}],"teachers":["Stunden, S"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00052","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"16:00-18:00","room":"4P.22"},{"day":"Wed","time":"16:00-18:00","room":"4P.22"}],"teachers":["Stunden, S"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00053","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Wed","time":"12:00-14:00","room":"4P.24"},{"day":"Fri","time":"12:00-14:00","room":"4P.24"}],"teachers":["MacEachern, J"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00054","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"08:00-10:00","room":"4P.02"},{"day":"Wed","time":"08:00-10:00","room":"4P.02"}],"teachers":["Rahimi, H"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00055","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"08:00-10:00","room":"3P.05"},{"day":"Fri","time":"08:00-10:00","room":"3P.05"}],"teachers":["Rahimi, H"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00056","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Tue","time":"16:00-18:00","room":"5B.11"},{"day":"Thu","time":"16:00-18:00","room":"5B.11"}],"teachers":["Nault, J"],"notes":[],"seats":null},{"code":"603-101-MQ","section":"00057","title":"I.C.E. : Effective Reading and Writing","meetings":[{"day":"Mon","time":"14:00-16:00","room":"3P.09 TBA-603-A,"},{"day":"Thu","time":"10:00-12:00","room":"3P.09 TBA-603-A,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"603-101-MQ","section":"00066","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"08:00-10:00","room":"3P.09"},{"day":"Wed","time":"08:00-10:00","room":"3P.09"}],"teachers":["Cartlidge, R"],"notes":[],"seats":35},{"code":"603-101-MQ","section":"00068","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"14:00-16:00","room":"3F.45"},{"day":"Thu","time":"10:00-12:00","room":"3F.45"}],"teachers":["Grant, A"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00069","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Wed","time":"12:00-14:00","room":"4P.05"},{"day":"Fri","time":"12:00-14:00","room":"4P.05"}],"teachers":["Reid, L"],"notes":[],"seats":32},{"code":"603-101-MQ","section":"00070","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"10:00-12:00","room":"4P.09"},{"day":"Wed","time":"10:00-12:00","room":"4P.09"}],"teachers":["Kibaris, A"],"notes":[],"seats":32},{"code":"603-101-MQ","section":"00071","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"14:00-16:00","room":"2P.55"},{"day":"Thu","time":"14:00-16:00","room":"2P.55"}],"teachers":["Kibaris, A"],"notes":[],"seats":35},{"code":"603-101-MQ","section":"00072","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"08:00-10:00","room":"4P.26"},{"day":"Wed","time":"08:00-10:00","room":"4P.26"}],"teachers":["Rouse, T"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00073","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"12:00-14:00","room":"5B.07"},{"day":"Thu","time":"08:00-10:00","room":"5B.07"}],"teachers":["Boatner-Doane, C"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00074","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Wed","time":"12:00-14:00","room":"4D.1"},{"day":"Fri","time":"12:00-14:00","room":"4D.1"}],"teachers":["Bellon, L"],"notes":["(Liberal Arts)"],"seats":42},{"code":"603-101-MQ","section":"00075","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"08:00-10:00","room":"3F.25"},{"day":"Fri","time":"08:00-10:00","room":"3F.25"}],"teachers":["Misztal, U"],"notes":[],"seats":33},{"code":"603-101-MQ","section":"00076","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"14:00-16:00","room":"3F.27"},{"day":"Thu","time":"14:00-16:00","room":"3F.27"}],"teachers":["Misztal, U"],"notes":[],"seats":34},{"code":"603-101-MQ","section":"00077","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"12:00-14:00","room":"4H.23"},{"day":"Thu","time":"12:00-14:00","room":"4H.23"}],"teachers":["Sautter-Leger, S"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00078","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"08:00-10:00","room":"4P.22"},{"day":"Fri","time":"08:00-10:00","room":"4P.22"}],"teachers":["Sautter-Leger, S"],"notes":[],"seats":35},{"code":"603-101-MQ","section":"00079","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Wed","time":"12:00-14:00","room":"4D.6"},{"day":"Fri","time":"12:00-14:00","room":"4D.6"}],"teachers":["Stojkovic, T"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00080","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"16:00-18:00","room":"4F.2"},{"day":"Wed","time":"16:00-18:00","room":"4F.2"}],"teachers":["Stojkovic, T"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00083","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"12:00-14:00","room":"3P.01"},{"day":"Thu","time":"08:00-10:00","room":"3P.01"}],"teachers":["McDonell, T"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00084","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"10:00-12:00","room":"4P.09"},{"day":"Fri","time":"10:00-12:00","room":"4P.09"}],"teachers":[],"notes":["Hartlen, N"],"seats":35},{"code":"603-101-MQ","section":"00085","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"14:00-16:00","room":"4P.22"},{"day":"Thu","time":"14:00-16:00","room":"4P.22"}],"teachers":["Hartlen, N"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00088","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"08:00-10:00","room":"2P.55"},{"day":"Fri","time":"08:00-10:00","room":"2P.55"}],"teachers":["Gemmel, T"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00089","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"10:00-12:00","room":"4P.10"},{"day":"Fri","time":"10:00-12:00","room":"4P.10"}],"teachers":["Gemmel, T"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00090","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"16:00-18:00","room":"4D.11"},{"day":"Thu","time":"16:00-18:00","room":"4D.11"}],"teachers":["Runcie, F"],"notes":[],"seats":33},{"code":"603-101-MQ","section":"00091","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"10:00-12:00","room":"4P.25"},{"day":"Fri","time":"10:00-12:00","room":"4P.25"}],"teachers":["Sentes, B"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00092","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"08:00-10:00","room":"3P.01"},{"day":"Wed","time":"08:00-10:00","room":"3P.01"}],"teachers":["Granter, G"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00094","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"12:00-14:00","room":"4H.23"},{"day":"Thu","time":"08:00-10:00","room":"4H.23"}],"teachers":["Payne, C"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00095","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"14:00-16:00","room":"4P.07"},{"day":"Thu","time":"10:00-12:00","room":"4P.07"}],"teachers":["Reid, L"],"notes":[],"seats":34},{"code":"603-101-MQ","section":"00097","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"08:00-10:00","room":"4P.10"},{"day":"Wed","time":"08:00-10:00","room":"4P.10"}],"teachers":["Roberts, L"],"notes":[],"seats":32},{"code":"603-101-MQ","section":"00098","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"16:00-18:00","room":"4P.10"},{"day":"Thu","time":"16:00-18:00","room":"4P.10"}],"teachers":["Flamenco, A"],"notes":[],"seats":30},{"code":"603-101-MQ","section":"00099","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"16:00-18:00","room":"3P.03"},{"day":"Wed","time":"16:00-18:00","room":"3P.03"}],"teachers":["Lowe, C"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00100","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"10:00-12:00","room":"3F.27"},{"day":"Fri","time":"10:00-12:00","room":"3F.27"}],"teachers":["Charette, C"],"notes":[],"seats":36},{"code":"603-101-MQ","section":"00101","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"12:00-14:00","room":"3F.25"},{"day":"Thu","time":"12:00-14:00","room":"3F.25"}],"teachers":["Charette, C"],"notes":[],"seats":35},{"code":"603-101-MQ","section":"00102","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"10:00-12:00","room":"3F.7"},{"day":"Wed","time":"10:00-12:00","room":"2P.55"}],"teachers":["Gilbert, S"],"notes":[],"seats":35},{"code":"603-101-MQ","section":"00103","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"14:00-16:00","room":"4P.06"},{"day":"Thu","time":"10:00-12:00","room":"4P.06"}],"teachers":["Rouse, T"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00104","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Tue","time":"14:00-16:00","room":"4P.05"},{"day":"Thu","time":"14:00-16:00","room":"4P.05"}],"teachers":["Flamenco, A"],"notes":[],"seats":37},{"code":"603-101-MQ","section":"00106","title":"I.C.E. : Introduction to College English","meetings":[{"day":"Mon","time":"12:00-14:00","room":"4P.05 TBA-603-A,"},{"day":"Thu","time":"08:00-10:00","room":"4P.05 TBA-603-A,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"602-A03-MQ","section":"00010","title":"le monde francophone","meetings":[{"day":"Tue","time":"10:00-11:30","room":"4D.2"},{"day":"Fri","time":"10:00-11:30","room":"4D.2"}],"teachers":["Cristea, C"],"notes":[],"seats":22},{"code":"602-A03-MQ","section":"00013","title":"le monde francophone","meetings":[{"day":"Tue","time":"13:00-14:30","room":"2P.08"},{"day":"Thu","time":"13:00-14:30","room":"2P.08"}],"teachers":["Cristea, C"],"notes":[],"seats":22},{"code":"602-A03-MQ","section":"00002","title":"Français langue seconde niveau 3","meetings":[{"day":"Mon","time":"16:00-17:30","room":"5D.2"},{"day":"Wed","time":"16:00-17:30","room":"5D.2"}],"teachers":["Gojakovic, O"],"notes":[],"seats":23},{"code":"602-A03-MQ","section":"00003","title":"Français langue seconde niveau 3","meetings":[{"day":"Tue","time":"16:00-17:30","room":"5A.2"},{"day":"Thu","time":"16:00-17:30","room":"5A.2"}],"teachers":["Giguère, C"],"notes":[],"seats":27},{"code":"602-A03-MQ","section":"00004","title":"Français langue seconde niveau 3","meetings":[{"day":"Mon","time":"14:30-16:00","room":"4A.7"},{"day":"Wed","time":"14:30-16:00","room":"4A.7"}],"teachers":["Gojakovic, O"],"notes":[],"seats":25},{"code":"602-A03-MQ","section":"00016","title":"Français langue seconde niveau 3","meetings":[{"day":"Tue","time":"11:30-13:00","room":"4A.7"},{"day":"Thu","time":"11:30-13:00","room":"4A.7"}],"teachers":["Gojakovic, O"],"notes":[],"seats":24},{"code":"602-A03-MQ","section":"00060","title":"Français langue seconde niveau 3","meetings":[{"day":"Mon","time":"13:00-14:30","room":"2P.67 TBA-602-B,"},{"day":"Thu","time":"10:00-11:30","room":"2P.67 TBA-602-B,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"602-A03-MQ","section":"00006","title":"Français langue seconde niveau 3 : Littérature postcoloniale","meetings":[{"day":"Mon","time":"11:30-13:00","room":"3E.7"},{"day":"Thu","time":"08:30-10:00","room":"3E.7"}],"teachers":["Jetten, J"],"notes":[],"seats":24},{"code":"602-A03-MQ","section":"00008","title":"monde francophone","meetings":[{"day":"Mon","time":"08:30-10:00","room":"4A.7"},{"day":"Wed","time":"08:30-10:00","room":"4A.7"}],"teachers":["Geoffrion, I"],"notes":[],"seats":25},{"code":"602-A03-MQ","section":"00009","title":"monde francophone","meetings":[{"day":"Mon","time":"10:00-11:30","room":"4D.11"},{"day":"Wed","time":"10:00-11:30","room":"4D.11"}],"teachers":["Geoffrion, I"],"notes":[],"seats":23},{"code":"602-A03-MQ","section":"00015","title":"monde francophone","meetings":[{"day":"Tue","time":"08:30-10:00","room":"3B.11"},{"day":"Fri","time":"08:30-10:00","room":"3B.11"}],"teachers":["Geoffrion, I"],"notes":[],"seats":26},{"code":"602-A03-MQ","section":"00011","title":"Français langue seconde niveau 3 : Étude de la littérature fantastique","meetings":[{"day":"Mon","time":"13:00-14:30","room":"2P.57"},{"day":"Thu","time":"10:00-11:30","room":"2P.57"}],"teachers":["Askari Chirazi, S"],"notes":[],"seats":26},{"code":"602-A03-MQ","section":"00012","title":"Français langue seconde niveau 3 : Étude de la littérature fantastique","meetings":[{"day":"Wed","time":"11:30-13:00","room":"4E.7"},{"day":"Fri","time":"11:30-13:00","room":"4E.7"}],"teachers":["Askari Chirazi, S"],"notes":[],"seats":26},{"code":"602-A03-MQ","section":"00014","title":"Français langue seconde niveau 3 : Monde contemporain","meetings":[{"day":"Wed","time":"13:00-14:30","room":"3F.39"},{"day":"Fri","time":"13:00-14:30","room":"3F.39"}],"teachers":["Djaoud, S"],"notes":[],"seats":27},{"code":"602-A03-MQ","section":"00017","title":"Français langue seconde niveau 3 : L’immigration","meetings":[{"day":"Tue","time":"14:30-16:00","room":"4H.8"},{"day":"Thu","time":"14:30-16:00","room":"4H.8"}],"teachers":["Béchard, J"],"notes":[],"seats":20},{"code":"602-A03-MQ","section":"00018","title":"Français langue seconde niveau 3 : L’immigration","meetings":[{"day":"Mon","time":"13:00-14:30","room":"2P.09"},{"day":"Thu","time":"10:00-11:30","room":"2P.09"}],"teachers":["Béchard, J"],"notes":[],"seats":27},{"code":"602-A03-MQ","section":"00050","title":"hydroélectricité (INTENSIVE)","meetings":[],"teachers":["Patoine, P"],"notes":["IMPORTANT MEETING: August 24 18:00-19:30 3A.9","INTENSIVE: January 4, 2027 to January 13, 2027 9:00-12:00, 13:00-15:30 4D.3","Withdrawal Date: January 6, 2027","Drop Deadline [with mention on transcript]: January 11, 2027"],"seats":21},{"code":"345-101-MQ","section":"00001","title":"Knowledge : Evolution","meetings":[{"day":"Wed","time":"14:00-16:00","room":"3E.9"},{"day":"Fri","time":"14:00-16:00","room":"3E.9"}],"teachers":["De Sousa, R"],"notes":[],"seats":19},{"code":"345-101-MQ","section":"00011","title":"Knowledge : Evolution","meetings":[{"day":"Mon","time":"16:00-18:00","room":"4A.3"},{"day":"Wed","time":"16:00-18:00","room":"4A.3"}],"teachers":["De Sousa, R"],"notes":[],"seats":24},{"code":"345-101-MQ","section":"00002","title":"Knowledge : Knowledge of the Human Mind and Critical Thinking about AI","meetings":[{"day":"Tue","time":"16:00-18:00","room":"4P.25"},{"day":"Thu","time":"16:00-18:00","room":"4P.25"}],"teachers":["Saucier-Bouffard, C"],"notes":[],"seats":21},{"code":"345-101-MQ","section":"00009","title":"Knowledge : Knowledge of the Human Mind and Critical Thinking about AI","meetings":[{"day":"Mon","time":"14:00-16:00","room":"4P.10"},{"day":"Thu","time":"10:00-12:00","room":"4P.10"}],"teachers":["Saucier-Bouffard, C"],"notes":[],"seats":30},{"code":"345-101-MQ","section":"00010","title":"Knowledge : Knowledge of the Human Mind and Critical Thinking about AI","meetings":[{"day":"Tue","time":"12:00-14:00","room":"4P.26"},{"day":"Thu","time":"12:00-14:00","room":"4P.26"}],"teachers":["Saucier-Bouffard, C"],"notes":[],"seats":28},{"code":"345-101-MQ","section":"00003","title":"Knowledge : Critical Pedagogy","meetings":[{"day":"Wed","time":"12:00-14:00","room":"3F.7"},{"day":"Fri","time":"12:00-14:00","room":"3F.37"}],"teachers":["Sambe, M"],"notes":[],"seats":26},{"code":"345-101-MQ","section":"00005","title":"Knowledge : Who Can You Trust? Misinformation in Media","meetings":[{"day":"Mon","time":"16:00-18:00","room":null}],"teachers":["Wed 16:00 to 3E.9 Jezer-Morton, K"],"notes":["18:00"],"seats":15},{"code":"345-101-MQ","section":"00007","title":"Knowledge : Thinking Critically about Authoritarianism","meetings":[{"day":"Mon","time":"12:00-14:00","room":"4H.21"},{"day":"Thu","time":"08:00-10:00","room":"4H.21"}],"teachers":["Ring, S"],"notes":[],"seats":29},{"code":"345-101-MQ","section":"00033","title":"Knowledge : Thinking Critically about Authoritarianism","meetings":[{"day":"Tue","time":"08:00-10:00","room":"4H.15"},{"day":"Fri","time":"08:00-10:00","room":"4H.15"}],"teachers":["Ring, S"],"notes":[],"seats":30},{"code":"345-101-MQ","section":"00048","title":"Knowledge : Thinking Critically about Authoritarianism","meetings":[{"day":"Tue","time":"14:00-16:00","room":"4H.21"},{"day":"Thu","time":"14:00-16:00","room":"4H.21"}],"teachers":["Ring, S"],"notes":[],"seats":30},{"code":"345-101-MQ","section":"00012","title":"Knowledge : Judging Monarchs","meetings":[{"day":"Wed","time":"14:00-16:00","room":"4P.25"},{"day":"Fri","time":"14:00-16:00","room":"4P.25"}],"teachers":["Slonosky, T"],"notes":[],"seats":16},{"code":"345-101-MQ","section":"00025","title":"Knowledge : Judging Monarchs","meetings":[{"day":"Tue","time":"16:00-18:00","room":"3P.01"},{"day":"Thu","time":"16:00-18:00","room":"3P.01"}],"teachers":["Slonosky, T"],"notes":[],"seats":26},{"code":"345-101-MQ","section":"00029","title":"Knowledge : Judging Monarchs","meetings":[{"day":"Tue","time":"10:00-12:00","room":"3P.05"},{"day":"Fri","time":"10:00-12:00","room":"3P.05"}],"teachers":["Slonosky, T"],"notes":[],"seats":31},{"code":"345-101-MQ","section":"00020","title":"Knowledge : The Examined Life","meetings":[{"day":"Mon","time":"08:00-10:00","room":"4P.09"},{"day":"Wed","time":"08:00-10:00","room":"4P.09"}],"teachers":["Farnham, D"],"notes":[],"seats":29},{"code":"345-101-MQ","section":"00026","title":"Knowledge : The Examined Life","meetings":[{"day":"Tue","time":"08:00-10:00","room":"3P.09"},{"day":"Fri","time":"08:00-10:00","room":"3P.09"}],"teachers":["Farnham, D"],"notes":[],"seats":29},{"code":"345-101-MQ","section":"00023","title":"Knowledge : Revolution and Romanticism","meetings":[{"day":"Mon","time":"12:00-14:00","room":"3P.09"},{"day":"Thu","time":"08:00-10:00","room":"3P.09"}],"teachers":["Koopman, J"],"notes":[],"seats":20},{"code":"345-101-MQ","section":"00040","title":"Knowledge : Revolution and Romanticism","meetings":[{"day":"Mon","time":"08:00-10:00","room":"2P.55"},{"day":"Wed","time":"08:00-10:00","room":"2P.55"}],"teachers":["Koopman, J"],"notes":[],"seats":24},{"code":"345-101-MQ","section":"00030","title":"Knowledge : The Self: Theories and Constructions","meetings":[{"day":"Mon","time":"08:00-10:00","room":"4P.05"},{"day":"Wed","time":"08:00-10:00","room":"4P.05"}],"teachers":["Hunting, J"],"notes":[],"seats":24},{"code":"345-101-MQ","section":"00031","title":"Knowledge : The Self: Theories and Constructions","meetings":[{"day":"Tue","time":"08:00-10:00","room":"4P.25"},{"day":"Fri","time":"08:00-10:00","room":"4P.25"}],"teachers":["Hunting, J"],"notes":[],"seats":22},{"code":"345-101-MQ","section":"00032","title":"Knowledge : The Self: Theories and Constructions","meetings":[{"day":"Tue","time":"10:00-12:00","room":"4P.06"},{"day":"Fri","time":"10:00-12:00","room":"4P.06"}],"teachers":["Hunting, J"],"notes":[],"seats":33},{"code":"345-101-MQ","section":"00034","title":"Knowledge : How to Pay Attention","meetings":[{"day":"Mon","time":"16:00-18:00","room":"4H.15"},{"day":"Wed","time":"16:00-18:00","room":"4H.15"}],"teachers":["Rosen, J"],"notes":[],"seats":20},{"code":"345-101-MQ","section":"00038","title":"Knowledge : How to Pay Attention","meetings":[{"day":"Wed","time":"12:00-14:00","room":"4P.06"},{"day":"Fri","time":"12:00-14:00","room":"4P.06"}],"teachers":["Rosen, J"],"notes":[],"seats":14},{"code":"345-101-MQ","section":"00035","title":"Knowledge :","meetings":[{"day":"Mon","time":"12:00-14:00","room":"3B.15"},{"day":"Thu","time":"08:00-10:00","room":"3B.15"}],"teachers":["Robbins, P"],"notes":[],"seats":29},{"code":"345-101-MQ","section":"00037","title":"Knowledge : Moral Knowledge","meetings":[{"day":"Mon","time":"08:00-10:00","room":"3H.10"},{"day":"Wed","time":"08:00-10:00","room":"3H.10"}],"teachers":["Stephens, R"],"notes":["(Liberal Arts)"],"seats":9},{"code":"345-101-MQ","section":"00041","title":"Knowledge : Philosophical Dilemmas","meetings":[{"day":"Tue","time":"14:00-16:00","room":"4H.15"},{"day":"Thu","time":"14:00-16:00","room":"4H.15"}],"teachers":["Chen, S"],"notes":[],"seats":33},{"code":"345-101-MQ","section":"00042","title":"Knowledge : Philosophical Dilemmas","meetings":[{"day":"Tue","time":"16:00-18:00","room":"4A.3"},{"day":"Thu","time":"16:00-18:00","room":"4A.3"}],"teachers":["Chen, S"],"notes":[],"seats":28},{"code":"345-101-MQ","section":"00043","title":"Knowledge : Philosophical Dilemmas","meetings":[{"day":"Mon","time":"16:00-18:00","room":"4A.4"},{"day":"Wed","time":"16:00-18:00","room":"4A.4"}],"teachers":["Chen, S"],"notes":[],"seats":32},{"code":"345-101-MQ","section":"00044","title":"Knowledge : The Poetics of Philosophy","meetings":[{"day":"Wed","time":"14:00-16:00","room":"4P.04"},{"day":"Fri","time":"14:00-16:00","room":"4P.04"}],"teachers":["Stepenberg, M"],"notes":[],"seats":33},{"code":"345-101-MQ","section":"00045","title":"Knowledge","meetings":[{"day":"Wed","time":"12:00-14:00","room":"3P.07"},{"day":"Fri","time":"12:00-14:00","room":"3P.07"}],"teachers":["Saad, R"],"notes":[],"seats":27},{"code":"345-101-MQ","section":"00046","title":"Knowledge","meetings":[{"day":"Mon","time":"12:00-14:00","room":"2P.55"},{"day":"Thu","time":"08:00-10:00","room":"2P.55"}],"teachers":["Saad, R"],"notes":[],"seats":29},{"code":"345-101-MQ","section":"00047","title":"Knowledge","meetings":[{"day":"Tue","time":"10:00-12:00","room":"3P.07"},{"day":"Fri","time":"10:00-12:00","room":"3P.07"}],"teachers":["Saad, R"],"notes":[],"seats":29},{"code":"345-101-MQ","section":"00049","title":"Knowledge","meetings":[{"day":"Mon","time":"08:00-10:00","room":"3B.15 TBA-345-A,"},{"day":"Wed","time":"08:00-10:00","room":"3B.15 TBA-345-A,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"109-101-MQ","section":"00008","title":"Physical Activity and Health : Day Hiking (COMPRESSED)","meetings":[],"teachers":["Egan, J"],"notes":["(COMPRESSED COURSE; TRAVEL TIME IS NOT INCLUDED):","August 24, 31, September 8 [Monday Schedule], 21 16:00-18:00 3E.1","INTENSIVE: September 5 8:00-12:00, 12:30-14:30 MONT ROYAL","September 12 8:00-12:00, 12:30-16:30 MONT ST-HILLAIRE/MONTGNE D’ARGENT","September 26 8:00-12:00, 12:30-16:30 MONT SUTTON/MONT ORFORD","Withdrawal Date: September 8, 2026","Drop Deadline [with mention on transcript]: September 14, 2026"],"seats":8},{"code":"109-101-MQ","section":"00010","title":"Physical Activity and Health : Outdoor Fitness (COMPRESSED)","meetings":[],"teachers":["Huebner, C"],"notes":["(COMPRESSED COURSE; TRAVEL TIME IS NOT INCLUDED):","August 26 18:00 - 20:00, September 2, 23 18:00- 21:00 3E.11","September 9 18:00-21:00 WESTMOUNT POOL","September 16 18:00-21:00 LACHINE CANAL- H20","INTENSIVE: September 12 8:00-12:00, 12:30-16:30 KSF LASALLE","September 13 8:00-12:00, 12:30-16:30 SEPAQ TREMBLANT-SECTEUR LE DIABLE","Withdrawal Date: September 10, 2026","Drop Deadline [with mention on transcript]: September 14, 2026"],"seats":16},{"code":"109-101-MQ","section":"00011","title":"Physical Activity and Health : Introduction to Outdoor Education","meetings":[{"day":"Wed","time":"12:00-14:00","room":"-1H.2"}],"teachers":["Egan, J"],"notes":[],"seats":8},{"code":"109-101-MQ","section":"00012","title":"Physical Activity and Health : Combative Fitness","meetings":[{"day":"Mon","time":"08:00-10:00","room":"0H.3"}],"teachers":["Di Genova, V"],"notes":[],"seats":13},{"code":"109-101-MQ","section":"00013","title":"Physical Activity and Health : Combative Fitness","meetings":[{"day":"Mon","time":"12:00-14:00","room":"0H.3"}],"teachers":["Lew, R"],"notes":[],"seats":17},{"code":"109-101-MQ","section":"00014","title":"Physical Activity and Health : Combative Fitness","meetings":[{"day":"Mon","time":"16:00-18:00","room":"0H.3"}],"teachers":["Lew, R"],"notes":[],"seats":10},{"code":"109-101-MQ","section":"00015","title":"Physical Activity and Health : Combative Fitness","meetings":[{"day":"Tue","time":"12:00-14:00","room":"0H.3"}],"teachers":["Lew, R"],"notes":[],"seats":19},{"code":"109-101-MQ","section":"00017","title":"Physical Activity and Health : Combative Fitness","meetings":[{"day":"Fri","time":"12:00-14:00","room":"0H.3"}],"teachers":["Burkhard, P"],"notes":[],"seats":12},{"code":"109-101-MQ","section":"00018","title":"Physical Activity and Health : Combative Fitness","meetings":[{"day":"Fri","time":"14:00-16:00","room":"0H.3"}],"teachers":["Burkhard, P"],"notes":[],"seats":20},{"code":"109-101-MQ","section":"00019","title":"Physical Activity and Health : Dance Fitness","meetings":[{"day":"Mon","time":"14:00-16:00","room":"4F.1"}],"teachers":["Walker, P"],"notes":[],"seats":20},{"code":"109-101-MQ","section":"00020","title":"Physical Activity and Health : Dance Fitness","meetings":[{"day":"Thu","time":"14:00-16:00","room":"4F.1"}],"teachers":["Walker, P"],"notes":[],"seats":13},{"code":"109-101-MQ","section":"00021","title":"Physical Activity and Health : Dance Fitness","meetings":[{"day":"Fri","time":"12:00-14:00","room":"4F.1"}],"teachers":["Walker, P"],"notes":[],"seats":15},{"code":"109-101-MQ","section":"00022","title":"Physical Activity and Health : Dance Fitness","meetings":[{"day":"Wed","time":"12:00-14:00","room":"0H.3"}],"teachers":["St-Pierre, C"],"notes":[],"seats":7},{"code":"109-101-MQ","section":"00023","title":"Physical Activity and Health : Dance Fitness","meetings":[{"day":"Fri","time":"10:00-12:00","room":"0H.3"}],"teachers":["St-Pierre, C"],"notes":[],"seats":13},{"code":"109-101-MQ","section":"00024","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Mon","time":"08:00-10:00","room":"0H.1"}],"teachers":["Donoso, M"],"notes":[],"seats":17},{"code":"109-101-MQ","section":"00025","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Mon","time":"10:00-12:00","room":"0H.1"}],"teachers":["Donoso, M"],"notes":[],"seats":18},{"code":"109-101-MQ","section":"00026","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Mon","time":"16:00-18:00","room":"0H.1"}],"teachers":["Knopp, A"],"notes":[],"seats":19},{"code":"109-101-MQ","section":"00028","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Thu","time":"12:00-14:00","room":"0H.1"}],"teachers":["Huebner, C"],"notes":[],"seats":18},{"code":"109-101-MQ","section":"00029","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Thu","time":"16:00-18:00","room":"0H.1"}],"teachers":["Huebner, C"],"notes":[],"seats":19},{"code":"109-101-MQ","section":"00030","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Fri","time":"16:00-18:00","room":"0H.1"}],"teachers":["Huebner, C"],"notes":[],"seats":22},{"code":"109-101-MQ","section":"00031","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Tue","time":"08:00-10:00","room":"-2H.1"}],"teachers":["Donoso, M"],"notes":[],"seats":19},{"code":"109-101-MQ","section":"00032","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Tue","time":"10:00-12:00","room":"-2H.1"}],"teachers":["Donoso, M"],"notes":[],"seats":19},{"code":"109-101-MQ","section":"00033","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Wed","time":"08:00-10:00","room":"-2H.1"}],"teachers":["St-Pierre, C"],"notes":[],"seats":18},{"code":"109-101-MQ","section":"00034","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Wed","time":"16:00-18:00","room":"-1H.1"}],"teachers":["Stafford-Abbott, M"],"notes":[],"seats":8},{"code":"109-101-MQ","section":"00035","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Fri","time":"16:00-18:00","room":"-2H.1"}],"teachers":["Knopp, A"],"notes":[],"seats":21},{"code":"109-101-MQ","section":"00036","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Tue","time":"16:00-18:00","room":"-1H.1"}],"teachers":["Brasseur, J"],"notes":[],"seats":17},{"code":"109-101-MQ","section":"00064","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Tue","time":"16:00-18:00","room":"4F.1"}],"teachers":["Stafford-Abbott, M"],"notes":[],"seats":18},{"code":"109-101-MQ","section":"00073","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Tue","time":"14:00-16:00","room":"4F.1"}],"teachers":["Stafford-Abbott, M"],"notes":[],"seats":16},{"code":"109-101-MQ","section":"00076","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Thu","time":"14:00-16:00","room":"-2H.1 TBA-109-A,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"109-101-MQ","section":"00077","title":"Physical Activity and Health : Fitness","meetings":[{"day":"Thu","time":"16:00-18:00","room":"-2H.1 TBA-109-B,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"109-101-MQ","section":"00027","title":"Physical Activity and Health : Resistance Training","meetings":[{"day":"Wed","time":"14:00-16:00","room":"-2H.1"}],"teachers":["Zeidel, J"],"notes":[],"seats":10},{"code":"109-101-MQ","section":"00039","title":"Physical Activity and Health : Resistance Training","meetings":[{"day":"Thu","time":"14:00-16:00","room":"-1H.1"}],"teachers":["Tirelli, A"],"notes":[],"seats":10},{"code":"109-101-MQ","section":"00040","title":"Physical Activity and Health : Resistance Training","meetings":[{"day":"Thu","time":"16:00-18:00","room":"-1H.1"}],"teachers":["Tirelli, A"],"notes":[],"seats":13},{"code":"109-101-MQ","section":"00041","title":"Physical Activity and Health : Resistance Training","meetings":[{"day":"Fri","time":"08:00-10:00","room":"-1H.1"}],"teachers":["Zeidel, J"],"notes":[],"seats":16},{"code":"109-101-MQ","section":"00042","title":"Physical Activity and Health : Resistance Training","meetings":[{"day":"Fri","time":"10:00-12:00","room":"-1H.1"}],"teachers":["Zeidel, J"],"notes":[],"seats":11},{"code":"109-101-MQ","section":"00043","title":"Physical Activity and Health : Resistance Training","meetings":[{"day":"Fri","time":"14:00-16:00","room":"-1H.1"}],"teachers":["Tirelli, A"],"notes":[],"seats":16},{"code":"109-101-MQ","section":"00044","title":"Physical Activity and Health : Resistance Training","meetings":[{"day":"Tue","time":"16:00-18:00","room":"-2H.1"}],"teachers":["Burkhard, P"],"notes":[],"seats":19},{"code":"109-101-MQ","section":"00037","title":"Physical Activity and Health : Fitness For Sport Performance","meetings":[{"day":"Wed","time":"10:00-12:00","room":"-1H.1"}],"teachers":["Potter, M"],"notes":[],"seats":9},{"code":"109-101-MQ","section":"00038","title":"Physical Activity and Health : Fitness For Sport Performance","meetings":[{"day":"Mon","time":"10:00-12:00","room":"-1H.1"}],"teachers":["Potter, M"],"notes":[],"seats":8},{"code":"109-101-MQ","section":"00046","title":"Physical Activity and Health : Alternative Fitness","meetings":[{"day":"Mon","time":"12:00-14:00","room":"-2H.1"}],"teachers":["Benjamin, L"],"notes":[],"seats":19},{"code":"109-101-MQ","section":"00047","title":"Physical Activity and Health : Alternative Fitness","meetings":[{"day":"Mon","time":"14:00-16:00","room":"-2H.1"}],"teachers":["Benjamin, L"],"notes":[],"seats":21},{"code":"109-101-MQ","section":"00048","title":"Physical Activity and Health : Alternative Fitness","meetings":[{"day":"Tue","time":"12:00-14:00","room":"-2H.1"}],"teachers":["Benjamin, L"],"notes":[],"seats":14},{"code":"109-101-MQ","section":"00049","title":"Physical Activity and Health : Alternative Fitness","meetings":[{"day":"Wed","time":"10:00-12:00","room":"-2H.1"}],"teachers":["Bolduc, J"],"notes":[],"seats":18},{"code":"109-101-MQ","section":"00050","title":"Physical Activity and Health : Alternative Fitness","meetings":[{"day":"Fri","time":"08:00-10:00","room":"0H.1"}],"teachers":["Bolduc, J"],"notes":[],"seats":16},{"code":"109-101-MQ","section":"00051","title":"Physical Activity and Health : Alternative Fitness","meetings":[{"day":"Fri","time":"12:00-14:00","room":"-2H.1"}],"teachers":["Bolduc, J"],"notes":[],"seats":15},{"code":"109-101-MQ","section":"00052","title":"Physical Activity and Health : Alternative Fitness","meetings":[{"day":"Fri","time":"14:00-16:00","room":"-2H.1"}],"teachers":["Bolduc, J"],"notes":[],"seats":14},{"code":"109-101-MQ","section":"00054","title":"Physical Activity and Health : Games Fitness","meetings":[{"day":"Thu","time":"08:00-10:00","room":"-1H.6"}],"teachers":["Bromby, T"],"notes":[],"seats":null},{"code":"109-101-MQ","section":"00055","title":"Physical Activity and Health : Games Fitness","meetings":[{"day":"Thu","time":"10:00-12:00","room":"-1H.6"}],"teachers":["Bromby, T"],"notes":[],"seats":6},{"code":"109-101-MQ","section":"00058","title":"Physical Activity and Health : Sport Fitness","meetings":[{"day":"Wed","time":"14:00-16:00","room":"-1H.4,-1H.6"}],"teachers":["Brodie, R"],"notes":[],"seats":3},{"code":"109-101-MQ","section":"00059","title":"Physical Activity and Health : Sport Fitness","meetings":[{"day":"Wed","time":"16:00-18:00","room":"-1H.4,-1H.6"}],"teachers":["Brodie, R"],"notes":[],"seats":19},{"code":"109-101-MQ","section":"00060","title":"Physical Activity and Health : Sport Fitness","meetings":[{"day":"Thu","time":"16:00-18:00","room":"-1H.4,-1H.6"}],"teachers":["Brasseur, J"],"notes":[],"seats":13},{"code":"109-101-MQ","section":"00062","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"Tue","time":"08:00-10:00","room":"0H.1"}],"teachers":["Armeni, P"],"notes":[],"seats":18},{"code":"109-101-MQ","section":"00066","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"Fri","time":"08:00-10:00","room":"0H.3"}],"teachers":["Wasacz, P"],"notes":[],"seats":6},{"code":"109-101-MQ","section":"00069","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"Fri","time":"12:00-14:00","room":"0H.1"}],"teachers":["Bromby, T"],"notes":[],"seats":12},{"code":"109-101-MQ","section":"00070","title":"Physical Activity and Health : Fitness Walking","meetings":[{"day":"Tue","time":"08:00-10:00","room":"-1H.2"}],"teachers":["Deegan, C"],"notes":[],"seats":16},{"code":"109-101-MQ","section":"00071","title":"Physical Activity and Health : Mind-Body Wellness","meetings":[{"day":"Mon","time":"10:00-12:00","room":"4F.1"}],"teachers":["Palacio, K"],"notes":[],"seats":6},{"code":"109-101-MQ","section":"00072","title":"Physical Activity and Health : Mind-Body Wellness","meetings":[{"day":"Mon","time":"10:00-12:00","room":"0H.3"}],"teachers":["Gear, A"],"notes":[],"seats":5},{"code":"109-101-MQ","section":"00074","title":"Physical Activity and Health : Mind-Body Wellness","meetings":[{"day":"Wed","time":"08:00-10:00","room":"0H.3"}],"teachers":["Markin, C"],"notes":[],"seats":10},{"code":"109-101-MQ","section":"00075","title":"Physical Activity and Health : Mind-Body Wellness","meetings":[{"day":"Thu","time":"08:00-10:00","room":"0H.1"}],"teachers":["Palacio, K"],"notes":[],"seats":11},{"code":"109-102-MQ","section":"00001","title":"Physical Activity and Effectiveness : Tennis (PRE-SEMESTER)","meetings":[],"teachers":["Walker, P"],"notes":["(PRE-SEMESTER; ON AND OFF CAMPUS) INTENSIVE:","August 17 9:00 - 11:00, 3E.4; August 17 12:00-16:00 CLUB CÔTE DE LIESSE;","August 18 9:00-13:00, 13:30-16:30 CLUB CÔTE DE LIESSE;","August 19 13:00-17:00 CLUB CÔTE DE LIESSE;","August 22, 23 9:00-12:00, 13:00-16:30 CLUB CÔTE DE LIESSE;","Withdrawal Date: August 18, 2026","Drop Deadline [with mention on transcript]: August 24, 2026"],"seats":null},{"code":"109-102-MQ","section":"00002","title":"Physical Activity and Effectiveness : Self Defence (PRE-SEMESTER)","meetings":[],"teachers":["Lew, R"],"notes":["(PRE-SEMESTER ON CAMPUS COMPRESSED):","August 17, 18 9:30-13:00, 13:30-17:30 0H.3;","August 19, 23 13:30-17:30 0H.3; August 22 9:30-13:00, 13:30-17:00 0H.3","Withdrawal Date: August 18, 2026","Drop Deadline [with mention on transcript]: August 20, 2026"],"seats":null},{"code":"109-102-MQ","section":"00005","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Thu","time":"08:00-10:00","room":"-1H.1"}],"teachers":["Wasacz, P"],"notes":[],"seats":15},{"code":"109-102-MQ","section":"00026","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Mon","time":"12:00-14:00","room":"-1H.1"}],"teachers":["Gear, A"],"notes":[],"seats":13},{"code":"109-102-MQ","section":"00027","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Tue","time":"08:00-10:00","room":"-1H.1"}],"teachers":["Potter, M"],"notes":[],"seats":12},{"code":"109-102-MQ","section":"00028","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Tue","time":"10:00-12:00","room":"-1H.1"}],"teachers":["Potter, M"],"notes":[],"seats":15},{"code":"109-102-MQ","section":"00029","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Wed","time":"12:00-14:00","room":"-1H.1"}],"teachers":["Tirelli, A"],"notes":[],"seats":14},{"code":"109-102-MQ","section":"00030","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Wed","time":"14:00-16:00","room":"-1H.1"}],"teachers":["Tirelli, A"],"notes":[],"seats":8},{"code":"109-102-MQ","section":"00032","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Thu","time":"10:00-12:00","room":"-1H.1"}],"teachers":["Stafford-Abbott, M"],"notes":[],"seats":null},{"code":"109-102-MQ","section":"00033","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Mon","time":"08:00-10:00","room":"-2H.1"}],"teachers":["Burkhard, P"],"notes":[],"seats":7},{"code":"109-102-MQ","section":"00034","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Mon","time":"10:00-12:00","room":"-2H.1"}],"teachers":["Burkhard, P"],"notes":[],"seats":null},{"code":"109-102-MQ","section":"00063","title":"Physical Activity and Effectiveness : Weight Training Skills","meetings":[{"day":"Wed","time":"16:00-18:00","room":"-2H.1"}],"teachers":["Bolduc, J"],"notes":[],"seats":7},{"code":"109-102-MQ","section":"00006","title":"Physical Activity and Effectiveness : Cycling Skills (COMPRESSED)","meetings":[],"teachers":["Bromby, T"],"notes":["(INTENSIVE HELD ON SEPARATE DAYS; NO OVERNIGHT; TRAVEL TIME IS NOT INCLUDED):","August 24, 18:00-20:00 -2H.1; August 31, September 14, 21 18:00-21:00, -2H.1;","September 8 [Monday schedule] 18:00-21:00 4F.1;","INTENSIVE: September 12, 19 8:30-12:00, 12:30-17:00 MA BICYCLETTE","Withdrawal Date: September 9, 2026","Drop Deadline [with mention on transcript]: September 15, 2026"],"seats":14},{"code":"109-102-MQ","section":"00007","title":"Physical Activity and Effectiveness : Cycling Skills (COMPRESSED)","meetings":[],"teachers":["Brasseur, J"],"notes":["(INTENSIVE HELD ON SEPARATE DAYS; NO OVERNIGHT; TRAVEL TIME IS NOT INCLUDED):","August 25, September 29 18:00-20:00 -2H.1;","September 1, 8 [Monday schedule], 15, 22 18:00-21:00, -2H.1;","INTENSIVE: September 5, 26 8:30-12:00, 12:30-16:00 MA BICYCLETTE","Withdrawal Date: September 8, 2026","Drop Deadline [with mention on transcript]: September 16, 2026"],"seats":14},{"code":"109-102-MQ","section":"00008","title":"Physical Activity and Effectiveness : Dance Styles (COMPRESSED)","meetings":[],"teachers":["Walker, P"],"notes":["(COMPRESSED COURSE ON CAMPUS): August 24 18:00-20:00 4F.1;","INTENSIVE: October 17, 24, 31, November 7 9:30-13:00, 13:30-17:00, 4F.1","Withdrawal Date: October 19, 2026","Drop Deadline [with mention on transcript]: November 2, 2026"],"seats":18},{"code":"109-102-MQ","section":"00009","title":"Physical Activity and Effectiveness : Baseball (COMPRESSED)","meetings":[],"teachers":["Wasacz, P"],"notes":["(COMPRESSED COURSE ON CAMPUS AND OFF CAMPUS; TRAVEL TIME IS NOT INCLUDED):","August 25, September 29 16:00-18:00; September 1, 15, 22 16:00-19:00 3E.11;","INTENSIVE: September 19, 20 8:00-12:30, 13:00-17:00 MTL AREA/-1H.1","Withdrawal Date: September 16, 2026","Drop Deadline [with mention on transcript]: September 21, 2026"],"seats":18},{"code":"109-102-MQ","section":"00010","title":"Physical Activity and Effectiveness : Social Dance-Latin Styles (COMPRESSED)","meetings":[],"teachers":["St-Pierre, C"],"notes":["(COMPRESSED COURSE ON CAMPUS AND OFF CAMPUS; TRAVEL TIME IS NOT INCLUDED)","August 26 16:00-18:00; September 2, 9, 16, 23 16:00-19:00 4F.1;","INTENSIVE: September 12 8:00-12:00, 13:00-17:00 4F.1","September 19 11:30-17:30, 19:00-21:00 4F.1 and MTL AREA","Withdrawal Date: September 10, 2026","Drop Deadline [with mention on transcript]: September 17, 2026"],"seats":18},{"code":"109-102-MQ","section":"00011","title":"Physical Activity and Effectiveness : Yoga (COMPRESSED)","meetings":[],"teachers":["St-Pierre, C"],"notes":["(COMPRESSED COURSE ON CAMPUS): August 26 18:00-20:00 4F.1;","INTENSIVE: September 26, 27, October 3, 4 8:30-12:30, 13:00-16:00, 4F.1","Withdrawal Date: September 28, 2026","Drop Deadline [with mention on transcript]: October 5, 2026"],"seats":7},{"code":"109-102-MQ","section":"00012","title":"Physical Activity and Effectiveness : Running Skills (COMPRESSED)","meetings":[],"teachers":["Huebner, C"],"notes":["(COMPRESSED COURSE ON AND OFF CAMPUS; TRAVEL TIME IS NOT INCLUDED):","August 20 18:00-20:00 3E.3; October 1, 8, 15, 22 18:00-21:00 3E.3;","INTENSIVE: October 11 7:00-11:30, 12:00-15:30 PARC MAISONNEUVE","October 25 8 :00-12 :30, 13 :00-16 :30 PARC JEAN DRAPEAU","Withdrawal Date: October 9, 2026","Drop Deadline [with mention on transcript]: October 16, 2026"],"seats":19},{"code":"109-102-MQ","section":"00013","title":"Physical Activity and Effectiveness : Karate (COMPRESSED)","meetings":[],"teachers":["Di Genova, V"],"notes":["(COMPRESSED COURSE ON CAMPUS): August 26 18:00-20:00 0H.3; September 16, 30,","October 14, 28 18:00-21:00 0H.3;","INTENSIVE: October 24, 25 8:00-12:30, 13:00-16:30 0H.3","Withdrawal Date: October 1, 2026","Drop Deadline [with mention on transcript]: October 26, 2026"],"seats":13},{"code":"109-102-MQ","section":"00014","title":"Physical Activity and Effectiveness : Kung Fu (COMPRESSED)","meetings":[],"teachers":["Lew, R"],"notes":["(COMPRESSED COURSE ON CAMPUS):","August 20, October 8 18:00-20:00 0H.3;","August 27, September 3, 10, 17, October 1 16:00-19:00, 0H.3;","INTENSIVE: September 19, 26 10:00-13:00, 13:30-16:00 0H.3","Withdrawal Date: September 4, 2026","Drop Deadline [with mention on transcript]: September 21, 2026"],"seats":17},{"code":"109-102-MQ","section":"00016","title":"Physical Activity and Effectiveness : Kung Fu","meetings":[{"day":"Tue","time":"16:00-18:00","room":"0H.3"}],"teachers":["Lew, R"],"notes":[],"seats":15},{"code":"109-102-MQ","section":"00017","title":"Physical Activity and Effectiveness : Karate","meetings":[{"day":"Tue","time":"10:00-12:00","room":"0H.3"}],"teachers":["Di Genova, V"],"notes":[],"seats":15},{"code":"109-102-MQ","section":"00018","title":"Physical Activity and Effectiveness : Karate","meetings":[{"day":"Wed","time":"14:00-16:00","room":"0H.3"}],"teachers":["Di Genova, V"],"notes":[],"seats":11},{"code":"109-102-MQ","section":"00019","title":"Physical Activity and Effectiveness : Dance Styles","meetings":[{"day":"Mon","time":"16:00-18:00","room":"4F.1"}],"teachers":["Walker, P"],"notes":[],"seats":8},{"code":"109-102-MQ","section":"00020","title":"Physical Activity and Effectiveness : Dance Styles","meetings":[{"day":"Thu","time":"08:00-10:00","room":"4F.1"}],"teachers":["Markin, C"],"notes":[],"seats":9},{"code":"109-102-MQ","section":"00021","title":"Physical Activity and Effectiveness : Dance Styles","meetings":[{"day":"Fri","time":"14:00-16:00","room":"4F.1"}],"teachers":["Walker, P"],"notes":[],"seats":18},{"code":"109-102-MQ","section":"00022","title":"Physical Activity and Effectiveness : Aero Gym","meetings":[{"day":"Wed","time":"10:00-12:00","room":"4F.1"}],"teachers":["Haddad, C"],"notes":[],"seats":18},{"code":"109-102-MQ","section":"00023","title":"Physical Activity and Effectiveness : Pilates","meetings":[{"day":"Thu","time":"10:00-12:00","room":"0H.3"}],"teachers":["St-Pierre, C"],"notes":[],"seats":4},{"code":"109-102-MQ","section":"00024","title":"Physical Activity and Effectiveness : Posture, Stability and Mobility Skills","meetings":[{"day":"Thu","time":"12:00-14:00","room":"-2H.1"}],"teachers":["Gear, A"],"notes":[],"seats":8},{"code":"109-102-MQ","section":"00035","title":"Physical Activity and Effectiveness : Badminton","meetings":[{"day":"Mon","time":"14:00-16:00","room":"-1H.4,-1H.6"}],"teachers":["Burkhard, P"],"notes":[],"seats":null},{"code":"109-102-MQ","section":"00036","title":"Physical Activity and Effectiveness : Badminton","meetings":[{"day":"Wed","time":"12:00-14:00","room":"-1H.4,-1H.6"}],"teachers":["Corinthios, A"],"notes":[],"seats":null},{"code":"109-102-MQ","section":"00037","title":"Physical Activity and Effectiveness : Golf","meetings":[{"day":"Wed","time":"10:00-12:00","room":"-1H.2"}],"teachers":["Brasseur, J"],"notes":[],"seats":5},{"code":"109-102-MQ","section":"00038","title":"Physical Activity and Effectiveness : Golf","meetings":[{"day":"Fri","time":"10:00-12:00","room":"-1H.2"}],"teachers":["Benjamin, L"],"notes":[],"seats":4},{"code":"109-102-MQ","section":"00044","title":"Physical Activity and Effectiveness : Rockclimbing","meetings":[{"day":"Thu","time":"08:00-10:00","room":"-1H.2"}],"teachers":["Egan, J"],"notes":[],"seats":13},{"code":"109-102-MQ","section":"00045","title":"Physical Activity and Effectiveness : Basketball","meetings":[{"day":"Thu","time":"12:00-14:00","room":"-1H.4,-1H.6"}],"teachers":["Wasacz, P"],"notes":[],"seats":13},{"code":"109-102-MQ","section":"00046","title":"Physical Activity and Effectiveness : Basketball","meetings":[{"day":"Thu","time":"14:00-16:00","room":"-1H.4,-1H.6"}],"teachers":["Benjamin, L"],"notes":[],"seats":17},{"code":"109-102-MQ","section":"00047","title":"Physical Activity and Effectiveness : Basketball","meetings":[{"day":"Fri","time":"08:00-10:00","room":"-1H.4,-1H.6"}],"teachers":["Donoso, M"],"notes":[],"seats":13},{"code":"109-102-MQ","section":"00048","title":"Physical Activity and Effectiveness : Basketball","meetings":[{"day":"Fri","time":"10:00-12:00","room":"-1H.4,-1H.6"}],"teachers":["Donoso, M"],"notes":[],"seats":18},{"code":"109-102-MQ","section":"00049","title":"Physical Activity and Effectiveness : Volleyball","meetings":[{"day":"Wed","time":"16:00-18:00","room":"-1H.2"}],"teachers":["Nakhlé, L"],"notes":[],"seats":7},{"code":"109-102-MQ","section":"00050","title":"Physical Activity and Effectiveness : Volleyball","meetings":[{"day":"Thu","time":"14:00-16:00","room":"-1H.2"}],"teachers":["Brodie, R"],"notes":[],"seats":6},{"code":"109-102-MQ","section":"00051","title":"Physical Activity and Effectiveness : Volleyball","meetings":[{"day":"Thu","time":"16:00-18:00","room":"-1H.2"}],"teachers":["Brodie, R"],"notes":[],"seats":null},{"code":"109-102-MQ","section":"00052","title":"Physical Activity and Effectiveness : Volleyball","meetings":[{"day":"Fri","time":"12:00-14:00","room":"-1H.2"}],"teachers":["Nakhlé, L"],"notes":[],"seats":5},{"code":"109-102-MQ","section":"00053","title":"Physical Activity and Effectiveness : Soccer","meetings":[{"day":"Wed","time":"08:00-10:00","room":"-1H.2,-1H.4,-1H.6"}],"teachers":["Corinthios, A"],"notes":[],"seats":5},{"code":"109-102-MQ","section":"00054","title":"Physical Activity and Effectiveness : Futsal","meetings":[{"day":"Fri","time":"14:00-16:00","room":"-1H.4,-1H.6"}],"teachers":["Bromby, T"],"notes":[],"seats":14},{"code":"109-102-MQ","section":"00055","title":"Physical Activity and Effectiveness : Futsal","meetings":[{"day":"Fri","time":"16:00-18:00","room":"-1H.4,-1H.6"}],"teachers":["Bromby, T"],"notes":[],"seats":14},{"code":"109-102-MQ","section":"00056","title":"Physical Activity and Effectiveness : Pickle Ball","meetings":[{"day":"Wed","time":"10:00-12:00","room":"-1H.4,-1H.6"}],"teachers":["Zeidel, J"],"notes":[],"seats":14},{"code":"109-102-MQ","section":"00057","title":"Physical Activity and Effectiveness : Pickle Ball","meetings":[{"day":"Fri","time":"12:00-14:00","room":"-1H.4,-1H.6"}],"teachers":["Zeidel, J"],"notes":[],"seats":20},{"code":"109-102-MQ","section":"00058","title":"Physical Activity and Effectiveness : Stress Coping Skills","meetings":[{"day":"Mon","time":"08:00-10:00","room":"4F.1"}],"teachers":["Palacio, K"],"notes":[],"seats":16},{"code":"109-102-MQ","section":"00059","title":"Physical Activity and Effectiveness : Stress Coping Skills","meetings":[{"day":"Tue","time":"10:00-12:00","room":"4F.1"}],"teachers":["Palacio, K"],"notes":[],"seats":12},{"code":"109-102-MQ","section":"00060","title":"Physical Activity and Effectiveness : Stress Coping Skills","meetings":[{"day":"Mon","time":"14:00-16:00","room":"0H.3"}],"teachers":["Bolduc, J"],"notes":[],"seats":9},{"code":"109-102-MQ","section":"00061","title":"Physical Activity and Effectiveness : Stress Coping Skills","meetings":[{"day":"Mon","time":"14:00-16:00","room":"0H.1"}],"teachers":["Stafford-Abbott, M"],"notes":[],"seats":9},{"code":"109-102-MQ","section":"00062","title":"Physical Activity and Effectiveness : Stress Coping Skills","meetings":[{"day":"Tue","time":"14:00-16:00","room":"0H.1"}],"teachers":["Armeni, P"],"notes":[],"seats":8},{"code":"109-102-MQ","section":"00067","title":"Physical Activity and Effectiveness : Stress Coping Skills","meetings":[{"day":"Thu","time":"14:00-16:00","room":"0H.1 TBA-109-C,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"109-102-MQ","section":"00068","title":"Physical Activity and Effectiveness : Stress Coping Skills","meetings":[{"day":"Fri","time":"16:00-18:00","room":"4F.1 TBA-109-D,"}],"teachers":["-"],"notes":["(On Reserve)"],"seats":null},{"code":"109-102-MQ","section":"00064","title":"Physical Activity and Effectiveness : Yoga","meetings":[{"day":"Wed","time":"08:00-10:00","room":"4F.1"}],"teachers":["Haddad, C"],"notes":[],"seats":5},{"code":"109-102-MQ","section":"00065","title":"Physical Activity and Effectiveness : Yoga","meetings":[{"day":"Wed","time":"10:00-12:00","room":"0H.3"}],"teachers":["Gear, A"],"notes":[],"seats":4},{"code":"109-102-MQ","section":"00066","title":"Physical Activity and Effectiveness : Running Skills","meetings":[{"day":"Wed","time":"12:00-14:00","room":"0H.1"}],"teachers":["Huebner, C"],"notes":[],"seats":16},{"code":"530-911-DW","section":"00001","title":"Scripting for Media","meetings":[{"day":"W","time":"8:30-11:30","room":"3B.6"}],"teachers":["M. Olszanowski"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"530-911-DW","section":"00002","title":"Scripting for Media","meetings":[{"day":"W","time":"14:30-17:30","room":"3B.6"}],"teachers":["M. Olszanowski"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"530-911-DW","section":"00003","title":"Scripting for Media","meetings":[{"day":"M","time":"14:30-17:30","room":"3B.6"}],"teachers":["M. Filtz"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"530-914-DW","section":"00001","title":"Cinema and Culture","meetings":[{"day":"W","time":"8:30-11:30","room":"4C.8"}],"teachers":["N. Barnett"],"notes":["(Arts and Culture, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":null},{"code":"530-944-DW","section":"00001","title":"Sound Practices","meetings":[{"day":"T","time":"8:30-11:30","room":"3B.1"}],"teachers":["G. Milton"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"502-913-DW","section":"00001","title":"Culture Without Borders","meetings":[{"day":"TH","time":"16:00-17:30","room":"4H.15"}],"teachers":["J. Lin"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":10},{"code":"502-913-DW","section":"00002","title":"Culture Without Borders","meetings":[{"day":"TH","time":"14:30-16:00","room":"4D.6"}],"teachers":["F. Goire"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":8},{"code":"502-941-DW","section":"00001","title":"Journalism: Writing News Stories","meetings":[{"day":"T","time":"8:30-11:30","room":"3H.6"}],"teachers":["A. Strudensky"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":10},{"code":"560-913-DW","section":"00001","title":"Concept and Craft in Theatre","meetings":[{"day":"M","time":"15:00-18:00","room":"3A.13"}],"teachers":["L. Esau"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":null},{"code":"560-913-DW","section":"00002","title":"Concept and Craft in Theatre","meetings":[{"day":"F","time":"10:00-13:00","room":"3A.13"}],"teachers":["L. Baker"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":7},{"code":"603-913-DW","section":"00001","title":"World Literature : World Literature","meetings":[{"day":"TH","time":"11:30-13:00","room":"2P.14"}],"teachers":["M. Couture"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"511-912-DW","section":"00001","title":"Drawing Techniques","meetings":[{"day":"T","time":"14:30-17:30","room":"2G.4"}],"teachers":["D. Hall"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"511-912-DW","section":"00002","title":"Drawing Techniques","meetings":[{"day":"M","time":"8:30-11:30","room":"2G.4"}],"teachers":["D. Hall"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"511-912-DW","section":"00003","title":"Drawing Techniques","meetings":[{"day":"F","time":"8:30-11:30","room":"3B.25"}],"teachers":["K. Ropeleski"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"511-913-DW","section":"00001","title":"Digital Art","meetings":[{"day":"F","time":"13:00-16:00","room":"4G.10"}],"teachers":["M. Chronopoulos"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, and Literature)"],"seats":5},{"code":"511-913-DW","section":"00002","title":"Digital Art","meetings":[{"day":"W","time":"8:30-11:30","room":"4G.15"}],"teachers":["K. Lau"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, and Literature)"],"seats":10},{"code":"511-913-DW","section":"00003","title":"Digital Art","meetings":[{"day":"W","time":"14:30-17:30","room":"4G.10"}],"teachers":["M. Chronopoulos"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, and Literature)"],"seats":9},{"code":"585-912-DW","section":"00001","title":"Exploring Creativity","meetings":[{"day":"W","time":"14:30-17:30","room":"3B.4"}],"teachers":["A. Basanta"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":null},{"code":"550-901-DW","section":"00001","title":"Appreciating Music","meetings":[{"day":"TH","time":"13:00-14:30","room":"8A.3"}],"teachers":["M. Murphy"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":3},{"code":"550-901-DW","section":"00002","title":"Appreciating Music","meetings":[{"day":"TH","time":"11:30-13:00","room":"8A.3"}],"teachers":["M. Murphy"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Languages, Literature, and Studio Arts)"],"seats":null},{"code":"550-921-DW","section":"00001","title":"Introduction to Singing","meetings":[{"day":"H","time":"8:30-10:00","room":"8A.3"},{"day":"M","time":"11:30-13:00","room":"8A.3"}],"teachers":["M. Murphy"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":3},{"code":"550-934-DW","section":"00001","title":"Introduction to Fingerstyle Guitar","meetings":[{"day":"TF","time":"10:00-11:30","room":"8A.3"}],"teachers":["V. Lentini"],"notes":["(Arts and Culture, Cinema-Communications, Interactive Media Arts, Literature, and Studio Arts)"],"seats":4}],"seats_last_updated":"Last Updated: August 13, 2026 5:00 PM"};
+const SLOTS = DATA.slots;
+const COURSES = DATA.courses;
+
+const DAY_ORDER = ['Mon','Tue','Wed','Thu','Fri'];
+const DAY_LETTER_MAP = { M:'Mon', T:'Tue', W:'Wed', H:'Thu', F:'Fri' };
+const FULL_DAY_SET = new Set(DAY_ORDER);
+
+function parseTimeToMin(str) {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(str.trim());
+  if (!m) return null;
+  return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+}
+
+// Dawson lists many end-times on the hour; the true end is 15 minutes earlier.
+function correctedRange(timeStr) {
+  const m = /^(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})$/.exec((timeStr || '').trim());
+  if (!m) return null;
+  const startMin = parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+  let endMin = parseInt(m[3], 10) * 60 + parseInt(m[4], 10);
+  if (endMin % 60 === 0) endMin -= 15;
+  return { startMin, endMin };
+}
+
+function expandDay(dayStr) {
+  if (!dayStr) return [];
+  if (FULL_DAY_SET.has(dayStr)) return [dayStr];
+  const out = [];
+  for (const ch of dayStr) {
+    if (DAY_LETTER_MAP[ch]) out.push(DAY_LETTER_MAP[ch]);
+  }
+  return out;
+}
+
+function hasP(room) {
+  return !!room && /P/.test(room);
+}
+function buildingLabel(room) {
+  return hasP(room) ? 'the Forum' : 'the main building';
+}
+
+// friendly requirement name for messages, e.g. "English (603-101-MQ)" -> "English"
+const SLOT_NAME_CACHE = {};
+function slotName(slotId) {
+  if (SLOT_NAME_CACHE[slotId]) return SLOT_NAME_CACHE[slotId];
+  const slot = SLOTS.find(s => s.id === slotId);
+  const name = slot ? slot.label.replace(/\s*\([^)]*\)\s*$/, '').trim() : slotId;
+  SLOT_NAME_CACHE[slotId] = name;
+  return name;
+}
+
+// null/undefined = section wasn't on the live seats report at all => treat as full (0 seats)
+function seatsCount(course) {
+  return (course.seats === null || course.seats === undefined) ? 0 : course.seats;
+}
+function seatsClass(n) {
+  if (n <= 0) return 'full';
+  if (n <= 5) return 'low';
+  return '';
+}
+function seatsText(course) {
+  const n = seatsCount(course);
+  return n <= 0 ? 'FULL · 0 seats' : `${n} seat${n === 1 ? '' : 's'}`;
+}
+
+function fmtMin(min) {
+  const h = Math.floor(min / 60), m = min % 60;
+  return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+}
+
+function sectionsForSlot(slot) {
+  return COURSES.filter(c => slot.codes.includes(c.code));
+}
+
+function sectionKey(c) { return c.code + '' + c.section; }
+
+function earliestDayIndexAndStart(course) {
+  if (!course.meetings || !course.meetings.length) return [99, 99999];
+  let best = [99, 99999];
+  for (const m of course.meetings) {
+    const r = correctedRange(m.time);
+    if (!r) continue;
+    for (const d of expandDay(m.day)) {
+      const di = DAY_ORDER.indexOf(d);
+      if (di < best[0] || (di === best[0] && r.startMin < best[1])) best = [di, r.startMin];
+    }
+  }
+  return best;
+}
+
+// ---------------- state ----------------
+const STORAGE_KEY = 'dawson_fall2026_schedule_configs_v1';
+let selection = {}; // slotId -> {code, section}
+let openComboSlot = null;
+
+function getCourse(code, section) {
+  return COURSES.find(c => c.code === code && c.section === section) || null;
+}
+
+// ---------------- schedule computation ----------------
+// Shared by computeSchedule() (placing the active selection) and the dropdown's live
+// conflict preview (checking a *candidate* course before it's picked) — one source of
+// truth for "what days/times does this course actually occupy", correction included.
+function expandCourseBlocks(course) {
+  const out = [];
+  if (!course || !course.meetings) return out;
+  for (const m of course.meetings) {
+    const r = correctedRange(m.time);
+    if (!r) continue;
+    for (const d of expandDay(m.day)) {
+      out.push({ day: d, startMin: r.startMin, endMin: r.endMin, room: m.room });
+    }
+  }
+  return out;
+}
+
+// Would picking `course` for a slot overlap anything *already selected* in another slot?
+// Used to grey out doomed options in the dropdown before the user wastes a click on them.
+function conflictsForCourse(course, excludeSlotId) {
+  const candidateBlocks = expandCourseBlocks(course);
+  if (!candidateBlocks.length) return []; // irregular/compressed sections aren't on the grid, nothing to check
+  const conflicts = [];
+  for (const slot of SLOTS) {
+    if (slot.id === excludeSlotId) continue;
+    const picked = selection[slot.id];
+    if (!picked) continue;
+    const otherCourse = getCourse(picked.code, picked.section);
+    if (!otherCourse) continue;
+    const otherBlocks = expandCourseBlocks(otherCourse);
+    for (const cb of candidateBlocks) {
+      for (const ob of otherBlocks) {
+        if (cb.day === ob.day && cb.startMin < ob.endMin && ob.startMin < cb.endMin) {
+          conflicts.push({ slotName: slotName(slot.id), day: cb.day });
+        }
+      }
+    }
+  }
+  return conflicts;
+}
+
+function computeSchedule() {
+  const blocks = []; // {slotId, color, code, section, title, teacher, day, startMin, endMin, room}
+  const irregular = [];
+  for (const slot of SLOTS) {
+    const picked = selection[slot.id];
+    if (!picked) continue;
+    const course = getCourse(picked.code, picked.section);
+    if (!course) continue;
+    if (!course.meetings || !course.meetings.length) {
+      irregular.push({ slot, course });
+      continue;
+    }
+    for (const eb of expandCourseBlocks(course)) {
+      blocks.push({
+        slotId: slot.id, name: slotName(slot.id), color: `var(--slot-${slot.id})`, code: course.code, section: course.section,
+        title: course.title, teacher: (course.teachers || []).join(', ') || 'TBA',
+        day: eb.day, startMin: eb.startMin, endMin: eb.endMin, room: eb.room, flags: [],
+        seats: seatsCount(course)
+      });
+    }
+  }
+
+  const errors = [];
+  const warnings = [];
+  const byDay = {};
+  for (const d of DAY_ORDER) byDay[d] = blocks.filter(b => b.day === d).sort((a, b) => a.startMin - b.startMin);
+
+  const gapBlocks = [];
+
+  // seat availability — once per selected section (not per expanded day-block)
+  for (const slot of SLOTS) {
+    const picked = selection[slot.id];
+    if (!picked) continue;
+    const course = getCourse(picked.code, picked.section);
+    if (!course) continue;
+    const n = seatsCount(course);
+    if (n <= 0) {
+      warnings.push(`Your ${slotName(slot.id)} pick shows 0 seats — it isn't on the Aug 13, 5:00 PM seats report, so it's likely FULL or closed.`);
+      for (const b of blocks) if (b.slotId === slot.id) b.flags.push('noseats');
+    } else if (n <= 5) {
+      warnings.push(`Your ${slotName(slot.id)} pick has only ${n} seat${n === 1 ? '' : 's'} left as of Aug 13, 5:00 PM.`);
+    }
+  }
+
+  for (const d of DAY_ORDER) {
+    const list = byDay[d];
+    // overlap check (all pairs — at most 7 blocks/day, negligible cost)
+    for (let i = 0; i < list.length; i++) {
+      for (let j = i + 1; j < list.length; j++) {
+        const a = list[i], b = list[j];
+        if (a.startMin < b.endMin && b.startMin < a.endMin) {
+          a.flags.push('conflict'); b.flags.push('conflict');
+          errors.push(`${a.name} overlaps ${b.name} on ${d}, ${fmtMin(Math.max(a.startMin,b.startMin))}–${fmtMin(Math.min(a.endMin,b.endMin))}.`);
+        }
+      }
+    }
+    // 8am start
+    for (const b of list) {
+      if (b.startMin === 8 * 60) {
+        b.flags.push('early');
+        warnings.push(`${b.name} starts at 8:00 AM on ${d}.`);
+      }
+    }
+    // gaps & back-to-back P transitions (consecutive, non-overlapping)
+    const sorted = [...list].sort((a, b) => a.startMin - b.startMin);
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const a = sorted[i], b = sorted[i + 1];
+      if (b.startMin < a.endMin) continue; // overlapping, already flagged
+      const gap = b.startMin - a.endMin;
+      if (gap >= 180) {
+        warnings.push(`${gap / 60}h gap on ${d} between ${a.name} (ends ${fmtMin(a.endMin)}) and ${b.name} (starts ${fmtMin(b.startMin)}).`);
+        gapBlocks.push({ day: d, startMin: a.endMin, endMin: b.startMin });
+      } else if (gap === 0) {
+        const pa = hasP(a.room), pb = hasP(b.room);
+        if (pa !== pb) {
+          a.flags.push('ptransition'); b.flags.push('ptransition');
+          warnings.push(`Careful — on ${d}, ${a.name} (${a.room || '?'}) is in ${buildingLabel(a.room)} and right after it, ${b.name} (${b.room || '?'}) is in ${buildingLabel(b.room)}. The P is the Forum, by the way. You only have 15 minutes to change classes. That's hard to do — you might have to run.`);
+        }
+      }
+    }
+  }
+
+  return { blocks, irregular, errors, warnings, gapBlocks };
+}
+
+// ---------------- calendar range ----------------
+function computeGridRange() {
+  let minStart = Infinity, maxEnd = -Infinity;
+  for (const c of COURSES) {
+    for (const m of c.meetings || []) {
+      const r = correctedRange(m.time);
+      if (!r) continue;
+      minStart = Math.min(minStart, r.startMin);
+      maxEnd = Math.max(maxEnd, r.endMin);
+    }
+  }
+  if (!isFinite(minStart)) { minStart = 8 * 60; maxEnd = 18 * 60; }
+  const startHour = Math.floor(minStart / 60) - 1;
+  const endHour = Math.ceil(maxEnd / 60) + 1;
+  return { gridStart: Math.max(0, startHour) * 60, gridEnd: Math.min(24, endHour) * 60 };
+}
+const GRID = computeGridRange();
+const SLOT_MIN = 15;
+const ROW_PX = 20;
+const totalRows = (GRID.gridEnd - GRID.gridStart) / SLOT_MIN;
+
+// ---------------- rendering: calendar ----------------
+function renderCalendarSkeleton() {
+  const grid = document.getElementById('cal-grid');
+  grid.style.gridTemplateRows = `36px repeat(${totalRows}, ${ROW_PX}px)`;
+  grid.innerHTML = '';
+
+  grid.appendChild(el('div', 'cal-head corner', ''));
+  for (const d of DAY_ORDER) grid.appendChild(el('div', 'cal-head', d));
+
+  for (let r = 0; r < totalRows; r++) {
+    const min = GRID.gridStart + r * SLOT_MIN;
+    const isHour = min % 60 === 0;
+    const gcell = el('div', 'time-gutter-cell' + (isHour ? '' : ''), '');
+    gcell.style.gridColumn = '1';
+    gcell.style.gridRow = String(r + 2);
+    if (isHour) {
+      const span = document.createElement('span');
+      span.className = 'time-label';
+      span.textContent = fmtMin(min);
+      gcell.appendChild(span);
+    }
+    grid.appendChild(gcell);
+
+    for (let di = 0; di < DAY_ORDER.length; di++) {
+      const cell = document.createElement('div');
+      cell.className = 'cal-body-row-line' + (isHour ? ' hour' : '');
+      cell.style.gridColumn = String(di + 2);
+      cell.style.gridRow = String(r + 2);
+      grid.appendChild(cell);
+    }
+  }
+
+  // day-col overlay containers for absolutely-positioned events
+  for (let di = 0; di < DAY_ORDER.length; di++) {
+    const col = document.createElement('div');
+    col.className = 'day-col';
+    col.dataset.day = DAY_ORDER[di];
+    col.style.gridColumn = String(di + 2);
+    col.style.gridRow = `2 / span ${totalRows}`;
+    grid.appendChild(col);
+  }
+}
+
+function layoutLanes(dayBlocks) {
+  // greedy lane assignment for overlapping blocks -> [{block, lane, lanesInGroup}]
+  const sorted = [...dayBlocks].sort((a, b) => a.startMin - b.startMin || a.endMin - b.endMin);
+  const laneEnds = []; // last end time per lane
+  const placed = [];
+  for (const b of sorted) {
+    let lane = laneEnds.findIndex(end => end <= b.startMin);
+    if (lane === -1) { lane = laneEnds.length; laneEnds.push(b.endMin); }
+    else laneEnds[lane] = b.endMin;
+    placed.push({ block: b, lane });
+  }
+  // compute overlap-group max lanes for each block (simple approach: connected overlap clusters)
+  const clusters = [];
+  let cur = [];
+  let curEnd = -Infinity;
+  for (const p of placed.sort((a, b) => a.block.startMin - b.block.startMin)) {
+    if (cur.length && p.block.startMin >= curEnd) { clusters.push(cur); cur = []; curEnd = -Infinity; }
+    cur.push(p);
+    curEnd = Math.max(curEnd, p.block.endMin);
+  }
+  if (cur.length) clusters.push(cur);
+  for (const cl of clusters) {
+    const maxLane = Math.max(...cl.map(p => p.lane)) + 1;
+    for (const p of cl) p.width = maxLane;
+  }
+  return placed;
+}
+
+function renderEvents(blocks, gapBlocks) {
+  document.querySelectorAll('.day-col').forEach(col => { col.innerHTML = ''; });
+
+  for (const d of DAY_ORDER) {
+    const col = document.querySelector(`.day-col[data-day="${d}"]`);
+    const dayBlocks = blocks.filter(b => b.day === d);
+    const placed = layoutLanes(dayBlocks);
+    for (const { block, lane, width } of placed) {
+      const top = ((block.startMin - GRID.gridStart) / SLOT_MIN) * ROW_PX;
+      const height = Math.max(((block.endMin - block.startMin) / SLOT_MIN) * ROW_PX, ROW_PX - 2);
+      const div = document.createElement('div');
+      div.className = 'event-block' + (block.flags.includes('conflict') ? ' conflict' : '')
+        + ((block.flags.includes('early') || block.flags.includes('ptransition') || block.flags.includes('noseats')) ? ' warn-flag' : '');
+      div.style.top = top + 'px';
+      div.style.height = height + 'px';
+      div.style.left = `calc(${(lane / width) * 100}% + 2px)`;
+      div.style.width = `calc(${(1 / width) * 100}% - 4px)`;
+      div.style.background = block.color;
+      const uniqueFlags = [...new Set(block.flags)];
+      const badges = uniqueFlags.map(f => {
+        if (f === 'conflict') return '<span class="badge">CONFLICT</span>';
+        if (f === 'early') return '<span class="badge">8AM</span>';
+        if (f === 'ptransition') return '<span class="badge">P-BLDG</span>';
+        if (f === 'noseats') return '<span class="badge">FULL</span>';
+        return '';
+      }).join('');
+      div.innerHTML = `<div class="ev-title">${escapeHtml(block.code)} · ${escapeHtml(block.section)}</div>
+        <div class="ev-sub">${fmtMin(block.startMin)}–${fmtMin(block.endMin)} · ${escapeHtml(block.room || 'TBA')}</div>
+        <div class="ev-sub">${escapeHtml(block.teacher)} · ${block.seats <= 0 ? 'FULL' : block.seats + ' seats'}</div>
+        <div class="ev-badges">${badges}</div>`;
+      div.title = `${block.title}\n${block.code} (${block.section})\n${d} ${fmtMin(block.startMin)}–${fmtMin(block.endMin)}\nRoom: ${block.room || 'TBA'}\nTeacher: ${block.teacher}\nSeats: ${block.seats <= 0 ? 'FULL / not listed' : block.seats}`;
+      col.appendChild(div);
+    }
+    for (const g of gapBlocks.filter(g => g.day === d)) {
+      const top = ((g.startMin - GRID.gridStart) / SLOT_MIN) * ROW_PX;
+      const height = ((g.endMin - g.startMin) / SLOT_MIN) * ROW_PX;
+      const div = document.createElement('div');
+      div.className = 'gap-block';
+      div.style.top = top + 'px';
+      div.style.height = height + 'px';
+      div.style.left = '2px';
+      div.style.right = '2px';
+      div.title = `${(g.endMin - g.startMin) / 60}h gap`;
+      col.appendChild(div);
+    }
+  }
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+// ---------------- rendering: banners / legend / irregular ----------------
+function renderBanners(sched) {
+  const wrap = document.getElementById('banners');
+  wrap.innerHTML = '';
+  if (sched.errors.length) {
+    const b = el('div', 'banner danger');
+    b.appendChild(el('h3', '', `⚠ ${sched.errors.length} scheduling conflict${sched.errors.length > 1 ? 's' : ''}`));
+    const ul = document.createElement('ul');
+    sched.errors.forEach(e => ul.appendChild(el('li', '', e)));
+    b.appendChild(ul);
+    wrap.appendChild(b);
+  }
+  if (sched.warnings.length) {
+    const b = el('div', 'banner warning');
+    b.appendChild(el('h3', '', `⚠ ${sched.warnings.length} warning${sched.warnings.length > 1 ? 's' : ''}`));
+    const ul = document.createElement('ul');
+    sched.warnings.forEach(w => ul.appendChild(el('li', '', w)));
+    b.appendChild(ul);
+    wrap.appendChild(b);
+  }
+}
+
+function renderLegend() {
+  const wrap = document.getElementById('legend');
+  wrap.innerHTML = '';
+  for (const slot of SLOTS) {
+    const item = el('div', 'item');
+    const sw = el('span', 'sw'); sw.style.background = `var(--slot-${slot.id})`;
+    item.appendChild(sw);
+    item.appendChild(document.createTextNode(slot.label));
+    wrap.appendChild(item);
+  }
+}
+
+function renderIrregular(irregular) {
+  const wrap = document.getElementById('irregular-wrap');
+  const list = document.getElementById('irregular-list');
+  list.innerHTML = '';
+  if (!irregular.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  for (const { slot, course } of irregular) {
+    const card = el('div', 'irregular-card');
+    const top = el('div', 'ir-top');
+    top.innerHTML = `<span>${escapeHtml(course.code)} (${escapeHtml(course.section)}) — ${escapeHtml(course.title || '')}</span>
+      <span style="display:flex;align-items:center;gap:8px;">
+        <span class="seat-pill ${seatsClass(seatsCount(course))}">${escapeHtml(seatsText(course))}</span>
+        <span class="ir-slot">${escapeHtml(slot.label)}</span>
+      </span>`;
+    card.appendChild(top);
+    const notes = el('div', 'ir-notes', (course.notes || []).join('\n') || 'No structured schedule available — check the timetable PDF directly.');
+    card.appendChild(notes);
+    list.appendChild(card);
+  }
+}
+
+function renderProgress() {
+  const count = SLOTS.filter(s => selection[s.id]).length;
+  const pill = document.getElementById('progress-pill');
+  document.getElementById('progress-text').textContent = `${count} / ${SLOTS.length} selected`;
+  pill.classList.toggle('complete', count === SLOTS.length);
+}
+
+// ---------------- rendering: sidebar combos ----------------
+function optionSearchText(c) {
+  return [c.code, c.section, c.title, (c.teachers||[]).join(' ')].join(' ').toLowerCase();
+}
+function optionScheduleSummary(c) {
+  if (!c.meetings || !c.meetings.length) return 'Irregular / compressed — see notes';
+  return c.meetings.map(m => {
+    const r = correctedRange(m.time);
+    const days = expandDay(m.day).join('/');
+    return r ? `${days} ${fmtMin(r.startMin)}–${fmtMin(r.endMin)}` : `${m.day} ${m.time}`;
+  }).join(', ');
+}
+
+function buildSidebar() {
+  const wrap = document.getElementById('slot-list');
+  wrap.innerHTML = '';
+  // .combo-panel elements live at <body> level (not inside wrap — see below), so clearing wrap's
+  // innerHTML doesn't remove them. This function only runs once today, but if it's ever called
+  // again (e.g. a future "reload data" action), skipping this would leak a duplicate, orphaned
+  // panel per slot on every call.
+  document.querySelectorAll('.combo-panel').forEach(p => p.remove());
+  for (const slot of SLOTS) {
+    const field = el('div', 'slot-field');
+    const label = el('label', '');
+    label.innerHTML = `<span class="slot-swatch" style="background:var(--slot-${slot.id})"></span>${escapeHtml(slot.label)}`;
+    field.appendChild(label);
+
+    const combo = el('div', 'combo');
+    combo.dataset.slot = slot.id;
+    const trigger = el('button', 'combo-trigger');
+    trigger.type = 'button';
+    combo.appendChild(trigger);
+
+    const panel = el('div', 'combo-panel');
+    panel.dataset.slot = slot.id;
+    const searchWrap = el('div', 'combo-search');
+    const search = document.createElement('input');
+    search.type = 'text';
+    search.placeholder = 'Search section, room, teacher…';
+    searchWrap.appendChild(search);
+    panel.appendChild(searchWrap);
+    const optionsWrap = el('div', 'combo-options');
+    panel.appendChild(optionsWrap);
+    const clearBtn = el('button', 'combo-clear', '✕ Clear selection');
+    panel.appendChild(clearBtn);
+    // reparented to <body> (not left nested in .combo) so it escapes #sidebar's stacking
+    // context — #sidebar uses position:sticky, which unconditionally creates a new stacking
+    // context, so a z-index on a still-nested fixed panel only ranks it *within* #sidebar and
+    // #main (painted later in DOM order) would still draw over it regardless of that z-index.
+    document.body.appendChild(panel);
+
+    trigger.addEventListener('click', () => toggleCombo(slot.id));
+    search.addEventListener('input', () => renderComboOptions(slot, optionsWrap, search.value));
+    clearBtn.addEventListener('click', () => { delete selection[slot.id]; closeAllCombos(); update(); });
+
+    field.appendChild(combo);
+    wrap.appendChild(field);
+  }
+}
+
+function formatConflictNotice(conflicts) {
+  const bySlot = {};
+  for (const c of conflicts) {
+    (bySlot[c.slotName] || (bySlot[c.slotName] = new Set())).add(c.day);
+  }
+  const parts = Object.entries(bySlot).map(([name, days]) => `${name} (${[...days].join(', ')})`);
+  return `Overlaps your ${parts.join('; ')} pick`;
+}
+
+function renderComboOptions(slot, container, query) {
+  const q = (query || '').trim().toLowerCase();
+  let options = sectionsForSlot(slot);
+  if (q) options = options.filter(c => optionSearchText(c).includes(q));
+  // precompute once per option so sort + render don't each redo the conflict scan
+  const withConflicts = options.map(c => ({ c, conflicts: conflictsForCourse(c, slot.id) }));
+  withConflicts.sort((a, b) => {
+    const conflictRank = (a.conflicts.length > 0 ? 1 : 0) - (b.conflicts.length > 0 ? 1 : 0);
+    if (conflictRank !== 0) return conflictRank; // conflict-free options first
+    const ea = earliestDayIndexAndStart(a.c), eb = earliestDayIndexAndStart(b.c);
+    if (ea[0] !== eb[0]) return ea[0] - eb[0];
+    return ea[1] - eb[1];
+  });
+  container.innerHTML = '';
+  if (!withConflicts.length) { container.appendChild(el('div', 'combo-empty', 'No matching sections.')); return; }
+  for (const { c, conflicts } of withConflicts) {
+    const btn = el('button', 'combo-option');
+    btn.type = 'button';
+    const picked = selection[slot.id];
+    if (picked && picked.code === c.code && picked.section === c.section) btn.classList.add('active');
+    if (conflicts.length) btn.classList.add('conflicted');
+    const irregular = !c.meetings || !c.meetings.length;
+    const conflictNote = conflicts.length
+      ? `<div class="opt-conflict">⛔ ${escapeHtml(formatConflictNotice(conflicts))}</div>` : '';
+    btn.innerHTML = `<div class="opt-top"><span>${escapeHtml(c.title || c.code)}</span><span class="opt-code">${escapeHtml(c.code)} · ${escapeHtml(c.section)}</span></div>
+      <div class="opt-schedule${irregular ? ' irregular' : ''}">${escapeHtml(optionScheduleSummary(c))}</div>
+      <div class="opt-teacher" style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+        <span>${escapeHtml((c.teachers||[]).join(', ') || 'TBA')}</span>
+        <span class="seat-pill ${seatsClass(seatsCount(c))}">${escapeHtml(seatsText(c))}</span>
+      </div>
+      ${conflictNote}`;
+    btn.title = conflicts.length ? formatConflictNotice(conflicts) + ' — still selectable, but you\'ll need to change one of them.' : '';
+    btn.addEventListener('click', () => {
+      selection[slot.id] = { code: c.code, section: c.section };
+      closeAllCombos();
+      update();
+    });
+    container.appendChild(btn);
+  }
+}
+
+function positionComboPanel(trigger, panel) {
+  const rect = trigger.getBoundingClientRect();
+  const panelWidth = panel.offsetWidth || Math.min(420, window.innerWidth * 0.82);
+  let left = rect.left;
+  left = Math.min(left, window.innerWidth - panelWidth - 8);
+  left = Math.max(8, left);
+  let top = rect.bottom + 6;
+  const maxHeight = Math.min(420, window.innerHeight * 0.7);
+  if (top + maxHeight > window.innerHeight - 8) {
+    top = Math.max(8, rect.top - maxHeight - 6); // flip above the trigger if no room below
+  }
+  panel.style.left = left + 'px';
+  panel.style.top = top + 'px';
+}
+
+function toggleCombo(slotId) {
+  const wasOpen = openComboSlot === slotId;
+  closeAllCombos();
+  if (wasOpen) return;
+  openComboSlot = slotId;
+  const combo = document.querySelector(`.combo[data-slot="${slotId}"]`);
+  const trigger = combo.querySelector('.combo-trigger');
+  trigger.classList.add('open');
+  const panel = document.querySelector(`.combo-panel[data-slot="${slotId}"]`);
+  panel.classList.add('open');
+  positionComboPanel(trigger, panel);
+  const search = panel.querySelector('.combo-search input');
+  search.value = '';
+  renderComboOptions(SLOTS.find(s => s.id === slotId), panel.querySelector('.combo-options'), '');
+  setTimeout(() => search.focus(), 0);
+}
+function closeAllCombos() {
+  openComboSlot = null;
+  document.querySelectorAll('.combo-trigger.open').forEach(t => t.classList.remove('open'));
+  document.querySelectorAll('.combo-panel.open').forEach(p => p.classList.remove('open'));
+}
+document.addEventListener('click', (e) => {
+  // panels live at <body> level now (see buildSidebar), not nested in .combo, so both must be checked
+  if (!e.target.closest('.combo') && !e.target.closest('.combo-panel')) closeAllCombos();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && openComboSlot) closeAllCombos();
+});
+// a fixed-position panel goes stale if the page/sidebar scrolls underneath it — just close it,
+// same behavior as clicking outside. Scrolling *inside* the open panel itself (the options
+// list) must NOT trigger this — that scroll event doesn't bubble, so a plain (non-capture)
+// window listener already won't see it; the explicit target check below is a second guard
+// against that regressing (capture:true here was the earlier bug: it caught the options-list
+// scroll on its way down and closed the dropdown every time someone tried to scroll it).
+function isScrollInsideOpenPanel(e) {
+  if (!openComboSlot) return false;
+  const panel = document.querySelector(`.combo-panel[data-slot="${openComboSlot}"]`);
+  return !!(panel && e.target && panel.contains(e.target));
+}
+document.getElementById('sidebar').addEventListener('scroll', () => { if (openComboSlot) closeAllCombos(); });
+window.addEventListener('scroll', (e) => {
+  if (!openComboSlot || isScrollInsideOpenPanel(e)) return;
+  closeAllCombos();
+});
+window.addEventListener('resize', () => { if (openComboSlot) closeAllCombos(); });
+
+function updateTriggers() {
+  for (const slot of SLOTS) {
+    const combo = document.querySelector(`.combo[data-slot="${slot.id}"]`);
+    const trigger = combo.querySelector('.combo-trigger');
+    const picked = selection[slot.id];
+    if (!picked) {
+      trigger.innerHTML = `<span class="placeholder">Choose a section…</span>`;
+      continue;
+    }
+    const course = getCourse(picked.code, picked.section);
+    trigger.innerHTML = `<span class="picked-main" style="display:flex;justify-content:space-between;gap:6px;">
+        <span>${escapeHtml(course.code)} · ${escapeHtml(course.section)}</span>
+        <span class="seat-pill ${seatsClass(seatsCount(course))}">${escapeHtml(seatsText(course))}</span>
+      </span>
+      <span class="picked-sub">${escapeHtml(optionScheduleSummary(course))}</span>`;
+  }
+}
+
+// ---------------- save / export / import ----------------
+let storageBlocked = false;
+function markStorageBlocked() {
+  if (storageBlocked) return;
+  storageBlocked = true;
+  const note = document.getElementById('storage-note');
+  if (note) note.style.display = 'block';
+}
+function loadConfigs() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; } catch (e) { markStorageBlocked(); return []; }
+}
+function persistConfigs(list) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list)); return true; }
+  catch (e) { markStorageBlocked(); return false; }
+}
+
+function renderSavedList() {
+  const wrap = document.getElementById('saved-list');
+  const list = loadConfigs();
+  wrap.innerHTML = '';
+  if (!list.length) { wrap.appendChild(el('div', 'saved-empty', 'No saved schedules yet.')); return; }
+  list.slice().reverse().forEach(cfg => {
+    const item = el('div', 'saved-item');
+    const load = el('button', 'load');
+    load.innerHTML = `<span class="name">${escapeHtml(cfg.name)}</span><span class="meta">${new Date(cfg.savedAt).toLocaleString()}</span>`;
+    load.addEventListener('click', () => { selection = { ...cfg.selection }; update(); });
+    const del = el('button', 'del', '✕');
+    del.title = 'Delete';
+    del.addEventListener('click', () => {
+      persistConfigs(loadConfigs().filter(c => c.id !== cfg.id));
+      renderSavedList();
+    });
+    item.appendChild(load); item.appendChild(del);
+    wrap.appendChild(item);
+  });
+}
+
+function currentSelectionValid() {
+  return Object.keys(selection).length > 0;
+}
+
+document.getElementById('btn-save').addEventListener('click', () => {
+  if (!currentSelectionValid()) return;
+  const prompt = document.getElementById('name-prompt');
+  prompt.classList.add('open');
+  const input = document.getElementById('name-input');
+  input.value = '';
+  input.focus();
+});
+document.getElementById('name-confirm').addEventListener('click', confirmSave);
+document.getElementById('name-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') confirmSave(); });
+function confirmSave() {
+  const input = document.getElementById('name-input');
+  const name = input.value.trim() || `Schedule ${new Date().toLocaleDateString()}`;
+  const list = loadConfigs();
+  list.push({ id: 'cfg_' + Date.now() + '_' + Math.floor(Math.random()*1e6), name, savedAt: new Date().toISOString(), selection });
+  persistConfigs(list);
+  document.getElementById('name-prompt').classList.remove('open');
+  renderSavedList();
+}
+
+document.getElementById('btn-export').addEventListener('click', () => {
+  if (!currentSelectionValid()) return;
+  const payload = { name: 'Exported Schedule', savedAt: new Date().toISOString(), selection };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'dawson-schedule.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('btn-import').addEventListener('click', () => document.getElementById('file-import').click());
+document.getElementById('file-import').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!parsed || typeof parsed.selection !== 'object') throw new Error('bad shape');
+      const clean = {};
+      for (const slot of SLOTS) {
+        const picked = parsed.selection[slot.id];
+        if (picked && getCourse(picked.code, picked.section)) clean[slot.id] = picked;
+      }
+      selection = clean;
+      update();
+      const list = loadConfigs();
+      list.push({ id: 'cfg_' + Date.now() + '_' + Math.floor(Math.random()*1e6), name: (parsed.name || file.name.replace(/\.json$/i,'')) + ' (imported)', savedAt: new Date().toISOString(), selection: clean });
+      persistConfigs(list);
+      renderSavedList();
+    } catch (err) {
+      alert('Could not import this file — it doesn\'t look like a schedule config exported from this tool.');
+    }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
+});
+
+// ---------------- main update loop ----------------
+function update() {
+  updateTriggers();
+  renderProgress();
+  const sched = computeSchedule();
+  renderEvents(sched.blocks, sched.gapBlocks);
+  renderBanners(sched);
+  renderIrregular(sched.irregular);
+}
+
+renderCalendarSkeleton();
+renderLegend();
+buildSidebar();
+renderSavedList();
+document.getElementById('seats-note').textContent = DATA.seats_last_updated
+  ? `Seat counts from Dawson's live seats report — ${DATA.seats_last_updated}`
+  : '';
+update();
+</script>
