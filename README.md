@@ -25,6 +25,8 @@ Hybrid personal + studio website focused on local SMB web development in Montrea
 - Tailwind CSS
 - Vercel API route for Studio discovery-call intake
 - Supabase (quote/testimonial lead intake edge function + Postgres)
+- Theta (home server) relay behind Cloudflare Tunnel for `/paste`'s file
+  storage — see `docs/theta-paste-relay-plan.md`
 - Plausible analytics
 - `react-helmet-async` for route-level SEO
 
@@ -37,6 +39,9 @@ Hybrid personal + studio website focused on local SMB web development in Montrea
 - `/studio/blog`
 - `/studio/blog/:slug`
 - `/studio/testimonials`
+- `/paste` Temporary cross-device clipboard (text or file up to 5GB, 5-minute
+  TTL), Google-sign-in gated, backed by a relay on Theta — see
+  `docs/theta-paste-relay-plan.md`
 
 ## Environment Variables
 
@@ -45,6 +50,8 @@ Create `.env`:
 ```bash
 VITE_SUPABASE_URL=
 VITE_SUPABASE_ANON_KEY=
+VITE_PASTE_API_BASE=https://files.felixegan.me
+VITE_GOOGLE_OAUTH_CLIENT_ID=
 ```
 
 Server-only environment:
