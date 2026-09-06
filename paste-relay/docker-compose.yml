@@ -1,0 +1,21 @@
+services:
+  paste-relay:
+    build: .
+    image: paste-relay:latest
+    container_name: paste-relay
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - paste_relay_data:/var/lib/paste-relay
+    networks:
+      cloudflare_origins:
+        aliases:
+          - paste-relay
+
+networks:
+  cloudflare_origins:
+    external: true
+
+volumes:
+  paste_relay_data:
