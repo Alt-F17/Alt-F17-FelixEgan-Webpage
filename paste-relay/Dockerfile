@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
-COPY server.js storage.js auth.js ./
+COPY server.js storage.js auth.js db.js captcha.js content-safety.js item-crypto.js ./
 
 RUN mkdir -p /var/lib/paste-relay && chown -R node:node /var/lib/paste-relay
 USER node

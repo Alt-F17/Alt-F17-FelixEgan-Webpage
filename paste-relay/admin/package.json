@@ -1,0 +1,15 @@
+{
+  "name": "paste-relay-admin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tailscale-only admin dashboard for paste-relay: item/file history, login-attempt history, per-container Docker uptime, and invite-link generation. Separate container from paste-relay itself; reads the same SQLite file directly. See ../../docs for the plan this implements.",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {}
+}

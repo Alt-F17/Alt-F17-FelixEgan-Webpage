@@ -12,10 +12,133 @@ services:
       cloudflare_origins:
         aliases:
           - paste-relay
+      # Scan network only — deliberately NOT paste_relay_admin. See the
+      # docker-socket-proxy comment below for why this internet-facing
+      # container must never be able to reach it, CVE or no CVE.
+      paste_relay_scan: {}
+    depends_on:
+      - clamav
+
+  # Self-hosted antivirus scanner. Internal-only: never joins
+  # cloudflare_origins, so it is never reachable from the public tunnel.
+  # Configuration mechanism verified at implementation time (2026-09) against
+  # the official clamav/clamav (Cisco-Talos/clamav-docker) image docs: the
+  # entrypoint applies any CLAMD_CONF_<Key>=<Value> env var directly into
+  # /etc/clamav/clamd.conf on startup, so no clamd.conf file is mounted here.
+  clamav:
+    image: clamav/clamav:stable
+    container_name: paste-relay-clamav
+    restart: unless-stopped
+    environment:
+      # Raised well above the app's 5GB MAX_FILE_BYTES (5120M) for headroom.
+      CLAMD_CONF_StreamMaxLength: "6000M"
+      CLAMD_CONF_MaxFileSize: "6000M"
+      CLAMD_CONF_MaxScanSize: "6000M"
+    volumes:
+      - clamav_defs:/var/lib/clamav
+    networks:
+      - paste_relay_scan
+
+  # Least-privilege proxy in front of the host Docker socket, used only by
+  # paste-admin for read-only container status (uptime). Internal-only, and
+  # on its OWN network (paste_relay_admin) that paste-relay never joins.
+  #
+  # IMPORTANT, verified live against Docker Hub/GitHub at deploy time
+  # (2026-09-10), correcting an earlier assumption in this file:
+  # - There is no 0.5.1 tag. The project switched to a "v"-prefixed scheme;
+  #   the latest published image is v0.5.0 (2026-07-27), pinned below.
+  # - CVE-2026-78122 (CVSS 8.3) is real, affects "0.5.0 and earlier," and per
+  #   public advisories (VulnCheck; Tecnativa/docker-socket-proxy#182) has
+  #   **no official patch and no working ALLOW_ARCHIVE=0/ALLOW_EXPORT=0
+  #   mitigation** — CONTAINERS=1 alone is enough to let a caller on this
+  #   network read GET /containers/{id}/archive|export|logs|top for ANY
+  #   container, i.e. exfiltrate other containers' filesystems/secrets. The
+  #   env vars below are kept as harmless defense-in-depth in case an
+  #   upstream fix later honors them, but they are NOT a confirmed mitigation
+  #   for this CVE today — do not treat them as one.
+  # - The only real mitigation available right now is network isolation:
+  #   this container is reachable ONLY from paste-admin (Tailscale-only,
+  #   ADMIN_API_KEY-gated), never from paste-relay (the internet-facing
+  #   container) or any other service. That containment, not the env-var
+  #   allow-list, is what actually bounds the blast radius of this CVE in
+  #   this deployment. Re-evaluate (and drop this service, i.e. lose the
+  #   admin dashboard's uptime panel, if the risk ever needs to go to zero)
+  #   once upstream ships a real fix.
+  #
+  # Separately, mounting the socket `:ro` only restricts the bind mount
+  # itself, not which Docker Engine API verbs can be issued over it.
+  docker-socket-proxy:
+    image: tecnativa/docker-socket-proxy:v0.5.0
+    container_name: paste-relay-docker-socket-proxy
+    restart: unless-stopped
+    environment:
+      # Explicit allow-list (defense in depth — set even where already 0 by
+      # default, and even though ALLOW_ARCHIVE/ALLOW_EXPORT are not a
+      # confirmed fix for CVE-2026-78122 — see comment above).
+      CONTAINERS: 1
+      PING: 1
+      INFO: 1
+      POST: 0
+      ALLOW_ARCHIVE: 0
+      ALLOW_EXPORT: 0
+      ALLOW_LOGS: 0
+      EXEC: 0
+      VOLUMES: 0
+      NETWORKS: 0
+      BUILD: 0
+      COMMIT: 0
+      SECRETS: 0
+      SERVICES: 0
+      SWARM: 0
+      SYSTEM: 0
+      TASKS: 0
+      NODES: 0
+      PLUGINS: 0
+      DISTRIBUTION: 0
+      SESSION: 0
+      IMAGES: 0
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - paste_relay_admin
+
+  # Tailscale-only admin dashboard (Workstream E). No path to the public
+  # internet at all: does not join cloudflare_origins.
+  paste-admin:
+    build: ./admin
+    container_name: paste-admin
+    restart: unless-stopped
+    env_file:
+      # required: false — admin/.env is created at deploy time (see
+      # admin/.env.example), not guaranteed to exist wherever this file is
+      # merely parsed/validated (e.g. `docker compose config`).
+      - path: ./admin/.env
+        required: false
+    volumes:
+      - paste_relay_data:/var/lib/paste-relay:rw
+    ports:
+      # Bound explicitly to Theta's Tailscale interface IP, not published on
+      # every interface — do not change to "4120:4120".
+      - "100.68.4.105:4120:4120"
+    networks:
+      - paste_relay_admin
+    depends_on:
+      - docker-socket-proxy
 
 networks:
   cloudflare_origins:
     external: true
+  # Both local to this compose project (unlike cloudflare_origins), and
+  # deliberately kept SEPARATE from each other — paste-relay (internet-
+  # facing, joins this one) must never share a network with docker-socket-
+  # proxy (see that service's comment re: CVE-2026-78122). Neither is
+  # `internal: true`: clamav needs outbound internet for freshclam updates,
+  # and paste-admin needs it for nothing but is harmless either way.
+  paste_relay_scan:
+    driver: bridge
+  paste_relay_admin:
+    driver: bridge
 
 volumes:
   paste_relay_data:
+  clamav_defs:

@@ -1,7 +1,7 @@
 // Client for the Theta-hosted paste relay (files.felixegan.me). See
-// docs/theta-paste-relay-plan.md for the full API contract this implements
-// against. The relay does not exist yet — calls here will fail until the
-// second agent's plan is executed on Theta; that's expected.
+// /home/felix/.claude/plans/change-the-google-oauth-tidy-lovelace.md
+// ("Workstream D — API server") for the full route/response contract this
+// implements against.
 
 export const MAX_FILE_BYTES = 5 * 1024 * 1024 * 1024; // 5GB
 const CHUNK_BYTES = 8 * 1024 * 1024; // 8MB per chunk, tuned for slow home uplinks
@@ -9,37 +9,41 @@ const CHUNK_MAX_RETRIES = 5;
 
 const apiBase = (import.meta.env.VITE_PASTE_API_BASE ?? "").replace(/\/$/, "");
 
-// Wire format, per docs/theta-paste-relay-plan.md.
-type PasteStateWire =
-  | { empty: true }
-  | { type: "text"; content: string; expiresAt: string }
-  | { type: "file"; filename: string; size: number; mime: string; expiresAt: string };
-
-// Normalized shape with a single discriminant (`kind`) so consumers get
-// clean type narrowing — the wire format's `empty` flag doesn't discriminate
-// cleanly since it's absent on the other two variants.
-export type PasteState =
-  | { kind: "empty" }
-  | { kind: "text"; content: string; expiresAt: string }
-  | { kind: "file"; filename: string; size: number; mime: string; expiresAt: string };
-
-const normalizeState = (wire: PasteStateWire): PasteState => {
-  if (!("type" in wire)) return { kind: "empty" };
-  if (wire.type === "text") return { kind: "text", content: wire.content, expiresAt: wire.expiresAt };
-  return { kind: "file", filename: wire.filename, size: wire.size, mime: wire.mime, expiresAt: wire.expiresAt };
-};
-
-class PasteApiError extends Error {
+// Standard backend error body (rate-limit/quota/captcha/pin failures, per
+// Workstream D): { error, message, retryAt }. `retryAt` is an ISO timestamp
+// when known, or null when nothing blocking has a known expiry yet (e.g.
+// still pending_scan) — callers must show a static message rather than
+// fabricate a countdown in that case.
+export class PasteApiError extends Error {
   constructor(
     message: string,
     public status?: number,
+    public code?: string,
+    public retryAt: string | null = null,
   ) {
     super(message);
     this.name = "PasteApiError";
   }
 }
 
-const authedFetch = (path: string, idToken: string, init: RequestInit = {}) => {
+type ErrorBody = { error?: string; message?: string; retryAt?: string | null };
+
+const parseErrorBody = (raw: string): ErrorBody => {
+  try {
+    return raw ? (JSON.parse(raw) as ErrorBody) : {};
+  } catch {
+    // Non-JSON error body (e.g. a proxy/5xx HTML page) — fall back to raw text.
+    return {};
+  }
+};
+
+// Kept verbatim in shape/signature/role: takes (path, token, init), adds only
+// `Authorization: Bearer <token>`, and is otherwise credential-agnostic — it
+// doesn't know or care whether the token came from Google (as before) or the
+// new pattern-login session (now). The error branch is extended to parse the
+// relay's structured `{error, message, retryAt}` body so callers can hand a
+// caught PasteApiError straight to <RetryCountdown>.
+const authedFetch = (path: string, token: string, init: RequestInit = {}) => {
   if (!apiBase) {
     return Promise.reject(new PasteApiError("Paste relay is not configured (VITE_PASTE_API_BASE)"));
   }
@@ -48,33 +52,112 @@ const authedFetch = (path: string, idToken: string, init: RequestInit = {}) => {
     ...init,
     headers: {
       ...init.headers,
-      Authorization: `Bearer ${idToken}`,
+      Authorization: `Bearer ${token}`,
     },
   }).then(async (response) => {
     if (!response.ok) {
-      const detail = await response.text().catch(() => "");
-      throw new PasteApiError(detail || `Request failed: ${response.status}`, response.status);
+      const raw = await response.text().catch(() => "");
+      const parsed = parseErrorBody(raw);
+      throw new PasteApiError(
+        parsed.message || raw || `Request failed: ${response.status}`,
+        response.status,
+        parsed.error,
+        parsed.retryAt ?? null,
+      );
     }
     return response;
   });
 };
 
-export const getPasteState = async (idToken: string): Promise<PasteState> => {
-  const response = await authedFetch("/api/paste", idToken);
-  return normalizeState((await response.json()) as PasteStateWire);
+// --- Items -------------------------------------------------------------
+
+export type ItemKind = "text" | "file";
+export type ItemStatus = "uploading" | "pending_scan" | "active" | "rejected" | "expired";
+
+export type Item = {
+  id: string;
+  kind: ItemKind;
+  filename: string | null;
+  mime: string | null;
+  size: number | null;
+  status: ItemStatus;
+  createdAt: string;
+  /** Set exactly when the item became `active` — this is when the TTL starts. */
+  readyAt: string | null;
+  /** `ready_at + TTL_SECONDS`; null until the item is active. */
+  expiresAt: string | null;
+  rejectReason?: string | null;
 };
 
-export const saveText = async (idToken: string, content: string): Promise<{ expiresAt: string }> => {
-  const response = await authedFetch("/api/paste/text", idToken, {
+/** GET /api/paste/items — the caller's own items only. */
+export const listItems = async (token: string): Promise<Item[]> => {
+  const response = await authedFetch("/api/paste/items", token);
+  return (await response.json()) as Item[];
+};
+
+/**
+ * GET /api/paste/items/:id — any authenticated account may fetch metadata for
+ * any item id (this is the cross-account sharing route); content itself
+ * still requires the item's PIN via `unlockItem`/`downloadFile`.
+ */
+export const getItem = async (token: string, id: string): Promise<Item> => {
+  const response = await authedFetch(`/api/paste/items/${id}`, token);
+  return (await response.json()) as Item;
+};
+
+export const deleteItem = async (token: string, id: string): Promise<void> => {
+  await authedFetch(`/api/paste/items/${id}`, token, { method: "DELETE" });
+};
+
+// The PIN is generated server-side at `db.reserveItem()` time — the very
+// first statement of both create-item handlers — so it exists immediately
+// on creation, before a file has even finished uploading/scanning. Callers
+// must display it once ("won't be shown again") right away.
+export type CreatedItem = {
+  id: string;
+  pin: string;
+  status: ItemStatus;
+  /** Null until the item reaches `active` (file uploads start this way). */
+  expiresAt: string | null;
+};
+
+/** POST /api/paste/text — synchronous: text pastes are active immediately. */
+export const saveText = async (
+  token: string,
+  content: string,
+  turnstileToken: string,
+): Promise<CreatedItem> => {
+  const response = await authedFetch("/api/paste/text", token, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content }),
+    body: JSON.stringify({ content, turnstileToken }),
   });
-  return (await response.json()) as { expiresAt: string };
+  return (await response.json()) as CreatedItem;
 };
 
-export const clearPaste = async (idToken: string): Promise<void> => {
-  await authedFetch("/api/paste", idToken, { method: "DELETE" });
+export type InitFileUpload = { filename: string; size: number; mime: string; turnstileToken: string };
+
+/** POST /api/paste/file/init — reserves the item + quota/IP-cap slot and returns its PIN immediately. */
+export const initFileUpload = async (token: string, init: InitFileUpload): Promise<CreatedItem> => {
+  const response = await authedFetch("/api/paste/file/init", token, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(init),
+  });
+  return (await response.json()) as CreatedItem;
+};
+
+export const unlockItem = async (
+  token: string,
+  id: string,
+  pin: string,
+): Promise<{ content: string }> => {
+  const response = await authedFetch(`/api/paste/items/${id}/unlock`, token, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ pin }),
+  });
+  return (await response.json()) as { content: string };
 };
 
 export type UploadProgress = {
@@ -82,15 +165,16 @@ export type UploadProgress = {
   totalBytes: number;
 };
 
-// Returns a fresh, non-expired ID token — callers pass a getter rather than a
-// static token so a multi-hour upload over a slow home uplink can refresh a
-// short-lived GIS token mid-transfer instead of failing partway through.
+// Returns a fresh, non-expired session token — callers pass a getter rather
+// than a static token since a multi-hour upload over a slow home uplink
+// could outlast a single call, though sessions are now long-lived (24h) so
+// this mostly just keeps `uploadFile` credential-agnostic.
 export type TokenGetter = () => Promise<string>;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const uploadChunkWithRetry = async (
-  uploadId: string,
+  itemId: string,
   offset: number,
   blob: Blob,
   getToken: TokenGetter,
@@ -100,8 +184,8 @@ const uploadChunkWithRetry = async (
   for (let attempt = 0; attempt < CHUNK_MAX_RETRIES; attempt += 1) {
     if (signal?.aborted) throw new PasteApiError("Upload cancelled");
     try {
-      const idToken = await getToken();
-      await authedFetch(`/api/paste/file/${uploadId}/chunk?offset=${offset}`, idToken, {
+      const token = await getToken();
+      await authedFetch(`/api/paste/items/${itemId}/chunk?offset=${offset}`, token, {
         method: "PUT",
         headers: { "Content-Type": "application/octet-stream" },
         body: blob,
@@ -117,28 +201,38 @@ const uploadChunkWithRetry = async (
   throw lastError instanceof Error ? lastError : new PasteApiError("Chunk upload failed");
 };
 
-const getUploadStatus = async (uploadId: string, idToken: string): Promise<number> => {
-  const response = await authedFetch(`/api/paste/file/${uploadId}/status`, idToken);
+const getUploadStatus = async (itemId: string, token: string): Promise<number> => {
+  const response = await authedFetch(`/api/paste/items/${itemId}/status`, token);
   const data = (await response.json()) as { receivedBytes: number };
   return data.receivedBytes;
 };
 
+export type UploadFileResult = { id: string; status: ItemStatus };
+
 export const uploadFile = async (
   file: File,
   getToken: TokenGetter,
-  options: { onProgress?: (progress: UploadProgress) => void; signal?: AbortSignal } = {},
-): Promise<{ expiresAt: string }> => {
+  options: {
+    turnstileToken: string;
+    /** Fires as soon as the item + PIN exist, well before the upload (or scan) finishes. */
+    onInit?: (init: CreatedItem) => void;
+    onProgress?: (progress: UploadProgress) => void;
+    signal?: AbortSignal;
+  },
+): Promise<UploadFileResult> => {
   if (file.size > MAX_FILE_BYTES) {
     throw new PasteApiError(`File exceeds the 5GB limit (${(file.size / 1024 ** 3).toFixed(2)}GB)`);
   }
 
   const initToken = await getToken();
-  const initResponse = await authedFetch("/api/paste/file/init", initToken, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ filename: file.name, size: file.size, mime: file.type || "application/octet-stream" }),
+  const created = await initFileUpload(initToken, {
+    filename: file.name,
+    size: file.size,
+    mime: file.type || "application/octet-stream",
+    turnstileToken: options.turnstileToken,
   });
-  const { uploadId } = (await initResponse.json()) as { uploadId: string };
+  options.onInit?.(created);
+  const itemId = created.id;
 
   let offset = 0;
   while (offset < file.size) {
@@ -146,13 +240,13 @@ export const uploadFile = async (
 
     const chunk = file.slice(offset, Math.min(offset + CHUNK_BYTES, file.size));
     try {
-      await uploadChunkWithRetry(uploadId, offset, chunk, getToken, options.signal);
+      await uploadChunkWithRetry(itemId, offset, chunk, getToken, options.signal);
       offset += chunk.size;
     } catch (error) {
       // A dropped connection may have partially landed on the server — trust
       // its reported offset rather than assuming this chunk fully failed.
       const confirmedToken = await getToken();
-      const confirmedOffset = await getUploadStatus(uploadId, confirmedToken).catch(() => offset);
+      const confirmedOffset = await getUploadStatus(itemId, confirmedToken).catch(() => offset);
       if (confirmedOffset > offset) {
         offset = confirmedOffset;
         continue;
@@ -164,21 +258,31 @@ export const uploadFile = async (
   }
 
   const completeToken = await getToken();
-  const completeResponse = await authedFetch(`/api/paste/file/${uploadId}/complete`, completeToken, {
+  const completeResponse = await authedFetch(`/api/paste/items/${itemId}/complete`, completeToken, {
     method: "POST",
   });
-  return (await completeResponse.json()) as { expiresAt: string };
+  // 202 pending_scan, intentionally with no expiresAt yet — the TTL only
+  // starts once the async scan activates the item; poll listItems/getItem
+  // to observe that transition.
+  return (await completeResponse.json()) as UploadFileResult;
 };
 
 // Streams the current file to disk via the File System Access API when
 // available (avoids holding multi-GB downloads in memory); falls back to an
-// in-memory Blob + object URL on browsers without it.
+// in-memory Blob + object URL on browsers without it. The PIN travels via
+// the `X-Paste-Pin` header (not the URL/query string, to keep it out of
+// server logs) — the same pinAttemptMiddleware backing `unlockItem` gates
+// this route too, so a wrong PIN here counts toward the same 5-attempt lockout.
 export const downloadFile = async (
-  idToken: string,
+  token: string,
+  id: string,
+  pin: string,
   filename: string,
   onProgress?: (receivedBytes: number) => void,
 ): Promise<void> => {
-  const response = await authedFetch("/api/paste/file/download", idToken);
+  const response = await authedFetch(`/api/paste/items/${id}/download`, token, {
+    headers: { "X-Paste-Pin": pin },
+  });
   if (!response.body) throw new PasteApiError("Empty download response");
 
   const totalBytes = Number(response.headers.get("Content-Length") ?? 0);

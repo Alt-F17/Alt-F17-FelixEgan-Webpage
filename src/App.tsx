@@ -46,6 +46,7 @@ const AppRoutes = () => {
       </Route>
       <Route path="/qr" element={<QRPage />} />
       <Route path="/paste" element={<PastePage />} />
+      <Route path="/paste/i/:itemId" element={<PastePage />} />
       <Route path="/404" element={<NotFound />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
