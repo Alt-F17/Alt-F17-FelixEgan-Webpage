@@ -121,21 +121,25 @@ export type CreatedItem = {
   expiresAt: string | null;
 };
 
-/** POST /api/paste/text — synchronous: text pastes are active immediately. */
-export const saveText = async (
-  token: string,
-  content: string,
-  turnstileToken: string,
-): Promise<CreatedItem> => {
+/**
+ * POST /api/paste/text — synchronous: text pastes are active immediately.
+ * No captcha token: the create routes dropped their Turnstile requirement
+ * post-launch (it forced a fresh solve on every single save, which was too
+ * disruptive for a small set of already-authenticated, invite-only users —
+ * requireAuth + the 1/min rate limit are the controls here now). Turnstile
+ * stays on login/redeem-invite in authApi.ts, where it compensates for
+ * pattern-only auth having no per-account lockout.
+ */
+export const saveText = async (token: string, content: string): Promise<CreatedItem> => {
   const response = await authedFetch("/api/paste/text", token, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ content, turnstileToken }),
+    body: JSON.stringify({ content }),
   });
   return (await response.json()) as CreatedItem;
 };
 
-export type InitFileUpload = { filename: string; size: number; mime: string; turnstileToken: string };
+export type InitFileUpload = { filename: string; size: number; mime: string };
 
 /** POST /api/paste/file/init — reserves the item + quota/IP-cap slot and returns its PIN immediately. */
 export const initFileUpload = async (token: string, init: InitFileUpload): Promise<CreatedItem> => {
@@ -213,7 +217,6 @@ export const uploadFile = async (
   file: File,
   getToken: TokenGetter,
   options: {
-    turnstileToken: string;
     /** Fires as soon as the item + PIN exist, well before the upload (or scan) finishes. */
     onInit?: (init: CreatedItem) => void;
     onProgress?: (progress: UploadProgress) => void;
@@ -229,7 +232,6 @@ export const uploadFile = async (
     filename: file.name,
     size: file.size,
     mime: file.type || "application/octet-stream",
-    turnstileToken: options.turnstileToken,
   });
   options.onInit?.(created);
   const itemId = created.id;

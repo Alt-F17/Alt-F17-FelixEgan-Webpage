@@ -53,17 +53,42 @@ export function PatternGrid({ onComplete, disabled = false }: PatternGridProps) 
     };
   }, []);
 
-  const hitTest = useCallback((clientX: number, clientY: number): number | null => {
-    for (let index = 0; index < CELL_COUNT; index += 1) {
-      const cell = cellRefs.current[index];
-      if (!cell) continue;
-      const rect = cell.getBoundingClientRect();
-      if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
-        return index;
+  // Nearest-dot-within-radius, not strict per-cell rectangle bounds. A
+  // straight diagonal drag between two dots passes exactly through the
+  // corner where four cell rectangles meet — with rectangle-based hit
+  // testing, a pixel's worth of jitter right at that corner flips which
+  // rect "contains" the point, so fast diagonal strokes would register the
+  // wrong dot (or momentarily nothing) even when the intended dot was
+  // clearly closer. Real pattern-lock implementations (e.g. Android's) use
+  // proximity to the dot center for exactly this reason. The radius cap
+  // just keeps a stray pointer well outside the whole grid from snapping to
+  // whatever dot happens to be nearest.
+  const hitTest = useCallback(
+    (clientX: number, clientY: number): number | null => {
+      const container = containerRef.current;
+      if (!container) return null;
+      const containerRect = container.getBoundingClientRect();
+      const x = clientX - containerRect.left;
+      const y = clientY - containerRect.top;
+
+      let nearestIndex: number | null = null;
+      let nearestDist = Infinity;
+      for (let index = 0; index < CELL_COUNT; index += 1) {
+        const center = cellCenter(index);
+        if (!center) continue;
+        const dist = Math.hypot(x - center.x, y - center.y);
+        if (dist < nearestDist) {
+          nearestDist = dist;
+          nearestIndex = index;
+        }
       }
-    }
-    return null;
-  }, []);
+
+      const cellSize = containerRect.width / GRID_SIZE;
+      if (nearestIndex === null || nearestDist > cellSize * 0.75) return null;
+      return nearestIndex;
+    },
+    [cellCenter],
+  );
 
   const updatePointerPos = (event: ReactPointerEvent<HTMLDivElement>) => {
     const container = containerRef.current;

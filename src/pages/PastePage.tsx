@@ -305,14 +305,17 @@ export default function PastePage() {
     return () => clearInterval(interval);
   }, [session, refreshItems]);
 
-  // --- Shared item (arrived via /paste/i/:itemId) ---
+  // --- Shared item: arrived via /paste/i/:itemId, OR looked up manually
+  // below by pasting a link/id — both paths land in the same
+  // sharedItem/sharedError state and render through the same block, since
+  // "open a specific item by id, then unlock with its PIN" is the same
+  // operation either way.
 
   const [sharedItem, setSharedItem] = useState<Item | null>(null);
   const [sharedError, setSharedError] = useState<RelayError | null>(null);
 
   useEffect(() => {
     if (!session || !itemId) {
-      setSharedItem(null);
       return;
     }
     getItem(session.token, itemId)
@@ -320,34 +323,56 @@ export default function PastePage() {
       .catch((error) => setSharedError(toRelayError(error)));
   }, [session, itemId]);
 
+  // Accepts either a bare item id or a full share link
+  // (https://felixegan.me/paste/i/<id>) and pulls out the id either way, so
+  // pasting the whole link someone sent you works without editing it down.
+  const extractItemId = (raw: string): string => {
+    const trimmed = raw.trim();
+    const match = trimmed.match(/\/paste\/i\/([^/?#]+)/);
+    return match ? match[1] : trimmed;
+  };
+
+  const [lookupInput, setLookupInput] = useState("");
+  const [lookupBusy, setLookupBusy] = useState(false);
+
+  const handleLookup = async () => {
+    if (!session || lookupInput.trim().length === 0) return;
+    const id = extractItemId(lookupInput);
+    setLookupBusy(true);
+    setSharedError(null);
+    try {
+      const item = await getItem(session.token, id);
+      setSharedItem(item);
+      setLookupInput("");
+    } catch (error) {
+      setSharedItem(null);
+      setSharedError(toRelayError(error));
+    } finally {
+      setLookupBusy(false);
+    }
+  };
+
   // --- Create item (explicit Save/Upload — no more debounced autosave: a
   // continuous-autosave effect would blow through the 1/min create limit
-  // and per-paste captcha requirement almost immediately) ---
+  // almost immediately). Turnstile was originally required here too, but
+  // came off post-launch — solving a fresh captcha on every single save was
+  // too disruptive for a small set of already-authenticated, invite-only
+  // users. requireAuth + the 1/min rate limit are the controls on these
+  // routes now; Turnstile stays on login/redeem-invite above. ---
 
   const [textDraft, setTextDraft] = useState("");
-  const [createTurnstileToken, setCreateTurnstileToken] = useState<string | null>(null);
-  const createTurnstileRef = useRef<TurnstileWidgetHandle>(null);
   const [saving, setSaving] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<{ sent: number; total: number } | null>(null);
   const uploadAbortRef = useRef<AbortController | null>(null);
   const [createdPin, setCreatedPin] = useState<{ id: string; pin: string } | null>(null);
   const [pinCopied, setPinCopied] = useState(false);
 
-  const consumeCreateToken = () => {
-    const token = createTurnstileToken;
-    setCreateTurnstileToken(null);
-    createTurnstileRef.current?.reset();
-    return token;
-  };
-
   const handleSaveText = async () => {
-    if (!session || !createTurnstileToken || textDraft.trim().length === 0) return;
-    const turnstileToken = consumeCreateToken();
-    if (!turnstileToken) return;
+    if (!session || textDraft.trim().length === 0) return;
     setSaving(true);
     setRelayError(null);
     try {
-      const created = await saveText(session.token, textDraft, turnstileToken);
+      const created = await saveText(session.token, textDraft);
       setCreatedPin({ id: created.id, pin: created.pin });
       setPinCopied(false);
       setTextDraft("");
@@ -361,14 +386,11 @@ export default function PastePage() {
   };
 
   const handleFileSelect = async (file: File) => {
-    if (!session || !createTurnstileToken) return;
+    if (!session) return;
     if (file.size > MAX_FILE_BYTES) {
       toast({ title: "File too large", description: "5GB max.", variant: "destructive" });
       return;
     }
-
-    const turnstileToken = consumeCreateToken();
-    if (!turnstileToken) return;
 
     const controller = new AbortController();
     uploadAbortRef.current = controller;
@@ -376,7 +398,6 @@ export default function PastePage() {
 
     try {
       await uploadFile(file, getToken, {
-        turnstileToken,
         signal: controller.signal,
         onInit: (created) => {
           setCreatedPin({ id: created.id, pin: created.pin });
@@ -408,8 +429,6 @@ export default function PastePage() {
       toast({ title: "Couldn't copy", description: "Copy the PIN manually.", variant: "destructive" });
     }
   };
-
-  const createReady = Boolean(createTurnstileToken);
 
   return (
     <>
@@ -457,23 +476,52 @@ export default function PastePage() {
 
               {relayError && <RetryCountdown message={relayError.message} retryAt={relayError.retryAt} />}
 
-              {itemId && (
-                <div className="flex w-full flex-col gap-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">Shared with you</p>
-                  {sharedError && <RetryCountdown message={sharedError.message} retryAt={sharedError.retryAt} />}
-                  {sharedItem ? (
-                    <ItemRow
-                      item={sharedItem}
-                      now={now}
-                      token={session.token}
-                      allowDelete={false}
-                      onError={setSharedError}
-                    />
-                  ) : (
-                    !sharedError && <p className="text-xs text-zinc-500">Loading shared item…</p>
-                  )}
+              <div className="flex w-full flex-col gap-2">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
+                  Open a shared item
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    value={lookupInput}
+                    onChange={(e) => setLookupInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleLookup();
+                    }}
+                    placeholder="Paste the link (or just its id) someone sent you"
+                    className="min-w-0 flex-1 rounded-lg border border-zinc-700 bg-zinc-950/60 px-3 py-2 text-xs text-zinc-100 placeholder:text-zinc-600"
+                  />
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={lookupBusy || lookupInput.trim().length === 0}
+                    onClick={handleLookup}
+                  >
+                    {lookupBusy ? "Looking up…" : "Open"}
+                  </Button>
                 </div>
-              )}
+                <p className="text-[11px] text-zinc-600">
+                  Then enter its 4-digit PIN below to unlock — works for anyone signed in, not just the
+                  person who created it.
+                </p>
+
+                {(itemId || sharedItem || sharedError) && (
+                  <div className="mt-1 flex flex-col gap-2">
+                    {sharedError && <RetryCountdown message={sharedError.message} retryAt={sharedError.retryAt} />}
+                    {sharedItem ? (
+                      <ItemRow
+                        item={sharedItem}
+                        now={now}
+                        token={session.token}
+                        allowDelete={false}
+                        onError={setSharedError}
+                      />
+                    ) : (
+                      itemId &&
+                      !sharedError && <p className="text-xs text-zinc-500">Loading shared item…</p>
+                    )}
+                  </div>
+                )}
+              </div>
 
               {createdPin && (
                 <div className="flex w-full flex-col items-center gap-2 rounded-lg border border-emerald-900/60 bg-emerald-950/40 px-4 py-3 text-center">
@@ -511,25 +559,18 @@ export default function PastePage() {
                   className="min-h-[120px] resize-y bg-zinc-950/60 text-sm text-zinc-100"
                 />
 
-                <TurnstileWidget ref={createTurnstileRef} onToken={setCreateTurnstileToken} />
-
                 <Button
                   className="w-full"
-                  disabled={!createReady || saving || textDraft.trim().length === 0}
+                  disabled={saving || textDraft.trim().length === 0}
                   onClick={handleSaveText}
                 >
                   {saving ? "Saving…" : "Save"}
                 </Button>
 
-                <label
-                  className={`flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-dashed border-zinc-700 px-4 py-5 text-center text-xs text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300 ${
-                    !createReady ? "pointer-events-none opacity-50" : ""
-                  }`}
-                >
+                <label className="flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-dashed border-zinc-700 px-4 py-5 text-center text-xs text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300">
                   <input
                     type="file"
                     className="hidden"
-                    disabled={!createReady}
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) handleFileSelect(file);

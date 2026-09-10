@@ -36,7 +36,6 @@ const rateLimit = require("express-rate-limit");
 const storage = require("./storage");
 const db = require("./db");
 const { authRouter, requireAuth } = require("./auth");
-const { requireCaptcha } = require("./captcha");
 const contentSafety = require("./content-safety");
 const itemCrypto = require("./item-crypto");
 
@@ -170,10 +169,17 @@ app.get("/api/paste/items/:id", requireAuth, (req, res) => {
 
 app.post(
   "/api/paste/text",
+  // No requireCaptcha here (removed post-launch per UX feedback: it forced
+  // a fresh Turnstile solve on every single save). The create routes are
+  // already behind requireAuth (an admin-issued-invite-only account) and
+  // createLimiter (1/min/IP) — for a small set of trusted, authenticated
+  // users, that's sufficient; Turnstile stays on login/redeem-invite below,
+  // where it's compensating for pattern-only auth having no per-account
+  // lockout, a materially different risk than "an already-logged-in user
+  // pastes too often."
   createLimiter,
   requireAuth,
   express.json({ limit: "15mb" }),
-  requireCaptcha,
   async (req, res) => {
     const { content } = req.body || {};
     if (typeof content !== "string") {
@@ -242,10 +248,10 @@ app.post(
 
 app.post(
   "/api/paste/file/init",
+  // See the comment on POST /api/paste/text above — captcha removed here too.
   createLimiter,
   requireAuth,
   express.json({ limit: "10kb" }),
-  requireCaptcha,
   (req, res) => {
     const { filename, size, mime } = req.body || {};
     if (
@@ -596,6 +602,36 @@ app.get("/api/paste/items/:id/download", requireAuth, pinAttemptMiddleware, (req
     if (settled) return;
     settled = true;
     recordPinOutcome(req, item, true);
+  });
+
+  // SECURITY FIX (post-launch): a client that aborts the connection before
+  // `finish` used to record NO outcome at all, for either kind of PIN. AES-
+  // GCM's auth-tag check only runs in the decipher's `.final()`, which only
+  // fires once every ciphertext byte has been read — but `plaintext.pipe(res)`
+  // is a plain `.pipe()`, and Node's `.pipe()` does not propagate a
+  // destination-side close back upstream through multiple pipe stages (that
+  // propagation is exactly what `stream.pipeline()` exists to fix). So an
+  // aborted `res` just stops draining `plaintext`; with no reader, backpressure
+  // stalls the read before EOF, `.final()` never runs, and neither `finish`
+  // nor `plaintext`'s `error` ever fired — meaning `recordPinOutcome` was
+  // never called for that guess. This let an attacker who already knows an
+  // item's id (any authenticated account can read metadata for any id via
+  // the cross-account sharing route) brute-force its PIN for free: send a
+  // guess, read only the first chunk, and abort before the tag check can
+  // ever run — AES-GCM with a wrong key produces high-entropy garbage
+  // instantly distinguishable from real file content, so no lockout ever
+  // triggered. Fix: treat an incomplete transfer as a FAILED attempt,
+  // fail-closed like everywhere else in this codebase, rather than "no
+  // outcome recorded." A single dropped connection on a correct PIN costs
+  // one of five strikes (a later correct retry resets the counter to zero,
+  // per db.recordPinAttempt); an attacker aborting every guess to dodge
+  // detection now correctly burns through the same 5-attempt budget as any
+  // other guess.
+  res.on("close", () => {
+    if (settled) return;
+    settled = true;
+    recordPinOutcome(req, item, false);
+    if (typeof plaintext.destroy === "function") plaintext.destroy();
   });
 
   plaintext.on("error", (err) => {
