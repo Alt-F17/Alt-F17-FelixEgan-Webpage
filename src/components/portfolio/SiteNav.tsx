@@ -1,18 +1,33 @@
 import type { SiteContent } from "@/content/siteContent";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { LanguageToggle } from "@/components/site/LanguageToggle";
+import { portfolioCopy } from "@/content/portfolioCopy";
 
 const mono = "'IBM Plex Mono',monospace";
 const press = "'Press Start 2P'";
+
+// site.json nav labels are English-only; map the ones with an existing FR
+// translation in portfolioCopy so the toggle has something to switch to.
+const navLabelFr: Record<string, string> = {
+  about: portfolioCopy.header.nav.about.fr,
+  skills: portfolioCopy.header.nav.skills.fr,
+  work: portfolioCopy.header.nav.projects.fr,
+  studio: portfolioCopy.header.nav.studio.fr,
+  contact: portfolioCopy.header.nav.contact.fr,
+};
 
 /**
  * Fixed top navigation. On the home page, anchor links jump to sections;
  * on subpages they point back to /#section. Ported from the design's <nav>.
  */
 export function SiteNav({ nav, home = true }: { nav: SiteContent["nav"]; home?: boolean }) {
+  const { locale } = useLanguage();
   const base = home ? "" : "/";
   const logoHref = home ? "#top" : "/";
   // Anchor links (#about) are section jumps — prefix with base so they work from
   // subpages (/#about). Absolute links (/studio, https://…) are used verbatim.
   const resolve = (href: string) => (href.startsWith("#") ? base + href : href);
+  const label = (l: string) => (locale === "fr" && navLabelFr[l.toLowerCase()]) || l;
 
   return (
     <nav
@@ -65,9 +80,10 @@ export function SiteNav({ nav, home = true }: { nav: SiteContent["nav"]; home?: 
             className="fe-navlink"
             style={{ fontFamily: mono, fontSize: 13, color: "#aeb6c9", letterSpacing: ".5px" }}
           >
-            {l.label}
+            {label(l.label)}
           </a>
         ))}
+        <LanguageToggle />
         <a
           href={resolve(nav.cta.href)}
           className="fe-btn-primary"
@@ -84,7 +100,7 @@ export function SiteNav({ nav, home = true }: { nav: SiteContent["nav"]; home?: 
             boxShadow: "0 0 18px rgba(59,130,246,.4)",
           }}
         >
-          {nav.cta.label}
+          {label(nav.cta.label)}
         </a>
       </div>
     </nav>

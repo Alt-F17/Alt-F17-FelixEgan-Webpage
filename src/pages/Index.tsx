@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Seo } from "@/components/seo/Seo";
-import { useSiteContent, type Project, type HeroAction } from "@/content/siteContent";
+import { useSiteContent, type Project, type HeroAction, type SiteContent } from "@/content/siteContent";
 import { Starfield } from "@/components/portfolio/Starfield";
 import { SiteNav } from "@/components/portfolio/SiteNav";
 import { SiteFooter } from "@/components/portfolio/SiteFooter";
 import { useReveal } from "@/hooks/useReveal";
 import ScrambledText from "@/components/ScrambledText";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { portfolioCopy } from "@/content/portfolioCopy";
 import "@/components/portfolio/portfolio.css";
 
 const mono = "'IBM Plex Mono',monospace";
@@ -223,8 +225,48 @@ const ProjectCard = ({ p, delay }: { p: Project; delay: number }) => {
   );
 };
 
+// site.json is English-only; overlay the FR strings that already exist in
+// portfolioCopy onto the chrome (nav/hero/section headers). Content without a
+// reviewed FR translation (project cards, skill tags, about paragraphs) is
+// left in English rather than guessed at.
+const localizeChrome = (content: SiteContent, locale: "en" | "fr"): SiteContent => {
+  if (locale !== "fr") return content;
+  const heroActionFr: Record<string, string> = {
+    "See my Work": portfolioCopy.hero.viewProjects.fr,
+    Contact: portfolioCopy.hero.contact.fr,
+    "Studio ↗": `${portfolioCopy.hero.studio.fr} ↗`,
+  };
+  return {
+    ...content,
+    hero: {
+      ...content.hero,
+      greeting: portfolioCopy.hero.eyebrow.fr,
+      role: portfolioCopy.hero.role.fr,
+      tagline: portfolioCopy.hero.description.fr,
+      actions: content.hero.actions.map((a) => ({ ...a, label: heroActionFr[a.label] ?? a.label })),
+    },
+    about: { ...content.about, heading: portfolioCopy.about.title.fr },
+    skills: {
+      ...content.skills,
+      heading: portfolioCopy.skills.title.fr,
+      subhead: portfolioCopy.skills.subtitle.fr,
+      focus: { ...content.skills.focus, title: portfolioCopy.skills.focusTitle.fr.toUpperCase() },
+    },
+    work: {
+      ...content.work,
+      heading: portfolioCopy.projects.title.fr,
+      subhead: portfolioCopy.projects.subtitle.fr,
+    },
+  };
+};
+
 const Index = () => {
-  const { content } = useSiteContent();
+  const { content: rawContent } = useSiteContent();
+  const { locale } = useLanguage();
+  const content = useMemo(
+    () => (rawContent ? localizeChrome(rawContent, locale) : rawContent),
+    [rawContent, locale],
+  );
   const [role, setRole] = useState("");
   const [scrollIdle, setScrollIdle] = useState(false);
   const [isLoading, setIsLoading] = useState(getInitialLoadingState);
