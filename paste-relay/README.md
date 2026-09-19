@@ -10,7 +10,7 @@ publicly at `files.felixegan.me` through the existing Cloudflare Tunnel.
 
 ```bash
 cd paste-relay
-cp .env.example .env   # fill in ALLOWED_EMAILS and GOOGLE_OAUTH_CLIENT_ID
+cp .env.example .env   # fill in SESSION_SECRET, ENCRYPTION_PEPPER, TURNSTILE_SECRET_KEY
 docker compose up -d --build
 ```
 

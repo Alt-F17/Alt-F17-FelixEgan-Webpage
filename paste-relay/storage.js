@@ -127,6 +127,56 @@ const freeBytes = () => {
   return stats.bavail * stats.bsize;
 };
 
+// --- In-progress upload range tracking ---------------------------------
+//
+// Chunks arrive out of order and in parallel (the client runs several
+// concurrent PUTs), so "how much have we received" can no longer be
+// answered by stat()'ing the part file: it's preallocated to the full
+// declared size at init, and a sparse hole reads as zeroes rather than as
+// "missing". Instead each completed chunk records its byte range here.
+//
+// Deliberately in-memory only, matching tmpDir's existing semantics: the
+// tmp directory is wiped wholesale on every restart (see init()), so an
+// upload can never span a restart anyway and there is nothing to persist.
+const uploadRanges = new Map();
+
+/** Records [start, end) as received, merging into any adjacent/overlapping ranges. */
+const recordRange = (id, start, end) => {
+  if (end <= start) return;
+  const merged = [];
+  let cursor = { start, end };
+
+  for (const range of uploadRanges.get(id) || []) {
+    if (range.end < cursor.start || range.start > cursor.end) {
+      merged.push(range);
+      continue;
+    }
+    cursor = { start: Math.min(cursor.start, range.start), end: Math.max(cursor.end, range.end) };
+  }
+
+  merged.push(cursor);
+  merged.sort((a, b) => a.start - b.start);
+  uploadRanges.set(id, merged);
+};
+
+/** Total received bytes, counting only whole ranges (not the sparse holes between them). */
+const receivedBytes = (id) =>
+  (uploadRanges.get(id) || []).reduce((total, range) => total + (range.end - range.start), 0);
+
+/**
+ * True only when the recorded ranges cover [0, size) with no gaps. With
+ * parallel writes the part file's length proves nothing on its own, so this
+ * is what `complete` must check before promoting a .part to a real blob.
+ */
+const isFullyReceived = (id, size) => {
+  const ranges = uploadRanges.get(id) || [];
+  return ranges.length === 1 && ranges[0].start === 0 && ranges[0].end === size;
+};
+
+const clearRanges = (id) => {
+  uploadRanges.delete(id);
+};
+
 module.exports = {
   STORAGE_DIR,
   itemsDir,
@@ -136,4 +186,8 @@ module.exports = {
   blobPath,
   scheduleItemExpiry,
   freeBytes,
+  recordRange,
+  receivedBytes,
+  isFullyReceived,
+  clearRanges,
 };

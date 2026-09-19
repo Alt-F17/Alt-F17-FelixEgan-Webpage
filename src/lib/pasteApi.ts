@@ -4,7 +4,10 @@
 // implements against.
 
 export const MAX_FILE_BYTES = 5 * 1024 * 1024 * 1024; // 5GB
-const CHUNK_BYTES = 8 * 1024 * 1024; // 8MB per chunk, tuned for slow home uplinks
+// Throughput tuning: chunks go up in parallel, so the pipe stays full rather
+// than idling for a round trip between each one. ~128MB in flight.
+const CHUNK_BYTES = 16 * 1024 * 1024;
+const UPLOAD_CONCURRENCY = 8;
 const CHUNK_MAX_RETRIES = 5;
 
 const apiBase = (import.meta.env.VITE_PASTE_API_BASE ?? "").replace(/\/$/, "");
@@ -95,16 +98,6 @@ export const listItems = async (token: string): Promise<Item[]> => {
   return (await response.json()) as Item[];
 };
 
-/**
- * GET /api/paste/items/:id — any authenticated account may fetch metadata for
- * any item id (this is the cross-account sharing route); content itself
- * still requires the item's PIN via `unlockItem`/`downloadFile`.
- */
-export const getItem = async (token: string, id: string): Promise<Item> => {
-  const response = await authedFetch(`/api/paste/items/${id}`, token);
-  return (await response.json()) as Item;
-};
-
 export const deleteItem = async (token: string, id: string): Promise<void> => {
   await authedFetch(`/api/paste/items/${id}`, token, { method: "DELETE" });
 };
@@ -151,17 +144,22 @@ export const initFileUpload = async (token: string, init: InitFileUpload): Promi
   return (await response.json()) as CreatedItem;
 };
 
-export const unlockItem = async (
-  token: string,
-  id: string,
-  pin: string,
-): Promise<{ content: string }> => {
-  const response = await authedFetch(`/api/paste/items/${id}/unlock`, token, {
+/**
+ * The PIN is the item's identifier as well as its key, so this is the whole
+ * retrieval interface: 4 digits in, content out. There is no id to carry
+ * around and no second unlock step.
+ */
+export type OpenedItem =
+  | { kind: "text"; content: string; expiresAt: string | null }
+  | { kind: "file"; filename: string | null; mime: string | null; size: number | null; expiresAt: string | null };
+
+export const openByPin = async (token: string, pin: string): Promise<OpenedItem> => {
+  const response = await authedFetch("/api/paste/open", token, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ pin }),
   });
-  return (await response.json()) as { content: string };
+  return (await response.json()) as OpenedItem;
 };
 
 export type UploadProgress = {
@@ -205,12 +203,6 @@ const uploadChunkWithRetry = async (
   throw lastError instanceof Error ? lastError : new PasteApiError("Chunk upload failed");
 };
 
-const getUploadStatus = async (itemId: string, token: string): Promise<number> => {
-  const response = await authedFetch(`/api/paste/items/${itemId}/status`, token);
-  const data = (await response.json()) as { receivedBytes: number };
-  return data.receivedBytes;
-};
-
 export type UploadFileResult = { id: string; status: ItemStatus };
 
 export const uploadFile = async (
@@ -236,36 +228,37 @@ export const uploadFile = async (
   options.onInit?.(created);
   const itemId = created.id;
 
-  let offset = 0;
-  while (offset < file.size) {
-    if (options.signal?.aborted) throw new PasteApiError("Upload cancelled");
+  // Chunks upload concurrently and out of order, each retried independently,
+  // so the link stays saturated instead of idling for a round trip between
+  // every chunk. The relay writes each one at its absolute offset.
+  const chunkCount = Math.max(1, Math.ceil(file.size / CHUNK_BYTES));
+  let nextChunk = 0;
+  let sentBytes = 0;
 
-    const chunk = file.slice(offset, Math.min(offset + CHUNK_BYTES, file.size));
-    try {
-      await uploadChunkWithRetry(itemId, offset, chunk, getToken, options.signal);
-      offset += chunk.size;
-    } catch (error) {
-      // A dropped connection may have partially landed on the server — trust
-      // its reported offset rather than assuming this chunk fully failed.
-      const confirmedToken = await getToken();
-      const confirmedOffset = await getUploadStatus(itemId, confirmedToken).catch(() => offset);
-      if (confirmedOffset > offset) {
-        offset = confirmedOffset;
-        continue;
-      }
-      throw error;
+  const worker = async () => {
+    for (;;) {
+      const index = nextChunk++;
+      if (index >= chunkCount) return;
+      if (options.signal?.aborted) throw new PasteApiError("Upload cancelled");
+
+      const start = index * CHUNK_BYTES;
+      const end = Math.min(start + CHUNK_BYTES, file.size);
+      await uploadChunkWithRetry(itemId, start, file.slice(start, end), getToken, options.signal);
+
+      sentBytes += end - start;
+      options.onProgress?.({ sentBytes, totalBytes: file.size });
     }
+  };
 
-    options.onProgress?.({ sentBytes: offset, totalBytes: file.size });
-  }
+  await Promise.all(Array.from({ length: Math.min(UPLOAD_CONCURRENCY, chunkCount) }, worker));
 
   const completeToken = await getToken();
   const completeResponse = await authedFetch(`/api/paste/items/${itemId}/complete`, completeToken, {
     method: "POST",
   });
   // 202 pending_scan, intentionally with no expiresAt yet — the TTL only
-  // starts once the async scan activates the item; poll listItems/getItem
-  // to observe that transition.
+  // starts once the async scan activates the item; poll listItems to
+  // observe that transition.
   return (await completeResponse.json()) as UploadFileResult;
 };
 
@@ -273,16 +266,15 @@ export const uploadFile = async (
 // available (avoids holding multi-GB downloads in memory); falls back to an
 // in-memory Blob + object URL on browsers without it. The PIN travels via
 // the `X-Paste-Pin` header (not the URL/query string, to keep it out of
-// server logs) — the same pinAttemptMiddleware backing `unlockItem` gates
-// this route too, so a wrong PIN here counts toward the same 5-attempt lockout.
+// server logs) — the same middleware backing `openByPin` gates this route
+// too, so a wrong PIN counts toward the same per-account lockout.
 export const downloadFile = async (
   token: string,
-  id: string,
   pin: string,
   filename: string,
   onProgress?: (receivedBytes: number) => void,
 ): Promise<void> => {
-  const response = await authedFetch(`/api/paste/items/${id}/download`, token, {
+  const response = await authedFetch("/api/paste/download", token, {
     headers: { "X-Paste-Pin": pin },
   });
   if (!response.body) throw new PasteApiError("Empty download response");

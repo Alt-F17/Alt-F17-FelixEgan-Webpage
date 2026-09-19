@@ -113,6 +113,20 @@ function normalizeRetryAt(value) {
   return typeof value.toISOString === "function" ? value.toISOString() : value;
 }
 
+// The PIN is the item's identifier as well as its unlock key, so it has to
+// be unique among items that are still reachable. Retry until we find a free
+// one rather than risk two live items answering to the same PIN. Returns
+// null if the whole 10,000-PIN space is somehow occupied, which callers must
+// surface rather than silently reusing a PIN.
+function reserveUniquePin() {
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    const pin = itemCrypto.generatePin();
+    const codeHash = itemCrypto.deriveCodeHash(pin);
+    if (!db.isCodeHashInUse(codeHash)) return { pin, codeHash };
+  }
+  return null;
+}
+
 function respondReservationError(res, reason, sourceIp) {
   const retryAt = normalizeRetryAt(db.computeRetryAt(reason, sourceIp));
   const messages = {
@@ -187,7 +201,16 @@ app.post(
       return;
     }
 
-    const pin = itemCrypto.generatePin();
+    const reserved = reserveUniquePin();
+    if (!reserved) {
+      res.status(503).json({
+        error: "no_pin_available",
+        message: "Too many items are live right now. Try again in a few minutes.",
+        retryAt: null,
+      });
+      return;
+    }
+    const { pin, codeHash } = reserved;
     const pinSalt = itemCrypto.generatePinSalt();
 
     // Atomic quota + IP-cap check + row insert — must be the very first
@@ -204,6 +227,7 @@ app.post(
       sizeBytes: Buffer.byteLength(content, "utf8"),
       pin,
       pinSalt,
+      codeHash,
     });
 
     if (!reservation.ok) {
@@ -252,7 +276,7 @@ app.post(
   createLimiter,
   requireAuth,
   express.json({ limit: "10kb" }),
-  (req, res) => {
+  async (req, res) => {
     const { filename, size, mime } = req.body || {};
     if (
       typeof filename !== "string" ||
@@ -278,7 +302,16 @@ app.post(
       return;
     }
 
-    const pin = itemCrypto.generatePin();
+    const reserved = reserveUniquePin();
+    if (!reserved) {
+      res.status(503).json({
+        error: "no_pin_available",
+        message: "Too many items are live right now. Try again in a few minutes.",
+        retryAt: null,
+      });
+      return;
+    }
+    const { pin, codeHash } = reserved;
     const pinSalt = itemCrypto.generatePinSalt();
 
     // Same atomicity requirement as the text route above — first statement,
@@ -292,6 +325,7 @@ app.post(
       sizeBytes: size,
       pin,
       pinSalt,
+      codeHash,
     });
 
     if (!reservation.ok) {
@@ -306,22 +340,31 @@ app.post(
     // key; without registering it here first, the scan/encrypt pipeline
     // fails closed for every file upload.
     contentSafety.registerUploadPin(item.id, pin);
-    fs.writeFile(storage.partPath(item.id), Buffer.alloc(0), (err) => {
-      if (err) {
-        console.error(`failed to create tmp part file for item ${item.id}`, err);
-        db.rejectItem(item.id, "storage_error");
-        res.status(500).json({ error: "internal_error", message: "Failed to start upload.", retryAt: null });
-        return;
+    // Create the part file preallocated (sparse) to the full declared size,
+    // so parallel chunks can be written at absolute offsets into a file that
+    // already spans them.
+    try {
+      const handle = await fsp.open(storage.partPath(item.id), "w");
+      try {
+        await handle.truncate(item.sizeBytes);
+      } finally {
+        await handle.close();
       }
-      res.status(201).json({ id: item.id, pin, status: item.status, expiresAt: item.expiresAt });
-    });
+    } catch (err) {
+      console.error(`failed to create tmp part file for item ${item.id}`, err);
+      db.rejectItem(item.id, "storage_error");
+      res.status(500).json({ error: "internal_error", message: "Failed to start upload.", retryAt: null });
+      return;
+    }
+
+    res.status(201).json({ id: item.id, pin, status: item.status, expiresAt: item.expiresAt });
   },
 );
 
-// Raw stream straight to storage's tmp part path. Append-only,
-// offset-must-match-current-size mechanics preserved verbatim from the
-// pre-rewrite version of this file (only the identifier source changed:
-// the item id now doubles as what used to be a separate uploadId).
+// Raw stream straight to storage's tmp part path, written at the absolute
+// `offset` given. Chunks arrive out of order and in parallel (the client
+// runs several concurrent PUTs to saturate a fast link), so this must never
+// append; storage.recordRange tracks coverage for /status and /complete.
 app.put("/api/paste/items/:id/chunk", requireAuth, async (req, res) => {
   const { id } = req.params;
   const offset = Number(req.query.offset);
@@ -337,28 +380,31 @@ app.put("/api/paste/items/:id/chunk", requireAuth, async (req, res) => {
   }
 
   const partPath = storage.partPath(id);
-  let currentSize;
   try {
-    currentSize = (await fsp.stat(partPath)).size;
+    await fsp.stat(partPath);
   } catch {
     res.status(404).send("Unknown upload");
     return;
   }
 
-  if (offset !== currentSize) {
-    res.status(409).send("Offset does not match received bytes; GET status to resync");
-    return;
-  }
-
+  // Chunks arrive out of order and in parallel, so `offset` is an absolute
+  // position, not an append point — bound it against the declared size
+  // rather than against the file's current length.
   const contentLength = Number(req.get("content-length") || 0);
-  if (currentSize + contentLength > item.sizeBytes || currentSize + contentLength > MAX_FILE_BYTES) {
+  if (offset + contentLength > item.sizeBytes || offset + contentLength > MAX_FILE_BYTES) {
     res.status(413).send("Chunk would exceed the declared file size");
     return;
   }
 
+  let written = 0;
   try {
     await new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(partPath, { flags: "a" });
+      // flags "r+" + start: positional write into the preallocated file.
+      // "a" would ignore `start` and append, corrupting parallel uploads.
+      const writeStream = fs.createWriteStream(partPath, { flags: "r+", start: offset });
+      req.on("data", (buf) => {
+        written += buf.length;
+      });
       req.on("error", reject);
       writeStream.on("error", reject);
       writeStream.on("finish", resolve);
@@ -368,6 +414,13 @@ app.put("/api/paste/items/:id/chunk", requireAuth, async (req, res) => {
     res.status(500).send("Write failed");
     return;
   }
+
+  // Record what actually landed, not what Content-Length promised.
+  if (offset + written > item.sizeBytes) {
+    res.status(413).send("Chunk exceeded the declared file size");
+    return;
+  }
+  storage.recordRange(id, offset, offset + written);
 
   res.status(204).end();
 });
@@ -379,14 +432,9 @@ app.get("/api/paste/items/:id/status", requireAuth, async (req, res) => {
     return;
   }
 
-  let receivedBytes = 0;
-  if (item.status === "uploading") {
-    try {
-      receivedBytes = (await fsp.stat(storage.partPath(item.id))).size;
-    } catch {
-      // Init happened but no chunk has landed yet — 0 is correct.
-    }
-  }
+  // Not stat().size: the part file is preallocated to its full size at init,
+  // so its length says nothing about how much has actually arrived.
+  const receivedBytes = item.status === "uploading" ? storage.receivedBytes(item.id) : 0;
 
   res.json({ ...toPublicItem(item), receivedBytes });
 });
@@ -398,22 +446,25 @@ app.post("/api/paste/items/:id/complete", requireAuth, async (req, res) => {
     return;
   }
 
-  const partPath = storage.partPath(item.id);
-  let stat;
   try {
-    stat = await fsp.stat(partPath);
+    await fsp.stat(storage.partPath(item.id));
   } catch {
     res.status(404).json({ error: "not_found", message: "Unknown upload", retryAt: null });
     return;
   }
-  if (stat.size !== item.sizeBytes) {
+
+  // With parallel out-of-order chunks the file is preallocated to its full
+  // length from the start, so only the recorded ranges prove every byte
+  // actually arrived — a gap would otherwise silently become a run of zeroes.
+  if (!storage.isFullyReceived(item.id, item.sizeBytes)) {
     res.status(409).json({
       error: "size_mismatch",
-      message: `Received ${stat.size} bytes, expected ${item.sizeBytes}`,
+      message: `Received ${storage.receivedBytes(item.id)} bytes, expected ${item.sizeBytes}`,
       retryAt: null,
     });
     return;
   }
+  storage.clearRanges(item.id);
 
   db.markItemPendingScan(item.id);
   res.status(202).json({ id: item.id, status: "pending_scan" });
@@ -435,6 +486,13 @@ app.post("/api/paste/items/:id/complete", requireAuth, async (req, res) => {
 // (deferred, see below) paths so both count against the same 5-attempt
 // budget the same way. Returns `{locked, attemptsRemaining}`.
 function recordPinOutcome(req, item, success) {
+  // A successful open proves the requester wasn't guessing, so release any
+  // failed-lookup budget they'd burned. Note that now the PIN doubles as the
+  // lookup key, reaching this function at all means the PIN was already
+  // correct — a decrypt failure here means a corrupted blob, not a wrong
+  // guess. Wrong guesses never find an item and are counted at lookup time.
+  if (success) db.clearFailedOpens(req.session.accountId);
+
   // See ASSUMPTION 3 at the top of this file re: recordPinAttempt's return
   // shape and the getItemById fallback.
   const attemptResult = db.recordPinAttempt(item.id, success);
@@ -497,16 +555,30 @@ async function pinAttemptMiddleware(req, res, next) {
     return;
   }
 
-  const item = db.getItemById(req.params.id);
-  if (!item || item.deletedAt || item.status !== "active") {
-    res.status(404).json({ error: "not_found", message: "Item not found.", retryAt: null });
+  // Throttle BEFORE looking anything up. The PIN is the identifier, so a
+  // wrong guess and a nonexistent item are the same response — without a
+  // per-requester budget the entire 10,000-PIN space is enumerable.
+  const lockout = db.getOpenLockout(req.session.accountId, req.ip);
+  if (lockout.locked) {
+    res.status(429).json({
+      error: "too_many_attempts",
+      message: "Too many wrong PINs. Try again later.",
+      retryAt: lockout.retryAt,
+    });
     return;
   }
-  if (item.pinLockedAt) {
-    res.status(410).json({
-      error: "pin_locked",
-      message: "This item was already destroyed after too many wrong PIN attempts.",
-      retryAt: null,
+
+  const item = db.getItemByCodeHash(itemCrypto.deriveCodeHash(pin));
+  if (!item) {
+    db.recordFailedOpen(req.session.accountId, req.ip);
+    const after = db.getOpenLockout(req.session.accountId, req.ip);
+    // Deliberately identical to a wrong-PIN response: revealing "no such
+    // item" vs "wrong PIN" would leak which PINs are live.
+    res.status(404).json({
+      error: "not_found",
+      message: "No item with that PIN.",
+      attemptsRemaining: after.attemptsRemaining,
+      retryAt: after.retryAt,
     });
     return;
   }
@@ -553,8 +625,10 @@ async function pinAttemptMiddleware(req, res, next) {
   next();
 }
 
+// The PIN alone identifies AND unlocks the item — there is no separate id to
+// pass, by design: one 4-digit field is the entire retrieval interface.
 app.post(
-  "/api/paste/items/:id/unlock",
+  "/api/paste/open",
   requireAuth,
   express.json({ limit: "1kb" }),
   pinAttemptMiddleware,
@@ -568,18 +642,22 @@ app.post(
       if (req.pasteContent && typeof req.pasteContent.destroy === "function") {
         req.pasteContent.destroy();
       }
-      res.status(400).json({
-        error: "invalid_request",
-        message: "Only text pastes unlock inline; use /download for files.",
-        retryAt: null,
+      // Not an error the user can act on differently — tell the client it's
+      // a file so it can go straight to /download with the same PIN.
+      res.json({
+        kind: "file",
+        filename: item.filename,
+        mime: item.mime,
+        size: item.sizeBytes,
+        expiresAt: item.expiresAt,
       });
       return;
     }
-    res.json({ id: item.id, kind: "text", content: req.pasteContent.toString("utf8") });
+    res.json({ kind: "text", content: req.pasteContent.toString("utf8"), expiresAt: item.expiresAt });
   },
 );
 
-app.get("/api/paste/items/:id/download", requireAuth, pinAttemptMiddleware, (req, res) => {
+app.get("/api/paste/download", requireAuth, pinAttemptMiddleware, (req, res) => {
   const item = req.pasteItem;
   if (item.kind !== "file") {
     res.status(400).json({ error: "invalid_request", message: "Only file items can be downloaded.", retryAt: null });
@@ -670,6 +748,7 @@ app.delete("/api/paste/items/:id", requireAuth, async (req, res) => {
   }
   if (item.status === "uploading") {
     await fsp.unlink(storage.partPath(item.id)).catch(() => {});
+    storage.clearRanges(item.id);
   }
 
   db.deleteItem(item.id);

@@ -73,6 +73,29 @@ function generatePinSalt() {
 }
 
 /**
+ * Derives the lookup handle for an item from its PIN alone. The PIN is both
+ * the identifier and the unlock key, so the relay has to be able to FIND an
+ * item by PIN without ever storing the PIN itself — this HMAC is what gets
+ * stored and indexed instead.
+ *
+ * Deliberately salt-free, unlike derivePinKey: a per-item salt would make
+ * lookup impossible (you'd have to try every row's salt to find a match).
+ * The domain-separation prefix keeps it from ever colliding with the
+ * "blob:"-prefixed filename HMAC or the encryption key.
+ *
+ * Note this is a lookup handle, NOT a password hash: with only 10,000
+ * possible PINs, anyone holding both the database and ENCRYPTION_PEPPER can
+ * enumerate it trivially. Guessing resistance comes from requireAuth plus
+ * the per-account/per-IP lockout in db.js, not from this function.
+ */
+function deriveCodeHash(pin) {
+  return crypto
+    .createHmac("sha256", getPepper())
+    .update("lookup:" + pin)
+    .digest("base64url");
+}
+
+/**
  * Derives the 32-byte AES-256 key for an item from its PIN + pin_salt,
  * mixed with the server-wide ENCRYPTION_PEPPER via scrypt (a proper KDF —
  * not the raw 4 digits used directly as key material).
@@ -207,6 +230,7 @@ module.exports = {
   AuthTagMismatchError,
   generatePin,
   generatePinSalt,
+  deriveCodeHash,
   derivePinKey,
   deriveBlobFilename,
   encryptToFile,
