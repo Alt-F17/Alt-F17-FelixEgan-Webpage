@@ -98,16 +98,6 @@ export const listItems = async (token: string): Promise<Item[]> => {
   return (await response.json()) as Item[];
 };
 
-/**
- * GET /api/paste/items/:id — any authenticated account may fetch metadata for
- * any item id (this is the cross-account sharing route); content itself
- * still requires the item's PIN via `unlockItem`/`downloadFile`.
- */
-export const getItem = async (token: string, id: string): Promise<Item> => {
-  const response = await authedFetch(`/api/paste/items/${id}`, token);
-  return (await response.json()) as Item;
-};
-
 export const deleteItem = async (token: string, id: string): Promise<void> => {
   await authedFetch(`/api/paste/items/${id}`, token, { method: "DELETE" });
 };
@@ -154,17 +144,22 @@ export const initFileUpload = async (token: string, init: InitFileUpload): Promi
   return (await response.json()) as CreatedItem;
 };
 
-export const unlockItem = async (
-  token: string,
-  id: string,
-  pin: string,
-): Promise<{ content: string }> => {
-  const response = await authedFetch(`/api/paste/items/${id}/unlock`, token, {
+/**
+ * The PIN is the item's identifier as well as its key, so this is the whole
+ * retrieval interface: 4 digits in, content out. There is no id to carry
+ * around and no second unlock step.
+ */
+export type OpenedItem =
+  | { kind: "text"; content: string; expiresAt: string | null }
+  | { kind: "file"; filename: string | null; mime: string | null; size: number | null; expiresAt: string | null };
+
+export const openByPin = async (token: string, pin: string): Promise<OpenedItem> => {
+  const response = await authedFetch("/api/paste/open", token, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ pin }),
   });
-  return (await response.json()) as { content: string };
+  return (await response.json()) as OpenedItem;
 };
 
 export type UploadProgress = {
@@ -262,8 +257,8 @@ export const uploadFile = async (
     method: "POST",
   });
   // 202 pending_scan, intentionally with no expiresAt yet — the TTL only
-  // starts once the async scan activates the item; poll listItems/getItem
-  // to observe that transition.
+  // starts once the async scan activates the item; poll listItems to
+  // observe that transition.
   return (await completeResponse.json()) as UploadFileResult;
 };
 
@@ -271,16 +266,15 @@ export const uploadFile = async (
 // available (avoids holding multi-GB downloads in memory); falls back to an
 // in-memory Blob + object URL on browsers without it. The PIN travels via
 // the `X-Paste-Pin` header (not the URL/query string, to keep it out of
-// server logs) — the same pinAttemptMiddleware backing `unlockItem` gates
-// this route too, so a wrong PIN here counts toward the same 5-attempt lockout.
+// server logs) — the same middleware backing `openByPin` gates this route
+// too, so a wrong PIN counts toward the same per-account lockout.
 export const downloadFile = async (
   token: string,
-  id: string,
   pin: string,
   filename: string,
   onProgress?: (receivedBytes: number) => void,
 ): Promise<void> => {
-  const response = await authedFetch(`/api/paste/items/${id}/download`, token, {
+  const response = await authedFetch("/api/paste/download", token, {
     headers: { "X-Paste-Pin": pin },
   });
   if (!response.body) throw new PasteApiError("Empty download response");

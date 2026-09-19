@@ -107,6 +107,20 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_items_source_ip_status ON items(source_ip, status);
   CREATE INDEX IF NOT EXISTS idx_items_owner ON items(owner_account_id);
 
+  -- Failed "open by PIN" attempts, for the per-account/per-IP lockout. The
+  -- per-item lockout this replaces cannot work now that the PIN is also the
+  -- identifier: a wrong guess is indistinguishable from a nonexistent item,
+  -- so there is no single item on which to count attempts.
+  CREATE TABLE IF NOT EXISTS open_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    account_id INTEGER,
+    source_ip TEXT,
+    created_at INTEGER NOT NULL
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_open_attempts_account ON open_attempts(account_id, created_at);
+  CREATE INDEX IF NOT EXISTS idx_open_attempts_ip ON open_attempts(source_ip, created_at);
+
   CREATE TABLE IF NOT EXISTS audit_log (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     event_type TEXT NOT NULL,
@@ -120,6 +134,19 @@ db.exec(`
     created_at INTEGER NOT NULL
   );
 `);
+
+// Additive migration for databases created before the PIN became the item's
+// identifier. CREATE TABLE IF NOT EXISTS above won't add a column to an
+// existing table, and the relay is already running with live data, so this
+// backfills the column rather than requiring a wipe. Pre-existing rows get a
+// NULL code_hash: they simply aren't reachable by PIN lookup, which is
+// correct — their PIN was generated before code_hash existed and, by design,
+// was never stored, so it cannot be recovered. They still expire normally.
+const itemColumns = new Set(db.prepare("PRAGMA table_info(items)").all().map((c) => c.name));
+if (!itemColumns.has("code_hash")) {
+  db.exec("ALTER TABLE items ADD COLUMN code_hash TEXT");
+}
+db.exec("CREATE INDEX IF NOT EXISTS idx_items_code_hash ON items(code_hash)");
 
 // ---- small helpers -------------------------------------------------------
 
@@ -368,6 +395,7 @@ function reserveItem({
   sizeBytes,
   pin = null,
   pinSalt,
+  codeHash = null,
   blobFilename = null,
 }) {
   if (!Number.isFinite(sizeBytes) || sizeBytes < 0) {
@@ -393,11 +421,95 @@ function reserveItem({
   const ts = now();
   db.prepare(
     `INSERT INTO items
-       (id, owner_account_id, source_ip, kind, filename, mime, size_bytes, pin_salt, blob_filename, pin_attempts, status, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'uploading', ?)`,
-  ).run(id, ownerAccountId, sourceIp, kind, filename, mime, sizeBytes, pinSalt, resolvedBlobFilename, ts);
+       (id, owner_account_id, source_ip, kind, filename, mime, size_bytes, pin_salt, code_hash, blob_filename, pin_attempts, status, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 'uploading', ?)`,
+  ).run(id, ownerAccountId, sourceIp, kind, filename, mime, sizeBytes, pinSalt, codeHash, resolvedBlobFilename, ts);
 
   return { ok: true, item: mapItem(getItemRow(id)) };
+}
+
+// --- PIN-as-identifier lookup -------------------------------------------
+
+// A PIN only has to be unique among items that are still reachable. There
+// are just 10,000 of them, so reusing one the moment its item expires is
+// what keeps the space from filling up; TTLs are minutes, so in practice
+// only a handful are ever live at once.
+function isCodeHashInUse(codeHash) {
+  const row = db
+    .prepare(
+      `SELECT 1 FROM items
+       WHERE code_hash = ? AND deleted_at IS NULL AND status IN ('uploading', 'pending_scan', 'active')
+       LIMIT 1`,
+    )
+    .get(codeHash);
+  return !!row;
+}
+
+/** Resolves a PIN's lookup hash to its item, or null. Active items only. */
+function getItemByCodeHash(codeHash) {
+  const row = db
+    .prepare("SELECT * FROM items WHERE code_hash = ? AND deleted_at IS NULL AND status = 'active' LIMIT 1")
+    .get(codeHash);
+  return row ? mapItem(row) : null;
+}
+
+// --- Open-attempt lockout ------------------------------------------------
+
+const OPEN_MAX_ATTEMPTS = Number(process.env.OPEN_MAX_ATTEMPTS || 10);
+const OPEN_WINDOW_MS = Number(process.env.OPEN_WINDOW_MS || 15 * 60 * 1000);
+
+function recordFailedOpen(accountId, sourceIp) {
+  db.prepare("INSERT INTO open_attempts (account_id, source_ip, created_at) VALUES (?, ?, ?)").run(
+    accountId ?? null,
+    sourceIp ?? null,
+    now(),
+  );
+}
+
+function clearFailedOpens(accountId) {
+  db.prepare("DELETE FROM open_attempts WHERE account_id = ?").run(accountId ?? null);
+}
+
+/**
+ * Guessing the PIN and guessing which item exists are the same action now,
+ * so throttling has to happen per requester rather than per item. Counts
+ * recent failures for BOTH the account and the source IP and reports the
+ * stricter of the two.
+ */
+function getOpenLockout(accountId, sourceIp) {
+  const since = now() - OPEN_WINDOW_MS;
+  const count = (sql, param) => db.prepare(sql).get(param, since)?.n ?? 0;
+
+  const byAccount = count(
+    "SELECT COUNT(*) AS n FROM open_attempts WHERE account_id = ? AND created_at >= ?",
+    accountId ?? null,
+  );
+  const byIp = count(
+    "SELECT COUNT(*) AS n FROM open_attempts WHERE source_ip = ? AND created_at >= ?",
+    sourceIp ?? null,
+  );
+  const failures = Math.max(byAccount, byIp);
+
+  if (failures < OPEN_MAX_ATTEMPTS) {
+    return { locked: false, attemptsRemaining: OPEN_MAX_ATTEMPTS - failures, retryAt: null };
+  }
+
+  const oldest = db
+    .prepare(
+      `SELECT MIN(created_at) AS t FROM open_attempts
+       WHERE (account_id = ? OR source_ip = ?) AND created_at >= ?`,
+    )
+    .get(accountId ?? null, sourceIp ?? null, since)?.t;
+
+  return {
+    locked: true,
+    attemptsRemaining: 0,
+    retryAt: toIso((oldest ?? now()) + OPEN_WINDOW_MS),
+  };
+}
+
+function sweepOpenAttempts() {
+  db.prepare("DELETE FROM open_attempts WHERE created_at < ?").run(now() - OPEN_WINDOW_MS);
 }
 
 function markItemPendingScan(id) {
@@ -642,6 +754,12 @@ module.exports = {
   activateItem,
   rejectItem,
   recordPinAttempt,
+  isCodeHashInUse,
+  getItemByCodeHash,
+  recordFailedOpen,
+  clearFailedOpens,
+  getOpenLockout,
+  sweepOpenAttempts,
   getItemsByOwner,
   getItemById,
   deleteItem,

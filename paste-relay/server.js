@@ -113,6 +113,20 @@ function normalizeRetryAt(value) {
   return typeof value.toISOString === "function" ? value.toISOString() : value;
 }
 
+// The PIN is the item's identifier as well as its unlock key, so it has to
+// be unique among items that are still reachable. Retry until we find a free
+// one rather than risk two live items answering to the same PIN. Returns
+// null if the whole 10,000-PIN space is somehow occupied, which callers must
+// surface rather than silently reusing a PIN.
+function reserveUniquePin() {
+  for (let attempt = 0; attempt < 200; attempt += 1) {
+    const pin = itemCrypto.generatePin();
+    const codeHash = itemCrypto.deriveCodeHash(pin);
+    if (!db.isCodeHashInUse(codeHash)) return { pin, codeHash };
+  }
+  return null;
+}
+
 function respondReservationError(res, reason, sourceIp) {
   const retryAt = normalizeRetryAt(db.computeRetryAt(reason, sourceIp));
   const messages = {
@@ -187,7 +201,16 @@ app.post(
       return;
     }
 
-    const pin = itemCrypto.generatePin();
+    const reserved = reserveUniquePin();
+    if (!reserved) {
+      res.status(503).json({
+        error: "no_pin_available",
+        message: "Too many items are live right now. Try again in a few minutes.",
+        retryAt: null,
+      });
+      return;
+    }
+    const { pin, codeHash } = reserved;
     const pinSalt = itemCrypto.generatePinSalt();
 
     // Atomic quota + IP-cap check + row insert — must be the very first
@@ -204,6 +227,7 @@ app.post(
       sizeBytes: Buffer.byteLength(content, "utf8"),
       pin,
       pinSalt,
+      codeHash,
     });
 
     if (!reservation.ok) {
@@ -278,7 +302,16 @@ app.post(
       return;
     }
 
-    const pin = itemCrypto.generatePin();
+    const reserved = reserveUniquePin();
+    if (!reserved) {
+      res.status(503).json({
+        error: "no_pin_available",
+        message: "Too many items are live right now. Try again in a few minutes.",
+        retryAt: null,
+      });
+      return;
+    }
+    const { pin, codeHash } = reserved;
     const pinSalt = itemCrypto.generatePinSalt();
 
     // Same atomicity requirement as the text route above — first statement,
@@ -292,6 +325,7 @@ app.post(
       sizeBytes: size,
       pin,
       pinSalt,
+      codeHash,
     });
 
     if (!reservation.ok) {
@@ -452,6 +486,13 @@ app.post("/api/paste/items/:id/complete", requireAuth, async (req, res) => {
 // (deferred, see below) paths so both count against the same 5-attempt
 // budget the same way. Returns `{locked, attemptsRemaining}`.
 function recordPinOutcome(req, item, success) {
+  // A successful open proves the requester wasn't guessing, so release any
+  // failed-lookup budget they'd burned. Note that now the PIN doubles as the
+  // lookup key, reaching this function at all means the PIN was already
+  // correct — a decrypt failure here means a corrupted blob, not a wrong
+  // guess. Wrong guesses never find an item and are counted at lookup time.
+  if (success) db.clearFailedOpens(req.session.accountId);
+
   // See ASSUMPTION 3 at the top of this file re: recordPinAttempt's return
   // shape and the getItemById fallback.
   const attemptResult = db.recordPinAttempt(item.id, success);
@@ -514,16 +555,30 @@ async function pinAttemptMiddleware(req, res, next) {
     return;
   }
 
-  const item = db.getItemById(req.params.id);
-  if (!item || item.deletedAt || item.status !== "active") {
-    res.status(404).json({ error: "not_found", message: "Item not found.", retryAt: null });
+  // Throttle BEFORE looking anything up. The PIN is the identifier, so a
+  // wrong guess and a nonexistent item are the same response — without a
+  // per-requester budget the entire 10,000-PIN space is enumerable.
+  const lockout = db.getOpenLockout(req.session.accountId, req.ip);
+  if (lockout.locked) {
+    res.status(429).json({
+      error: "too_many_attempts",
+      message: "Too many wrong PINs. Try again later.",
+      retryAt: lockout.retryAt,
+    });
     return;
   }
-  if (item.pinLockedAt) {
-    res.status(410).json({
-      error: "pin_locked",
-      message: "This item was already destroyed after too many wrong PIN attempts.",
-      retryAt: null,
+
+  const item = db.getItemByCodeHash(itemCrypto.deriveCodeHash(pin));
+  if (!item) {
+    db.recordFailedOpen(req.session.accountId, req.ip);
+    const after = db.getOpenLockout(req.session.accountId, req.ip);
+    // Deliberately identical to a wrong-PIN response: revealing "no such
+    // item" vs "wrong PIN" would leak which PINs are live.
+    res.status(404).json({
+      error: "not_found",
+      message: "No item with that PIN.",
+      attemptsRemaining: after.attemptsRemaining,
+      retryAt: after.retryAt,
     });
     return;
   }
@@ -570,8 +625,10 @@ async function pinAttemptMiddleware(req, res, next) {
   next();
 }
 
+// The PIN alone identifies AND unlocks the item — there is no separate id to
+// pass, by design: one 4-digit field is the entire retrieval interface.
 app.post(
-  "/api/paste/items/:id/unlock",
+  "/api/paste/open",
   requireAuth,
   express.json({ limit: "1kb" }),
   pinAttemptMiddleware,
@@ -585,18 +642,22 @@ app.post(
       if (req.pasteContent && typeof req.pasteContent.destroy === "function") {
         req.pasteContent.destroy();
       }
-      res.status(400).json({
-        error: "invalid_request",
-        message: "Only text pastes unlock inline; use /download for files.",
-        retryAt: null,
+      // Not an error the user can act on differently — tell the client it's
+      // a file so it can go straight to /download with the same PIN.
+      res.json({
+        kind: "file",
+        filename: item.filename,
+        mime: item.mime,
+        size: item.sizeBytes,
+        expiresAt: item.expiresAt,
       });
       return;
     }
-    res.json({ id: item.id, kind: "text", content: req.pasteContent.toString("utf8") });
+    res.json({ kind: "text", content: req.pasteContent.toString("utf8"), expiresAt: item.expiresAt });
   },
 );
 
-app.get("/api/paste/items/:id/download", requireAuth, pinAttemptMiddleware, (req, res) => {
+app.get("/api/paste/download", requireAuth, pinAttemptMiddleware, (req, res) => {
   const item = req.pasteItem;
   if (item.kind !== "file") {
     res.status(400).json({ error: "invalid_request", message: "Only file items can be downloaded.", retryAt: null });

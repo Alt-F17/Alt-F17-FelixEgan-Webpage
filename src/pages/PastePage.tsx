@@ -16,12 +16,12 @@ import {
   PasteApiError,
   deleteItem,
   downloadFile,
-  getItem,
   listItems,
+  openByPin,
   saveText,
-  unlockItem,
   uploadFile,
   type Item,
+  type OpenedItem,
 } from "@/lib/pasteApi";
 
 const POLL_MS = 5000;
@@ -119,16 +119,16 @@ type ItemRowProps = {
   item: Item;
   now: number;
   token: string;
-  allowDelete?: boolean;
   onDeleted?: () => void;
   onError: (error: RelayError) => void;
 };
 
-function ItemRow({ item, now, token, allowDelete = true, onDeleted, onError }: ItemRowProps) {
-  const { toast } = useToast();
-  const [pin, setPin] = useState("");
+// Status + delete only. Opening happens through the single PIN field above —
+// the row can't offer a shortcut because the PIN is the decryption key and
+// the relay never stores it, so not even the owner's own list can unlock an
+// item without it.
+function ItemRow({ item, now, token, onDeleted, onError }: ItemRowProps) {
   const [busy, setBusy] = useState(false);
-  const [content, setContent] = useState<string | null>(null);
 
   const expiresAtMs = item.expiresAt ? new Date(item.expiresAt).getTime() : null;
   const msRemaining = expiresAtMs !== null ? expiresAtMs - now : null;
@@ -141,25 +141,6 @@ function ItemRow({ item, now, token, allowDelete = true, onDeleted, onError }: I
           ? `Expires in ${formatCountdown(msRemaining)}`
           : "Expired"
         : "";
-
-  const handleOpen = async () => {
-    if (pin.length !== 4) return;
-    setBusy(true);
-    try {
-      if (item.kind === "text") {
-        const result = await unlockItem(token, item.id, pin);
-        setContent(result.content);
-      } else {
-        await downloadFile(token, item.id, pin, item.filename ?? "download");
-        toast({ title: "Downloaded", description: item.filename ?? undefined });
-      }
-      setPin("");
-    } catch (error) {
-      onError(toRelayError(error));
-    } finally {
-      setBusy(false);
-    }
-  };
 
   const handleDelete = async () => {
     setBusy(true);
@@ -183,32 +164,13 @@ function ItemRow({ item, now, token, allowDelete = true, onDeleted, onError }: I
         <span className="shrink-0 text-[11px] text-zinc-500">{statusLabel}</span>
       </div>
 
-      {content !== null ? (
-        <Textarea
-          readOnly
-          value={content}
-          className="min-h-[100px] resize-y bg-zinc-950/60 text-xs text-zinc-100"
-        />
-      ) : (
-        item.status === "active" && (
-          <div className="flex flex-wrap items-center gap-2">
-            <PinInput value={pin} onChange={setPin} disabled={busy} />
-            <Button size="sm" variant="secondary" disabled={busy || pin.length !== 4} onClick={handleOpen}>
-              {item.kind === "text" ? "Open" : "Download"}
-            </Button>
-          </div>
-        )
-      )}
-
-      {allowDelete && (
-        <button
-          onClick={handleDelete}
-          disabled={busy}
-          className="self-end text-[11px] font-medium text-zinc-500 hover:text-red-400"
-        >
-          Delete
-        </button>
-      )}
+      <button
+        onClick={handleDelete}
+        disabled={busy}
+        className="self-end text-[11px] font-medium text-zinc-500 hover:text-red-400"
+      >
+        Delete
+      </button>
     </div>
   );
 }
@@ -305,52 +267,54 @@ export default function PastePage() {
     return () => clearInterval(interval);
   }, [session, refreshItems]);
 
-  // --- Shared item: arrived via /paste/i/:itemId, OR looked up manually
-  // below by pasting a link/id — both paths land in the same
-  // sharedItem/sharedError state and render through the same block, since
-  // "open a specific item by id, then unlock with its PIN" is the same
-  // operation either way.
+  // --- Open an item. Typed in by hand or prefilled from a /paste/i/<pin>
+  // link; either way it's the same single step.
 
-  const [sharedItem, setSharedItem] = useState<Item | null>(null);
-  const [sharedError, setSharedError] = useState<RelayError | null>(null);
+  const [openPin, setOpenPin] = useState("");
+  const [openBusy, setOpenBusy] = useState(false);
+  const [opened, setOpened] = useState<OpenedItem | null>(null);
+  const [openError, setOpenError] = useState<RelayError | null>(null);
 
-  useEffect(() => {
-    if (!session || !itemId) {
-      return;
-    }
-    getItem(session.token, itemId)
-      .then(setSharedItem)
-      .catch((error) => setSharedError(toRelayError(error)));
-  }, [session, itemId]);
+  // Opening is one step now: the PIN both names the item and decrypts it, so
+  // there's no id to resolve first and no separate unlock call.
+  const openWithPin = useCallback(
+    async (pin: string) => {
+      if (!session || pin.length !== 4) return;
+      setOpenBusy(true);
+      setOpenError(null);
+      try {
+        setOpened(await openByPin(session.token, pin));
+      } catch (error) {
+        setOpened(null);
+        setOpenError(toRelayError(error));
+      } finally {
+        setOpenBusy(false);
+      }
+    },
+    [session],
+  );
 
-  // Accepts either a bare item id or a full share link
-  // (https://felixegan.me/paste/i/<id>) and pulls out the id either way, so
-  // pasting the whole link someone sent you works without editing it down.
-  const extractItemId = (raw: string): string => {
-    const trimmed = raw.trim();
-    const match = trimmed.match(/\/paste\/i\/([^/?#]+)/);
-    return match ? match[1] : trimmed;
-  };
+  const handleOpenByPin = () => openWithPin(openPin);
 
-  const [lookupInput, setLookupInput] = useState("");
-  const [lookupBusy, setLookupBusy] = useState(false);
-
-  const handleLookup = async () => {
-    if (!session || lookupInput.trim().length === 0) return;
-    const id = extractItemId(lookupInput);
-    setLookupBusy(true);
-    setSharedError(null);
+  const handleDownloadOpened = async () => {
+    if (!session || opened?.kind !== "file") return;
+    setOpenBusy(true);
     try {
-      const item = await getItem(session.token, id);
-      setSharedItem(item);
-      setLookupInput("");
+      await downloadFile(session.token, openPin, opened.filename ?? "download");
     } catch (error) {
-      setSharedItem(null);
-      setSharedError(toRelayError(error));
+      setOpenError(toRelayError(error));
     } finally {
-      setLookupBusy(false);
+      setOpenBusy(false);
     }
   };
+
+  // A /paste/i/<pin> link just prefills and opens — same single step.
+  useEffect(() => {
+    if (session && itemId && /^\d{4}$/.test(itemId)) {
+      setOpenPin(itemId);
+      openWithPin(itemId);
+    }
+  }, [session, itemId, openWithPin]);
 
   // --- Create item (explicit Save/Upload — no more debounced autosave: a
   // continuous-autosave effect would blow through the 1/min create limit
@@ -478,47 +442,43 @@ export default function PastePage() {
 
               <div className="flex w-full flex-col gap-2">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500">
-                  Open a shared item
+                  Open an item
                 </p>
-                <div className="flex gap-2">
-                  <input
-                    value={lookupInput}
-                    onChange={(e) => setLookupInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleLookup();
-                    }}
-                    placeholder="Paste the link (or just its id) someone sent you"
-                    className="min-w-0 flex-1 rounded-lg border border-zinc-700 bg-zinc-950/60 px-3 py-2 text-xs text-zinc-100 placeholder:text-zinc-600"
-                  />
+                <div className="flex flex-wrap items-center gap-2">
+                  <PinInput value={openPin} onChange={setOpenPin} disabled={openBusy} />
                   <Button
                     size="sm"
                     variant="secondary"
-                    disabled={lookupBusy || lookupInput.trim().length === 0}
-                    onClick={handleLookup}
+                    disabled={openBusy || openPin.length !== 4}
+                    onClick={handleOpenByPin}
                   >
-                    {lookupBusy ? "Looking up…" : "Open"}
+                    {openBusy ? "Opening…" : "Open"}
                   </Button>
                 </div>
                 <p className="text-[11px] text-zinc-600">
-                  Then enter its 4-digit PIN below to unlock — works for anyone signed in, not just the
-                  person who created it.
+                  The 4-digit PIN is the whole address — it finds the item and unlocks it. Works for anyone
+                  signed in, from any device.
                 </p>
 
-                {(itemId || sharedItem || sharedError) && (
-                  <div className="mt-1 flex flex-col gap-2">
-                    {sharedError && <RetryCountdown message={sharedError.message} retryAt={sharedError.retryAt} />}
-                    {sharedItem ? (
-                      <ItemRow
-                        item={sharedItem}
-                        now={now}
-                        token={session.token}
-                        allowDelete={false}
-                        onError={setSharedError}
-                      />
-                    ) : (
-                      itemId &&
-                      !sharedError && <p className="text-xs text-zinc-500">Loading shared item…</p>
-                    )}
+                {openError && <RetryCountdown message={openError.message} retryAt={openError.retryAt} />}
+
+                {opened?.kind === "text" && (
+                  <Textarea
+                    readOnly
+                    value={opened.content}
+                    className="min-h-[120px] resize-y bg-zinc-950/60 text-xs text-zinc-100"
+                  />
+                )}
+
+                {opened?.kind === "file" && (
+                  <div className="flex items-center justify-between gap-2 rounded-lg border border-zinc-700/60 bg-zinc-800/50 px-3.5 py-2.5">
+                    <span className="truncate text-xs text-zinc-300">
+                      {opened.filename}
+                      {opened.size !== null ? ` · ${formatBytes(opened.size)}` : ""}
+                    </span>
+                    <Button size="sm" variant="secondary" disabled={openBusy} onClick={handleDownloadOpened}>
+                      Download
+                    </Button>
                   </div>
                 )}
               </div>
