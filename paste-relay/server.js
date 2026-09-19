@@ -252,7 +252,7 @@ app.post(
   createLimiter,
   requireAuth,
   express.json({ limit: "10kb" }),
-  (req, res) => {
+  async (req, res) => {
     const { filename, size, mime } = req.body || {};
     if (
       typeof filename !== "string" ||
@@ -306,22 +306,31 @@ app.post(
     // key; without registering it here first, the scan/encrypt pipeline
     // fails closed for every file upload.
     contentSafety.registerUploadPin(item.id, pin);
-    fs.writeFile(storage.partPath(item.id), Buffer.alloc(0), (err) => {
-      if (err) {
-        console.error(`failed to create tmp part file for item ${item.id}`, err);
-        db.rejectItem(item.id, "storage_error");
-        res.status(500).json({ error: "internal_error", message: "Failed to start upload.", retryAt: null });
-        return;
+    // Create the part file preallocated (sparse) to the full declared size,
+    // so parallel chunks can be written at absolute offsets into a file that
+    // already spans them.
+    try {
+      const handle = await fsp.open(storage.partPath(item.id), "w");
+      try {
+        await handle.truncate(item.sizeBytes);
+      } finally {
+        await handle.close();
       }
-      res.status(201).json({ id: item.id, pin, status: item.status, expiresAt: item.expiresAt });
-    });
+    } catch (err) {
+      console.error(`failed to create tmp part file for item ${item.id}`, err);
+      db.rejectItem(item.id, "storage_error");
+      res.status(500).json({ error: "internal_error", message: "Failed to start upload.", retryAt: null });
+      return;
+    }
+
+    res.status(201).json({ id: item.id, pin, status: item.status, expiresAt: item.expiresAt });
   },
 );
 
-// Raw stream straight to storage's tmp part path. Append-only,
-// offset-must-match-current-size mechanics preserved verbatim from the
-// pre-rewrite version of this file (only the identifier source changed:
-// the item id now doubles as what used to be a separate uploadId).
+// Raw stream straight to storage's tmp part path, written at the absolute
+// `offset` given. Chunks arrive out of order and in parallel (the client
+// runs several concurrent PUTs to saturate a fast link), so this must never
+// append; storage.recordRange tracks coverage for /status and /complete.
 app.put("/api/paste/items/:id/chunk", requireAuth, async (req, res) => {
   const { id } = req.params;
   const offset = Number(req.query.offset);
@@ -337,28 +346,31 @@ app.put("/api/paste/items/:id/chunk", requireAuth, async (req, res) => {
   }
 
   const partPath = storage.partPath(id);
-  let currentSize;
   try {
-    currentSize = (await fsp.stat(partPath)).size;
+    await fsp.stat(partPath);
   } catch {
     res.status(404).send("Unknown upload");
     return;
   }
 
-  if (offset !== currentSize) {
-    res.status(409).send("Offset does not match received bytes; GET status to resync");
-    return;
-  }
-
+  // Chunks arrive out of order and in parallel, so `offset` is an absolute
+  // position, not an append point — bound it against the declared size
+  // rather than against the file's current length.
   const contentLength = Number(req.get("content-length") || 0);
-  if (currentSize + contentLength > item.sizeBytes || currentSize + contentLength > MAX_FILE_BYTES) {
+  if (offset + contentLength > item.sizeBytes || offset + contentLength > MAX_FILE_BYTES) {
     res.status(413).send("Chunk would exceed the declared file size");
     return;
   }
 
+  let written = 0;
   try {
     await new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(partPath, { flags: "a" });
+      // flags "r+" + start: positional write into the preallocated file.
+      // "a" would ignore `start` and append, corrupting parallel uploads.
+      const writeStream = fs.createWriteStream(partPath, { flags: "r+", start: offset });
+      req.on("data", (buf) => {
+        written += buf.length;
+      });
       req.on("error", reject);
       writeStream.on("error", reject);
       writeStream.on("finish", resolve);
@@ -368,6 +380,13 @@ app.put("/api/paste/items/:id/chunk", requireAuth, async (req, res) => {
     res.status(500).send("Write failed");
     return;
   }
+
+  // Record what actually landed, not what Content-Length promised.
+  if (offset + written > item.sizeBytes) {
+    res.status(413).send("Chunk exceeded the declared file size");
+    return;
+  }
+  storage.recordRange(id, offset, offset + written);
 
   res.status(204).end();
 });
@@ -379,14 +398,9 @@ app.get("/api/paste/items/:id/status", requireAuth, async (req, res) => {
     return;
   }
 
-  let receivedBytes = 0;
-  if (item.status === "uploading") {
-    try {
-      receivedBytes = (await fsp.stat(storage.partPath(item.id))).size;
-    } catch {
-      // Init happened but no chunk has landed yet — 0 is correct.
-    }
-  }
+  // Not stat().size: the part file is preallocated to its full size at init,
+  // so its length says nothing about how much has actually arrived.
+  const receivedBytes = item.status === "uploading" ? storage.receivedBytes(item.id) : 0;
 
   res.json({ ...toPublicItem(item), receivedBytes });
 });
@@ -398,22 +412,25 @@ app.post("/api/paste/items/:id/complete", requireAuth, async (req, res) => {
     return;
   }
 
-  const partPath = storage.partPath(item.id);
-  let stat;
   try {
-    stat = await fsp.stat(partPath);
+    await fsp.stat(storage.partPath(item.id));
   } catch {
     res.status(404).json({ error: "not_found", message: "Unknown upload", retryAt: null });
     return;
   }
-  if (stat.size !== item.sizeBytes) {
+
+  // With parallel out-of-order chunks the file is preallocated to its full
+  // length from the start, so only the recorded ranges prove every byte
+  // actually arrived — a gap would otherwise silently become a run of zeroes.
+  if (!storage.isFullyReceived(item.id, item.sizeBytes)) {
     res.status(409).json({
       error: "size_mismatch",
-      message: `Received ${stat.size} bytes, expected ${item.sizeBytes}`,
+      message: `Received ${storage.receivedBytes(item.id)} bytes, expected ${item.sizeBytes}`,
       retryAt: null,
     });
     return;
   }
+  storage.clearRanges(item.id);
 
   db.markItemPendingScan(item.id);
   res.status(202).json({ id: item.id, status: "pending_scan" });
@@ -670,6 +687,7 @@ app.delete("/api/paste/items/:id", requireAuth, async (req, res) => {
   }
   if (item.status === "uploading") {
     await fsp.unlink(storage.partPath(item.id)).catch(() => {});
+    storage.clearRanges(item.id);
   }
 
   db.deleteItem(item.id);

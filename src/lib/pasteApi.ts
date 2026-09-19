@@ -4,7 +4,10 @@
 // implements against.
 
 export const MAX_FILE_BYTES = 5 * 1024 * 1024 * 1024; // 5GB
-const CHUNK_BYTES = 8 * 1024 * 1024; // 8MB per chunk, tuned for slow home uplinks
+// Throughput tuning: chunks go up in parallel, so the pipe stays full rather
+// than idling for a round trip between each one. ~128MB in flight.
+const CHUNK_BYTES = 16 * 1024 * 1024;
+const UPLOAD_CONCURRENCY = 8;
 const CHUNK_MAX_RETRIES = 5;
 
 const apiBase = (import.meta.env.VITE_PASTE_API_BASE ?? "").replace(/\/$/, "");
@@ -205,12 +208,6 @@ const uploadChunkWithRetry = async (
   throw lastError instanceof Error ? lastError : new PasteApiError("Chunk upload failed");
 };
 
-const getUploadStatus = async (itemId: string, token: string): Promise<number> => {
-  const response = await authedFetch(`/api/paste/items/${itemId}/status`, token);
-  const data = (await response.json()) as { receivedBytes: number };
-  return data.receivedBytes;
-};
-
 export type UploadFileResult = { id: string; status: ItemStatus };
 
 export const uploadFile = async (
@@ -236,28 +233,29 @@ export const uploadFile = async (
   options.onInit?.(created);
   const itemId = created.id;
 
-  let offset = 0;
-  while (offset < file.size) {
-    if (options.signal?.aborted) throw new PasteApiError("Upload cancelled");
+  // Chunks upload concurrently and out of order, each retried independently,
+  // so the link stays saturated instead of idling for a round trip between
+  // every chunk. The relay writes each one at its absolute offset.
+  const chunkCount = Math.max(1, Math.ceil(file.size / CHUNK_BYTES));
+  let nextChunk = 0;
+  let sentBytes = 0;
 
-    const chunk = file.slice(offset, Math.min(offset + CHUNK_BYTES, file.size));
-    try {
-      await uploadChunkWithRetry(itemId, offset, chunk, getToken, options.signal);
-      offset += chunk.size;
-    } catch (error) {
-      // A dropped connection may have partially landed on the server — trust
-      // its reported offset rather than assuming this chunk fully failed.
-      const confirmedToken = await getToken();
-      const confirmedOffset = await getUploadStatus(itemId, confirmedToken).catch(() => offset);
-      if (confirmedOffset > offset) {
-        offset = confirmedOffset;
-        continue;
-      }
-      throw error;
+  const worker = async () => {
+    for (;;) {
+      const index = nextChunk++;
+      if (index >= chunkCount) return;
+      if (options.signal?.aborted) throw new PasteApiError("Upload cancelled");
+
+      const start = index * CHUNK_BYTES;
+      const end = Math.min(start + CHUNK_BYTES, file.size);
+      await uploadChunkWithRetry(itemId, start, file.slice(start, end), getToken, options.signal);
+
+      sentBytes += end - start;
+      options.onProgress?.({ sentBytes, totalBytes: file.size });
     }
+  };
 
-    options.onProgress?.({ sentBytes: offset, totalBytes: file.size });
-  }
+  await Promise.all(Array.from({ length: Math.min(UPLOAD_CONCURRENCY, chunkCount) }, worker));
 
   const completeToken = await getToken();
   const completeResponse = await authedFetch(`/api/paste/items/${itemId}/complete`, completeToken, {
