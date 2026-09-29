@@ -115,6 +115,20 @@ export const portfolioCopy = {
     } satisfies ByLocale,
     buyCoffee: { en: "Buy Me A Coffee:", fr: "Acheter un café:" } satisfies ByLocale,
   },
+  notFound: {
+    title: { en: "page not found", fr: "page introuvable" } satisfies ByLocale,
+    body: {
+      en: "This route doesn't exist. Half the site got breached looking for it.",
+      fr: "Cette page n'existe pas. La moitié du site s'est fait pirater en la cherchant.",
+    } satisfies ByLocale,
+    home: { en: "Back home", fr: "Retour à l'accueil" } satisfies ByLocale,
+    projects: { en: "All projects", fr: "Tous les projets" } satisfies ByLocale,
+    trace: { en: "Nothing lives here. Yet.", fr: "Rien ici. Pour l'instant." } satisfies ByLocale,
+    shellLost: {
+      en: "Connection lost. This shell only works on the green side. Drag it back across the seam.",
+      fr: "Connexion perdue. Ce terminal ne marche que du côté vert. Glisse-le de l'autre côté.",
+    } satisfies ByLocale,
+  },
   footer: {
     description: {
       en: "Developer and designer in Montreal — building web apps, exploring AI and cybersecurity, and contributing to open source.",

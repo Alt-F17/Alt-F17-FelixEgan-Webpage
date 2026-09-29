@@ -1,0 +1,219 @@
+/* 404 page: diagonal split between the site and the breached terminal. Scoped under .fe404. */
+
+.fe404 {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  touch-action: manipulation;
+}
+.fe404-layer {
+  position: absolute;
+  inset: 0;
+  isolation: isolate;
+}
+.fe404-term {
+  z-index: 2;
+  background: #000208;
+  color: var(--green, #35ff8f);
+  font-family: "IBM Plex Mono", monospace;
+}
+.fe404-term-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 600px at 80% 80%, rgba(53, 255, 143, 0.08), transparent 60%),
+    repeating-linear-gradient(0deg, rgba(53, 255, 143, 0.035) 0, rgba(53, 255, 143, 0.035) 1px, transparent 1px, transparent 26px),
+    repeating-linear-gradient(90deg, rgba(53, 255, 143, 0.035) 0, rgba(53, 255, 143, 0.035) 1px, transparent 1px, transparent 26px);
+}
+.fe404-crt {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 2px, rgba(0, 20, 8, 0.45) 3px, rgba(0, 0, 0, 0) 4px);
+  mix-blend-mode: overlay;
+}
+.fe404-flicker {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100001;
+  background: rgba(53, 255, 143, 0.9);
+  mix-blend-mode: overlay;
+  opacity: 0.05;
+  animation: fe-flick 0.13s steps(2) infinite;
+}
+.fe404-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100002;
+  box-shadow: inset 0 0 220px 40px rgba(0, 0, 0, 0.85);
+}
+
+/* windows */
+.fe404-win {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  touch-action: none;
+}
+.fe404-win-site {
+  border: 1px solid rgba(124, 179, 255, 0.28);
+  background: linear-gradient(180deg, #0b101e, #080b16);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(5, 6, 10, 0.6);
+  color: #e8ecf5;
+}
+.fe404-win-term {
+  border: 1px solid rgba(53, 255, 143, 0.42);
+  background: #000a04;
+  box-shadow: 0 0 24px rgba(53, 255, 143, 0.12);
+  color: var(--green, #35ff8f);
+  text-shadow: 0 0 7px rgba(53, 255, 143, 0.35);
+}
+.fe404-winbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  height: 30px;
+  padding: 0 12px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.fe404-winbar:active { cursor: grabbing; }
+.fe404-win-site .fe404-winbar {
+  color: #7b87a3;
+  border-bottom: 1px solid rgba(124, 179, 255, 0.16);
+  background: rgba(59, 130, 246, 0.07);
+}
+.fe404-win-term .fe404-winbar {
+  color: #7cffb0;
+  border-bottom: 1px solid rgba(53, 255, 143, 0.25);
+  background: rgba(53, 255, 143, 0.06);
+}
+.fe404-grip { opacity: 0.6; letter-spacing: 0; }
+.fe404-winbody {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.fe404-jitter { animation: fe-termglitch 0.28s steps(2) infinite; }
+
+/* links and buttons inside windows */
+.fe404-sitebtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  border: 1px solid rgba(124, 179, 255, 0.35);
+  color: #c4ccdd;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+.fe404-sitebtn:hover { border-color: var(--ac, #3b82f6); color: #fff; }
+.fe404-sitebtn-primary {
+  background: var(--ac, #3b82f6);
+  border-color: var(--ac, #3b82f6);
+  color: #05060a;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+.fe404-sitebtn-primary:hover { background: var(--acb, #7cb3ff); color: #05060a; }
+.fe404-termlink {
+  color: #c9ffe0;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.fe404-termlink:hover { color: #fff; text-decoration: underline; }
+
+/* seam */
+.fe404-seam {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+.fe404-seam-hit { pointer-events: stroke; cursor: grab; }
+.fe404-seam-line { animation: fe404-seampulse 2.4s ease-in-out infinite; }
+.fe404-handle {
+  position: absolute;
+  z-index: 4;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 2px solid #35ff8f;
+  background: #05060a;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.55), 0 0 22px rgba(53, 255, 143, 0.55);
+  transform: rotate(45deg);
+  cursor: grab;
+  touch-action: none;
+  padding: 0;
+}
+.fe404-handle:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.fe404-knob {
+  position: absolute;
+  z-index: 4;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border-radius: 50%;
+  border: 2px solid #7cb3ff;
+  background: #05060a;
+  box-shadow: 0 0 12px rgba(124, 179, 255, 0.7);
+  cursor: alias;
+  touch-action: none;
+  padding: 0;
+}
+@keyframes fe404-seampulse { 0%, 100% { opacity: 0.75 } 50% { opacity: 1 } }
+
+/* term top bar */
+.fe404-termbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding: 18px clamp(16px, 3vw, 36px);
+  font-size: 13px;
+  color: #3aa768;
+  z-index: 20;
+}
+
+/* ending */
+.fe404-ending {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #000208;
+  color: var(--green, #35ff8f);
+  font-family: "IBM Plex Mono", monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-shadow: 0 0 8px rgba(53, 255, 143, 0.45);
+  animation: fe404-wipe 1.1s cubic-bezier(0.7, 0, 0.2, 1) both;
+}
+@keyframes fe404-wipe {
+  from { clip-path: circle(0% at 70% 70%); }
+  to { clip-path: circle(150% at 70% 70%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fe404-flicker, .fe404-jitter, .fe404-seam-line { animation: none; }
+  .fe404-ending { animation: none; }
+}
