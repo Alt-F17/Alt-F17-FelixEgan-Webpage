@@ -16,12 +16,15 @@ export function FloatWindow({
   title,
   children,
   className,
+  layer = 0,
 }: {
   id: string;
   skin: Skin;
   title: string;
   children: ReactNode;
   className?: string;
+  /** Added to the z-index to keep a window above the free-floating ones (the mobile shell). */
+  layer?: number;
 }) {
   const p = useWin(id);
   if (!p) return null;
@@ -31,7 +34,7 @@ export function FloatWindow({
       className={`fe404-win ${term ? "fe404-win-term" : "fe404-win-site"} ${className ?? ""}`}
       aria-label={title}
       onPointerDown={() => winStore.front(id)}
-      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: 50 + p.z }}
+      style={{ left: p.x, top: p.y, width: p.w, height: p.h, zIndex: 50 + layer + p.z }}
     >
       <header className="fe404-winbar" onPointerDown={(e) => startDrag(e, id)} onDoubleClick={() => winStore.front(id)}>
         <span style={{ fontFamily: mono }}>{term ? `[ ${title} ]` : `// ${title.toUpperCase()}`}</span>

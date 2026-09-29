@@ -8,8 +8,15 @@
 
 export type LevelWidget = "cipher" | "leak" | "trace" | "validator";
 
+export type LevelKind =
+  | "behind" | "encoding" | "otherside" | "dial" | "console"
+  | "signal" | "xor" | "privilege" | "trace" | "reverse";
+
 export type Level = {
   n: number;
+  kind: LevelKind;
+  /** Level number the answer hash was salted with (the desktop numbering). */
+  salt?: number;
   name: string;
   brief: string[];
   hint: string;
@@ -35,7 +42,7 @@ export const normalize = (s: string) => s.trim().toLowerCase();
 
 export async function checkAnswer(level: Level, answer: string): Promise<boolean> {
   if (!level.hash) return false;
-  return (await sha256(`fe404:L${level.n}:${normalize(answer)}`)) === level.hash;
+  return (await sha256(`fe404:L${level.salt ?? level.n}:${normalize(answer)}`)) === level.hash;
 }
 
 export const PAYLOAD = {
@@ -51,6 +58,7 @@ export const PAYLOAD = {
 export const LEVELS: Level[] = [
   {
     n: 1,
+    kind: "behind",
     name: "behind",
     brief: ["Something on this page is sitting on top of the first key.", "Find it, then: key <answer>"],
     hint: "Windows here aren't glued down. Grab one by its title bar.",
@@ -58,6 +66,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: 2,
+    kind: "encoding",
     name: "encoding",
     brief: ["Intercepted on the wire:", `  ${PAYLOAD.base64}`],
     hint: "A-Z, a-z, 0-9, + and /. Six bits per character.",
@@ -65,6 +74,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: 3,
+    kind: "otherside",
     name: "other side",
     brief: ["KEY_03 was written on the blue side.", "The green half is sitting on top of it."],
     hint: "The seam moves. Grab the handle on the glowing line and push it back.",
@@ -72,6 +82,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: 4,
+    kind: "dial",
     name: "dial",
     brief: ["An old Roman locked this one. A dial just opened."],
     hint: "Drag the inner ring around. Exactly one of the 26 positions reads like words.",
@@ -80,6 +91,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: 5,
+    kind: "console",
     name: "console",
     brief: ["This key was never rendered. It was logged.", "It gets logged again every time you run: brief"],
     hint: "F12, or Ctrl+Shift+I / Cmd+Opt+I. Expand what you find. Not everything in there is honest.",
@@ -87,6 +99,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: 6,
+    kind: "signal",
     name: "signal",
     brief: ["Look up at the stars on the blue side.", "One of them isn't twinkling. It's talking."],
     hint: "Dots and dashes. Letters are split by longer gaps, and the word repeats after a long pause.",
@@ -94,6 +107,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: 7,
+    kind: "xor",
     name: "xor",
     brief: ["Encrypted with a key you've already typed once:", `  ${PAYLOAD.xor}`],
     hint: "Repeating-key XOR. The key is one of your earlier answers, byte for byte. CyberChef can do it.",
@@ -101,6 +115,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: 8,
+    kind: "privilege",
     name: "privilege",
     brief: [
       "access denied: role=guest",
@@ -112,6 +127,7 @@ export const LEVELS: Level[] = [
   },
   {
     n: 9,
+    kind: "trace",
     name: "trace",
     brief: [
       "Type: trace",
@@ -123,11 +139,63 @@ export const LEVELS: Level[] = [
   },
   {
     n: 10,
+    kind: "reverse",
     name: "reverse",
     brief: ["The last door checks your key with the function in the new window.", "Any string it accepts opens it: key <answer>"],
     hint: "Start from the constraints that pin one character. The rolling checksum at the end is the only hard part; brute force what's left.",
     widget: "validator",
   },
+];
+
+/**
+ * The phone track: the five mechanics that work by touch, a little gentler.
+ * Answers reuse the desktop hashes (salted with the desktop level number).
+ */
+const byKind = (k: LevelKind) => LEVELS.find((l) => l.kind === k)!;
+
+export const MOBILE_LEVELS: Level[] = [
+  {
+    ...byKind("behind"),
+    n: 1,
+    salt: 1,
+    brief: ["Something on this page is covering the first key.", "Drag things around. Found it? Tap 'key' and type it."],
+    hint: "The 404 card isn't glued down. Drag it by its title bar.",
+  },
+  {
+    ...byKind("otherside"),
+    n: 2,
+    salt: 3,
+    brief: ["KEY_02 was written on the blue side.", "The green half is covering it."],
+    hint: "Drag the glowing diamond on the seam down toward the shell.",
+  },
+  {
+    ...byKind("dial"),
+    n: 3,
+    salt: 4,
+    brief: ["An old Roman locked this one. A dial just opened.", "Spin the inner ring until it reads."],
+    hint: "Drag the inner ring, or tap the arrows. One position reads like words.",
+  },
+  {
+    ...byKind("signal"),
+    n: 4,
+    salt: 6,
+    brief: ["One star on the blue side is blinking a word in Morse.", "Watch it. Short = dot, long = dash."],
+    hint: "It's the bright one on the right, just above the seam. Morse alphabet below.",
+  },
+  {
+    ...byKind("trace"),
+    n: 5,
+    brief: ["Tap 'trace'. A code flashes in the trace window.", "Tap it back on the keypad. Three rounds, each a bit faster."],
+    hint: "Watch the window, not the keypad. Say the characters out loud, it helps.",
+  },
+];
+
+export const MORSE_CHART = [
+  "a .-    b -...  c -.-.  d -..   e .     f ..-.",
+  "g --.   h ....  i ..    j .---  k -.-   l .-..",
+  "m --    n -.    o ---   p .--.  q --.-  r .-.",
+  "s ...   t -     u ..-   v ...-  w .--   x -..-",
+  "y -.--  z --..",
 ];
 
 // ---- level 5: console ----------------------------------------------------
@@ -207,12 +275,26 @@ export function isAdmin(session: string | null): boolean {
 }
 
 // ---- level 9: trace rounds ----------------------------------------------
-export const TRACE_ROUNDS = [
-  { len: 8, flashMs: 1500 },
-  { len: 12, flashMs: 900 },
-  { len: 16, flashMs: 550 },
-];
-export const TRACE_TYPE_MS = 15000;
+export type TraceConfig = { rounds: { len: number; flashMs: number }[]; typeMs: number };
+
+export const TRACE: Record<"desktop" | "mobile", TraceConfig> = {
+  desktop: {
+    rounds: [
+      { len: 8, flashMs: 1500 },
+      { len: 12, flashMs: 900 },
+      { len: 16, flashMs: 550 },
+    ],
+    typeMs: 15000,
+  },
+  mobile: {
+    rounds: [
+      { len: 4, flashMs: 1800 },
+      { len: 6, flashMs: 1400 },
+      { len: 8, flashMs: 1100 },
+    ],
+    typeMs: 25000,
+  },
+};
 
 export function randomHex(len: number): string {
   const b = new Uint8Array(Math.ceil(len / 2));

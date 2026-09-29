@@ -5,10 +5,9 @@ const mono = "'IBM Plex Mono',monospace";
 const ABC = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 /** Level 4: two-ring Caesar wheel. Drag the inner ring; the readout decodes live. */
-export function CipherWheel() {
+export function CipherWheel({ size = 236 }: { size?: number }) {
   const [shift, setShift] = useState(0);
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const size = 236;
   const c = size / 2;
   const step = 360 / 26;
 
@@ -59,25 +58,25 @@ export function CipherWheel() {
     <div style={{ padding: "10px 14px", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, fontFamily: mono }}>
       <svg ref={svgRef} width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ touchAction: "none" }}>
         <circle cx={c} cy={c} r={c - 4} fill="none" stroke="rgba(53,255,143,.35)" />
-        <circle cx={c} cy={c} r={c - 34} fill="rgba(53,255,143,.05)" stroke="rgba(53,255,143,.5)" />
-        {ring(c - 18, 0, "#7cffb0", 12)}
+        <circle cx={c} cy={c} r={c - size * 0.144} fill="rgba(53,255,143,.05)" stroke="rgba(53,255,143,.5)" />
+        {ring(c - size * 0.076, 0, "#7cffb0", size < 200 ? 10 : 12)}
         <g onPointerDown={onDown} style={{ cursor: "grab" }}>
-          <circle cx={c} cy={c} r={c - 36} fill="transparent" />
-          {ring(c - 50, shift * step, "#c9ffe0", 12)}
-          <circle cx={c} cy={c} r={24} fill="#000a04" stroke="rgba(53,255,143,.4)" />
+          <circle cx={c} cy={c} r={c - size * 0.15} fill="transparent" />
+          {ring(c - size * 0.21, shift * step, "#c9ffe0", size < 200 ? 10 : 12)}
+          <circle cx={c} cy={c} r={size * 0.1} fill="#000a04" stroke="rgba(53,255,143,.4)" />
           <text x={c} y={c} fill="#35ff8f" fontSize={12} textAnchor="middle" dominantBaseline="central" fontFamily="IBM Plex Mono, monospace">
             {String(shift).padStart(2, "0")}
           </text>
         </g>
-        <line x1={c} y1={4} x2={c} y2={40} stroke="#ffd23f" strokeWidth={1.5} />
+        <line x1={c} y1={4} x2={c} y2={size * 0.17} stroke="#ffd23f" strokeWidth={1.5} />
       </svg>
       <div style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 12 }}>
-        <button className="fe404-termlink" onClick={() => setShift((s) => (s + 25) % 26)} aria-label="Rotate left">
+        <button className="fe404-termlink fe404-rot" onClick={() => setShift((s) => (s + 25) % 26)} aria-label="Rotate left">
           ◀
         </button>
         <span style={{ color: "#2f7d4f" }}>ct:</span>
         <span style={{ color: "#c9ffe0", letterSpacing: 1 }}>{PAYLOAD.cipher}</span>
-        <button className="fe404-termlink" onClick={() => setShift((s) => (s + 1) % 26)} aria-label="Rotate right">
+        <button className="fe404-termlink fe404-rot" onClick={() => setShift((s) => (s + 1) % 26)} aria-label="Rotate right">
           ▶
         </button>
       </div>
@@ -87,7 +86,7 @@ export function CipherWheel() {
 }
 
 /** Level 6: a star that blinks the key in morse while the level is live, and just twinkles otherwise. */
-export function MorseStar({ x, y, active }: { x: number; y: number; active: boolean }) {
+export function MorseStar({ x, y, active, big = false }: { x: number; y: number; active: boolean; big?: boolean }) {
   const [on, setOn] = useState(true);
   useEffect(() => {
     if (!active) {
@@ -95,7 +94,7 @@ export function MorseStar({ x, y, active }: { x: number; y: number; active: bool
       return;
     }
     const tl = morseTimeline();
-    const unit = 230;
+    const unit = big ? 300 : 230;
     let i = 0;
     let t = 0;
     const tick = () => {
@@ -106,7 +105,7 @@ export function MorseStar({ x, y, active }: { x: number; y: number; active: bool
     };
     tick();
     return () => window.clearTimeout(t);
-  }, [active]);
+  }, [active, big]);
   return (
     <span
       aria-hidden
@@ -114,8 +113,8 @@ export function MorseStar({ x, y, active }: { x: number; y: number; active: bool
         position: "absolute",
         left: x,
         top: y,
-        width: 3,
-        height: 3,
+        width: big ? 5 : 3,
+        height: big ? 5 : 3,
         background: "#eaf1ff",
         boxShadow: on ? "0 0 6px 2px rgba(200,220,255,.85)" : "none",
         opacity: active ? (on ? 1 : 0.06) : 0.8,
@@ -169,7 +168,7 @@ export function FlashCanvas({ flash }: { flash: Flash }) {
       } else {
         ctx.font = "13px 'IBM Plex Mono', monospace";
         ctx.fillStyle = "#2f7d4f";
-        ctx.fillText(flash ? `round ${flash.round}/${flash.total}: type it in the shell` : "idle. run: trace", w / 2, h / 2);
+        ctx.fillText(flash ? `round ${flash.round}/${flash.total}: enter the code` : "idle. run: trace", w / 2, h / 2);
       }
       raf = requestAnimationFrame(draw);
     };

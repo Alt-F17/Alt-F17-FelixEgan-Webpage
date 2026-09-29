@@ -217,3 +217,48 @@
   .fe404-flicker, .fe404-jitter, .fe404-seam-line { animation: none; }
   .fe404-ending { animation: none; }
 }
+
+/* mobile shell: tap targets instead of typing */
+.fe404-shellbar {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  border-top: 1px solid rgba(53, 255, 143, 0.22);
+  background: rgba(53, 255, 143, 0.04);
+}
+.fe404-chip {
+  min-height: 34px;
+  padding: 0 12px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  color: #c9ffe0;
+  background: rgba(53, 255, 143, 0.06);
+  border: 1px solid rgba(53, 255, 143, 0.35);
+  cursor: pointer;
+}
+.fe404-chip:first-child { color: #05060a; background: #35ff8f; border-color: #35ff8f; font-weight: 600; }
+.fe404-chip:active { background: rgba(53, 255, 143, 0.25); }
+.fe404-keypad {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+}
+.fe404-keypad button {
+  min-height: 36px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 16px;
+  color: #c9ffe0;
+  background: rgba(53, 255, 143, 0.06);
+  border: 1px solid rgba(53, 255, 143, 0.35);
+}
+.fe404-keypad button:active { background: rgba(53, 255, 143, 0.3); }
+.fe404-keypad .fe404-keypad-go { color: #05060a; background: #35ff8f; border-color: #35ff8f; }
+
+/* phones: only the logo, language toggle and contact survive in the site nav */
+@media (max-width: 719px) {
+  .fe404 .fe-navlink { display: none; }
+}
+.fe404-rot { font-size: 16px; min-width: 36px; min-height: 32px; border: 1px solid rgba(53, 255, 143, 0.35) !important; text-align: center !important; }
