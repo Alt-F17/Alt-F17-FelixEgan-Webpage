@@ -33,7 +33,9 @@ Hybrid personal + studio website focused on local SMB web development in Montrea
 ## Main Routes
 
 - `/` Original portfolio homepage
-- `/projects/:projectId` Original portfolio project page
+- `/projects` All projects, ranked (order and featured count come from
+  `work.projects` / `work.featuredCount` in `public/content/site.json`)
+- `/projects/:projectId` Portfolio project page
 - `/studio` New business/studio subpage
 - `/studio/case-studies/:slug`
 - `/studio/blog`
@@ -90,6 +92,7 @@ npm run dev
 
 ## SEO Notes
 
-- `public/sitemap.xml` is included
+- `public/sitemap.xml` is included; add a `/projects/<slug>` entry when a
+  project is added to `site.json`
 - `public/robots.txt` disallows legacy utility pages
 - Legacy pages include `noindex,nofollow` meta

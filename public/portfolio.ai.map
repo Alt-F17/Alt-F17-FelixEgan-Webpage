@@ -18,6 +18,8 @@ discord: Alt_F17
 ## Site Structure
 
 / → Portfolio (personal site, space-themed, Three.js background)
+/projects → All projects, ranked (every project card)
+/projects/:slug → Project detail page
 /studio → Studio (freelance business site, see studio.ai.map)
 /qr → QR code landing page
 /404 → Not found
@@ -27,7 +29,7 @@ discord: Alt_F17
 /#hero → Introduction, name, role, CTA buttons
 /#about → Bio, education (UBC Okanagan), age, focus areas, hobbies, profile photo
 /#skills → 7 skill cards + focus area card
-/#projects → 6 project cards (link to /projects/:id subpages)
+/#work → top 6 project cards by rank + link to /projects (cards link to /projects/:slug)
 /#contact → Contact form, social links, support links
 
 ## Skills
@@ -42,48 +44,118 @@ discord: Alt_F17
 
 ## Projects
 
-/projects/nputella → NPUtella
-  description: Local NPU-powered speech-to-text for Snapdragon Windows PCs. Offline EN/FR/bilingual dictation.
-  tech: Rust, ONNX Runtime, QNN, Whisper, WiX
+# Ranked. Source of truth: /content/site.json (work.projects order; work.featuredCount shown on /).
+
+1. /projects/nputella → NPUtella  [featured on /]
+  description: On-device speech recognition that offloads Whisper inference to Qualcomm's NPU in FP16 burst mode. Native, instant, zero cloud.
+  tech: Rust, ONNX + QNN, Whisper, WinX
   github: https://github.com/Alt-F17/NPUtella
   live: https://nputella.app
 
-/projects/pluto-ai → PLUTO AI Assistant
-  description: Personal & Logical Utility Task Organizer — fully local, open-source, privacy-focused AI assistant.
-  tech: Python, NLP, Local Inference
-  github: https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant
-  live: https://felixegan.me/pluto-report.html
+2. /projects/paste-relay → Paste Relay  [featured on /]
+  description: Self-hosted encrypted clipboard between my devices. Text or files up to 5 GB, AES-256-GCM per item, gone after 5 minutes.
+  tech: Node.js, AES-256-GCM, Docker, ClamAV, Cloudflare Tunnel
+  github: https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage/tree/main/paste-relay
+  live: https://felixegan.me/paste
 
-/projects/aura-robot → AURA — Unity Robot Analysis
-  description: Reinforcement learning robot training in Unity with ML-Agents. Python analysis pipeline for model mutation and visualization.
-  tech: C#, Unity, ML-Agents, Python, Reinforcement Learning
-  github: https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis
-  live: https://aura-project-monorepo.vercel.app/
-  extra: https://felixegan.me/netronizer.html (ONNX model breakdown)
+3. /projects/theta-health-check → Theta Health Check  [featured on /]
+  description: Daily private server audit sent to Discord. An AI agent can only apply a suggested fix after two separate human approvals and a scope check.
+  tech: Python, SQLite, systemd, Discord
 
-/projects/cloudsource → CloudSource
-  description: Globe-first AI travel planner built during a hackathon. 3D Cesium globe with orbiting panels for flights, culture, budget, and AI assistant.
-  tech: Next.js 15, React 19, TypeScript, Cesium, Framer Motion, Google AI
+4. /projects/cloudsource → CloudSource  [featured on /]
+  description: HACKATHON PROJECT: An AI trip planner rendered on a 3D globe, generates validated itineraries with live flight routes and airport markers.
+  tech: Next.js 15, Cesium, Google AI, Framer
   github: https://github.com/Alt-F17/CloudSource
   live: https://cloud-source-eta.vercel.app/
 
-/projects/portfolio-website → Portfolio Website
-  description: This site — space-themed portfolio with Three.js starfield, bilingual FR/EN support, tilt-on-hover cards.
-  tech: React, Vite, TypeScript, Three.js, Tailwind CSS, i18n
-  github: https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage
+5. /projects/aura → AURA  [featured on /]
+  description: A reinforcement-learning pipeline that trains and analyzes robot behaviors inside simulated Unity environments.
+  tech: C# / Unity, ML-Agents, Python, RL
+  github: https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis
+  live: https://aura-project-monorepo.vercel.app/
+  live: https://felixegan.me/netronizer.html
 
-/projects/sf-study-tools → SF Study Tools
-  description: Study platform for science, CS, and math students. Interactive quizzes, flashcards, code snippets, debugging challenges.
-  tech: React, TypeScript, Next.js, Node.js, Express
+6. /projects/portfolio → felixegan.me  [featured on /]
+  description: You're already here. Bilingual portfolio and web-studio site with a real-time 3D starfield, validated lead intake into a self-hosted CRM, and a few tools living on it.
+  tech: React + Vite, Three.js, Tailwind, Supabase, Vercel
+  github: https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage
+  live: https://felixegan.me/studio
+
+7. /projects/pluto-phone → Pluto Phone Gateway
+  description: Call a phone number and talk to my AI assistant in real time. Caller allowlist and PIN gate, then a voicemail summary sent by MMS.
+  tech: Node.js, Twilio Media Streams, WebSockets, OpenAI Realtime
+
+8. /projects/hermes-agent → Hermes Agent + Upstream Fixes
+  description: Self-hosted deployment of the open-source Hermes Agent as my assistant, plus 7 reliability patches to the project itself.
+  tech: Python, Caddy, systemd, MCP, Discord
+  github: https://github.com/NousResearch/hermes-agent
+
+9. /projects/ops-mcp → Field Ops MCP Server
+  description: OAuth-secured MCP server with 40+ tools that lets Claude work with a field-services company's operations platform and sales-call CRM.
+  tech: TypeScript, MCP SDK, GraphQL, OAuth 2.1
+
+10. /projects/lead-intake-crm → Lead Intake → Self-hosted CRM
+  description: Website form to Vercel to Cloudflare Tunnel to a locked-down proxy to a self-hosted Twenty CRM. Every lead becomes a company, person, opportunity and note.
+  tech: TypeScript, Zod, Python, Docker, Postgres
+  github: https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage/blob/main/api/discovery-call.ts
+
+11. /projects/sf-study-tools → SF Study Tools
+  description: Interactive study site for Dawson College's SF programming courses. Flashcards, drills, a code animator, and an in-browser Python terminal.
+  tech: React, TypeScript, Vite, Tailwind
   github: https://github.com/Alt-F17/sf-study-tools
-  live: https://sf-study-tools.com
+  live: https://felixegan.me/sf-study-tools/
+
+12. /projects/agentrun → agentrun
+  description: Runs a coding task through a chain of real agent CLIs (Codex, Claude Code, Antigravity, local Ollama), falling through when one is out of budget or fails.
+  tech: Python, Bash, Ollama
+
+13. /projects/claude-rc → claude-rc
+  description: Keeps Claude Code Remote Control available on my server 24/7, with staged auto-updates, rollback, and a watchdog that DMs me on failure.
+  tech: Bash, Python, systemd
+
+14. /projects/instagram-analysis → Instagram Export Analysis
+  description: Fully local ML pipeline over a 6-year personal data export: parsing, transcription, image captioning and tagging, and a social graph. No cloud APIs.
+  tech: Python, BLIP, CLIP, Whisper, Graphs
+
+15. /projects/theta → Theta Home Server
+  description: One low-spec Ubuntu box hosting production services for a business and a personal AI stack, with no open inbound ports.
+  tech: Docker, Cloudflare Tunnel, Tailscale, Caddy, Bash
+
+16. /projects/pluto → PLUTO
+  description: Early MCP orchestrator prototype before the release of MCP servers. Self-improving by generating own skills upon recognition of incapability using OpenAI's Realtime and o3 APIs
+  tech: Python, NLP, OpenAI Realtime API, Voice Recognition, Self-Improving
+  github: https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant
+  live: https://felixegan.me/pluto-report.html
+
+17. /projects/instagram-vault → Pluto Instagram Vault
+  description: Share a post or reel to a specific Instagram DM and it becomes a linked note in an Obsidian vault my assistant can search.
+  tech: Python, FastAPI, Meta Graph API, Obsidian
+
+18. /projects/secondbrain → SecondBrain
+  description: Personal memory system: voice memos transcribed with Whisper, stored as embeddings, and recalled by meaning instead of keywords.
+  tech: Node.js, OpenAI Whisper, Embeddings, Pinecone
+  github: https://github.com/Alt-F17/SecondBrain
+
+19. /projects/onewheel-battery → Onewheel Battery Curve Fit
+  description: Finds the best polynomial for an electric skateboard's voltage-to-charge curve, using exact minimax linear programming and a CPU-adaptive search.
+  tech: Python, NumPy, SciPy
+
+20. /projects/lead-autofill → Lead Autofill Extension
+  description: Chrome extension that pulls lead details out of one web app and fills another app's lead form in one click. The manual predecessor of my ops MCP server.
+  tech: JavaScript, Chrome MV3
+
+21. /projects/japanese-verb-flashcards → Japanese Flashcards
+  description: Phone-first flashcards for 400 common N5/N4 Japanese verbs and nouns, with themed decks, progress and an optional per-card timer.
+  tech: HTML, CSS, JavaScript
+  github: https://github.com/Alt-F17/japanese-verb-flashcards
+  live: https://alt-f17.github.io/japanese-verb-flashcards/
 
 ## Project Subpage Sections (each /projects/:id page has)
 
 - Overview — What the project is and why it exists
 - Tech Stack — Technologies used and why each was chosen
 - Challenges & Solutions — Problems solved and lessons learned
-- Links & Resources — GitHub, live demo, reports
+- Links & Resources — GitHub, live demo, reports (omitted for private projects)
 
 ## Contact
 
