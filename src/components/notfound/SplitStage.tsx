@@ -9,7 +9,7 @@ import { FloatWindow, type Skin } from "./FloatWindow";
 import { BreachShell } from "./BreachShell";
 import { CipherWheel, CodeView, FlashCanvas, MorseStar, Redacted, type Flash } from "./widgets";
 import { winStore } from "./winStore";
-import { MOBILE_BP, clip, defaultSeam, layout, normal, polygonCss, widgetRect, type Pt, type Rect, type Seam, type WinId } from "./geometry";
+import { MOBILE_BP, clip, defaultSeam, layout, teaserSeam, normal, polygonCss, widgetRect, type Pt, type Rect, type Seam, type WinId } from "./geometry";
 import { LEAKED_SOURCE, LEVELS, MOBILE_LEVELS, PAYLOAD, SESSION_KEY, VALIDATOR_SOURCE, guestSession, unmask, type LevelWidget } from "./breach/levels";
 import { PROGRESS_KEY, fmtDuration, useProgress } from "./breach/progress";
 import "./notfound.css";
@@ -76,10 +76,15 @@ export function SplitStage({ content }: { content: SiteContent }) {
   const t = portfolioCopy.notFound;
   const [vp, setVp] = useState(() => ({ W: window.innerWidth, H: window.innerHeight }));
   const lay = useMemo(() => layout(vp.W, vp.H), [vp.W, vp.H]);
-  const [seam, setSeam] = useState<Seam>(() => defaultSeam(vp.W, vp.H));
   const track = lay.mobile ? "mobile" : "desktop";
   const levels = lay.mobile ? MOBILE_LEVELS : LEVELS;
   const { progress, start, advance, reset } = useProgress(PROGRESS_KEY[track], levels.length);
+  // first visit: the seam starts tucked in the corner so the page reads as the normal site;
+  // returning players who already started the game get the half split
+  const [teasing, setTeasing] = useState(() => progress.startedAt === null);
+  const [seam, setSeam] = useState<Seam>(() => (teasing ? teaserSeam(vp.W, vp.H) : defaultSeam(vp.W, vp.H)));
+  const teasingRef = useRef(teasing);
+  teasingRef.current = teasing;
   const [flash, setFlash] = useState<Flash>(null);
   const [ending, setEnding] = useState(false);
   const started = progress.startedAt !== null;
@@ -102,7 +107,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
         if (W !== lastW.current) {
           lastW.current = W;
           winStore.reset(layout(W, H).wins as Record<string, Rect>);
-          setSeam(defaultSeam(W, H));
+          setSeam(teasingRef.current ? teaserSeam(W, H) : defaultSeam(W, H));
         } else {
           const home = layout(W, H).wins.shell;
           const sh = winStore.get("shell");
@@ -138,7 +143,10 @@ export function SplitStage({ content }: { content: SiteContent }) {
     if (widget) rects[widget] = widgetRect(vp.W, vp.H, seam, widget);
     winStore.reset(rects);
   }, [vp.W, vp.H, seam, widget]);
-  const seamReset = useCallback(() => setSeam(defaultSeam(vp.W, vp.H)), [vp.W, vp.H]);
+  const seamReset = useCallback(() => {
+    setTeasing(false);
+    setSeam(defaultSeam(vp.W, vp.H));
+  }, [vp.W, vp.H]);
 
   const { poly, seg } = clip(vp.W, vp.H, seam);
   const n = normal(seam);
@@ -157,6 +165,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
 
   const dragSeam = (e: React.PointerEvent) => {
     e.preventDefault();
+    setTeasing(false);
     const el = e.currentTarget as Element;
     el.setPointerCapture(e.pointerId);
     const x0 = e.clientX;
@@ -180,6 +189,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
   const rotateSeam = (e: React.PointerEvent) => {
     if (!mid) return;
     e.preventDefault();
+    setTeasing(false);
     const el = e.currentTarget as Element;
     el.setPointerCapture(e.pointerId);
     const pivot = mid;
@@ -210,6 +220,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
     const dir = k === "ArrowRight" || k === "ArrowDown" ? 1 : k === "ArrowLeft" || k === "ArrowUp" ? -1 : 0;
     if (!dir) return;
     e.preventDefault();
+    setTeasing(false);
     if (e.shiftKey) setSeam((s) => ({ ...s, angle: s.angle + (dir * 4 * Math.PI) / 180 }));
     else setSeam((s) => ({ ...s, offset: clampOffset(s.offset + dir * 18) }));
   };
@@ -252,9 +263,11 @@ export function SplitStage({ content }: { content: SiteContent }) {
               </div>
             ) : (
               <div style={{ padding: lay.mobile ? "12px 16px" : "16px 22px", display: "flex", flexDirection: "column", height: "100%" }}>
-                <div style={{ fontFamily: mono, fontSize: 11.5, letterSpacing: 2, color: "#5f6b85", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  GET {pathname}
-                </div>
+                {!lay.mobile && (
+                  <div style={{ flex: "none", fontFamily: mono, fontSize: 11.5, letterSpacing: 2, color: "#5f6b85", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    GET {pathname}
+                  </div>
+                )}
                 <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
                   <span style={{ fontSize: lay.mobile ? 54 : 76, fontWeight: 800, letterSpacing: "-.04em", lineHeight: 1, color: "#fff" }}>404</span>
                   <span style={{ fontFamily: mono, fontSize: 13, color: "var(--ac,#3b82f6)" }}>{t.title[locale]}</span>
@@ -402,13 +415,15 @@ export function SplitStage({ content }: { content: SiteContent }) {
         >
           {behindKey}
         </span>
-        <div
-          aria-hidden
-          style={{ position: "absolute", left: lay.otherSideKey.x, top: lay.otherSideKey.y, transform: "translate(-50%,-50%)", zIndex: 5, textAlign: "center", whiteSpace: "nowrap" }}
-        >
-          <div style={{ fontFamily: mono, fontSize: 10.5, letterSpacing: 2, color: "#5f6b85" }}>// WRITTEN ON THE BLUE SIDE</div>
-          <div style={{ fontFamily: mono, fontSize: 15, color: "#fff", textShadow: "0 0 14px rgba(59,130,246,.8)" }}>{otherSideKey}</div>
-        </div>
+        {started && (
+          <div
+            aria-hidden
+            style={{ position: "absolute", left: lay.otherSideKey.x, top: lay.otherSideKey.y, transform: "translate(-50%,-50%)", zIndex: 5, textAlign: "center", whiteSpace: "nowrap" }}
+          >
+            <div style={{ fontFamily: mono, fontSize: 10.5, letterSpacing: 2, color: "#5f6b85" }}>// WRITTEN ON THE BLUE SIDE</div>
+            <div style={{ fontFamily: mono, fontSize: 15, color: "#fff", textShadow: "0 0 14px rgba(59,130,246,.8)" }}>{otherSideKey}</div>
+          </div>
+        )}
         <MorseStar x={lay.morseStar.x} y={lay.morseStar.y} active={started && level?.kind === "signal"} big={lay.mobile} />
         {windows("site")}
       </div>
@@ -471,7 +486,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
       </svg>
       {mid && (
         <button
-          className="fe404-handle"
+          className={`fe404-handle${teasing ? " fe404-handle-tease" : ""}`}
           style={{ left: mid.x, top: mid.y }}
           aria-label="Seam. Drag or use arrow keys to move it, shift plus arrows to rotate, Enter to reset."
           onPointerDown={dragSeam}
@@ -479,7 +494,13 @@ export function SplitStage({ content }: { content: SiteContent }) {
           onKeyDown={onHandleKey}
         />
       )}
-      {knob && <button className="fe404-knob" style={{ left: knob.x, top: knob.y }} aria-label="Rotate the seam" onPointerDown={rotateSeam} tabIndex={-1} />}
+      {teasing && mid && (
+        <div aria-hidden className="fe404-pull" style={{ left: mid.x - n.x * 64, top: mid.y - n.y * 64 }}>
+          <span style={{ display: "inline-block", transform: `rotate(${Math.atan2(-n.y, -n.x)}rad)` }}>➜</span>
+          {t.pull[locale]}
+        </div>
+      )}
+      {knob && !teasing && <button className="fe404-knob" style={{ left: knob.x, top: knob.y }} aria-label="Rotate the seam" onPointerDown={rotateSeam} tabIndex={-1} />}
 
       {ending && (
         <div className="fe404-ending" role="dialog" aria-label="Breached">

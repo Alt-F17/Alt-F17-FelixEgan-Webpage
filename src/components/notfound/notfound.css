@@ -262,3 +262,32 @@
   .fe404 .fe-navlink { display: none; }
 }
 .fe404-rot { font-size: 16px; min-width: 36px; min-height: 32px; border: 1px solid rgba(53, 255, 143, 0.35) !important; text-align: center !important; }
+
+/* first-visit teaser: the seam sits in the corner and asks to be pulled */
+.fe404-handle-tease { animation: fe404-tease 1.6s ease-in-out infinite; }
+@keyframes fe404-tease {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.55), 0 0 22px rgba(53, 255, 143, 0.55); }
+  50% { box-shadow: 0 0 0 10px rgba(53, 255, 143, 0.18), 0 0 38px rgba(53, 255, 143, 0.9); }
+}
+.fe404-pull {
+  position: absolute;
+  z-index: 4;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #35ff8f;
+  background: rgba(0, 10, 4, 0.85);
+  border: 1px solid rgba(53, 255, 143, 0.45);
+  pointer-events: none;
+  white-space: nowrap;
+  animation: fe404-nudge 1.6s ease-in-out infinite;
+}
+@keyframes fe404-nudge { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .fe404-handle-tease, .fe404-pull { animation: none; }
+}
