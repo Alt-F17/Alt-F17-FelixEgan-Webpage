@@ -33,6 +33,32 @@ export function defaultSeam(W: number, H: number): Seam {
   return { angle: Math.atan2(H, -0.24 * W), offset: 0 };
 }
 
+const polyArea = (poly: Pt[]) =>
+  Math.abs(
+    poly.reduce((a, p, i) => {
+      const q = poly[(i + 1) % poly.length];
+      return a + p.x * q.y - q.x * p.y;
+    }, 0),
+  ) / 2;
+
+/**
+ * First-visit position: same angle as the default split, pushed out until the
+ * terminal is only a sliver (frac of the screen) in the corner, so the page
+ * reads as the normal site and invites a pull.
+ */
+export function teaserSeam(W: number, H: number, frac = 0.05): Seam {
+  const base = defaultSeam(W, H);
+  let lo = base.offset;
+  let hi = Math.hypot(W, H) / 2 - 24;
+  for (let i = 0; i < 40; i++) {
+    const mid = (lo + hi) / 2;
+    const a = polyArea(clip(W, H, { angle: base.angle, offset: mid }).poly) / (W * H);
+    if (a > frac) lo = mid;
+    else hi = mid;
+  }
+  return { angle: base.angle, offset: (lo + hi) / 2 };
+}
+
 export function normal(s: Seam): Pt {
   return { x: Math.sin(s.angle), y: -Math.cos(s.angle) };
 }

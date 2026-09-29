@@ -129,9 +129,10 @@ export const portfolioCopy = {
     projects: { en: "All projects", fr: "Tous les projets" } satisfies ByLocale,
     trace: { en: "Nothing lives here. Yet.", fr: "Rien ici. Pour l'instant." } satisfies ByLocale,
     shellLost: {
-      en: "Connection lost. This shell only works on the green side. Drag it back across the seam.",
-      fr: "Connexion perdue. Ce terminal ne marche que du côté vert. Glisse-le de l'autre côté.",
+      en: "This shell only works on the green side. Pull the seam over, or drag this window across it.",
+      fr: "Ce terminal ne marche que du côté vert. Tire la ligne vers toi, ou glisse cette fenêtre de l'autre côté.",
     } satisfies ByLocale,
+    pull: { en: "pull", fr: "tire" } satisfies ByLocale,
   },
   footer: {
     description: {
