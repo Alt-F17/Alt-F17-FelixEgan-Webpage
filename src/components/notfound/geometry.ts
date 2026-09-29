@@ -9,8 +9,27 @@ export type Rect = { x: number; y: number; w: number; h: number };
 
 export const MOBILE_BP = 720;
 
+/**
+ * Phones stack vertically: 404 card, a gap the seam runs through, then the shell.
+ * The seam sits mid-gap with a slight tilt so both keys and the star have room.
+ */
+function mobileGeom(W: number, H: number) {
+  const short = H < 720;
+  const w404 = { x: 12, y: 70, w: W - 24, h: short ? 184 : 208 };
+  const sh = Math.round(Math.min(360, Math.max(250, H * 0.4)));
+  const shell = { x: 10, y: H - sh - 10, w: W - 20, h: sh };
+  const gapTop = w404.y + w404.h;
+  const yc = gapTop + (shell.y - gapTop) * 0.42;
+  const drop = Math.min(40, H * 0.05);
+  return { w404, shell, yc, drop };
+}
+
 export function defaultSeam(W: number, H: number): Seam {
-  if (W < MOBILE_BP) return { angle: Math.atan2(-0.12 * H, -W), offset: 0 };
+  if (W < MOBILE_BP) {
+    const { yc, drop } = mobileGeom(W, H);
+    const angle = Math.atan2(-drop, -W);
+    return { angle, offset: (yc - H / 2) * -Math.cos(angle) };
+  }
   return { angle: Math.atan2(H, -0.24 * W), offset: 0 };
 }
 
@@ -97,17 +116,13 @@ const WIDGET_SIZE: Record<"cipher" | "leak" | "flash" | "validator", { w: number
 export function layout(W: number, H: number): Layout {
   const s = defaultSeam(W, H);
   if (W < MOBILE_BP) {
-    const w404 = { x: 16, y: 72, w: W - 32, h: 200 };
-    const tw = Math.min(340, W - 32);
-    const trace = { x: (W - tw) / 2, y: H / 2 - 70, w: tw, h: 140 };
-    const sh = Math.min(300, Math.round(H * 0.36));
-    const shell = { x: 12, y: H - sh - 12, w: W - 24, h: sh };
+    const { w404, shell, yc, drop } = mobileGeom(W, H);
     return {
       mobile: true,
-      wins: { w404, trace, shell },
+      wins: { w404, shell },
       behindKey: { x: w404.x + w404.w / 2, y: w404.y + w404.h / 2 },
-      otherSideKey: { x: W / 2, y: trace.y + trace.h + 20 },
-      morseStar: { x: W - 24, y: w404.y + w404.h + 22 },
+      otherSideKey: { x: W * 0.36, y: (yc + shell.y) / 2 + 4 },
+      morseStar: { x: W - 30, y: yc + drop / 2 - 20 },
     };
   }
   const w404 = { x: Math.max(24, W * 0.05), y: 104, w: Math.min(440, W * 0.36), h: 248 };
@@ -130,6 +145,14 @@ export function layout(W: number, H: number): Layout {
 /** Level widgets open centered in the terminal half, clamped to the viewport. */
 export function widgetRect(W: number, H: number, s: Seam, id: keyof typeof WIDGET_SIZE): Rect {
   const size = WIDGET_SIZE[id];
+  if (W < MOBILE_BP) {
+    // under the default seam (the player may have dragged it anywhere by now),
+    // leaving the shell's input row and tap bar at the bottom uncovered
+    const seamLow = Math.max(...clip(W, H, defaultSeam(W, H)).seg.map((p) => p.y), H / 2);
+    const y = Math.round(seamLow + 8);
+    const bottomBar = id === "flash" ? 200 : 100;
+    return { x: 10, y, w: W - 20, h: Math.max(140, Math.min(size.h, H - bottomBar - y)) };
+  }
   const w = Math.min(size.w, W - 24);
   const h = Math.min(size.h, H - 24);
   const c = centroid(clip(W, H, s).poly);

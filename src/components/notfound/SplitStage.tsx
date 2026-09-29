@@ -9,9 +9,9 @@ import { FloatWindow, type Skin } from "./FloatWindow";
 import { BreachShell } from "./BreachShell";
 import { CipherWheel, CodeView, FlashCanvas, MorseStar, Redacted, type Flash } from "./widgets";
 import { winStore } from "./winStore";
-import { clip, defaultSeam, layout, normal, polygonCss, widgetRect, type Pt, type Rect, type Seam, type WinId } from "./geometry";
-import { LEAKED_SOURCE, LEVELS, PAYLOAD, SESSION_KEY, VALIDATOR_SOURCE, guestSession, unmask, type LevelWidget } from "./breach/levels";
-import { fmtDuration, useProgress } from "./breach/progress";
+import { MOBILE_BP, clip, defaultSeam, layout, normal, polygonCss, widgetRect, type Pt, type Rect, type Seam, type WinId } from "./geometry";
+import { LEAKED_SOURCE, LEVELS, MOBILE_LEVELS, PAYLOAD, SESSION_KEY, VALIDATOR_SOURCE, guestSession, unmask, type LevelWidget } from "./breach/levels";
+import { PROGRESS_KEY, fmtDuration, useProgress } from "./breach/progress";
 import "./notfound.css";
 
 const mono = "'IBM Plex Mono',monospace";
@@ -77,11 +77,13 @@ export function SplitStage({ content }: { content: SiteContent }) {
   const [vp, setVp] = useState(() => ({ W: window.innerWidth, H: window.innerHeight }));
   const lay = useMemo(() => layout(vp.W, vp.H), [vp.W, vp.H]);
   const [seam, setSeam] = useState<Seam>(() => defaultSeam(vp.W, vp.H));
-  const { progress, start, advance, reset } = useProgress();
+  const track = lay.mobile ? "mobile" : "desktop";
+  const levels = lay.mobile ? MOBILE_LEVELS : LEVELS;
+  const { progress, start, advance, reset } = useProgress(PROGRESS_KEY[track], levels.length);
   const [flash, setFlash] = useState<Flash>(null);
   const [ending, setEnding] = useState(false);
   const started = progress.startedAt !== null;
-  const level = LEVELS[progress.level - 1];
+  const level = levels[progress.level - 1];
   const widget = started && level?.widget ? WIDGET_WIN[level.widget] : null;
 
   useState(() => winStore.reset(layout(window.innerWidth, window.innerHeight).wins as Record<string, Rect>));
@@ -95,11 +97,16 @@ export function SplitStage({ content }: { content: SiteContent }) {
         const W = window.innerWidth;
         const H = window.innerHeight;
         setVp({ W, H });
-        // height-only changes (mobile keyboard, URL bar) keep the arrangement
+        // height-only changes (mobile keyboard, URL bar) keep the arrangement,
+        // except the phone shell, which rides above the keyboard
         if (W !== lastW.current) {
           lastW.current = W;
           winStore.reset(layout(W, H).wins as Record<string, Rect>);
           setSeam(defaultSeam(W, H));
+        } else {
+          const home = layout(W, H).wins.shell;
+          const sh = winStore.get("shell");
+          if (home && sh && W < MOBILE_BP) winStore.set("shell", { y: Math.max(8, Math.min(home.y, H - sh.h - 8)) });
         }
       }, 150);
     };
@@ -118,13 +125,13 @@ export function SplitStage({ content }: { content: SiteContent }) {
 
   // level 8 needs a guest session to forge from
   useEffect(() => {
-    if (!started || level?.n !== 8) return;
+    if (!started || level?.kind !== "privilege") return;
     try {
       if (!localStorage.getItem(SESSION_KEY)) localStorage.setItem(SESSION_KEY, guestSession());
     } catch {
       /* storage blocked */
     }
-  }, [started, level?.n]);
+  }, [started, level?.kind]);
 
   const tidy = useCallback(() => {
     const rects = { ...(layout(vp.W, vp.H).wins as Record<string, Rect>) };
@@ -207,8 +214,10 @@ export function SplitStage({ content }: { content: SiteContent }) {
     else setSeam((s) => ({ ...s, offset: clampOffset(s.offset + dir * 18) }));
   };
 
-  const behindKey = useMemo(() => unmask(PAYLOAD.behind), []);
-  const otherSideKey = useMemo(() => unmask(PAYLOAD.otherSide), []);
+  // the payloads carry desktop labels (KEY_01, KEY_03); relabel for the track being played
+  const keyValue = (payload: string) => unmask(payload).split(" = ")[1];
+  const behindKey = useMemo(() => `KEY_01 = ${keyValue(PAYLOAD.behind)}`, []);
+  const otherSideKey = useMemo(() => `KEY_0${lay.mobile ? 2 : 3} = ${keyValue(PAYLOAD.otherSide)}`, [lay.mobile]);
 
   const go = (path: string) => navigate(path);
 
@@ -223,6 +232,10 @@ export function SplitStage({ content }: { content: SiteContent }) {
     setFlash,
     win: () => setEnding(true),
   };
+
+  // on phones a card dragged onto the shell would bury its tap bar, so the shell stays on top
+  const pinShell = lay.mobile ? 5000 : 0;
+  const pinTools = lay.mobile ? 6000 : 0;
 
   const windows = (skin: Skin) => {
     const term = skin === "term";
@@ -341,9 +354,9 @@ export function SplitStage({ content }: { content: SiteContent }) {
         )}
 
         {has("shell") && (
-          <FloatWindow id="shell" skin={skin} title={term ? "root@alt-f17: ~" : "shell"}>
+          <FloatWindow id="shell" skin={skin} title={term ? "root@alt-f17: ~" : "shell"} layer={pinShell}>
             {term ? (
-              <BreachShell content={content} api={shellApi} mobile={lay.mobile} />
+              <BreachShell key={track} content={content} api={shellApi} levels={levels} mobile={lay.mobile} />
             ) : (
               <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: 20, textAlign: "center" }}>
                 <div style={{ fontFamily: press, fontSize: 10, color: "var(--ac,#3b82f6)" }}>NO SIGNAL</div>
@@ -354,22 +367,22 @@ export function SplitStage({ content }: { content: SiteContent }) {
         )}
 
         {widget === "cipher" && (
-          <FloatWindow id="cipher" skin={skin} title="dial">
-            {term ? <CipherWheel /> : <Redacted label="// CIPHER" />}
+          <FloatWindow id="cipher" skin={skin} layer={pinTools} title="dial">
+            {term ? <CipherWheel size={Math.max(150, Math.min(236, (winStore.get("cipher")?.h ?? 360) - 116))} /> : <Redacted label="// CIPHER" />}
           </FloatWindow>
         )}
         {widget === "leak" && (
-          <FloatWindow id="leak" skin={skin} title="leaked: auth/session.js">
+          <FloatWindow id="leak" skin={skin} layer={pinTools} title="leaked: auth/session.js">
             {term ? <CodeView source={LEAKED_SOURCE} /> : <Redacted label="// LEAK" />}
           </FloatWindow>
         )}
         {widget === "flash" && (
-          <FloatWindow id="flash" skin={skin} title="trace" className={flash?.code ? "fe404-jitter" : undefined}>
+          <FloatWindow id="flash" skin={skin} layer={pinTools} title="trace" className={flash?.code ? "fe404-jitter" : undefined}>
             {term ? <FlashCanvas flash={flash} /> : <Redacted label="// TRACE" />}
           </FloatWindow>
         )}
         {widget === "validator" && (
-          <FloatWindow id="validator" skin={skin} title="v(s)">
+          <FloatWindow id="validator" skin={skin} layer={pinTools} title="v(s)">
             {term ? <CodeView source={VALIDATOR_SOURCE} /> : <Redacted label="// VALIDATOR" />}
           </FloatWindow>
         )}
@@ -396,7 +409,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
           <div style={{ fontFamily: mono, fontSize: 10.5, letterSpacing: 2, color: "#5f6b85" }}>// WRITTEN ON THE BLUE SIDE</div>
           <div style={{ fontFamily: mono, fontSize: 15, color: "#fff", textShadow: "0 0 14px rgba(59,130,246,.8)" }}>{otherSideKey}</div>
         </div>
-        <MorseStar x={lay.morseStar.x} y={lay.morseStar.y} active={started && level?.n === 6} />
+        <MorseStar x={lay.morseStar.x} y={lay.morseStar.y} active={started && level?.kind === "signal"} big={lay.mobile} />
         {windows("site")}
       </div>
 
