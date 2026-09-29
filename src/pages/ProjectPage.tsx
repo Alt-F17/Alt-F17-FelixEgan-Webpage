@@ -6,6 +6,8 @@ import { Starfield } from "@/components/portfolio/Starfield";
 import { SiteNav } from "@/components/portfolio/SiteNav";
 import { SiteFooter } from "@/components/portfolio/SiteFooter";
 import { useReveal } from "@/hooks/useReveal";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { portfolioCopy } from "@/content/portfolioCopy";
 import "@/components/portfolio/portfolio.css";
 
 const mono = "'IBM Plex Mono',monospace";
@@ -33,6 +35,7 @@ const Label = ({ n, t }: { n: string; t: string }) => (
 const ProjectPage = () => {
   const { projectId = "" } = useParams<{ projectId: string }>();
   const { content } = useSiteContent();
+  const { locale } = useLanguage();
 
   useEffect(() => {
     sessionStorage.setItem("visitedSubpage", "true");
@@ -69,11 +72,11 @@ const ProjectPage = () => {
               {/* header */}
               <div data-reveal style={revealStyle}>
                 <Link
-                  to="/#work"
+                  to="/projects"
                   className="fe-projlink"
                   style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: mono, fontSize: 13, color: "#aeb6c9", marginBottom: 22 }}
                 >
-                  ← back to work
+                  {portfolioCopy.projects.backToAll[locale]}
                 </Link>
                 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 14, marginBottom: 10, fontFamily: mono, fontSize: 12 }}>
                   <span style={{ letterSpacing: 1.5, color: "var(--ac,#3b82f6)", textTransform: "uppercase" }}>{detail.category}</span>
@@ -131,46 +134,48 @@ const ProjectPage = () => {
               </div>
 
               {/* links */}
-              <div data-reveal data-delay={200} style={{ ...revealStyle, ...panel }}>
-                <Label n="04" t="// LINKS & RESOURCES" />
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-                  {detail.links.map((l) => (
-                    <a
-                      key={l.url}
-                      href={l.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={l.type === "github" ? "fe-ghostbtn" : "fe-btn-primary"}
-                      style={
-                        l.type === "github"
-                          ? {
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 8,
-                              padding: "12px 22px",
-                              border: "1px solid rgba(124,179,255,.35)",
-                              color: "#c4ccdd",
-                              fontFamily: mono,
-                              fontSize: 14,
-                            }
-                          : {
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: 8,
-                              padding: "12px 22px",
-                              background: "var(--ac,#3b82f6)",
-                              color: "#05060a",
-                              fontWeight: 700,
-                              fontSize: 14,
-                              boxShadow: "0 0 20px rgba(59,130,246,.4)",
-                            }
-                      }
-                    >
-                      {l.type === "github" ? "⌥" : "↗"} {l.label}
-                    </a>
-                  ))}
+              {detail.links.length > 0 && (
+                <div data-reveal data-delay={200} style={{ ...revealStyle, ...panel }}>
+                  <Label n="04" t="// LINKS & RESOURCES" />
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                    {detail.links.map((l) => (
+                      <a
+                        key={l.url}
+                        href={l.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={l.type === "github" ? "fe-ghostbtn" : "fe-btn-primary"}
+                        style={
+                          l.type === "github"
+                            ? {
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 8,
+                                padding: "12px 22px",
+                                border: "1px solid rgba(124,179,255,.35)",
+                                color: "#c4ccdd",
+                                fontFamily: mono,
+                                fontSize: 14,
+                              }
+                            : {
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 8,
+                                padding: "12px 22px",
+                                background: "var(--ac,#3b82f6)",
+                                color: "#05060a",
+                                fontWeight: 700,
+                                fontSize: 14,
+                                boxShadow: "0 0 20px rgba(59,130,246,.4)",
+                              }
+                        }
+                      >
+                        {l.type === "github" ? "⌥" : "↗"} {l.label}
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : (
             <div data-reveal style={{ ...revealStyle, ...panel, textAlign: "center", padding: "60px 26px" }}>

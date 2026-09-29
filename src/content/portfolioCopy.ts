@@ -87,6 +87,10 @@ export const portfolioCopy = {
     subtitle: { en: "What I've been working on", fr: "Ce sur quoi je travaille" } satisfies ByLocale,
     github: { en: "GitHub", fr: "GitHub" } satisfies ByLocale,
     live: { en: "Live", fr: "Voir" } satisfies ByLocale,
+    allCta: { en: "all projects →", fr: "tous les projets →" } satisfies ByLocale,
+    allTitle: { en: "All Projects", fr: "Tous les projets" } satisfies ByLocale,
+    allSubtitle: { en: "Everything I've built, ranked", fr: "Tout ce que j'ai construit, classé" } satisfies ByLocale,
+    backToAll: { en: "← all projects", fr: "← tous les projets" } satisfies ByLocale,
   },
   contact: {
     title: { en: "Contact", fr: "Contact" } satisfies ByLocale,

@@ -6,6 +6,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import Index from "@/pages/Index";
 import ProjectPage from "@/pages/ProjectPage";
+import ProjectsPage from "@/pages/ProjectsPage";
 import HomePage from "@/pages/HomePage";
 import CaseStudyPage from "@/pages/CaseStudyPage";
 import BlogPage from "@/pages/BlogPage";
@@ -36,6 +37,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
+      <Route path="/projects" element={<ProjectsPage />} />
       <Route path="/projects/:projectId" element={<ProjectPage />} />
       <Route path="/studio" element={<StudioLayout />}>
         <Route index element={<HomePage />} />

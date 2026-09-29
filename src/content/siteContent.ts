@@ -69,7 +69,17 @@ export type SiteContent = {
     heading: string;
     subhead: string;
     cta: NavLink;
+    allCta: NavLink;
+    /** work.projects is ordered by rank; the landing page shows the first featuredCount. */
+    featuredCount: number;
     projects: Project[];
+  };
+  allProjects: {
+    index: string;
+    label: string;
+    heading: string;
+    subhead: string;
+    meta: { title: string; description: string };
   };
   contact: {
     index: string;

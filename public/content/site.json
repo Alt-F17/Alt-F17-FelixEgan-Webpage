@@ -1,6 +1,6 @@
 {
   "$schema": "./site.schema.md",
-  "_readme": "SINGLE SOURCE OF TRUTH for felixegan.me. All page copy, project data, socials, and the hidden terminal easter-egg live here. Edit this file to change site content — no code changes needed. The React app fetches this at runtime from /content/site.json. AI agents: read THIS file to understand the site instead of parsing the DOM.",
+  "_readme": "SINGLE SOURCE OF TRUTH for felixegan.me. All page copy, project data, socials, and the hidden terminal easter-egg live here. Edit this file to change site content — no code changes needed. The React app fetches this at runtime from /content/site.json. work.projects is ordered by rank: the homepage shows the first work.featuredCount, /projects shows all of them, and every slug needs a projectDetails entry for its /projects/:slug page. AI agents: read THIS file to understand the site instead of parsing the DOM.",
   "meta": {
     "title": "Felix Egan | Developer & Designer — Montréal",
     "description": "Felix Egan — designer & developer building fast, bilingual websites for local Montréal businesses, made with React & Next.js. Off the clock: AI, cybersecurity, and open-source.",
@@ -90,6 +90,8 @@
     "heading": "Selected Projects",
     "subhead": "What I've been building",
     "cta": { "label": "$ git clone --all   →   See more on GitHub", "href": "https://github.com/Alt-F17" },
+    "allCta": { "label": "all projects →", "href": "/projects" },
+    "featuredCount": 6,
     "projects": [
       {
         "slug": "nputella",
@@ -104,6 +106,31 @@
           { "label": "GitHub", "url": "https://github.com/Alt-F17/NPUtella", "icon": "⌥" },
           { "label": "nputella.app", "url": "https://nputella.app", "icon": "↗" }
         ]
+      },
+      {
+        "slug": "paste-relay",
+        "title": "Paste Relay",
+        "category": "Security · Infra",
+        "year": "2026",
+        "glyph": "PST",
+        "status": "● live",
+        "overview": "Self-hosted encrypted clipboard between my devices. Text or files up to 5 GB, AES-256-GCM per item, gone after 5 minutes.",
+        "tech": ["Node.js", "AES-256-GCM", "Docker", "ClamAV", "Cloudflare Tunnel"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage/tree/main/paste-relay", "icon": "⌥" },
+          { "label": "felixegan.me/paste", "url": "https://felixegan.me/paste", "icon": "↗" }
+        ]
+      },
+      {
+        "slug": "theta-health-check",
+        "title": "Theta Health Check",
+        "category": "AI · Ops",
+        "year": "2026",
+        "glyph": "HC",
+        "status": "● running",
+        "overview": "Daily private server audit sent to Discord. An AI agent can only apply a suggested fix after two separate human approvals and a scope check.",
+        "tech": ["Python", "SQLite", "systemd", "Discord"],
+        "links": []
       },
       {
         "slug": "cloudsource",
@@ -134,6 +161,126 @@
         ]
       },
       {
+        "slug": "portfolio",
+        "title": "felixegan.me",
+        "category": "Web · Business",
+        "year": "2026",
+        "glyph": "F17",
+        "status": "● you're here",
+        "overview": "You're already here. Bilingual portfolio and web-studio site with a real-time 3D starfield, validated lead intake into a self-hosted CRM, and a few tools living on it.",
+        "tech": ["React + Vite", "Three.js", "Tailwind", "Supabase", "Vercel"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage", "icon": "⌥" },
+          { "label": "Studio", "url": "https://felixegan.me/studio", "icon": "↗" }
+        ]
+      },
+      {
+        "slug": "pluto-phone",
+        "title": "Pluto Phone Gateway",
+        "category": "AI · Voice",
+        "year": "2026",
+        "glyph": "TEL",
+        "status": "○ paused",
+        "overview": "Call a phone number and talk to my AI assistant in real time. Caller allowlist and PIN gate, then a voicemail summary sent by MMS.",
+        "tech": ["Node.js", "Twilio Media Streams", "WebSockets", "OpenAI Realtime"],
+        "links": []
+      },
+      {
+        "slug": "hermes-agent",
+        "title": "Hermes Agent + Upstream Fixes",
+        "category": "AI · Open Source",
+        "year": "2026",
+        "glyph": "HRM",
+        "status": "● running",
+        "overview": "Self-hosted deployment of the open-source Hermes Agent as my assistant, plus 7 reliability patches to the project itself.",
+        "tech": ["Python", "Caddy", "systemd", "MCP", "Discord"],
+        "links": [
+          { "label": "Upstream", "url": "https://github.com/NousResearch/hermes-agent", "icon": "⌥" }
+        ]
+      },
+      {
+        "slug": "ops-mcp",
+        "title": "Field Ops MCP Server",
+        "category": "AI · MCP",
+        "year": "2026",
+        "glyph": "MCP",
+        "status": "● running",
+        "overview": "OAuth-secured MCP server with 40+ tools that lets Claude work with a field-services company's operations platform and sales-call CRM.",
+        "tech": ["TypeScript", "MCP SDK", "GraphQL", "OAuth 2.1"],
+        "links": []
+      },
+      {
+        "slug": "lead-intake-crm",
+        "title": "Lead Intake → Self-hosted CRM",
+        "category": "Web · Backend",
+        "year": "2026",
+        "glyph": "CRM",
+        "status": "● running",
+        "overview": "Website form to Vercel to Cloudflare Tunnel to a locked-down proxy to a self-hosted Twenty CRM. Every lead becomes a company, person, opportunity and note.",
+        "tech": ["TypeScript", "Zod", "Python", "Docker", "Postgres"],
+        "links": [
+          { "label": "Handler", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage/blob/main/api/discovery-call.ts", "icon": "⌥" }
+        ]
+      },
+      {
+        "slug": "sf-study-tools",
+        "title": "SF Study Tools",
+        "category": "Web · EdTech",
+        "year": "2024",
+        "glyph": "SF",
+        "status": "● live",
+        "overview": "Interactive study site for Dawson College's SF programming courses. Flashcards, drills, a code animator, and an in-browser Python terminal.",
+        "tech": ["React", "TypeScript", "Vite", "Tailwind"],
+        "links": [
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/sf-study-tools", "icon": "⌥" },
+          { "label": "Live", "url": "https://felixegan.me/sf-study-tools/", "icon": "↗" }
+        ]
+      },
+      {
+        "slug": "agentrun",
+        "title": "agentrun",
+        "category": "AI · Tooling",
+        "year": "2026",
+        "glyph": "RUN",
+        "status": "● installed",
+        "overview": "Runs a coding task through a chain of real agent CLIs (Codex, Claude Code, Antigravity, local Ollama), falling through when one is out of budget or fails.",
+        "tech": ["Python", "Bash", "Ollama"],
+        "links": []
+      },
+      {
+        "slug": "claude-rc",
+        "title": "claude-rc",
+        "category": "DevOps · AI",
+        "year": "2026",
+        "glyph": "RC",
+        "status": "● running",
+        "overview": "Keeps Claude Code Remote Control available on my server 24/7, with staged auto-updates, rollback, and a watchdog that DMs me on failure.",
+        "tech": ["Bash", "Python", "systemd"],
+        "links": []
+      },
+      {
+        "slug": "instagram-analysis",
+        "title": "Instagram Export Analysis",
+        "category": "ML · Data",
+        "year": "2026",
+        "glyph": "IG",
+        "status": "✓ complete",
+        "overview": "Fully local ML pipeline over a 6-year personal data export: parsing, transcription, image captioning and tagging, and a social graph. No cloud APIs.",
+        "tech": ["Python", "BLIP", "CLIP", "Whisper", "Graphs"],
+        "links": []
+      },
+      {
+        "slug": "theta",
+        "title": "Theta Home Server",
+        "category": "Infra · Self-hosted",
+        "year": "2026",
+        "glyph": "SRV",
+        "status": "● running",
+        "overview": "One low-spec Ubuntu box hosting production services for a business and a personal AI stack, with no open inbound ports.",
+        "tech": ["Docker", "Cloudflare Tunnel", "Tailscale", "Caddy", "Bash"],
+        "links": []
+      },
+      {
         "slug": "pluto",
         "title": "PLUTO",
         "category": "AI · Assistant",
@@ -148,33 +295,76 @@
         ]
       },
       {
-        "slug": "sf-study-tools",
-        "title": "SF Study Tools",
-        "category": "Web · EdTech",
-        "year": "2024",
-        "glyph": "SF",
-        "status": "● live",
-        "overview": "A fast, content-heavy study platform with quiz logic, progress tracking, and server-side rendering for repeat users.",
-        "tech": ["React", "Next.js", "Node + Express"],
+        "slug": "instagram-vault",
+        "title": "Pluto Instagram Vault",
+        "category": "AI · Automation",
+        "year": "2026",
+        "glyph": "VLT",
+        "status": "● running",
+        "overview": "Share a post or reel to a specific Instagram DM and it becomes a linked note in an Obsidian vault my assistant can search.",
+        "tech": ["Python", "FastAPI", "Meta Graph API", "Obsidian"],
+        "links": []
+      },
+      {
+        "slug": "secondbrain",
+        "title": "SecondBrain",
+        "category": "AI · Memory",
+        "year": "2026",
+        "glyph": "2B",
+        "status": "● open source",
+        "overview": "Personal memory system: voice memos transcribed with Whisper, stored as embeddings, and recalled by meaning instead of keywords.",
+        "tech": ["Node.js", "OpenAI Whisper", "Embeddings", "Pinecone"],
         "links": [
-          { "label": "GitHub", "url": "https://github.com/Alt-F17/sf-study-tools", "icon": "⌥" },
-          { "label": "Live", "url": "https://sf-study-tools.com", "icon": "↗" }
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/SecondBrain", "icon": "⌥" }
         ]
       },
       {
-        "slug": "portfolio",
-        "title": "Portfolio",
-        "category": "Web · Design",
-        "year": "2025",
-        "glyph": "F17",
-        "status": "● you're here",
-        "overview": "You're already here! A bilingual FR/EN portfolio with a real-time 3D starfield, hand-built for speed and detail.",
-        "tech": ["React + Vite", "Three.js", "Tailwind", "i18n"],
+        "slug": "onewheel-battery",
+        "title": "Onewheel Battery Curve Fit",
+        "category": "Math · Research",
+        "year": "2026",
+        "glyph": "V%",
+        "status": "✓ research",
+        "overview": "Finds the best polynomial for an electric skateboard's voltage-to-charge curve, using exact minimax linear programming and a CPU-adaptive search.",
+        "tech": ["Python", "NumPy", "SciPy"],
+        "links": []
+      },
+      {
+        "slug": "lead-autofill",
+        "title": "Lead Autofill Extension",
+        "category": "Tooling · Extension",
+        "year": "2026",
+        "glyph": "EXT",
+        "status": "✓ v6.2",
+        "overview": "Chrome extension that pulls lead details out of one web app and fills another app's lead form in one click. The manual predecessor of my ops MCP server.",
+        "tech": ["JavaScript", "Chrome MV3"],
+        "links": []
+      },
+      {
+        "slug": "japanese-verb-flashcards",
+        "title": "Japanese Flashcards",
+        "category": "Web · Learning",
+        "year": "2026",
+        "glyph": "JP",
+        "status": "● live",
+        "overview": "Phone-first flashcards for 400 common N5/N4 Japanese verbs and nouns, with themed decks, progress and an optional per-card timer.",
+        "tech": ["HTML", "CSS", "JavaScript"],
         "links": [
-          { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage", "icon": "⌥" }
+          { "label": "GitHub", "url": "https://github.com/Alt-F17/japanese-verb-flashcards", "icon": "⌥" },
+          { "label": "Live", "url": "https://alt-f17.github.io/japanese-verb-flashcards/", "icon": "↗" }
         ]
       }
     ]
+  },
+  "allProjects": {
+    "index": "00",
+    "label": "// ALL PROJECTS",
+    "heading": "All Projects",
+    "subhead": "Everything I've built, ranked",
+    "meta": {
+      "title": "All Projects | Felix Egan",
+      "description": "Every project Felix Egan has built, ranked: self-hosted security tools, AI agents and MCP servers, native apps, ML pipelines and websites."
+    }
   },
   "contact": {
     "index": "04",
@@ -334,6 +524,50 @@
         { "label": "nputella.app", "url": "https://nputella.app", "type": "live" }
       ]
     },
+    "paste-relay": {
+      "title": "Paste Relay",
+      "category": "Security · Infra",
+      "year": "2026",
+      "status": "● live",
+      "overview": "Paste text or drop a file (up to 5 GB) on one device and pick it up on another within 5 minutes, then it's gone for good. The frontend lives at felixegan.me/paste; the backend runs on my home server behind a Cloudflare Tunnel with no open inbound ports. Accounts only exist through admin-issued invites, login is a drawn pattern grid, and every item is encrypted with a key derived from its own 4-digit PIN, which the server never stores.",
+      "techStack": [
+        { "name": "Node.js + Express", "reason": "Streaming API for chunked uploads, range downloads and rate-limited auth routes" },
+        { "name": "scrypt + AES-256-GCM", "reason": "Per-item key from PIN + salt + server pepper; content is never on disk in plaintext" },
+        { "name": "ClamAV", "reason": "Self-hosted malware scan on every upload before it can be downloaded" },
+        { "name": "Docker Compose", "reason": "Relay, scanner, admin dashboard and a least-privilege Docker socket proxy on separate networks" },
+        { "name": "Cloudflare Tunnel + Turnstile", "reason": "Public exposure without open ports, plus bot protection on login" }
+      ],
+      "challenges": [
+        "Streaming 5 GB through GCM: uploads are 16 MB chunks sent 8 at a time and written out of order at their byte offset, with a range tracker that refuses to finalize a file until every byte has arrived.",
+        "GCM only checks its auth tag at the end of a streaming decrypt, so wrong-PIN detection for files moved into the download route, including treating an aborted download as a failed attempt.",
+        "Making the PIN both the item's address and its key meant moving brute-force protection to per-account and per-IP counters, and returning 'not found' and 'wrong PIN' identically.",
+        "Network-segmented the internet-facing container away from the admin dashboard, which reads container uptime through a restricted socket proxy on its own network."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage/tree/main/paste-relay", "type": "github" },
+        { "label": "felixegan.me/paste", "url": "https://felixegan.me/paste", "type": "live" }
+      ]
+    },
+    "theta-health-check": {
+      "title": "Theta Health Check + AI Approval Gate",
+      "category": "AI · Ops",
+      "year": "2026",
+      "status": "● running",
+      "overview": "Once a day my home server audits itself (services, containers, network peers, disk) and DMs me the findings on Discord. If it suggests a fix, an AI agent can only act on it after two separate human approvals: one for the idea, one for the concrete plan. Even then, the agent only runs if the plan matches an explicitly enabled scope. Everything fails closed.",
+      "techStack": [
+        { "name": "Python (stdlib only)", "reason": "No dependencies to break on a small always-on box: sqlite3, fcntl, hmac, concurrent.futures" },
+        { "name": "SQLite ledger", "reason": "Durable de-duplication so a suggestion fires once and only returns if the issue clears and comes back" },
+        { "name": "systemd template units", "reason": "One bounded approval listener and one implementation run per audit, each with its own lifetime" },
+        { "name": "Discord components", "reason": "Approve / deny buttons where I already get notifications" }
+      ],
+      "challenges": [
+        "Built the approval workflow as a pure, network-free state machine so every transition (pending, queued, running, denied, timed out) is unit-tested.",
+        "Handled the 'the message may have been sent' case explicitly so a retry never double-sends an approval request.",
+        "Kept only redacted, typed snapshots of probe output, with identifiers HMAC-aliased, so the audit history is safe to hand to an agent.",
+        "Capped agent runs by turns and wall time and archived a recap of every run, so an approved fix is still bounded and reviewable."
+      ],
+      "links": []
+    },
     "cloudsource": {
       "title": "CloudSource",
       "category": "Web · AI",
@@ -380,6 +614,212 @@
         { "label": "ONNX Breakdown", "url": "https://felixegan.me/netronizer.html", "type": "live" }
       ]
     },
+    "portfolio": {
+      "title": "felixegan.me",
+      "category": "Web · Business",
+      "year": "2026",
+      "status": "● you're here",
+      "overview": "This website: a personal portfolio and the business site for Felix Egan Studio, a bilingual web studio for small businesses in Montréal. The portfolio side runs a real-time Three.js starfield that reacts to scroll and mouse, a hidden terminal easter egg, and content driven from one JSON file. The studio side has case studies, a blog, testimonials, and two lead paths: a discovery-call form that lands in a self-hosted CRM and a quote form backed by Supabase.",
+      "techStack": [
+        { "name": "React + Vite + TypeScript", "reason": "Fast builds and a lean bundle for a content-heavy SPA" },
+        { "name": "Three.js / react-three-fiber", "reason": "Real-time starfield that responds to scroll and mouse movement" },
+        { "name": "Custom i18n provider", "reason": "Full EN/FR on the studio side with a language toggle everywhere" },
+        { "name": "Vercel functions + Zod", "reason": "Strictly validated discovery-call intake with honeypot and UTM capture" },
+        { "name": "Supabase edge functions", "reason": "Quote and testimonial leads into Postgres with email alerts" },
+        { "name": "JSON content layer", "reason": "All portfolio copy and project data in one file: easy edits, cheap for AI agents to read" }
+      ],
+      "challenges": [
+        "Keeping the starfield and scroll animations smooth on mobile without draining battery.",
+        "Running a personal portfolio and a client-facing business site from one codebase without either feeling bolted on.",
+        "Sending form leads into a CRM on my home server without ever exposing its API key to the browser.",
+        "Per-route SEO, a sitemap and machine-readable site maps for a client-rendered React app."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage", "type": "github" },
+        { "label": "Studio", "url": "https://felixegan.me/studio", "type": "live" }
+      ]
+    },
+    "pluto-phone": {
+      "title": "Pluto Phone Gateway",
+      "category": "AI · Voice",
+      "year": "2026",
+      "status": "○ paused",
+      "overview": "A phone line for my assistant, Pluto. You call a Twilio number, pass an allowlist and a DTMF PIN, and then talk to Pluto live. It takes a voicemail-style message, records it, summarizes it and sends the summary to me by MMS, with SMS as a fallback. Built and tested; the service is currently paused.",
+      "techStack": [
+        { "name": "Twilio Voice + Media Streams", "reason": "Two-way call audio over a WebSocket via TwiML <Connect><Stream>" },
+        { "name": "OpenAI Realtime API", "reason": "Low-latency speech-to-speech conversation bridged onto the call" },
+        { "name": "Express 5 + ws", "reason": "Webhooks and the audio bridge in one small service" },
+        { "name": "Node test runner", "reason": "Tests for the PIN gate, the part that must never fail open" }
+      ],
+      "challenges": [
+        "Fails closed: no allowlist or PIN configured means nobody gets through, not everybody.",
+        "Validates Twilio signatures on both webhooks and on the WebSocket handshake.",
+        "Recording links are HMAC-signed, expire after 5 minutes, and recordings are deleted after delivery.",
+        "Bridging telephony audio frames and a realtime model session without audible lag."
+      ],
+      "links": []
+    },
+    "hermes-agent": {
+      "title": "Hermes Agent Deployment + Upstream Fixes",
+      "category": "AI · Open Source",
+      "year": "2026",
+      "status": "● running",
+      "overview": "I run the open-source Hermes Agent as my personal assistant, Pluto: a Discord gateway, a web dashboard behind Caddy, MCP servers, and scheduled jobs like a daily email-drafting run. It's also the notification backbone for my server tooling. Running it daily surfaced real bugs, so I wrote 7 resilience patches (+1,171 lines across 15 files) against the upstream project.",
+      "techStack": [
+        { "name": "Python", "reason": "The agent framework and all patches" },
+        { "name": "Caddy", "reason": "Reverse proxy for the dashboard, normalizing the Host header" },
+        { "name": "systemd", "reason": "Gateway, dashboard and proxy as supervised services" },
+        { "name": "MCP", "reason": "Plugs external tools into the agent" }
+      ],
+      "challenges": [
+        "Retry logic no longer replays a request the stale-request watchdog already killed.",
+        "The stale-timeout ladder keeps scaling past 100k-token contexts instead of flattening.",
+        "The doctor command never reports an audit that couldn't run as one that passed.",
+        "'Too many pending requests' is classified as a rate limit, and a terminal failed or cancelled model response is treated as invalid instead of success."
+      ],
+      "links": [
+        { "label": "Upstream project", "url": "https://github.com/NousResearch/hermes-agent", "type": "github" }
+      ]
+    },
+    "ops-mcp": {
+      "title": "Field Ops MCP Server",
+      "category": "AI · MCP",
+      "year": "2026",
+      "status": "● running",
+      "overview": "A remote Model Context Protocol server that connects Claude to a field-services company's job, lead and estimate platform and its sales-call CRM. It exposes 40+ tools: lookups, schema introspection, a prioritized 7-day production brief, crew workload and overload flags, geographic job clustering with route-risk flags, sales-call QA, and sales-to-ops handoffs. Used daily as a claude.ai connector.",
+      "techStack": [
+        { "name": "TypeScript + MCP SDK", "reason": "Typed tool definitions over both stdio and Streamable HTTP" },
+        { "name": "Express 5", "reason": "HTTP transport plus a built-in OAuth 2.1 authorization server" },
+        { "name": "GraphQL", "reason": "The platform's API, across 5 backend services" },
+        { "name": "Geocoding + cache", "reason": "Location clustering with a 180-day geocode cache" }
+      ],
+      "challenges": [
+        "Every write (create a lead, book an estimate, change settings) needs a dry-run preflight and an approval token first.",
+        "Token-budget aware by default: list tools scan several pages but cap backend pages and returned rows, and raw nested data is opt-in.",
+        "Implemented the full OAuth flow (metadata, dynamic client registration, authorize, token, refresh, revoke) so it connects through the standard browser flow.",
+        "One JSON envelope and named error codes across all tools, so the model can recover from auth expiry or missing approvals on its own."
+      ],
+      "links": []
+    },
+    "lead-intake-crm": {
+      "title": "Lead Intake → Self-hosted CRM",
+      "category": "Web · Backend",
+      "year": "2026",
+      "status": "● running",
+      "overview": "The production lead pipeline for my studio. The discovery-call form on /studio posts to a Vercel function that validates it, then goes through a Cloudflare Tunnel to a restricted proxy on my home server, which writes into a self-hosted Twenty CRM. The handler finds or creates the company and person, opens an opportunity, and attaches the call details as a note.",
+      "techStack": [
+        { "name": "Vercel function + Zod", "reason": "Strict schema with budget/timeline enums, UTM capture and a honeypot" },
+        { "name": "Python (stdlib http.server)", "reason": "Zero-dependency intake proxy that only allows specific methods on specific collections" },
+        { "name": "Twenty CRM", "reason": "Self-hosted CRM (server, worker, Postgres 16, Redis) in Docker Compose" },
+        { "name": "Cloudflare Tunnel", "reason": "Reaches the home server without opening inbound ports" }
+      ],
+      "challenges": [
+        "The CRM API key never reaches the browser; the proxy authenticates callers with a constant-time token compare.",
+        "Allow-list proxy: 5 collections, fixed methods, 20 KB body cap.",
+        "Tuned upstream timeouts after real CRM writes turned out slower than a serverless default allows.",
+        "Log rotation, backups and a keep-alive runbook so it survives being run by one person."
+      ],
+      "links": [
+        { "label": "Intake handler", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage/blob/main/api/discovery-call.ts", "type": "github" }
+      ]
+    },
+    "sf-study-tools": {
+      "title": "SF Study Tools",
+      "category": "Web · EdTech",
+      "year": "2024",
+      "status": "● live",
+      "overview": "A study site for Dawson College's SF1 to SF3 programming courses, shared with classmates for finals. It has word jumbles, flashcards, ConcepTests, 'Stack or Queue?', Pandas/Matplotlib drills, Spot-the-Bug, 'Final Boss' problems, an OOP inheritance diagram, a step-by-step code animator, a Big-O calculator, an in-browser Python terminal with file I/O, and a concept map. Progress is saved locally.",
+      "techStack": [
+        { "name": "React + TypeScript", "reason": "~78 components with typed quiz and exercise logic" },
+        { "name": "Vite", "reason": "Built as a sub-app and bundled into this site's deploy" },
+        { "name": "Tailwind CSS", "reason": "Consistent styling across very different exercise types" },
+        { "name": "In-browser Python", "reason": "Run and debug code without installing anything" }
+      ],
+      "challenges": [
+        "Designing exercises that explain why an answer is wrong, not just that it is.",
+        "Fitting a dozen content types (flashcards, drills, animators, a terminal) into one coherent flow.",
+        "Saving progress locally so students don't lose their place when they close the tab."
+      ],
+      "links": [
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/sf-study-tools", "type": "github" },
+        { "label": "Live", "url": "https://felixegan.me/sf-study-tools/", "type": "live" }
+      ]
+    },
+    "agentrun": {
+      "title": "agentrun: 4-Layer Coding-Agent Fallback",
+      "category": "AI · Tooling",
+      "year": "2026",
+      "status": "● installed",
+      "overview": "An orchestrator that runs a coding task through a priority chain of separate agent CLIs, each on its own login and billing: Codex CLI, then Claude Code (subscription only, gated below a usage cap so it never spends API credits), then Google's Antigravity CLI on the free tier, then Codex on a local Ollama model as the offline last resort.",
+      "techStack": [
+        { "name": "Python", "reason": "Ordering, usage gating, timeouts and fall-through decisions" },
+        { "name": "Bash", "reason": "Thin CLI wrapper installed on the path" },
+        { "name": "Ollama", "reason": "Local models for the offline layer" }
+      ],
+      "challenges": [
+        "The orchestrator only decides order and when to fall through; each layer stays a real, unmodified CLI.",
+        "`agentrun local-verify` pulls a model, loads it and runs a memory-guarded smoke test before enabling it, so a slow local model can't take down the shared server.",
+        "Documented which small local models failed on 3.7 GB of RAM so the next attempt starts from real data."
+      ],
+      "links": []
+    },
+    "claude-rc": {
+      "title": "claude-rc",
+      "category": "DevOps · AI",
+      "year": "2026",
+      "status": "● running",
+      "overview": "Keeps my home server reachable from the Claude app's Code tab around the clock. A launcher with preflight checks and crash-loop backoff, an updater that stages, smoke-tests and rolls back, and a watchdog that runs a self-test every 15 minutes and messages me on Discord when something is wrong.",
+      "techStack": [
+        { "name": "Bash", "reason": "Launcher, updater and watchdog scripts" },
+        { "name": "Python", "reason": "Safe config edits while holding the app's own lock" },
+        { "name": "systemd timers", "reason": "Supervision, scheduled updates and the watchdog" }
+      ],
+      "challenges": [
+        "Update pipeline: stage, smoke test, wait for 60 idle minutes, switch, verify, roll back if needed, prune. Forward-only, with a denylist of bad versions.",
+        "Versioned installs behind a symlink so a rollback is one atomic switch.",
+        "A session can't restart its own service without killing itself, so restarts are handed off through a detached systemd-run.",
+        "The watchdog alerts on sustained failure, crash loops, rollbacks, and a login expiring within 3 days."
+      ],
+      "links": []
+    },
+    "instagram-analysis": {
+      "title": "Instagram Export Analysis",
+      "category": "ML · Data",
+      "year": "2026",
+      "status": "✓ complete",
+      "overview": "A pipeline that processes a full Instagram data export (200k+ records across six years) entirely on my own machine. It parses Meta's HTML export into one structured dataset, transcribes audio and video, captions and tags images, builds per-thread statistics and a writing-style profile, and turns it all into a social knowledge graph with detected communities and an interactive view. Only the methods are shown here; the data is private.",
+      "techStack": [
+        { "name": "BLIP", "reason": "Local image captioning" },
+        { "name": "CLIP", "reason": "Zero-shot image tagging without training a classifier" },
+        { "name": "Local transcription", "reason": "Speech-to-text for thousands of clips without sending audio anywhere" },
+        { "name": "Graph clustering", "reason": "Community detection over the social graph, exported as GraphML/JSON" }
+      ],
+      "challenges": [
+        "A deterministic parser for Meta's HTML export, which isn't designed to be machine-read.",
+        "Resumable, checkpointed stages with progress and ETA watchers so the job could run unattended on a 3.7 GB RAM box.",
+        "A writing-style profile (message length, bursts, openers, verbal tics) meant to ground an assistant that writes like me."
+      ],
+      "links": []
+    },
+    "theta": {
+      "title": "Theta Home Server Platform",
+      "category": "Infra · Self-hosted",
+      "year": "2026",
+      "status": "● running",
+      "overview": "The infrastructure under most of these projects: a single Ubuntu server with 3.7 GB of RAM that reliably hosts production services for my studio and my personal AI stack. Public services go out through Cloudflare Tunnels and private ones through Tailscale, so nothing listens on an open port.",
+      "techStack": [
+        { "name": "Cloudflare Tunnel", "reason": "Public hostnames with no inbound ports, on a shared Docker network with service aliases" },
+        { "name": "Tailscale", "reason": "Private access, MagicDNS, and Funnel for the one endpoint that needs it" },
+        { "name": "Caddy", "reason": "Reverse proxy and routing for the agent and phone services" },
+        { "name": "Self-hosted SaaS", "reason": "Twenty CRM, DocuSeal for client contracts, ntfy for push notifications (deny-all by default)" }
+      ],
+      "challenges": [
+        "A boot-readiness unit checks Docker, SSH, Tailscale, the tunnel and key services once per boot, then notifies me using systemd credentials instead of secrets in environment variables.",
+        "Fitting a CRM, an AI agent, a file relay and a malware scanner onto 3.7 GB of RAM.",
+        "Ops discipline for a one-person setup: runbooks, log-rotation overrides, and a checksummed archive before any cleanup."
+      ],
+      "links": []
+    },
     "pluto": {
       "title": "PLUTO AI Assistant",
       "category": "AI · Assistant",
@@ -401,46 +841,95 @@
         { "label": "Report", "url": "https://felixegan.me/pluto-report.html", "type": "live" }
       ]
     },
-    "sf-study-tools": {
-      "title": "SF Study Tools",
-      "category": "Web · EdTech",
-      "year": "2024",
-      "status": "● live",
-      "overview": "A study platform for science, computer science, and mathematics students. Features interactive quizzes with instant feedback, flashcard decks, a searchable code snippet library, debugging challenges, data structure exercises, and algorithm complexity analysis — all designed to make studying active instead of passive.",
+    "instagram-vault": {
+      "title": "Pluto Instagram Vault",
+      "category": "AI · Automation",
+      "year": "2026",
+      "status": "● running",
+      "overview": "When I share a post or reel to a specific Instagram DM, a webhook turns it into a Markdown note in an Obsidian vault, with YAML frontmatter and wikilinks to topic and account hub notes. My assistant can then search it later for travel, food, home or software ideas. The vault is plain files, so the agent needs no Obsidian plugin.",
       "techStack": [
-        { "name": "React + TypeScript", "reason": "Component-based UI with type safety for complex quiz logic" },
-        { "name": "Next.js", "reason": "Server-side rendering for fast initial loads and SEO on study content" },
-        { "name": "Node.js + Express", "reason": "Backend for quiz state, progress tracking, and content delivery" }
+        { "name": "FastAPI + Uvicorn", "reason": "OAuth callback and webhook receiver in one small service" },
+        { "name": "Meta Instagram Graph API", "reason": "Reads shared DMs after an OAuth grant" },
+        { "name": "Obsidian (plain Markdown)", "reason": "Notes the agent can read and grep directly" }
       ],
       "challenges": [
-        "Designing interactive exercises that give meaningful instant feedback — not just right/wrong, but explanations of why.",
-        "Organizing diverse content types (flashcards, code snippets, quizzes, debugging challenges) into a cohesive learning flow.",
-        "Building session persistence so students don't lose progress when they close the browser."
+        "OAuth with a CSRF state value and webhook signature verification against the app secret.",
+        "Filters to a single allowed sender and DM thread, so nothing else is ever filed.",
+        "Append-only JSONL event log for replay and debugging."
+      ],
+      "links": []
+    },
+    "secondbrain": {
+      "title": "SecondBrain",
+      "category": "AI · Memory",
+      "year": "2026",
+      "status": "● open source",
+      "overview": "A personal memory system for everything from grocery lists to half-formed ideas. Record a voice memo or type a note, and it gets transcribed, embedded and stored. Search works by meaning: looking for 'burgundy sneakers' finds a note about 'red shoes'. Includes memory stats and trends in a space-themed, mobile-friendly UI.",
+      "techStack": [
+        { "name": "Express API", "reason": "Backend for saving, embedding and searching memories" },
+        { "name": "OpenAI Whisper", "reason": "Speech-to-text for voice memos" },
+        { "name": "OpenAI embeddings", "reason": "1536-dimension vectors for semantic search" },
+        { "name": "Pinecone or local JSON", "reason": "Vector search in the cloud, with a local fallback that works without it" }
+      ],
+      "challenges": [
+        "Dual storage so the app still works with no vector database configured.",
+        "Ranking by cosine similarity instead of keyword match, and making that feel predictable.",
+        "Typed memories (notes, people, tasks, ideas, products) with tags, without making capture slow."
       ],
       "links": [
-        { "label": "GitHub", "url": "https://github.com/Alt-F17/sf-study-tools", "type": "github" },
-        { "label": "Live", "url": "https://sf-study-tools.com", "type": "live" }
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/SecondBrain", "type": "github" }
       ]
     },
-    "portfolio": {
-      "title": "Portfolio Website",
-      "category": "Web · Design",
-      "year": "2025",
-      "status": "● you're here",
-      "overview": "This website — a space-themed developer portfolio built with React, Vite, and Three.js. Features a real-time 3D starfield background, tilt-on-hover project cards, a hidden hacker terminal easter egg, and smooth scroll-triggered animations throughout. All content is driven from a single JSON source of truth.",
+    "onewheel-battery": {
+      "title": "Onewheel Battery Curve Fit",
+      "category": "Math · Research",
+      "year": "2026",
+      "status": "✓ research",
+      "overview": "Fits the pack-voltage to state-of-charge curve for an electric skateboard. For each polynomial degree it finds the true minimax error with linear programming (the exact global optimum, not hill-climbing), then finds the fewest significant figures the coefficients can be hardcoded at without meaningfully increasing that error.",
       "techStack": [
-        { "name": "React + Vite", "reason": "Fast builds, instant HMR, and a lean production bundle" },
-        { "name": "Three.js / Canvas", "reason": "Real-time starfield that responds to scroll and mouse movement" },
-        { "name": "Tailwind CSS", "reason": "Utility-first styling with consistent spacing and responsive breakpoints" },
-        { "name": "JSON content layer", "reason": "All copy and data fetched from one file — easy edits, cheap for AI agents to read" }
+        { "name": "SciPy linprog", "reason": "Exact minimax (Chebyshev) fit as a linear program" },
+        { "name": "NumPy", "reason": "Vectorized evaluation across degrees and precisions" },
+        { "name": "psutil + ntfy", "reason": "Search that only uses idle CPU and pushes progress to my phone" }
       ],
       "challenges": [
-        "Performance-tuning the starfield and corruption animations to stay smooth on mobile without draining battery.",
-        "Driving every piece of copy from a single fetched JSON document so content changes never require a code edit.",
-        "Keeping the space theme visually cohesive across all sections without sacrificing readability or accessibility."
+        "Sweeping degree against printed precision to find the smallest formula that is still accurate.",
+        "A resumable, checkpointed random search that backs off when the machine is busy."
+      ],
+      "links": []
+    },
+    "lead-autofill": {
+      "title": "Lead Autofill Extension",
+      "category": "Tooling · Extension",
+      "year": "2026",
+      "status": "✓ v6.2",
+      "overview": "A Manifest V3 Chrome extension that extracts lead details from a sales tool's page and autofills the lead form in a field-services operations platform from a popup, in one click. It was the manual first step before I moved the same workflows into an MCP server.",
+      "techStack": [
+        { "name": "Chrome Manifest V3", "reason": "Content scripts on both apps plus a popup to trigger the fill" },
+        { "name": "JavaScript", "reason": "DOM extraction and form filling without a build step" }
+      ],
+      "challenges": [
+        "Extracting structured data from pages that were never meant to be scraped, and keeping up as those pages changed.",
+        "Filling forms in a way the target app's own validation accepts."
+      ],
+      "links": []
+    },
+    "japanese-verb-flashcards": {
+      "title": "Japanese Flashcards",
+      "category": "Web · Learning",
+      "year": "2026",
+      "status": "● live",
+      "overview": "Phone-first flashcards for 200 common Japanese verbs and 200 nouns (N5/N4), built for a friend learning the language. Verb cards show the dictionary form with reading and the polite form; tap to flip to the English. Correct answers leave the round, wrong ones come back later in the deck.",
+      "techStack": [
+        { "name": "Plain HTML/CSS/JS", "reason": "No build step; opens instantly on a phone" },
+        { "name": "GitHub Pages", "reason": "Free static hosting" }
+      ],
+      "challenges": [
+        "Eight themed 50-card decks plus all-verbs, all-nouns and all-400 modes.",
+        "An optional per-card stopwatch that pauses on flip and reports total and average time per card."
       ],
       "links": [
-        { "label": "GitHub", "url": "https://github.com/Alt-F17/Alt-F17-FelixEgan-Webpage", "type": "github" }
+        { "label": "GitHub", "url": "https://github.com/Alt-F17/japanese-verb-flashcards", "type": "github" },
+        { "label": "Live", "url": "https://alt-f17.github.io/japanese-verb-flashcards/", "type": "live" }
       ]
     }
   },
