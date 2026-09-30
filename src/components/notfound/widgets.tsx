@@ -85,8 +85,8 @@ export function CipherWheel({ size = 236 }: { size?: number }) {
   );
 }
 
-/** Level 6: a star that blinks the key in morse while the level is live, and just twinkles otherwise. */
-export function MorseStar({ x, y, active, big = false }: { x: number; y: number; active: boolean; big?: boolean }) {
+/** Level 6: the terminal's link light blinks the key in morse while the level is live, and idles otherwise. */
+export function MorseLed({ active, big = false }: { active: boolean; big?: boolean }) {
   const [on, setOn] = useState(true);
   useEffect(() => {
     if (!active) {
@@ -107,22 +107,22 @@ export function MorseStar({ x, y, active, big = false }: { x: number; y: number;
     return () => window.clearTimeout(t);
   }, [active, big]);
   return (
-    <span
-      aria-hidden
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        width: big ? 5 : 3,
-        height: big ? 5 : 3,
-        background: "#eaf1ff",
-        boxShadow: on ? "0 0 6px 2px rgba(200,220,255,.85)" : "none",
-        opacity: active ? (on ? 1 : 0.06) : 0.8,
-        animation: active ? undefined : "fe-pulse 3.2s ease-in-out infinite",
-        zIndex: 5,
-        pointerEvents: "none",
-      }}
-    />
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 8, fontFamily: mono, fontSize: big ? 13 : 11, letterSpacing: 1.5, color: "#3aa768" }}>
+      <span
+        aria-hidden
+        style={{
+          display: "inline-block",
+          width: big ? 12 : 9,
+          height: big ? 12 : 9,
+          borderRadius: "50%",
+          background: "#35ff8f",
+          boxShadow: on ? "0 0 10px 2px rgba(53,255,143,.9)" : "none",
+          opacity: active ? (on ? 1 : 0.08) : 0.85,
+          animation: active ? undefined : "fe-pulse 3.2s ease-in-out infinite",
+        }}
+      />
+      link
+    </span>
   );
 }
 
@@ -196,16 +196,5 @@ export function CodeView({ source }: { source: string }) {
     >
       {source}
     </pre>
-  );
-}
-
-/** What a breach tool looks like from the blue side. */
-export function Redacted({ label }: { label: string }) {
-  return (
-    <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: 16, textAlign: "center" }}>
-      <div style={{ fontFamily: mono, fontSize: 12, letterSpacing: 2, color: "var(--ac,#3b82f6)" }}>{label}</div>
-      <div style={{ fontFamily: mono, fontSize: 13, color: "#5f6b85" }}>████████ ███ ██████</div>
-      <div style={{ fontSize: 13.5, color: "#8a93a8", maxWidth: 260 }}>This tool only runs on the green side. Drag it back across the seam.</div>
-    </div>
   );
 }
