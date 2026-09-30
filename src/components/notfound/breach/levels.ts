@@ -61,7 +61,7 @@ export const LEVELS: Level[] = [
     kind: "behind",
     name: "behind",
     brief: ["Something in here is sitting on top of the first key.", "Find it, then: key <answer>"],
-    hint: "Windows in here aren't glued down. Drag 404.log by its title bar.",
+    hint: "You see, but you do not observe. No play begins until someone lifts what hangs before the stage.",
     hash: "905fefc881a6d18561b1e93cefa8fc98bdf78f3dba0d1324c1422c66ff5d85c2",
   },
   {
@@ -69,7 +69,7 @@ export const LEVELS: Level[] = [
     kind: "encoding",
     name: "encoding",
     brief: ["Intercepted on the wire:", `  ${PAYLOAD.base64}`],
-    hint: "A-Z, a-z, 0-9, + and /. Six bits per character.",
+    hint: "It speaks a tongue of sixty-four letters and signs its name with none. Translate; do not decrypt.",
     hash: "3c8f23d284b27cb03c2b981615c11586f6fe09380dfc7bd3ef12d242e7655965",
   },
   {
@@ -77,7 +77,7 @@ export const LEVELS: Level[] = [
     kind: "otherside",
     name: "other side",
     brief: ["KEY_03 was left behind on the other side.", "Leave the terminal (esc) and read the page again."],
-    hint: "Exit, look at the 404 page, then click the glitching word to come back in.",
+    hint: "Half my cases were solved from the armchair, the other half on the doorstep. The clue lies in the room you walked through to get here.",
     hash: "e7e4fded9a39cab9b3a540b80a56d4901f7e9955472ef97d330516da1e196aa6",
   },
   {
@@ -85,7 +85,7 @@ export const LEVELS: Level[] = [
     kind: "dial",
     name: "dial",
     brief: ["An old Roman locked this one. A dial just opened."],
-    hint: "Drag the inner ring around. Exactly one of the 26 positions reads like words.",
+    hint: "Veni, vidi, vici. He marched his letters forward; you must march them home.",
     hash: "181cb8c8c3f2e99291123409b4246342887d7e7904ebc8622b2d740a799dc44d",
     widget: "cipher",
   },
@@ -94,7 +94,7 @@ export const LEVELS: Level[] = [
     kind: "console",
     name: "console",
     brief: ["This key was never rendered. It was logged.", "It gets logged again every time you run: brief"],
-    hint: "F12, or Ctrl+Shift+I / Cmd+Opt+I. Expand what you find. Not everything in there is honest.",
+    hint: "What is spoken aloud is not all that is said. The machine keeps its own diary, and its first witnesses are liars. Believe only the one buried deepest.",
     hash: "d4b791c7e0fdb0c9c75ebf52463d569f75f6e44cfe41382647cc26e2d4009085",
   },
   {
@@ -102,7 +102,7 @@ export const LEVELS: Level[] = [
     kind: "signal",
     name: "signal",
     brief: ["Watch the link light in the top corner.", "It isn't flickering at random. It's talking."],
-    hint: "Dots and dashes. Letters are split by longer gaps, and the word repeats after a long pause.",
+    hint: "A signalman on a dark line needs only two lengths of light. He stands in a corner, pretending to be idle, and repeats himself to anyone patient.",
     hash: "53465a49cf21b809a875302e025badc8752adeb5af53d6fd209f1651e63355f1",
   },
   {
@@ -110,7 +110,7 @@ export const LEVELS: Level[] = [
     kind: "xor",
     name: "xor",
     brief: ["Encrypted with a key you've already typed once:", `  ${PAYLOAD.xor}`],
-    hint: "Repeating-key XOR. The key is one of your earlier answers, byte for byte. CyberChef can do it.",
+    hint: "What bolts the door also draws the bolt. Lay the first word you ever spoke here over the lock, again and again, until it confesses.",
     hash: "44e3d360dcfd3e6dc93225cc2f1a0d3cd2f408c9f5eca70fe787c839fb1835a6",
   },
   {
@@ -122,7 +122,7 @@ export const LEVELS: Level[] = [
       "Your session lives in this browser, and someone leaked the signing code.",
       "Become admin, then: sudo breach",
     ],
-    hint: "localStorage['fe404.session'] is base64(json) + '.' + signature. Change the role, re-sign, sudo breach.",
+    hint: "A seal proves nothing when the forger owns the stamp. The stamp was left on the desk; the ledger rides in your own pocket.",
     widget: "leak",
   },
   {
@@ -134,7 +134,7 @@ export const LEVELS: Level[] = [
       "A code flashes. Type it back before the window closes.",
       "Three in a row, each one longer and faster. One miss and you start over.",
     ],
-    hint: "Nothing in that window is in the DOM. Your eyes, or your screenshot key.",
+    hint: "The eye forgets. The photograph does not.",
     widget: "trace",
   },
   {
@@ -142,7 +142,7 @@ export const LEVELS: Level[] = [
     kind: "reverse",
     name: "reverse",
     brief: ["The last door checks your key with the function in the new window.", "Any string it accepts opens it: key <answer>"],
-    hint: "Start from the constraints that pin one character. The rolling checksum at the end is the only hard part; brute force what's left.",
+    hint: "When you have eliminated the impossible, whatever remains, however improbable, must be the key. Begin with the characters that have only one alibi.",
     widget: "validator",
   },
 ];
@@ -159,34 +159,34 @@ export const MOBILE_LEVELS: Level[] = [
     n: 1,
     salt: 1,
     brief: ["Something in here is covering the first key.", "Drag things around. Found it? Tap 'key' and type it."],
-    hint: "The 404.log window isn't glued down. Drag it by its title bar.",
+    hint: "You see, but you do not observe. No play begins until someone lifts what hangs before the stage.",
   },
   {
     ...byKind("otherside"),
     n: 2,
     salt: 3,
     brief: ["KEY_02 was left behind on the other side.", "Tap esc and read the page again."],
-    hint: "Exit, look at the 404 page, then tap the glitching word to come back in.",
+    hint: "The clue lies in the room you walked through to get here. Step out, and mind the door on your way back.",
   },
   {
     ...byKind("dial"),
     n: 3,
     salt: 4,
     brief: ["An old Roman locked this one. A dial just opened.", "Spin the inner ring until it reads."],
-    hint: "Drag the inner ring, or tap the arrows. One position reads like words.",
+    hint: "Veni, vidi, vici. He marched his letters forward; you must march them home.",
   },
   {
     ...byKind("signal"),
     n: 4,
     salt: 6,
     brief: ["The link light in the top corner is blinking a word in Morse.", "Watch it. Short = dot, long = dash."],
-    hint: "Top left, next to 'link'. Morse alphabet below.",
+    hint: "Two lengths of light and a patient signalman in the corner. For the charitable, his codebook:",
   },
   {
     ...byKind("trace"),
     n: 5,
     brief: ["Tap 'trace'. A code flashes in the trace window.", "Tap it back on the keypad. Three rounds, each a bit faster."],
-    hint: "Watch the window, not the keypad. Say the characters out loud, it helps.",
+    hint: "The eye forgets. The photograph does not.",
   },
 ];
 
