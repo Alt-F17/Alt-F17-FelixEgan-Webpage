@@ -277,7 +277,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
                   <Link to="/" className="fe404-sitebtn fe404-sitebtn-primary">
                     {t.home[locale]}
                   </Link>
-                  <Link to="/projects" className="fe404-sitebtn">
+                  <Link to="/#work" className="fe404-sitebtn">
                     {t.projects[locale]}
                   </Link>
                 </div>
@@ -340,7 +340,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
               <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 7, fontSize: 13 }}>
                 {[
                   ["cd ~", "/"],
-                  ["cd ~/projects", "/projects"],
+                  ["cd ~/work", "/#work"],
                   ["cd ~/studio", "/studio"],
                   ["open ~/paste", "/paste"],
                 ].map(([label, to]) => (
@@ -354,7 +354,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
               <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 8 }}>
                 {[
                   [t.home[locale], "/"],
-                  [t.projects[locale], "/projects"],
+                  [t.projects[locale], "/#work"],
                   ["Studio ↗", "/studio"],
                 ].map(([label, to]) => (
                   <Link key={to} to={to} className="fe404-sitebtn" style={{ padding: "8px 12px" }}>
@@ -435,7 +435,7 @@ export function SplitStage({ content }: { content: SiteContent }) {
           <div className="fe404-termbar">
             {[
               ["~", "/"],
-              ["projects", "/projects"],
+              ["work", "/#work"],
               ["studio", "/studio"],
             ].map(([l, to]) => (
               <button key={to} className="fe404-termlink" onClick={() => go(to)}>

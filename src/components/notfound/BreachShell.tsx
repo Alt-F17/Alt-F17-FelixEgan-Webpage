@@ -38,7 +38,7 @@ const COMMANDS = [
 
 const ROUTES: Record<string, string> = {
   "~": "/", "/": "/", "~/": "/", home: "/",
-  projects: "/projects", "~/projects": "/projects", "/projects": "/projects",
+  work: "/#work", "~/work": "/#work", projects: "/#work", "~/projects": "/#work", "/projects": "/#work",
   studio: "/studio", "~/studio": "/studio", "/studio": "/studio",
   paste: "/paste", "~/paste": "/paste", "/paste": "/paste",
 };
@@ -194,7 +194,7 @@ export function BreachShell({ content, api, levels, mobile }: { content: SiteCon
           L("dim", "  status        level, time, splits"),
           L("dim", "  reset         wipe your progress"),
           L("label", "shell"),
-          L("dim", "  cd <route>    ~, projects, studio, paste"),
+          L("dim", "  cd <route>    ~, work, studio, paste"),
           L("dim", "  whoami, ls, cat <file>, banner, clear"),
           L("dim", "  tidy          put the windows back"),
           L("dim", "  seam reset    re-center the seam"),
