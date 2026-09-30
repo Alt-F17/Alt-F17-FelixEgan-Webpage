@@ -25,7 +25,7 @@ export type ShellApi = {
   advance: () => void;
   reset: () => void;
   tidy: () => void;
-  seamReset: () => void;
+  exit: () => void;
   navigate: (path: string) => void;
   setFlash: (f: Flash) => void;
   win: () => void;
@@ -33,7 +33,7 @@ export type ShellApi = {
 
 const COMMANDS = [
   "help", "breach", "brief", "hint", "key", "status", "trace", "sudo", "reset",
-  "whoami", "ls", "cat", "cd", "home", "tidy", "seam", "banner", "clear", "exit",
+  "whoami", "ls", "cat", "cd", "home", "tidy", "banner", "clear", "exit",
 ];
 
 const ROUTES: Record<string, string> = {
@@ -197,7 +197,7 @@ export function BreachShell({ content, api, levels, mobile }: { content: SiteCon
           L("dim", "  cd <route>    ~, projects, studio, paste"),
           L("dim", "  whoami, ls, cat <file>, banner, clear"),
           L("dim", "  tidy          put the windows back"),
-          L("dim", "  seam reset    re-center the seam"),
+          L("dim", "  exit          back to the site (esc works too)"),
         ]);
         return;
       case "breach": {
@@ -315,7 +315,10 @@ export function BreachShell({ content, api, levels, mobile }: { content: SiteCon
         api.navigate("/");
         return;
       case "exit":
-        print([L("warn", "there is no exit. try: cd ~")]);
+      case "logout":
+      case "quit":
+        print([L("warn", "logout: resolving session …  [████████████]")]);
+        later(() => api.exit(), 450);
         return;
       case "ls":
         print([L("val", "404.log   whoami.txt   trace.log   breach*"), L("warn", "-r--------   .keys/   (nice try)")]);
@@ -323,10 +326,6 @@ export function BreachShell({ content, api, levels, mobile }: { content: SiteCon
       case "tidy":
         api.tidy();
         print([L("dim", "windows restored.")]);
-        return;
-      case "seam":
-        api.seamReset();
-        print([L("dim", "seam re-centered.")]);
         return;
       case "banner":
         print([L("ok", content.terminal.banner.join("\n"), true)]);

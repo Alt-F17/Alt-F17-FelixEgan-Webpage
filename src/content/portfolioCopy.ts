@@ -121,18 +121,14 @@ export const portfolioCopy = {
   },
   notFound: {
     title: { en: "page not found", fr: "page introuvable" } satisfies ByLocale,
+    // the message is split around the word that glitches (and opens BREACH when clicked)
     body: {
-      en: "This route doesn't exist. Half the site got breached looking for it.",
-      fr: "Cette page n'existe pas. La moitié du site s'est fait pirater en la cherchant.",
-    } satisfies ByLocale,
+      en: ["This route doesn't exist. Half the site got ", "breached", " looking for it."],
+      fr: ["Cette page n'existe pas. La moitié du site s'est fait ", "pirater", " en la cherchant."],
+    } satisfies Record<Locale, [string, string, string]>,
     home: { en: "Back home", fr: "Retour à l'accueil" } satisfies ByLocale,
     projects: { en: "All projects", fr: "Tous les projets" } satisfies ByLocale,
-    trace: { en: "Nothing lives here. Yet.", fr: "Rien ici. Pour l'instant." } satisfies ByLocale,
-    shellLost: {
-      en: "This shell only works on the green side. Pull the seam over, or drag this window across it.",
-      fr: "Ce terminal ne marche que du côté vert. Tire la ligne vers toi, ou glisse cette fenêtre de l'autre côté.",
-    } satisfies ByLocale,
-    pull: { en: "pull", fr: "tire" } satisfies ByLocale,
+    leftBehind: { en: "left behind", fr: "oublié ici" } satisfies ByLocale,
   },
   footer: {
     description: {

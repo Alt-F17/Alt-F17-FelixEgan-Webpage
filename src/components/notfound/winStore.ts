@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from "react";
-import type { Rect } from "./geometry";
+export type Rect = { x: number; y: number; w: number; h: number };
 
 /**
  * Window positions live outside React state so a drag re-renders only the two
