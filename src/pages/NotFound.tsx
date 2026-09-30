@@ -5,7 +5,6 @@ import { Seo } from "@/components/seo/Seo";
 import { useSiteContent } from "@/content/siteContent";
 import { Starfield } from "@/components/portfolio/Starfield";
 import { SiteNav } from "@/components/portfolio/SiteNav";
-import { SiteFooter } from "@/components/portfolio/SiteFooter";
 import { CrtScreen } from "@/components/portfolio/CrtScreen";
 import { useCorruption } from "@/components/portfolio/useCorruption";
 import { useGlitchText } from "@/components/portfolio/useGlitchText";
@@ -139,7 +138,7 @@ const NotFound = () => {
           position: "relative",
           zIndex: 2,
           width: "100%",
-          minHeight: "calc(100svh - 120px)",
+          minHeight: "100svh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -192,8 +191,6 @@ const NotFound = () => {
           </div>
         </div>
       </main>
-
-      <SiteFooter content={content} />
 
       {fx.overlay}
       {open && (
