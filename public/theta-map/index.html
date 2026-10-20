@@ -1,0 +1,1507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>theta · 3D system map</title>
+<meta name="description" content="An interactive 3D map of the systems and processes on a home server, and what depends on what. Details are generalized.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#080d14">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#080d14; --surface:#0f1722; --surface2:#17222f; --panel:rgba(12,19,28,.88);
+  --ink:#e6edf5; --muted:#8fa1b3; --faint:#5d6e80;
+  --line:#223040; --line2:#33465b; --accent:#5cc8e0; --accent-ink:#04222a;
+  --run:#3fd6a0; --sleep:#6ea8ff; --arch:#98a2b3; --broke:#ff6464; --warn:#f0a93a;
+  --e-ok:#7f9bb5; --e-warn:#f0a93a; --e-broke:#ff6464; --e-dormant:#6ea8ff;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Instrument Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gut:16px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5;overflow:hidden}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#app{position:relative;height:100%;overflow:hidden;background:radial-gradient(120% 90% at 50% 40%,#0d1622 0%,var(--bg) 70%)}
+#stage{position:absolute;inset:0;touch-action:none;cursor:grab}
+#stage.drag{cursor:grabbing}
+#stage.pick{cursor:pointer}
+#stage canvas{display:block;width:100%;height:100%;outline:none}
+
+.panel{position:absolute;background:var(--panel);border:1px solid var(--line);border-radius:8px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 30px rgba(0,0,0,.35)}
+#hud{left:var(--gut);top:var(--gut);width:320px;max-height:calc(100% - 2*var(--gut) - 56px);overflow:auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+#hud h1{font-family:var(--f-display);font-weight:700;font-size:1.9rem;line-height:1;margin:0;letter-spacing:-.02em}
+#hud .tag{margin:4px 0 0;color:var(--muted);font-size:12.5px}
+.hudhead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#hudtog{display:none}
+.lbl{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+#q{flex:1 1 140px;min-width:0;background:var(--surface);border:1px solid var(--line2);border-radius:4px;padding:6px 10px}
+#q::placeholder{color:var(--faint)}
+.qn{font-family:var(--f-mono);font-size:11.5px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line2);background:var(--surface2);border-radius:999px;padding:2px 10px 2px 8px;font-size:12px;line-height:1.4}
+.chip[aria-pressed="false"]{opacity:.42;background:transparent}
+.chip .n{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.btn{border:1px solid var(--line2);background:var(--surface2);border-radius:4px;padding:4px 11px;font-size:12.5px;line-height:1.4}
+.btn:hover{background:#1f2e3e}
+.btn.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn[disabled]{opacity:.4;cursor:default}
+#spread{width:100%;accent-color:var(--accent);margin:2px 0 0}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+.dot.run{background:var(--run)}
+.dot.sleep{border:2px solid var(--sleep)}
+.dot.arch{border:2px dashed var(--arch);border-radius:2px}
+.dot.broke{background:var(--broke);border-radius:2px;transform:rotate(45deg) scale(.85)}
+.dot.warn{background:var(--warn);border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.dot.ring{border:2px solid var(--warn);border-radius:50%}
+.hl{width:18px;height:0;border-top:2px solid var(--e-ok);display:inline-block;flex:none}
+.hl.warn{border-color:var(--e-warn)} .hl.broke{border-color:var(--e-broke)} .hl.dormant{border-top-style:dashed;border-color:var(--e-dormant)}
+.hl.thin{border-top-width:1px} .hl.thick{border-top-width:3px}
+
+#detail{right:var(--gut);top:var(--gut);width:372px;max-height:calc(100% - 2*var(--gut) - 56px);display:flex;flex-direction:column;overflow:hidden}
+#dhead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 8px 8px 14px;border-bottom:1px solid var(--line)}
+#dhead span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+#dbody{padding:14px;overflow:auto;min-height:0}
+#detail.min #dbody{display:none}
+#detail.min #dhead{border-bottom:0}
+#dbody h2{font-family:var(--f-display);font-size:1.3rem;line-height:1.2;margin:0 0 4px;text-wrap:balance;overflow-wrap:anywhere}
+#dbody h3{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px;font-weight:600}
+#dbody p{margin:6px 0}
+#dbody .lead{color:var(--muted)}
+#dbody .note{font-size:12.5px;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;border:1px solid var(--line2);border-radius:999px;padding:1px 10px 1px 8px}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.sub{font-family:var(--f-mono);font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.warnbox{margin:10px 0;padding:8px 10px;border:1px solid var(--warn);border-radius:4px;font-size:13px}
+dl.kv{display:grid;grid-template-columns:minmax(80px,max-content) minmax(0,1fr);gap:6px 12px;margin:0}
+dl.kv dt{font-size:12px;color:var(--muted)}
+dl.kv dd{margin:0;font-size:13px;overflow-wrap:anywhere}
+dl.kv dd.m{font-family:var(--f-mono);font-size:12px}
+ul.rel{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+ul.rel button{width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:6px 9px;display:flex;flex-direction:column;gap:2px}
+ul.rel button:hover{border-color:var(--accent)}
+ul.rel .r1{display:flex;gap:8px;align-items:center;font-weight:600;font-size:13px;min-width:0}
+ul.rel .r1 span.t{overflow-wrap:anywhere;flex:1 1 auto}
+ul.rel .r2{font-size:12px;color:var(--muted);padding-left:26px}
+.kind{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line2);border-radius:3px;padding:0 5px;flex:none}
+.legend{display:grid;gap:7px;font-size:13px}
+.legend div{display:flex;gap:9px;align-items:center}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+#bar{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--gut) + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;padding:7px 10px;max-width:calc(100% - 2*var(--gut))}
+#bar .sep{width:1px;height:20px;background:var(--line2)}
+#bar .btn{min-width:32px;text-align:center}
+#bar .sh{display:none}
+#hint{position:absolute;left:var(--gut);bottom:calc(var(--gut) + env(safe-area-inset-bottom,0px));font-size:11.5px;color:var(--faint);max-width:260px;pointer-events:none}
+#hint a{color:var(--accent);pointer-events:auto}
+#homelink{position:absolute;right:var(--gut);bottom:calc(var(--gut) + env(safe-area-inset-bottom,0px));font-size:12px}
+#homelink a{color:var(--accent)}
+#tip{position:absolute;pointer-events:none;z-index:5;max-width:280px;background:rgba(8,13,20,.95);border:1px solid var(--line2);border-radius:6px;padding:6px 9px;font-size:12px;line-height:1.4}
+#tip b{display:block;font-size:13px}
+#tip .m{font-family:var(--f-mono);font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+#tip .w{color:var(--warn);margin-top:3px}
+#nogl{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:var(--gut);text-align:center;z-index:10;background:var(--bg)}
+#nogl div{max-width:46ch}
+#boot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--muted);font-family:var(--f-mono);font-size:12px}
+
+@media (max-width:900px){
+  #hud{width:min(320px,calc(100% - 2*var(--gut)))}
+  #detail{width:min(372px,calc(100% - 2*var(--gut)))}
+}
+@media (max-width:760px){
+  #hud{right:var(--gut);width:auto;max-height:46%;padding:10px 12px}
+  #hud h1{font-size:1.4rem}
+  #hud .tag{display:none}
+  #hudtog{display:inline-block}
+  #hud.fold .fold-x{display:none}
+  #detail{left:var(--gut);right:var(--gut);top:auto;width:auto;bottom:calc(var(--gut) + var(--barh,44px) + 8px + env(safe-area-inset-bottom,0px));max-height:44%}
+  #hint,#homelink{display:none}
+  #bar{width:calc(100% - 2*var(--gut));gap:5px;flex-wrap:nowrap;padding:6px 8px}
+  #bar .sep{display:none}
+  #bar .btn{padding:4px 8px;min-width:30px}
+  #bar .lg,#zout,#zin{display:none}
+  #bar .sh{display:inline}
+  #bar #fit{margin-left:auto}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<style>[hidden]{display:none!important}</style>
+</head>
+<body>
+<div id="app">
+  <div id="stage" aria-label="3D dependency map of theta. Drag to orbit, right-drag or shift-drag to pan, scroll or pinch to zoom."></div>
+  <div id="boot">building the scene…</div>
+
+  <aside id="hud" class="panel fold" aria-label="Filters">
+    <div class="hudhead">
+      <div>
+        <h1>theta</h1>
+        <p class="tag">A home server's systems and processes in 3D. Arrows point from the thing that needs to the thing it needs. Names and details are generalized.</p>
+      </div>
+      <button id="hudtog" class="btn" type="button" aria-expanded="false">Filters</button>
+    </div>
+    <div class="fold-x">
+      <label class="lbl" for="q">Find a system</label>
+      <div class="row"><input id="q" type="search" placeholder="name or keyword…" autocomplete="off" spellcheck="false"><span class="qn" id="qn"></span></div>
+    </div>
+    <div class="fold-x">
+      <label class="lbl" for="spread">Expand <span class="qn" id="spreadv"></span></label>
+      <input id="spread" type="range" min="1" max="3" step="0.05" value="1" aria-describedby="spreadv">
+    </div>
+    <div class="fold-x">
+      <span class="lbl">State</span>
+      <div class="row" id="status-chips"></div>
+    </div>
+    <div class="fold-x">
+      <span class="lbl">Link kind</span>
+      <div class="row" id="kind-chips"></div>
+    </div>
+    <div class="row fold-x">
+      <button class="btn" id="reset" type="button">Reset view</button>
+    </div>
+  </aside>
+
+  <aside id="detail" class="panel min" aria-live="polite">
+    <div id="dhead"><span>Legend &amp; detail</span><button id="dtog" class="btn" type="button" aria-expanded="false">Show</button></div>
+    <div id="dbody"></div>
+  </aside>
+
+  <div id="hint">Drag to orbit · right-drag or Shift-drag to pan · scroll or pinch to zoom · double-click a node to fly to it · E to expand</div>
+  <div id="homelink"><a href="/">felixegan.me</a></div>
+
+  <div id="bar" class="panel" role="toolbar" aria-label="Camera">
+    <button class="btn" id="zout" type="button" aria-label="Zoom out" title="Zoom out (−)">−</button>
+    <button class="btn" id="zin" type="button" aria-label="Zoom in" title="Zoom in (+)">+</button>
+    <span class="sep"></span>
+    <button class="btn" id="v-persp" type="button" title="Perspective view">3D</button>
+    <button class="btn" id="v-front" type="button" title="Flat front view, like the 2D map">Front</button>
+    <button class="btn" id="v-top" type="button" title="Looking down from above">Top</button>
+    <span class="sep"></span>
+    <button class="btn" id="exp" type="button" aria-pressed="false" title="Spread everything out so it isn't so clumped (E)"><span class="lg">Expand</span><span class="sh">Exp</span></button>
+    <button class="btn" id="spin" type="button" aria-pressed="false" title="Slowly rotate the view"><span class="lg">Auto-rotate</span><span class="sh">Spin</span></button>
+    <button class="btn" id="fit" type="button" title="Frame everything (R)">Fit</button>
+  </div>
+
+  <div id="tip" hidden></div>
+  <div id="nogl" hidden><div><h2>This browser can't draw the 3D view</h2><p>WebGL isn't available here, so the map can't be drawn. Try another browser or device.</p></div></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const LANES=["External","Edge & network","Apps","Agents & pipelines","Support & ops","Platform","Data & hardware"];
+const LANE_SUB=["off the box","what faces out","public + private","long-running work","glue, alerts, retired","OS services","state and silicon"];
+const NODES=[{"id":"n01","label":"Remote-control service","lane":0,"st":"run","sub":"hosted API","sum":"Hosted service that lets remote sessions reach this machine from a phone or browser.","facts":[],"warn":""},{"id":"n02","label":"Public edge network","lane":0,"st":"run","sub":"DNS · tunnels","sum":"Hosted DNS and tunnel edge that fronts every public hostname.","facts":[],"warn":""},{"id":"n03","label":"Private mesh coordinator","lane":0,"st":"run","sub":"mesh control plane","sum":"Hosted coordination and relay service for the private mesh network. Peers connect directly where they can.","facts":[],"warn":""},{"id":"n04","label":"Cloud storage & mail","lane":0,"st":"run","sub":"drive · mail APIs","sum":"Hosted storage and mail services, used for backups, a mail copy job and outgoing mail.","facts":[],"warn":""},{"id":"n05","label":"Personal mailbox","lane":0,"st":"run","sub":"IMAP source","sum":"The source mailbox that a mail-sync job copies from.","facts":[],"warn":""},{"id":"n06","label":"Chat notifications","lane":0,"st":"run","sub":"direct messages","sum":"Where alerts from this machine end up.","facts":[],"warn":""},{"id":"n07","label":"Social platform API","lane":0,"st":"run","sub":"HTTPS API","sum":"An outside social-media API used by a single app.","facts":[],"warn":""},{"id":"n08","label":"Package & signature mirrors","lane":0,"st":"run","sub":"updates · images · signatures","sum":"Where OS updates, container images and virus signatures come from.","facts":[],"warn":""},{"id":"n09","label":"Home gateway & ISP DNS","lane":0,"st":"run","sub":"router · upstream DNS","sum":"The default route out of the house and the upstream name servers.","facts":[],"warn":""},{"id":"n10","label":"Mobile device","lane":0,"st":"sleep","sub":"debug bridge · optional","sum":"A phone that can be reached only while a manual switch is on.","facts":[],"warn":""},{"id":"n11","label":"Desktop workstation","lane":0,"st":"run","sub":"remote client","sum":"The desktop computer used to reach this server.","facts":[],"warn":""},{"id":"n12","label":"Public visitors","lane":0,"st":"run","sub":"web browsers","sum":"People opening the public sites in a browser.","facts":[],"warn":""},{"id":"n13","label":"Tunnel agent A","lane":1,"st":"run","sub":"container · outbound","sum":"Dials out to the public edge and carries requests for one app, so no inbound port needs to be open.","facts":[],"warn":""},{"id":"n14","label":"Tunnel agent B","lane":1,"st":"run","sub":"host network · outbound","sum":"A second outbound tunnel agent, serving a different app.","facts":[],"warn":""},{"id":"n15","label":"Mesh VPN agent","lane":1,"st":"run","sub":"private network daemon","sum":"Joins this machine to the private mesh network.","facts":[],"warn":""},{"id":"n16","label":"Mesh web route","lane":1,"st":"broke","sub":"points at nothing","sum":"A private HTTPS route that forwards to a service that no longer exists.","facts":[],"warn":""},{"id":"n17","label":"Mesh public route","lane":1,"st":"sleep","sub":"disabled","sum":"A route for exposing a service publicly. Switched off.","facts":[],"warn":""},{"id":"n18","label":"SSH server","lane":1,"st":"run","sub":"remote shell","sum":"Remote login service.","facts":[],"warn":""},{"id":"n19","label":"Network manager","lane":1,"st":"run","sub":"wired + wireless","sum":"Manages the network interfaces and their settings.","facts":[],"warn":""},{"id":"n20","label":"Local DNS resolver","lane":1,"st":"run","sub":"stub resolver","sum":"Answers name lookups for everything on the machine.","facts":[],"warn":""},{"id":"n21","label":"Firewall","lane":1,"st":"run","sub":"host firewall","sum":"The host firewall in front of every listening service.","facts":[],"warn":""},{"id":"n22","label":"E-signature app","lane":2,"st":"run","sub":"container · web","sum":"A document-signing web app that runs in a container.","facts":[],"warn":""},{"id":"n23","label":"Push-notification server","lane":2,"st":"run","sub":"pub/sub","sum":"Self-hosted push notifications, used by the alert scripts.","facts":[],"warn":""},{"id":"n24","label":"Upload relay","lane":2,"st":"run","sub":"scans uploads","sum":"A small web service that accepts uploads and passes them through a virus scanner.","facts":[],"warn":""},{"id":"n25","label":"Upload relay admin","lane":2,"st":"run","sub":"private network only","sum":"Admin interface for the upload relay. Reachable only over the private network.","facts":[],"warn":""},{"id":"n26","label":"Form intake service","lane":2,"st":"run","sub":"web form handler","sum":"Receives submissions from a public web form.","facts":[],"warn":""},{"id":"n27","label":"Submission notifier","lane":2,"st":"run","sub":"forwards to chat","sum":"Forwards new form submissions to a chat message.","facts":[],"warn":""},{"id":"n28","label":"Media archive service","lane":2,"st":"run","sub":"social-API client","sum":"Archives media pulled from a social platform through its API.","facts":[],"warn":""},{"id":"n29","label":"CRM server","lane":2,"st":"sleep","sub":"paused","sum":"Contact-management server. Currently paused.","facts":[],"warn":""},{"id":"n30","label":"CRM worker","lane":2,"st":"sleep","sub":"paused","sum":"Background worker for the contact-management server. Currently paused.","facts":[],"warn":""},{"id":"n31","label":"Discovery intake","lane":2,"st":"sleep","sub":"disabled","sum":"A second intake service. Disabled.","facts":[],"warn":""},{"id":"n32","label":"Remote-control agent","lane":3,"st":"run","sub":"always-on session host","sum":"Keeps a long-running agent session available for remote sessions.","facts":[],"warn":""},{"id":"n33","label":"Agent instances","lane":3,"st":"run","sub":"two small workers","sum":"Two small, memory-capped agent workers.","facts":[],"warn":""},{"id":"n34","label":"Agent daemon","lane":3,"st":"run","sub":"serves remote control","sum":"Background daemon that serves remote control for the agent workers.","facts":[],"warn":""},{"id":"n35","label":"Device tool server","lane":3,"st":"broke","sub":"fails to start","sum":"A tool server for controlling a device. Closes its connection as soon as it starts.","facts":[],"warn":""},{"id":"n36","label":"Hosting tool server","lane":3,"st":"broke","sub":"fails to launch","sum":"A tool server for a hosting platform. Fails to launch because of a missing executable on its path.","facts":[],"warn":""},{"id":"n37","label":"Edge tool server","lane":3,"st":"sleep","sub":"not signed in","sum":"A tool server for the edge network. Needs a login before it can do anything.","facts":[],"warn":""},{"id":"n38","label":"Web-fetch tool server","lane":3,"st":"run","sub":"HTTP","sum":"A tool server that fetches and searches web pages.","facts":[],"warn":""},{"id":"n39","label":"Mail listener","lane":3,"st":"run","sub":"push-style watcher","sum":"Holds an open connection to the mailbox and wakes the sync job when new mail arrives.","facts":[],"warn":""},{"id":"n40","label":"Mail sync job","lane":3,"st":"run","sub":"periodic","sum":"Copies new mail from one mailbox into another on a timer.","facts":[],"warn":""},{"id":"n41","label":"Cloud drive mount","lane":3,"st":"run","sub":"filesystem mount","sum":"Mounts cloud storage as a local folder.","facts":[],"warn":""},{"id":"n42","label":"Debug bridge server","lane":3,"st":"run","sub":"local only","sum":"Local server that talks to the phone.","facts":[],"warn":""},{"id":"n43","label":"Bridge keep-alive","lane":3,"st":"run","sub":"tied to the bridge server","sum":"Keeps the phone connection from timing out. Needs the bridge server.","facts":[],"warn":""},{"id":"n44","label":"Device bridge service","lane":3,"st":"sleep","sub":"not enabled","sum":"Service that would attach the phone on demand. Installed but not enabled.","facts":[],"warn":""},{"id":"n45","label":"Virus scanner","lane":4,"st":"run","sub":"daemon","sum":"Scans uploads for malware.","facts":[],"warn":""},{"id":"n46","label":"Container socket proxy","lane":4,"st":"run","sub":"filtered API","sum":"Exposes a filtered, read-only view of the container API.","facts":[],"warn":""},{"id":"n47","label":"Retired chat agent","lane":4,"st":"arch","sub":"disabled","sum":"An older chat-ops agent that sent alerts. Disabled, files kept.","facts":[],"warn":""},{"id":"n48","label":"Retired dashboard","lane":4,"st":"arch","sub":"no listener","sum":"The web dashboard of the retired chat agent. Nothing listens any more.","facts":[],"warn":""},{"id":"n49","label":"Agent watchdogs","lane":4,"st":"run","sub":"timers","sum":"Timers that check the agent session and restart it when it stops answering.","facts":[],"warn":""},{"id":"n50","label":"Health-check script","lane":4,"st":"run","sub":"read-only","sum":"A read-only script that checks the whole stack.","facts":[],"warn":""},{"id":"n51","label":"Auto-update timer","lane":4,"st":"sleep","sub":"disabled","sum":"Scheduled updates for the agent. Disabled.","facts":[],"warn":""},{"id":"n52","label":"Post-reboot check","lane":4,"st":"sleep","sub":"manual","sum":"A script to run by hand after a restart.","facts":[],"warn":""},{"id":"n53","label":"Ready notifier","lane":4,"st":"broke","sub":"stuck in a retry loop","sum":"Waits for a list of services before announcing that the machine is ready. Part of that list no longer exists, so it never finishes.","facts":[],"warn":""},{"id":"n54","label":"Power-cut check","lane":4,"st":"run","sub":"daily timer","sum":"Reports after an unclean shutdown.","facts":[],"warn":""},{"id":"n55","label":"Backup script","lane":4,"st":"sleep","sub":"manual","sum":"Creates an encrypted backup on demand.","facts":[],"warn":""},{"id":"n56","label":"Power policy units","lane":4,"st":"run","sub":"boot-time oneshots","sum":"Make the machine power on by itself and wake over the network.","facts":[],"warn":""},{"id":"n57","label":"Retired tool server","lane":4,"st":"arch","sub":"no unit file","sum":"An old tool server that is no longer installed as a service.","facts":[],"warn":""},{"id":"n58","label":"Retired gateway","lane":4,"st":"arch","sub":"archived","sum":"An older gateway for a field-operations tool. Retired.","facts":[],"warn":""},{"id":"n59","label":"Retired phone gateway","lane":4,"st":"arch","sub":"archived","sum":"An older phone-call gateway. Retired.","facts":[],"warn":""},{"id":"n60","label":"Retired health monitor","lane":4,"st":"arch","sub":"archived","sum":"An older monitoring tool, replaced by the health-check script.","facts":[],"warn":""},{"id":"n61","label":"Retired proxy unit","lane":4,"st":"arch","sub":"no-op","sum":"A reverse-proxy unit that no longer does anything.","facts":[],"warn":""},{"id":"n62","label":"CRM database","lane":4,"st":"sleep","sub":"paused","sum":"Database for the paused contact-management server.","facts":[],"warn":""},{"id":"n63","label":"CRM cache","lane":4,"st":"sleep","sub":"paused","sum":"In-memory cache for the paused contact-management server.","facts":[],"warn":""},{"id":"n64","label":"Container runtime","lane":5,"st":"run","sub":"containers","sum":"Runs the containerized apps.","facts":[],"warn":""},{"id":"n65","label":"User service manager","lane":5,"st":"run","sub":"per-user services","sum":"Runs the user-level services and timers.","facts":[],"warn":""},{"id":"n66","label":"System journal","lane":5,"st":"run","sub":"logs","sum":"Collects logs from every service.","facts":[],"warn":"Log storage keeps growing"},{"id":"n67","label":"Cron scheduler","lane":5,"st":"run","sub":"scheduled jobs","sum":"Classic job scheduler.","facts":[],"warn":""},{"id":"n68","label":"Package manager","lane":5,"st":"run","sub":"unattended upgrades","sum":"Installs and updates OS packages.","facts":[],"warn":""},{"id":"n69","label":"Snap packages","lane":5,"st":"run","sub":"sandboxed apps","sum":"Sandboxed package system and its services.","facts":[],"warn":""},{"id":"n70","label":"Printing & discovery","lane":5,"st":"run","sub":"print · RPC · mDNS","sum":"Print spooler and local discovery services.","facts":[],"warn":""},{"id":"n71","label":"Node runtime manager","lane":5,"st":"run","sub":"language runtime","sum":"Installs the JavaScript runtime used by several tools.","facts":[],"warn":""},{"id":"n72","label":"CPU","lane":6,"st":"run","sub":"processor","sum":"The processor.","facts":[],"warn":""},{"id":"n73","label":"RAM","lane":6,"st":"run","sub":"memory","sum":"Physical memory.","facts":[],"warn":""},{"id":"n74","label":"Swap","lane":6,"st":"run","sub":"swap file","sum":"Overflow memory on disk.","facts":[],"warn":"Under memory pressure"},{"id":"n75","label":"Root disk","lane":6,"st":"run","sub":"main volume","sum":"Main storage volume.","facts":[],"warn":""},{"id":"n76","label":"Network interfaces","lane":6,"st":"run","sub":"wired + wireless","sum":"The wired and wireless network adapters.","facts":[],"warn":""},{"id":"n77","label":"Power & firmware","lane":6,"st":"run","sub":"boot behavior","sum":"Firmware settings for power-on and wake behavior.","facts":[],"warn":""},{"id":"n78","label":"Upload volume","lane":6,"st":"run","sub":"container volume","sum":"Storage volume for the upload relay.","facts":[],"warn":""},{"id":"n79","label":"Signature volume","lane":6,"st":"run","sub":"container volume","sum":"Storage volume for virus signatures.","facts":[],"warn":""},{"id":"n80","label":"CRM volumes","lane":6,"st":"sleep","sub":"paused","sum":"Storage volumes for the paused contact-management stack.","facts":[],"warn":""},{"id":"n81","label":"Signing-app data","lane":6,"st":"run","sub":"bind mount","sum":"Files kept by the e-signature app.","facts":[],"warn":""},{"id":"n82","label":"Push-server data","lane":6,"st":"run","sub":"small store","sum":"State kept by the push-notification server.","facts":[],"warn":""},{"id":"n83","label":"Chat-agent state","lane":6,"st":"run","sub":"largest state dir","sum":"State directory kept by the retired chat agent.","facts":[],"warn":""},{"id":"n84","label":"Mail-sync state","lane":6,"st":"run","sub":"ledger","sum":"Bookkeeping for the mail sync job.","facts":[],"warn":""},{"id":"n85","label":"Media archive data","lane":6,"st":"run","sub":"files + index","sum":"Everything the media archive service has saved.","facts":[],"warn":""},{"id":"n86","label":"Cloud backups","lane":6,"st":"run","sub":"off-site copies","sum":"Backups pushed to cloud storage.","facts":[],"warn":""},{"id":"n87","label":"Control repo","lane":6,"st":"run","sub":"version-controlled","sum":"The repository this agent session works in.","facts":[],"warn":""},{"id":"n88","label":"Mail-sync repo","lane":6,"st":"run","sub":"version-controlled","sum":"Source code for the mail sync job.","facts":[],"warn":""},{"id":"n89","label":"Website repo","lane":6,"st":"run","sub":"version-controlled","sum":"Source code for the personal website.","facts":[],"warn":""},{"id":"n90","label":"Missing folder","lane":6,"st":"broke","sub":"does not exist","sum":"A folder that a scheduled job expects but that isn't there.","facts":[],"warn":""}];
+const EDGES=[{"a":"n12","b":"n02","k":"ingress","m":"Public visitors relies on Public edge network to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Public visitors and Public edge network stops.","h":"ok","s":"hard"},{"a":"n13","b":"n02","k":"ingress","m":"Tunnel agent A relies on Public edge network to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Tunnel agent A and Public edge network stops.","h":"ok","s":"hard"},{"a":"n13","b":"n22","k":"ingress","m":"Tunnel agent A relies on E-signature app to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Tunnel agent A and E-signature app stops.","h":"ok","s":"hard"},{"a":"n13","b":"n23","k":"ingress","m":"Tunnel agent A relies on Push-notification server to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Tunnel agent A and Push-notification server stops.","h":"ok","s":"hard"},{"a":"n13","b":"n26","k":"ingress","m":"Tunnel agent A relies on Form intake service to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Tunnel agent A and Form intake service stops.","h":"ok","s":"hard"},{"a":"n13","b":"n24","k":"ingress","m":"Tunnel agent A relies on Upload relay to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Tunnel agent A and Upload relay stops.","h":"ok","s":"hard"},{"a":"n14","b":"n02","k":"ingress","m":"Tunnel agent B relies on Public edge network to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Tunnel agent B and Public edge network stops.","h":"ok","s":"hard"},{"a":"n14","b":"n28","k":"ingress","m":"Tunnel agent B relies on Media archive service to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Tunnel agent B and Media archive service stops.","h":"ok","s":"hard"},{"a":"n14","b":"n65","k":"svc","m":"Tunnel agent B runs under, or needs, User service manager to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Tunnel agent B stops or loses function when User service manager is down.","h":"ok","s":"hard"},{"a":"n15","b":"n03","k":"net","m":"Mesh VPN agent talks to Private mesh coordinator over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Mesh VPN agent loses its network path to Private mesh coordinator.","h":"ok","s":"hard"},{"a":"n15","b":"n76","k":"net","m":"Mesh VPN agent talks to Network interfaces over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Mesh VPN agent loses its network path to Network interfaces.","h":"ok","s":"hard"},{"a":"n16","b":"n15","k":"svc","m":"Mesh web route runs under, or needs, Mesh VPN agent to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Mesh web route stops or loses function when Mesh VPN agent is down.","h":"ok","s":"hard"},{"a":"n16","b":"n48","k":"net","m":"Mesh web route talks to Retired dashboard over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Mesh web route loses its network path to Retired dashboard.","h":"dormant","s":"hard"},{"a":"n17","b":"n15","k":"svc","m":"Mesh public route runs under, or needs, Mesh VPN agent to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Mesh public route stops or loses function when Mesh VPN agent is down.","h":"dormant","s":"hard"},{"a":"n17","b":"n59","k":"ingress","m":"Mesh public route relies on Retired phone gateway to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Mesh public route and Retired phone gateway stops.","h":"dormant","s":"soft"},{"a":"n11","b":"n15","k":"net","m":"Desktop workstation talks to Mesh VPN agent over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Desktop workstation loses its network path to Mesh VPN agent.","h":"ok","s":"hard"},{"a":"n11","b":"n18","k":"ingress","m":"Desktop workstation relies on SSH server to carry public traffic.","p":"HTTPS from the public internet","f":"Per request","v":"Depends on traffic","i":"Public traffic between Desktop workstation and SSH server stops.","h":"ok","s":"hard"},{"a":"n18","b":"n76","k":"net","m":"SSH server talks to Network interfaces over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"SSH server loses its network path to Network interfaces.","h":"ok","s":"hard"},{"a":"n18","b":"n21","k":"net","m":"SSH server talks to Firewall over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"SSH server loses its network path to Firewall.","h":"ok","s":"soft"},{"a":"n70","b":"n21","k":"net","m":"Printing & discovery talks to Firewall over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Printing & discovery loses its network path to Firewall.","h":"ok","s":"soft"},{"a":"n70","b":"n69","k":"svc","m":"Printing & discovery runs under, or needs, Snap packages to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Printing & discovery stops or loses function when Snap packages is down.","h":"ok","s":"soft"},{"a":"n70","b":"n76","k":"net","m":"Printing & discovery talks to Network interfaces over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Printing & discovery loses its network path to Network interfaces.","h":"ok","s":"soft"},{"a":"n19","b":"n76","k":"svc","m":"Network manager runs under, or needs, Network interfaces to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Network manager stops or loses function when Network interfaces is down.","h":"ok","s":"hard"},{"a":"n19","b":"n09","k":"net","m":"Network manager talks to Home gateway & ISP DNS over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Network manager loses its network path to Home gateway & ISP DNS.","h":"ok","s":"hard"},{"a":"n20","b":"n19","k":"svc","m":"Local DNS resolver runs under, or needs, Network manager to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Local DNS resolver stops or loses function when Network manager is down.","h":"ok","s":"soft"},{"a":"n20","b":"n09","k":"net","m":"Local DNS resolver talks to Home gateway & ISP DNS over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Local DNS resolver loses its network path to Home gateway & ISP DNS.","h":"ok","s":"hard"},{"a":"n32","b":"n20","k":"net","m":"Remote-control agent talks to Local DNS resolver over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Remote-control agent loses its network path to Local DNS resolver.","h":"ok","s":"soft"},{"a":"n39","b":"n20","k":"net","m":"Mail listener talks to Local DNS resolver over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Mail listener loses its network path to Local DNS resolver.","h":"ok","s":"soft"},{"a":"n22","b":"n04","k":"api","m":"E-signature app calls Cloud storage & mail through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"E-signature app can't reach Cloud storage & mail, so features that need it stop.","h":"ok","s":"hard"},{"a":"n22","b":"n81","k":"data","m":"E-signature app reads or writes its data on Signing-app data.","p":"Local storage","f":"On read and write","v":"Varies","i":"E-signature app loses access to what it stored on Signing-app data.","h":"ok","s":"hard"},{"a":"n23","b":"n82","k":"data","m":"Push-notification server reads or writes its data on Push-server data.","p":"Local storage","f":"On read and write","v":"Varies","i":"Push-notification server loses access to what it stored on Push-server data.","h":"ok","s":"hard"},{"a":"n24","b":"n45","k":"svc","m":"Upload relay runs under, or needs, Virus scanner to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Upload relay stops or loses function when Virus scanner is down.","h":"ok","s":"hard"},{"a":"n24","b":"n78","k":"data","m":"Upload relay reads or writes its data on Upload volume.","p":"Local storage","f":"On read and write","v":"Varies","i":"Upload relay loses access to what it stored on Upload volume.","h":"ok","s":"hard"},{"a":"n24","b":"n02","k":"api","m":"Upload relay calls Public edge network through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Upload relay can't reach Public edge network, so features that need it stop.","h":"ok","s":"soft"},{"a":"n24","b":"n89","k":"data","m":"Upload relay reads or writes its data on Website repo.","p":"Local storage","f":"On read and write","v":"Varies","i":"Upload relay loses access to what it stored on Website repo.","h":"ok","s":"soft"},{"a":"n25","b":"n78","k":"data","m":"Upload relay admin reads or writes its data on Upload volume.","p":"Local storage","f":"On read and write","v":"Varies","i":"Upload relay admin loses access to what it stored on Upload volume.","h":"ok","s":"hard"},{"a":"n25","b":"n46","k":"svc","m":"Upload relay admin runs under, or needs, Container socket proxy to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Upload relay admin stops or loses function when Container socket proxy is down.","h":"ok","s":"hard"},{"a":"n25","b":"n15","k":"net","m":"Upload relay admin talks to Mesh VPN agent over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Upload relay admin loses its network path to Mesh VPN agent.","h":"ok","s":"hard"},{"a":"n46","b":"n64","k":"svc","m":"Container socket proxy runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Container socket proxy stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n45","b":"n08","k":"net","m":"Virus scanner talks to Package & signature mirrors over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Virus scanner loses its network path to Package & signature mirrors.","h":"ok","s":"soft"},{"a":"n45","b":"n79","k":"data","m":"Virus scanner reads or writes its data on Signature volume.","p":"Local storage","f":"On read and write","v":"Varies","i":"Virus scanner loses access to what it stored on Signature volume.","h":"ok","s":"hard"},{"a":"n26","b":"n27","k":"alert","m":"Form intake service sends alerts through Submission notifier.","p":"Notification","f":"When something happens","v":"A few per day","i":"Alerts from Form intake service no longer arrive.","h":"ok","s":"hard"},{"a":"n26","b":"n29","k":"svc","m":"Form intake service runs under, or needs, CRM server to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Form intake service stops or loses function when CRM server is down.","h":"dormant","s":"hard"},{"a":"n27","b":"n47","k":"alert","m":"Submission notifier sends alerts through Retired chat agent.","p":"Notification","f":"When something happens","v":"A few per day","i":"Alerts from Submission notifier no longer arrive.","h":"ok","s":"hard"},{"a":"n27","b":"n64","k":"net","m":"Submission notifier talks to Container runtime over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Submission notifier loses its network path to Container runtime.","h":"ok","s":"hard"},{"a":"n27","b":"n65","k":"svc","m":"Submission notifier runs under, or needs, User service manager to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Submission notifier stops or loses function when User service manager is down.","h":"ok","s":"soft"},{"a":"n47","b":"n06","k":"api","m":"Retired chat agent calls Chat notifications through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Retired chat agent can't reach Chat notifications, so features that need it stop.","h":"ok","s":"hard"},{"a":"n28","b":"n07","k":"api","m":"Media archive service calls Social platform API through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Media archive service can't reach Social platform API, so features that need it stop.","h":"ok","s":"hard"},{"a":"n28","b":"n85","k":"data","m":"Media archive service reads or writes its data on Media archive data.","p":"Local storage","f":"On read and write","v":"Varies","i":"Media archive service loses access to what it stored on Media archive data.","h":"ok","s":"hard"},{"a":"n28","b":"n65","k":"svc","m":"Media archive service runs under, or needs, User service manager to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Media archive service stops or loses function when User service manager is down.","h":"ok","s":"soft"},{"a":"n29","b":"n62","k":"data","m":"CRM server reads or writes its data on CRM database.","p":"Local storage","f":"On read and write","v":"Varies","i":"CRM server loses access to what it stored on CRM database.","h":"dormant","s":"hard"},{"a":"n29","b":"n63","k":"data","m":"CRM server reads or writes its data on CRM cache.","p":"Local storage","f":"On read and write","v":"Varies","i":"CRM server loses access to what it stored on CRM cache.","h":"dormant","s":"hard"},{"a":"n30","b":"n62","k":"data","m":"CRM worker reads or writes its data on CRM database.","p":"Local storage","f":"On read and write","v":"Varies","i":"CRM worker loses access to what it stored on CRM database.","h":"dormant","s":"hard"},{"a":"n30","b":"n63","k":"data","m":"CRM worker reads or writes its data on CRM cache.","p":"Local storage","f":"On read and write","v":"Varies","i":"CRM worker loses access to what it stored on CRM cache.","h":"dormant","s":"hard"},{"a":"n62","b":"n80","k":"data","m":"CRM database reads or writes its data on CRM volumes.","p":"Local storage","f":"On read and write","v":"Varies","i":"CRM database loses access to what it stored on CRM volumes.","h":"dormant","s":"hard"},{"a":"n63","b":"n80","k":"data","m":"CRM cache reads or writes its data on CRM volumes.","p":"Local storage","f":"On read and write","v":"Varies","i":"CRM cache loses access to what it stored on CRM volumes.","h":"dormant","s":"soft"},{"a":"n31","b":"n29","k":"svc","m":"Discovery intake runs under, or needs, CRM server to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Discovery intake stops or loses function when CRM server is down.","h":"dormant","s":"hard"},{"a":"n32","b":"n01","k":"api","m":"Remote-control agent calls Remote-control service through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Remote-control agent can't reach Remote-control service, so features that need it stop.","h":"ok","s":"hard"},{"a":"n32","b":"n65","k":"svc","m":"Remote-control agent runs under, or needs, User service manager to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Remote-control agent stops or loses function when User service manager is down.","h":"ok","s":"hard"},{"a":"n32","b":"n87","k":"data","m":"Remote-control agent reads or writes its data on Control repo.","p":"Local storage","f":"On read and write","v":"Varies","i":"Remote-control agent loses access to what it stored on Control repo.","h":"ok","s":"hard"},{"a":"n32","b":"n71","k":"load","m":"Remote-control agent uses capacity provided by Node runtime manager.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Remote-control agent slows down or fails when Node runtime manager runs out.","h":"ok","s":"soft"},{"a":"n32","b":"n73","k":"load","m":"Remote-control agent uses capacity provided by RAM.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Remote-control agent slows down or fails when RAM runs out.","h":"ok","s":"hard"},{"a":"n32","b":"n72","k":"load","m":"Remote-control agent uses capacity provided by CPU.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Remote-control agent slows down or fails when CPU runs out.","h":"ok","s":"soft"},{"a":"n32","b":"n38","k":"api","m":"Remote-control agent calls Web-fetch tool server through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Remote-control agent can't reach Web-fetch tool server, so features that need it stop.","h":"ok","s":"soft"},{"a":"n32","b":"n35","k":"api","m":"Remote-control agent calls Device tool server through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Remote-control agent can't reach Device tool server, so features that need it stop.","h":"dormant","s":"soft"},{"a":"n32","b":"n36","k":"api","m":"Remote-control agent calls Hosting tool server through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Remote-control agent can't reach Hosting tool server, so features that need it stop.","h":"dormant","s":"soft"},{"a":"n32","b":"n37","k":"api","m":"Remote-control agent calls Edge tool server through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Remote-control agent can't reach Edge tool server, so features that need it stop.","h":"dormant","s":"soft"},{"a":"n35","b":"n42","k":"api","m":"Device tool server calls Debug bridge server through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Device tool server can't reach Debug bridge server, so features that need it stop.","h":"dormant","s":"hard"},{"a":"n36","b":"n71","k":"load","m":"Hosting tool server uses capacity provided by Node runtime manager.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Hosting tool server slows down or fails when Node runtime manager runs out.","h":"dormant","s":"hard"},{"a":"n37","b":"n02","k":"api","m":"Edge tool server calls Public edge network through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Edge tool server can't reach Public edge network, so features that need it stop.","h":"dormant","s":"hard"},{"a":"n38","b":"n09","k":"net","m":"Web-fetch tool server talks to Home gateway & ISP DNS over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Web-fetch tool server loses its network path to Home gateway & ISP DNS.","h":"ok","s":"soft"},{"a":"n33","b":"n65","k":"svc","m":"Agent instances runs under, or needs, User service manager to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Agent instances stops or loses function when User service manager is down.","h":"ok","s":"hard"},{"a":"n33","b":"n87","k":"data","m":"Agent instances reads or writes its data on Control repo.","p":"Local storage","f":"On read and write","v":"Varies","i":"Agent instances loses access to what it stored on Control repo.","h":"ok","s":"soft"},{"a":"n33","b":"n71","k":"load","m":"Agent instances uses capacity provided by Node runtime manager.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Agent instances slows down or fails when Node runtime manager runs out.","h":"ok","s":"soft"},{"a":"n33","b":"n73","k":"load","m":"Agent instances uses capacity provided by RAM.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Agent instances slows down or fails when RAM runs out.","h":"ok","s":"soft"},{"a":"n34","b":"n65","k":"svc","m":"Agent daemon runs under, or needs, User service manager to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Agent daemon stops or loses function when User service manager is down.","h":"ok","s":"hard"},{"a":"n34","b":"n73","k":"load","m":"Agent daemon uses capacity provided by RAM.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Agent daemon slows down or fails when RAM runs out.","h":"ok","s":"soft"},{"a":"n42","b":"n10","k":"net","m":"Debug bridge server talks to Mobile device over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Debug bridge server loses its network path to Mobile device.","h":"dormant","s":"hard"},{"a":"n43","b":"n42","k":"svc","m":"Bridge keep-alive runs under, or needs, Debug bridge server to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Bridge keep-alive stops or loses function when Debug bridge server is down.","h":"ok","s":"hard"},{"a":"n43","b":"n10","k":"net","m":"Bridge keep-alive talks to Mobile device over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Bridge keep-alive loses its network path to Mobile device.","h":"dormant","s":"hard"},{"a":"n44","b":"n42","k":"svc","m":"Device bridge service runs under, or needs, Debug bridge server to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Device bridge service stops or loses function when Debug bridge server is down.","h":"dormant","s":"hard"},{"a":"n44","b":"n15","k":"net","m":"Device bridge service talks to Mesh VPN agent over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Device bridge service loses its network path to Mesh VPN agent.","h":"dormant","s":"hard"},{"a":"n44","b":"n43","k":"svc","m":"Device bridge service runs under, or needs, Bridge keep-alive to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Device bridge service stops or loses function when Bridge keep-alive is down.","h":"dormant","s":"soft"},{"a":"n39","b":"n05","k":"net","m":"Mail listener talks to Personal mailbox over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Mail listener loses its network path to Personal mailbox.","h":"ok","s":"hard"},{"a":"n39","b":"n40","k":"svc","m":"Mail listener runs under, or needs, Mail sync job to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Mail listener stops or loses function when Mail sync job is down.","h":"ok","s":"hard"},{"a":"n39","b":"n47","k":"alert","m":"Mail listener sends alerts through Retired chat agent.","p":"Notification","f":"When something happens","v":"A few per day","i":"Alerts from Mail listener no longer arrive.","h":"ok","s":"soft"},{"a":"n40","b":"n05","k":"net","m":"Mail sync job talks to Personal mailbox over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Mail sync job loses its network path to Personal mailbox.","h":"ok","s":"hard"},{"a":"n40","b":"n04","k":"api","m":"Mail sync job calls Cloud storage & mail through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Mail sync job can't reach Cloud storage & mail, so features that need it stop.","h":"ok","s":"hard"},{"a":"n40","b":"n84","k":"data","m":"Mail sync job reads or writes its data on Mail-sync state.","p":"Local storage","f":"On read and write","v":"Varies","i":"Mail sync job loses access to what it stored on Mail-sync state.","h":"ok","s":"hard"},{"a":"n40","b":"n88","k":"data","m":"Mail sync job reads or writes its data on Mail-sync repo.","p":"Local storage","f":"On read and write","v":"Varies","i":"Mail sync job loses access to what it stored on Mail-sync repo.","h":"ok","s":"hard"},{"a":"n40","b":"n47","k":"alert","m":"Mail sync job sends alerts through Retired chat agent.","p":"Notification","f":"When something happens","v":"A few per day","i":"Alerts from Mail sync job no longer arrive.","h":"ok","s":"hard"},{"a":"n40","b":"n65","k":"sched","m":"Mail sync job runs on a schedule that User service manager provides.","p":"Timer","f":"On a schedule","v":"Brief runs","i":"Scheduled runs of Mail sync job stop.","h":"ok","s":"soft"},{"a":"n41","b":"n04","k":"api","m":"Cloud drive mount calls Cloud storage & mail through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Cloud drive mount can't reach Cloud storage & mail, so features that need it stop.","h":"ok","s":"hard"},{"a":"n41","b":"n75","k":"data","m":"Cloud drive mount reads or writes its data on Root disk.","p":"Local storage","f":"On read and write","v":"Varies","i":"Cloud drive mount loses access to what it stored on Root disk.","h":"ok","s":"soft"},{"a":"n41","b":"n73","k":"load","m":"Cloud drive mount uses capacity provided by RAM.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Cloud drive mount slows down or fails when RAM runs out.","h":"ok","s":"soft"},{"a":"n49","b":"n32","k":"sched","m":"Agent watchdogs runs on a schedule that Remote-control agent provides.","p":"Timer","f":"On a schedule","v":"Brief runs","i":"Scheduled runs of Agent watchdogs stop.","h":"ok","s":"hard"},{"a":"n49","b":"n50","k":"sched","m":"Agent watchdogs runs on a schedule that Health-check script provides.","p":"Timer","f":"On a schedule","v":"Brief runs","i":"Scheduled runs of Agent watchdogs stop.","h":"ok","s":"hard"},{"a":"n49","b":"n47","k":"alert","m":"Agent watchdogs sends alerts through Retired chat agent.","p":"Notification","f":"When something happens","v":"A few per day","i":"Alerts from Agent watchdogs no longer arrive.","h":"ok","s":"hard"},{"a":"n50","b":"n32","k":"svc","m":"Health-check script runs under, or needs, Remote-control agent to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Health-check script stops or loses function when Remote-control agent is down.","h":"ok","s":"hard"},{"a":"n50","b":"n01","k":"net","m":"Health-check script talks to Remote-control service over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Health-check script loses its network path to Remote-control service.","h":"ok","s":"soft"},{"a":"n50","b":"n48","k":"svc","m":"Health-check script runs under, or needs, Retired dashboard to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Health-check script stops or loses function when Retired dashboard is down.","h":"ok","s":"soft"},{"a":"n50","b":"n42","k":"svc","m":"Health-check script runs under, or needs, Debug bridge server to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Health-check script stops or loses function when Debug bridge server is down.","h":"ok","s":"soft"},{"a":"n50","b":"n71","k":"load","m":"Health-check script uses capacity provided by Node runtime manager.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Health-check script slows down or fails when Node runtime manager runs out.","h":"ok","s":"soft"},{"a":"n51","b":"n32","k":"sched","m":"Auto-update timer runs on a schedule that Remote-control agent provides.","p":"Timer","f":"On a schedule","v":"Brief runs","i":"Scheduled runs of Auto-update timer stop.","h":"dormant","s":"hard"},{"a":"n51","b":"n47","k":"alert","m":"Auto-update timer sends alerts through Retired chat agent.","p":"Notification","f":"When something happens","v":"A few per day","i":"Alerts from Auto-update timer no longer arrive.","h":"dormant","s":"soft"},{"a":"n52","b":"n48","k":"svc","m":"Post-reboot check runs under, or needs, Retired dashboard to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Post-reboot check stops or loses function when Retired dashboard is down.","h":"ok","s":"hard"},{"a":"n52","b":"n16","k":"svc","m":"Post-reboot check runs under, or needs, Mesh web route to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Post-reboot check stops or loses function when Mesh web route is down.","h":"ok","s":"hard"},{"a":"n54","b":"n47","k":"alert","m":"Power-cut check sends alerts through Retired chat agent.","p":"Notification","f":"When something happens","v":"A few per day","i":"Alerts from Power-cut check no longer arrive.","h":"ok","s":"hard"},{"a":"n54","b":"n66","k":"data","m":"Power-cut check reads or writes its data on System journal.","p":"Local storage","f":"On read and write","v":"Varies","i":"Power-cut check loses access to what it stored on System journal.","h":"ok","s":"hard"},{"a":"n54","b":"n65","k":"sched","m":"Power-cut check runs on a schedule that User service manager provides.","p":"Timer","f":"On a schedule","v":"Brief runs","i":"Scheduled runs of Power-cut check stop.","h":"ok","s":"soft"},{"a":"n56","b":"n77","k":"svc","m":"Power policy units runs under, or needs, Power & firmware to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Power policy units stops or loses function when Power & firmware is down.","h":"ok","s":"hard"},{"a":"n56","b":"n76","k":"svc","m":"Power policy units runs under, or needs, Network interfaces to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Power policy units stops or loses function when Network interfaces is down.","h":"ok","s":"hard"},{"a":"n53","b":"n64","k":"svc","m":"Ready notifier runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when Container runtime is down.","h":"ok","s":"soft"},{"a":"n53","b":"n18","k":"svc","m":"Ready notifier runs under, or needs, SSH server to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when SSH server is down.","h":"ok","s":"soft"},{"a":"n53","b":"n15","k":"svc","m":"Ready notifier runs under, or needs, Mesh VPN agent to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when Mesh VPN agent is down.","h":"ok","s":"soft"},{"a":"n53","b":"n57","k":"svc","m":"Ready notifier runs under, or needs, Retired tool server to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when Retired tool server is down.","h":"dormant","s":"hard"},{"a":"n53","b":"n29","k":"svc","m":"Ready notifier runs under, or needs, CRM server to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when CRM server is down.","h":"dormant","s":"hard"},{"a":"n53","b":"n30","k":"svc","m":"Ready notifier runs under, or needs, CRM worker to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when CRM worker is down.","h":"dormant","s":"hard"},{"a":"n53","b":"n62","k":"svc","m":"Ready notifier runs under, or needs, CRM database to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when CRM database is down.","h":"dormant","s":"hard"},{"a":"n53","b":"n63","k":"svc","m":"Ready notifier runs under, or needs, CRM cache to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when CRM cache is down.","h":"dormant","s":"hard"},{"a":"n53","b":"n26","k":"svc","m":"Ready notifier runs under, or needs, Form intake service to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when Form intake service is down.","h":"ok","s":"soft"},{"a":"n53","b":"n22","k":"svc","m":"Ready notifier runs under, or needs, E-signature app to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when E-signature app is down.","h":"ok","s":"soft"},{"a":"n53","b":"n13","k":"svc","m":"Ready notifier runs under, or needs, Tunnel agent A to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Ready notifier stops or loses function when Tunnel agent A is down.","h":"ok","s":"soft"},{"a":"n53","b":"n02","k":"net","m":"Ready notifier talks to Public edge network over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Ready notifier loses its network path to Public edge network.","h":"ok","s":"soft"},{"a":"n53","b":"n23","k":"alert","m":"Ready notifier sends alerts through Push-notification server.","p":"Notification","f":"When something happens","v":"A few per day","i":"Alerts from Ready notifier no longer arrive.","h":"dormant","s":"hard"},{"a":"n53","b":"n66","k":"data","m":"Ready notifier reads or writes its data on System journal.","p":"Local storage","f":"On read and write","v":"Varies","i":"Ready notifier loses access to what it stored on System journal.","h":"ok","s":"hard"},{"a":"n53","b":"n72","k":"load","m":"Ready notifier uses capacity provided by CPU.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Ready notifier slows down or fails when CPU runs out.","h":"ok","s":"hard"},{"a":"n55","b":"n86","k":"data","m":"Backup script reads or writes its data on Cloud backups.","p":"Local storage","f":"On read and write","v":"Varies","i":"Backup script loses access to what it stored on Cloud backups.","h":"ok","s":"hard"},{"a":"n55","b":"n04","k":"api","m":"Backup script calls Cloud storage & mail through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Backup script can't reach Cloud storage & mail, so features that need it stop.","h":"ok","s":"soft"},{"a":"n55","b":"n83","k":"data","m":"Backup script reads or writes its data on Chat-agent state.","p":"Local storage","f":"On read and write","v":"Varies","i":"Backup script loses access to what it stored on Chat-agent state.","h":"ok","s":"hard"},{"a":"n55","b":"n87","k":"data","m":"Backup script reads or writes its data on Control repo.","p":"Local storage","f":"On read and write","v":"Varies","i":"Backup script loses access to what it stored on Control repo.","h":"ok","s":"hard"},{"a":"n55","b":"n88","k":"data","m":"Backup script reads or writes its data on Mail-sync repo.","p":"Local storage","f":"On read and write","v":"Varies","i":"Backup script loses access to what it stored on Mail-sync repo.","h":"ok","s":"hard"},{"a":"n55","b":"n85","k":"data","m":"Backup script reads or writes its data on Media archive data.","p":"Local storage","f":"On read and write","v":"Varies","i":"Backup script loses access to what it stored on Media archive data.","h":"ok","s":"soft"},{"a":"n55","b":"n78","k":"data","m":"Backup script reads or writes its data on Upload volume.","p":"Local storage","f":"On read and write","v":"Varies","i":"Backup script loses access to what it stored on Upload volume.","h":"ok","s":"hard"},{"a":"n55","b":"n80","k":"data","m":"Backup script reads or writes its data on CRM volumes.","p":"Local storage","f":"On read and write","v":"Varies","i":"Backup script loses access to what it stored on CRM volumes.","h":"ok","s":"soft"},{"a":"n55","b":"n64","k":"svc","m":"Backup script runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Backup script stops or loses function when Container runtime is down.","h":"ok","s":"soft"},{"a":"n55","b":"n81","k":"data","m":"Backup script reads or writes its data on Signing-app data.","p":"Local storage","f":"On read and write","v":"Varies","i":"Backup script loses access to what it stored on Signing-app data.","h":"ok","s":"hard"},{"a":"n58","b":"n86","k":"data","m":"Retired gateway reads or writes its data on Cloud backups.","p":"Local storage","f":"On read and write","v":"Varies","i":"Retired gateway loses access to what it stored on Cloud backups.","h":"ok","s":"soft"},{"a":"n59","b":"n86","k":"data","m":"Retired phone gateway reads or writes its data on Cloud backups.","p":"Local storage","f":"On read and write","v":"Varies","i":"Retired phone gateway loses access to what it stored on Cloud backups.","h":"ok","s":"soft"},{"a":"n60","b":"n86","k":"data","m":"Retired health monitor reads or writes its data on Cloud backups.","p":"Local storage","f":"On read and write","v":"Varies","i":"Retired health monitor loses access to what it stored on Cloud backups.","h":"ok","s":"soft"},{"a":"n86","b":"n04","k":"api","m":"Cloud backups calls Cloud storage & mail through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Cloud backups can't reach Cloud storage & mail, so features that need it stop.","h":"ok","s":"hard"},{"a":"n22","b":"n64","k":"svc","m":"E-signature app runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"E-signature app stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n13","b":"n64","k":"svc","m":"Tunnel agent A runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Tunnel agent A stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n14","b":"n64","k":"svc","m":"Tunnel agent B runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Tunnel agent B stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n24","b":"n64","k":"svc","m":"Upload relay runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Upload relay stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n25","b":"n64","k":"svc","m":"Upload relay admin runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Upload relay admin stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n45","b":"n64","k":"svc","m":"Virus scanner runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Virus scanner stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n23","b":"n64","k":"svc","m":"Push-notification server runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Push-notification server stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n26","b":"n64","k":"svc","m":"Form intake service runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"Form intake service stops or loses function when Container runtime is down.","h":"ok","s":"hard"},{"a":"n29","b":"n64","k":"svc","m":"CRM server runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"CRM server stops or loses function when Container runtime is down.","h":"dormant","s":"hard"},{"a":"n30","b":"n64","k":"svc","m":"CRM worker runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"CRM worker stops or loses function when Container runtime is down.","h":"dormant","s":"hard"},{"a":"n62","b":"n64","k":"svc","m":"CRM database runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"CRM database stops or loses function when Container runtime is down.","h":"dormant","s":"hard"},{"a":"n63","b":"n64","k":"svc","m":"CRM cache runs under, or needs, Container runtime to be running.","p":"Local service dependency","f":"While running","v":"Not measured","i":"CRM cache stops or loses function when Container runtime is down.","h":"dormant","s":"hard"},{"a":"n64","b":"n75","k":"load","m":"Container runtime uses capacity provided by Root disk.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Container runtime slows down or fails when Root disk runs out.","h":"ok","s":"hard"},{"a":"n64","b":"n73","k":"load","m":"Container runtime uses capacity provided by RAM.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Container runtime slows down or fails when RAM runs out.","h":"ok","s":"soft"},{"a":"n64","b":"n76","k":"net","m":"Container runtime talks to Network interfaces over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Container runtime loses its network path to Network interfaces.","h":"ok","s":"soft"},{"a":"n64","b":"n08","k":"api","m":"Container runtime calls Package & signature mirrors through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Container runtime can't reach Package & signature mirrors, so features that need it stop.","h":"ok","s":"soft"},{"a":"n65","b":"n73","k":"load","m":"User service manager uses capacity provided by RAM.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"User service manager slows down or fails when RAM runs out.","h":"ok","s":"soft"},{"a":"n66","b":"n75","k":"data","m":"System journal reads or writes its data on Root disk.","p":"Local storage","f":"On read and write","v":"Varies","i":"System journal loses access to what it stored on Root disk.","h":"ok","s":"hard"},{"a":"n67","b":"n90","k":"sched","m":"Cron scheduler runs on a schedule that Missing folder provides.","p":"Timer","f":"On a schedule","v":"Brief runs","i":"Scheduled runs of Cron scheduler stop.","h":"dormant","s":"hard"},{"a":"n68","b":"n08","k":"api","m":"Package manager calls Package & signature mirrors through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Package manager can't reach Package & signature mirrors, so features that need it stop.","h":"ok","s":"hard"},{"a":"n69","b":"n08","k":"api","m":"Snap packages calls Package & signature mirrors through an API.","p":"HTTPS API","f":"On demand","v":"Small requests","i":"Snap packages can't reach Package & signature mirrors, so features that need it stop.","h":"ok","s":"soft"},{"a":"n69","b":"n75","k":"data","m":"Snap packages reads or writes its data on Root disk.","p":"Local storage","f":"On read and write","v":"Varies","i":"Snap packages loses access to what it stored on Root disk.","h":"ok","s":"soft"},{"a":"n71","b":"n75","k":"data","m":"Node runtime manager reads or writes its data on Root disk.","p":"Local storage","f":"On read and write","v":"Varies","i":"Node runtime manager loses access to what it stored on Root disk.","h":"ok","s":"soft"},{"a":"n73","b":"n74","k":"load","m":"RAM uses capacity provided by Swap.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"RAM slows down or fails when Swap runs out.","h":"ok","s":"hard"},{"a":"n74","b":"n75","k":"load","m":"Swap uses capacity provided by Root disk.","p":"Shared resource","f":"Continuous","v":"A share of capacity","i":"Swap slows down or fails when Root disk runs out.","h":"ok","s":"hard"},{"a":"n76","b":"n09","k":"net","m":"Network interfaces talks to Home gateway & ISP DNS over the network.","p":"IP network","f":"Continuous","v":"Light traffic","i":"Network interfaces loses its network path to Home gateway & ISP DNS.","h":"ok","s":"hard"}];
+const FINDINGS=[];
+/* ---- node ordering inside each lane: fewer edge crossings ---- */
+function computeOrder(){
+  const nl=LANES.length;
+  const lane=new Map(NODES.map(n=>[n.id,n.lane]));
+  const start=LANES.map((_,l)=>NODES.filter(n=>n.lane===l).map(n=>n.id));
+  const nbrs=new Map(NODES.map(n=>[n.id,[]]));
+  EDGES.forEach(e=>{
+    if(lane.get(e.a)!==lane.get(e.b)){nbrs.get(e.a).push(e.b);nbrs.get(e.b).push(e.a);}
+  });
+  const yOf=ls=>{
+    const m=new Map();
+    ls.forEach(ids=>ids.forEach((id,r)=>m.set(id,(r+.5)/ids.length)));
+    return m;
+  };
+  const side=(ax,ay,bx,by,cx,cy)=>Math.sign((bx-ax)*(cy-ay)-(by-ay)*(cx-ax));
+  const crossings=ls=>{
+    const y=yOf(ls);
+    const segs=EDGES.filter(e=>lane.get(e.a)!==lane.get(e.b)).map(e=>{
+      let a=e.a,b=e.b;
+      if(lane.get(a)>lane.get(b)){const t=a;a=b;b=t;}
+      return [lane.get(a),y.get(a),lane.get(b),y.get(b),a,b];
+    });
+    let c=0;
+    for(let i=0;i<segs.length;i++){
+      for(let j=i+1;j<segs.length;j++){
+        const s=segs[i],t=segs[j];
+        if(s[4]===t[4]||s[5]===t[5]||s[4]===t[5]||s[5]===t[4])continue;
+        if(side(s[0],s[1],s[2],s[3],t[0],t[1])*side(s[0],s[1],s[2],s[3],t[2],t[3])<0&&
+           side(t[0],t[1],t[2],t[3],s[0],s[1])*side(t[0],t[1],t[2],t[3],s[2],s[3])<0)c++;
+      }
+    }
+    return c;
+  };
+  const copy=ls=>ls.map(l=>l.slice());
+  const before=crossings(start);
+  let best=copy(start),bestC=before,cur=copy(start);
+  const lanesFwd=[...Array(nl).keys()];
+  for(let it=0;it<12;it++){
+    (it%2===0?lanesFwd:lanesFwd.slice().reverse()).forEach(l=>{
+      const y=yOf(cur);
+      const keyed=cur[l].map((id,r)=>{
+        const ns=nbrs.get(id);
+        const k=ns.length?ns.reduce((s,n)=>s+y.get(n),0)/ns.length:y.get(id);
+        return {id,k,r};
+      });
+      keyed.sort((p,q)=>p.k-q.k||p.r-q.r);
+      cur[l]=keyed.map(p=>p.id);
+    });
+    const c=crossings(cur);
+    if(c<bestC){bestC=c;best=copy(cur);}
+  }
+  cur=copy(best);
+  for(let pass=0;pass<6;pass++){
+    let improved=false;
+    for(let l=0;l<nl;l++){
+      for(let r=0;r<cur[l].length-1;r++){
+        const t=cur[l][r];cur[l][r]=cur[l][r+1];cur[l][r+1]=t;
+        const c=crossings(cur);
+        if(c<bestC){bestC=c;best=copy(cur);improved=true;}
+        else{cur[l][r+1]=cur[l][r];cur[l][r]=t;}
+      }
+    }
+    if(!improved)break;
+  }
+  return {order:best,before,after:bestC};
+}
+(function(){
+"use strict";
+var STATE={run:"Running",sleep:"Sleeping",arch:"Archived",broke:"Broken"};
+var STATE_NOTE={run:"up and doing its job",sleep:"installed but stopped, or waiting on a switch",arch:"retired, files kept",broke:"failing right now"};
+var HEALTH={ok:"Working",warn:"Working, needs attention",broke:"Failing now",dormant:"Dormant: the far end isn't running"};
+var HRANK={broke:0,warn:1,dormant:2,ok:3};
+var KIND={ingress:"Public traffic",svc:"Runs under / needs running",net:"Network",api:"Outbound API",data:"Stored data / backup",alert:"Alerts",load:"Resource load",sched:"Schedule"};
+var KINDS=Object.keys(KIND).filter(function(k){return EDGES.some(function(e){return e.k===k;});});
+var STATES=Object.keys(STATE);
+var COLOR={run:0x3fd6a0,sleep:0x6ea8ff,arch:0x98a2b3,broke:0xff6464,warn:0xf0a93a,accent:0x5cc8e0,
+  ok:0x7f9bb5,ewarn:0xf0a93a,ebroke:0xff6464,dormant:0x6ea8ff};
+var LANE_TINT=[0x8aa4c0,0x5cc8e0,0x3fd6a0,0xb58cff,0xf0a93a,0x6ea8ff,0x98a2b3];
+
+var $=function(s){return document.querySelector(s);};
+function el(tag,attrs){
+  var n=document.createElement(tag);
+  var a=attrs||{};
+  Object.keys(a).forEach(function(k){
+    var v=a[k];
+    if(v==null||v===false)return;
+    if(k==="class")n.className=v;
+    else if(k==="text")n.textContent=v;
+    else if(k.indexOf("on")===0)n.addEventListener(k.slice(2),v);
+    else n.setAttribute(k,v===true?"":v);
+  });
+  for(var i=2;i<arguments.length;i++)add(n,arguments[i]);
+  return n;
+}
+function add(n,c){
+  if(c==null||c===false)return;
+  if(Array.isArray(c)){c.forEach(function(x){add(n,x);});return;}
+  n.append(c.nodeType?c:document.createTextNode(String(c)));
+}
+function clip(s,n){s=String(s||"");return s.length>n?s.slice(0,n-1).trimEnd()+"…":s;}
+function clamp(v,a,b){return v<a?a:v>b?b:v;}
+function mulberry32(a){
+  return function(){
+    a|=0;a=a+0x6D2B79F5|0;
+    var t=Math.imul(a^a>>>15,1|a);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return((t^t>>>14)>>>0)/4294967296;
+  };
+}
+
+var nodeById=new Map(NODES.map(function(n){return [n.id,n];}));
+var hay=new Map(NODES.map(function(n){
+  return [n.id,[n.id,n.label,n.sub,n.sum,n.warn].concat(n.facts.map(function(f){return f[0]+" "+f[1];})).join(" ").toLowerCase()];
+}));
+var reduced=!!(window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+var narrow=function(){return window.matchMedia("(max-width:760px)").matches;};
+
+/* ---------- 3D layout: lanes are slabs along x; nodes are placed in (y,z) ---------- */
+var LANE_DX=300,YMAX=250,ZMAX=200,MINSEP=76,SLAB_PAD=46;
+var laneX=function(l){return (l-(LANES.length-1)/2)*LANE_DX;};
+var order=computeOrder().order;
+var pos3=new Map();
+(function layout3d(){
+  var rng=mulberry32(20261020);
+  var laneOf=new Map(NODES.map(function(n){return [n.id,n.lane];}));
+  var P=new Map();
+  order.forEach(function(ids,l){
+    ids.forEach(function(id,r){
+      var y=ids.length>1?-YMAX*.8+(r/(ids.length-1))*YMAX*1.6:0;
+      var z=((r%3)-1)*ZMAX*.55+(rng()-.5)*50;
+      P.set(id,{y:y,z:z,vy:0,vz:0,l:l});
+    });
+  });
+  var byLane=order;
+  var ITER=520;
+  for(var it=0;it<ITER;it++){
+    var cool=1-it/ITER;
+    P.forEach(function(p){p.fy=-p.y*.003;p.fz=-p.z*.006;});
+    EDGES.forEach(function(e){
+      var a=P.get(e.a),b=P.get(e.b);
+      var dy=b.y-a.y,dz=b.z-a.z;
+      if(a.l!==b.l){
+        var k=.022;
+        a.fy+=dy*k;a.fz+=dz*k;b.fy-=dy*k;b.fz-=dz*k;
+      }else{
+        var d=Math.sqrt(dy*dy+dz*dz)||1,f=(d-120)*.018;
+        a.fy+=dy/d*f;a.fz+=dz/d*f;b.fy-=dy/d*f;b.fz-=dz/d*f;
+      }
+    });
+    byLane.forEach(function(ids){
+      for(var i=0;i<ids.length;i++){
+        for(var j=i+1;j<ids.length;j++){
+          var a=P.get(ids[i]),b=P.get(ids[j]);
+          var dy=b.y-a.y,dz=b.z-a.z,d=Math.sqrt(dy*dy+dz*dz)||.01;
+          var want=MINSEP*1.7;
+          if(d<want){
+            var f=(want-d)*.055;
+            a.fy-=dy/d*f;a.fz-=dz/d*f;b.fy+=dy/d*f;b.fz+=dz/d*f;
+          }
+        }
+      }
+    });
+    P.forEach(function(p){
+      p.vy=(p.vy+p.fy)*.78;p.vz=(p.vz+p.fz)*.78;
+      p.y=clamp(p.y+p.vy*cool,-YMAX,YMAX);
+      p.z=clamp(p.z+p.vz*cool,-ZMAX,ZMAX);
+    });
+  }
+  for(var pass=0;pass<120;pass++){
+    byLane.forEach(function(ids){
+      for(var i=0;i<ids.length;i++){
+        for(var j=i+1;j<ids.length;j++){
+          var a=P.get(ids[i]),b=P.get(ids[j]);
+          var dy=b.y-a.y,dz=b.z-a.z,d=Math.sqrt(dy*dy+dz*dz);
+          if(d<0.001){dy=rng()-.5;dz=rng()-.5;d=Math.sqrt(dy*dy+dz*dz);}
+          if(d<MINSEP){
+            var s=(MINSEP-d)/2/d;
+            a.y=clamp(a.y-dy*s,-YMAX,YMAX);a.z=clamp(a.z-dz*s,-ZMAX,ZMAX);
+            b.y=clamp(b.y+dy*s,-YMAX,YMAX);b.z=clamp(b.z+dz*s,-ZMAX,ZMAX);
+          }
+        }
+      }
+    });
+  }
+  P.forEach(function(p,id){pos3.set(id,new THREE.Vector3(laneX(laneOf.get(id)),p.y,p.z));});
+})();
+
+/* ---------- renderer, camera, lights ---------- */
+var stage=$("#stage"),tip=$("#tip");
+var renderer=null;
+try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});}catch(err){renderer=null;}
+if(!renderer||!renderer.getContext()){
+  $("#nogl").hidden=false;
+  var bootEl=$("#boot");if(bootEl)bootEl.remove();
+  return;
+}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+var BG=0x090f17;
+var scene=new THREE.Scene();
+scene.background=new THREE.Color(BG);
+var camera=new THREE.PerspectiveCamera(45,1,6,40000);
+scene.add(camera);
+scene.add(new THREE.AmbientLight(0xffffff,.55));
+scene.add(new THREE.HemisphereLight(0xbcd2ff,0x1a2230,.55));
+var head=new THREE.DirectionalLight(0xffffff,.8);
+head.position.set(.5,.9,1);
+camera.add(head);
+stage.append(renderer.domElement);
+
+/* ---------- textures and labels ---------- */
+function canvasTex(w,h,draw){
+  var c=document.createElement("canvas");c.width=w;c.height=h;
+  draw(c.getContext("2d"),w,h);
+  var t=new THREE.CanvasTexture(c);
+  t.minFilter=THREE.LinearFilter;t.generateMipmaps=false;
+  return t;
+}
+var glowTex=canvasTex(64,64,function(g){
+  var gr=g.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,"rgba(255,255,255,1)");gr.addColorStop(.3,"rgba(255,255,255,.5)");gr.addColorStop(1,"rgba(255,255,255,0)");
+  g.fillStyle=gr;g.fillRect(0,0,64,64);
+});
+var ringTex=canvasTex(128,128,function(g){
+  g.strokeStyle="#fff";g.lineWidth=9;g.beginPath();g.arc(64,64,52,0,Math.PI*2);g.stroke();
+});
+var dashTex=canvasTex(16,2,function(g){
+  g.fillStyle="#000";g.fillRect(0,0,16,2);
+  g.fillStyle="#fff";g.fillRect(0,0,9,2);
+});
+dashTex.wrapS=THREE.RepeatWrapping;dashTex.magFilter=THREE.NearestFilter;dashTex.minFilter=THREE.NearestFilter;
+
+var FAM={display:'"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif',
+  body:'"Instrument Sans","Segoe UI",system-ui,sans-serif',
+  mono:'"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace'};
+var labels=[];
+function Label(text,o){
+  this.text=text;this.o=o;
+  this.canvas=document.createElement("canvas");
+  this.tex=new THREE.CanvasTexture(this.canvas);
+  this.tex.minFilter=THREE.LinearFilter;this.tex.generateMipmaps=false;
+  this.mat=new THREE.SpriteMaterial({map:this.tex,transparent:true,depthWrite:false});
+  this.sprite=new THREE.Sprite(this.mat);
+  this.sprite.center.set(.5,o.anchor==null?1:o.anchor);
+  this.h=1;
+  this.draw();
+  labels.push(this);
+}
+Label.prototype.draw=function(){
+  var o=this.o,c=this.canvas,g=c.getContext("2d");
+  var font=(o.weight||400)+" "+o.px+"px "+FAM[o.fam];
+  g.font=font;
+  var w=Math.ceil(g.measureText(this.text).width)+Math.ceil(o.px*.8),h=Math.ceil(o.px*1.5);
+  c.width=w;c.height=h;
+  g.font=font;g.textAlign="center";g.textBaseline="middle";g.lineJoin="round";
+  g.lineWidth=o.px*.3;g.strokeStyle="rgba(9,15,23,.92)";
+  g.strokeText(this.text,w/2,h/2+o.px*.04);
+  g.fillStyle=o.color;g.fillText(this.text,w/2,h/2+o.px*.04);
+  this.tex.needsUpdate=true;
+  this.h=o.world*1.5;
+  this.w=this.h*w/h;
+  this.setScale(1);
+};
+Label.prototype.setScale=function(s){this.sprite.scale.set(this.w*s,this.h*s,1);};
+
+/* ---------- lane slabs ---------- */
+var laneGroup=new THREE.Group();
+scene.add(laneGroup);
+var slabGroup=new THREE.Group();
+laneGroup.add(slabGroup);
+LANES.forEach(function(name,l){
+  var x=laneX(l),tint=LANE_TINT[l];
+  var hy=YMAX+SLAB_PAD,hz=ZMAX+SLAB_PAD;
+  var plane=new THREE.Mesh(new THREE.PlaneGeometry(hz*2,hy*2),
+    new THREE.MeshBasicMaterial({color:tint,transparent:true,opacity:.055,side:THREE.DoubleSide,depthWrite:false}));
+  plane.rotation.y=Math.PI/2;plane.position.set(x,0,0);
+  slabGroup.add(plane);
+  var pts=[new THREE.Vector3(x,-hy,-hz),new THREE.Vector3(x,hy,-hz),new THREE.Vector3(x,hy,hz),new THREE.Vector3(x,-hy,hz)];
+  var border=new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts),
+    new THREE.LineBasicMaterial({color:tint,transparent:true,opacity:.5}));
+  slabGroup.add(border);
+  var ticks=[];
+  for(var k=-2;k<=2;k++){
+    ticks.push(new THREE.Vector3(x,k*hy/2.5,-hz),new THREE.Vector3(x,k*hy/2.5,hz));
+    ticks.push(new THREE.Vector3(x,-hy,k*hz/2.5),new THREE.Vector3(x,hy,k*hz/2.5));
+  }
+  slabGroup.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(ticks),
+    new THREE.LineBasicMaterial({color:tint,transparent:true,opacity:.09})));
+  var t1=new Label(name,{px:56,world:30,fam:"display",weight:600,color:"#"+tint.toString(16).padStart(6,"0"),anchor:0});
+  t1.sprite.position.set(x,hy+34,0);
+  var t2=new Label(LANE_SUB[l]+" · "+order[l].length,{px:36,world:12.5,fam:"mono",weight:400,color:"#8fa1b3",anchor:1});
+  t2.sprite.position.set(x,hy+30,0);
+  laneGroup.add(t1.sprite,t2.sprite);
+});
+
+/* ---------- dust for depth ---------- */
+var dust=(function(){
+  var rng=mulberry32(7),n=700,a=new Float32Array(n*3);
+  for(var i=0;i<n;i++){a[i*3]=(rng()-.5)*3200;a[i*3+1]=(rng()-.5)*1500;a[i*3+2]=(rng()-.5)*1800;}
+  var g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(a,3));
+  var pts=new THREE.Points(g,new THREE.PointsMaterial({color:0x5d7893,size:2.6,transparent:true,opacity:.55,depthWrite:false}));
+  scene.add(pts);
+  return pts;
+})();
+
+/* ---------- nodes ---------- */
+var base3=new Map();
+pos3.forEach(function(v,k){base3.set(k,v.clone());});
+var N3=new Map();
+var pickNodeObjs=[];
+function buildNode(n){
+  var g=new THREE.Group();
+  g.position.copy(pos3.get(n.id));
+  var col=COLOR[n.st],mats=[],body,R=15;
+  function std(c,ei,rough){
+    var m=new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:ei,roughness:rough,metalness:.1,transparent:true});
+    mats.push({m:m,base:1});return m;
+  }
+  if(n.st==="run"){
+    body=new THREE.Mesh(new THREE.SphereGeometry(13,24,16),std(col,.34,.4));R=15;
+  }else if(n.st==="sleep"){
+    var wm=new THREE.MeshBasicMaterial({color:col,wireframe:true,transparent:true});mats.push({m:wm,base:.95});
+    body=new THREE.Mesh(new THREE.SphereGeometry(13,14,9),wm);
+    var cm=new THREE.MeshBasicMaterial({color:col,transparent:true});mats.push({m:cm,base:.5});
+    body.add(new THREE.Mesh(new THREE.SphereGeometry(4,12,8),cm));R=15;
+  }else if(n.st==="arch"){
+    var bg=new THREE.BoxGeometry(19,19,19);
+    var bm=new THREE.MeshStandardMaterial({color:col,emissive:0x1b222c,roughness:.85,metalness:0,transparent:true});mats.push({m:bm,base:1});
+    body=new THREE.Mesh(bg,bm);body.rotation.set(.5,.6,0);
+    var lm=new THREE.LineBasicMaterial({color:0xd5dce6,transparent:true});mats.push({m:lm,base:.8});
+    body.add(new THREE.LineSegments(new THREE.EdgesGeometry(bg),lm));R=16;
+  }else{
+    body=new THREE.Mesh(new THREE.OctahedronGeometry(18),std(col,.6,.35));R=19;
+  }
+  g.add(body);
+  var pick=new THREE.Mesh(new THREE.SphereGeometry(24,8,6),new THREE.MeshBasicMaterial({visible:false}));
+  pick.userData.nid=n.id;g.add(pick);
+  var halo=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:COLOR.accent,transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false}));
+  halo.scale.set(1,1,1);halo.visible=false;g.add(halo);
+  var ring=null;
+  if(n.warn){
+    ring=new THREE.Sprite(new THREE.SpriteMaterial({map:ringTex,color:COLOR.warn,transparent:true,depthWrite:false}));
+    ring.scale.set(48,48,1);g.add(ring);
+  }
+  var name=new Label(n.label,{px:46,world:15.5,fam:"body",weight:600,color:"#e6edf5"});
+  var sub=new Label(clip(n.sub,52),{px:34,world:11.5,fam:"mono",weight:400,color:"#9fb2c4"});
+  g.add(name.sprite,sub.sprite);
+  scene.add(g);
+  var o={n:n,g:g,body:body,mats:mats,pick:pick,halo:halo,ring:ring,name:name,sub:sub,R:R,
+    vis:true,op:1,scale:1,tscale:1,haloOp:0,haloS:0,labelForce:false,phase:Math.random()*6.28};
+  N3.set(n.id,o);
+  pickNodeObjs.push(pick,name.sprite);
+  name.sprite.userData.nid=n.id;
+  return o;
+}
+NODES.forEach(buildNode);
+
+/* ---------- edges ---------- */
+function hash01(i,s){var x=Math.sin(i*127.1+s*311.7)*43758.5453;return x-Math.floor(x);}
+var E3=[];
+var edgeGroup=new THREE.Group();scene.add(edgeGroup);
+var pickEdgeObjs=[];
+function edgePoints(i,e,P){
+  var A=pos3.get(e.a),B=pos3.get(e.b),la=nodeById.get(e.a).lane,lb=nodeById.get(e.b).lane;
+  var jy=(hash01(i,1)-.5)*26,jz=(hash01(i,2)-.5)*26,off=18;
+  if(la===lb){
+    P[0].set(A.x+off,A.y,A.z);P[3].set(B.x+off,B.y,B.z);
+    var bulge=Math.min(150,46+A.distanceTo(B)*.35);
+    P[1].set(P[0].x+bulge,P[0].y+jy*.5,P[0].z+jz);
+    P[2].set(P[3].x+bulge,P[3].y+jy*.5,P[3].z+jz);
+  }else{
+    var dir=la<lb?1:-1;
+    P[0].set(A.x+dir*off,A.y,A.z);P[3].set(B.x-dir*off,B.y,B.z);
+    var dx=Math.max(60,Math.abs(P[3].x-P[0].x)*.45);
+    P[1].set(P[0].x+dir*dx,P[0].y+jy,P[0].z+jz);
+    P[2].set(P[3].x-dir*dx,P[3].y-jy,P[3].z-jz);
+  }
+}
+var _tan=new THREE.Vector3(),_up=new THREE.Vector3(0,1,0);
+function placeCone(x){
+  var P=x.pts;
+  x.curve.getTangent(1,_tan).normalize();
+  x.cone.quaternion.setFromUnitVectors(_up,_tan);
+  x.cone.position.copy(P[3]).addScaledVector(_tan,-6);
+}
+function refillGeo(dst,src){
+  ["position","normal"].forEach(function(k){dst.attributes[k].array.set(src.attributes[k].array);dst.attributes[k].needsUpdate=true;});
+  dst.boundingSphere=null;dst.boundingBox=null;
+  src.dispose();
+}
+EDGES.forEach(function(e,i){
+  var pts=[new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3(),new THREE.Vector3()];
+  edgePoints(i,e,pts);
+  var curve=new THREE.CubicBezierCurve3(pts[0],pts[1],pts[2],pts[3]);
+  var len=curve.getLength();
+  var col=e.h==="warn"?COLOR.ewarn:e.h==="broke"?COLOR.ebroke:e.h==="dormant"?COLOR.dormant:COLOR.ok;
+  var rad=e.s==="hard"?1:.55;
+  var dormant=e.h==="dormant";
+  var segs=Math.max(20,Math.min(56,Math.round(len/14)));
+  var hsegs=Math.max(12,Math.round(segs/2));
+  var tm;
+  if(dormant){
+    var dt=dashTex.clone();dt.needsUpdate=true;dt.repeat.set(len/17,1);
+    tm=new THREE.MeshBasicMaterial({color:col,transparent:true,alphaMap:dt,depthWrite:false});
+  }else{
+    tm=new THREE.MeshBasicMaterial({color:col,transparent:true,depthWrite:false});
+  }
+  var trad=dormant?.6:rad;
+  var tube=new THREE.Mesh(new THREE.TubeGeometry(curve,segs,trad,5,false),tm);
+  var glow=null;
+  if(!dormant){
+    glow=new THREE.Mesh(new THREE.TubeGeometry(curve,segs,rad*3.4,6,false),
+      new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.2,blending:THREE.AdditiveBlending,depthWrite:false}));
+    glow.visible=false;edgeGroup.add(glow);
+  }
+  var cone=new THREE.Mesh(new THREE.ConeGeometry(dormant?3.2:rad*2.6+2.4,12,10),
+    new THREE.MeshBasicMaterial({color:col,transparent:true,depthWrite:false}));
+  var hit=new THREE.Mesh(new THREE.TubeGeometry(curve,hsegs,6,4,false),new THREE.MeshBasicMaterial({visible:false}));
+  hit.userData.ei=i;
+  edgeGroup.add(tube,cone,hit);
+  pickEdgeObjs.push(hit);
+  var x={e:e,i:i,curve:curve,len:len,col:new THREE.Color(col),tube:tube,glow:glow,cone:cone,hit:hit,dormant:dormant,
+    st:"rest",vis:true,mid:curve.getPoint(.5),pts:pts,segs:segs,hsegs:hsegs,trad:trad,grad:rad*3.4,hitStale:false,glowStale:false};
+  placeCone(x);
+  E3.push(x);
+});
+function reshapeEdge(x,full){
+  edgePoints(x.i,x.e,x.pts);
+  x.curve.updateArcLengths();
+  x.len=x.curve.getLength();
+  x.curve.getPoint(.5,x.mid);
+  refillGeo(x.tube.geometry,new THREE.TubeGeometry(x.curve,x.segs,x.trad,5,false));
+  placeCone(x);
+  if(x.dormant)x.tube.material.alphaMap.repeat.set(x.len/17,1);
+  if(x.glow){
+    if(full||x.glow.visible){refillGeo(x.glow.geometry,new THREE.TubeGeometry(x.curve,x.segs,x.grad,6,false));x.glowStale=false;}
+    else x.glowStale=true;
+  }
+  if(full){refillGeo(x.hit.geometry,new THREE.TubeGeometry(x.curve,x.hsegs,6,4,false));x.hitStale=false;}
+  else x.hitStale=true;
+}
+
+/* ---------- flow particles ---------- */
+var flowIdx=[],flowT=[],flowSpeed=[],flowBase=[];
+E3.forEach(function(x){
+  if(x.dormant)return;
+  var bs=x.e.h==="broke"?34:x.e.h==="warn"?52:60+hash01(x.i,5)*30,sp=bs/x.len;
+  var cnt=x.len>420?3:x.len>200?2:1;
+  for(var k=0;k<cnt;k++){flowIdx.push(x.i);flowT.push((k/cnt+hash01(x.i,6))%1);flowSpeed.push(sp);flowBase.push(bs);}
+});
+var FN=flowIdx.length;
+var flowPos=new Float32Array(FN*3),flowCol=new Float32Array(FN*3);
+var flowGeo=new THREE.BufferGeometry();
+flowGeo.setAttribute("position",new THREE.BufferAttribute(flowPos,3));
+flowGeo.setAttribute("color",new THREE.BufferAttribute(flowCol,3));
+var flowPts=new THREE.Points(flowGeo,new THREE.PointsMaterial({size:10,map:glowTex,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+flowPts.frustumCulled=false;
+scene.add(flowPts);
+var flowInt=new Float32Array(FN);
+function bez(p,t,out,o){
+  var u=1-t,a=u*u*u,b=3*u*u*t,c=3*u*t*t,d=t*t*t;
+  out[o]=a*p[0].x+b*p[1].x+c*p[2].x+d*p[3].x;
+  out[o+1]=a*p[0].y+b*p[1].y+c*p[2].y+d*p[3].y;
+  out[o+2]=a*p[0].z+b*p[1].z+c*p[2].z+d*p[3].z;
+}
+function stepFlow(dt){
+  for(var k=0;k<FN;k++){
+    if(dt)flowT[k]=(flowT[k]+flowSpeed[k]*dt)%1;
+    var x=E3[flowIdx[k]],t=flowT[k];
+    bez(x.pts,t,flowPos,k*3);
+    var f=flowInt[k]*(t<.06?t/.06:t>.94?(1-t)/.06:1);
+    flowCol[k*3]=x.col.r*f;flowCol[k*3+1]=x.col.g*f;flowCol[k*3+2]=x.col.b*f;
+  }
+  flowGeo.attributes.position.needsUpdate=true;
+  flowGeo.attributes.color.needsUpdate=true;
+}
+
+/* ---------- orbit camera ---------- */
+var dom=renderer.domElement;
+var TH=Math.tan(camera.fov*Math.PI/360);
+var CENTER=new THREE.Vector3(0,20,0);
+var CENTER0=CENTER.clone();
+var spread=1,spreadT=1,sv=new THREE.Vector3(1,1,1);
+var tgt=CENTER.clone(),az=.61,elv=.26,dist=1700;
+var VIEWS={persp:{a:.61,e:.26},front:{a:0,e:0},top:{a:0,e:1.5}};
+var curView="persp";
+var W=0,H=0,offX=0;
+var vaz=0,vel2=0,lastMoveT=0;
+var spinOn=false;
+var tw=null;
+var ptrs=new Map(),down=null,pinch=null;
+var ptrPos={x:0,y:0,on:false},hoverDirty=false;
+var lastTap={id:null,t:0};
+var _pl=new THREE.Plane(),_n=new THREE.Vector3(),_p=new THREE.Vector3(),_m=new THREE.Vector2();
+var _xv=new THREE.Vector3(),_yv=new THREE.Vector3(),_zv=new THREE.Vector3();
+var rayc=new THREE.Raycaster();
+
+function resize(){
+  var w=stage.clientWidth||window.innerWidth||1,h=stage.clientHeight||window.innerHeight||1;
+  if(w===W&&h===H)return false;
+  W=w;H=h;
+  renderer.setSize(w,h,false);
+  camera.aspect=w/h;
+  offX=(!narrow()&&w>900)?Math.round(($("#hud").offsetWidth+32)/2):0;
+  if(offX)camera.setViewOffset(w,h,-offX,0,w,h);else camera.clearViewOffset();
+  camera.updateProjectionMatrix();
+  var bar=$("#bar"),app=$("#app");
+  if(bar&&app)app.style.setProperty("--barh",bar.offsetHeight+"px");
+  return true;
+}
+function fitDist(a,e){
+  a=a==null?az:a;e=e==null?elv:e;
+  var ce=Math.cos(e),back=[ce*Math.sin(a),Math.sin(e),ce*Math.cos(a)];
+  var right=[Math.cos(a),0,-Math.sin(a)];
+  var up=[-Math.sin(e)*Math.sin(a),ce,-Math.sin(e)*Math.cos(a)];
+  var asp=W/H,lx=narrow()?.94:offX?(W-2*offX)/W*.93:.8,ly=narrow()?.62:.9;
+  var need=300,xs=[-1010*sv.x,1010*sv.x],ys=[-330*sv.y,380*sv.y],zs=[-250*sv.z,250*sv.z];
+  for(var i=0;i<2;i++)for(var j=0;j<2;j++)for(var k=0;k<2;k++){
+    var px=xs[i],py=ys[j]-20,pz=zs[k];
+    var u=Math.abs(px*right[0]+pz*right[2]);
+    var v=Math.abs(px*up[0]+py*up[1]+pz*up[2]);
+    var wb=px*back[0]+py*back[1]+pz*back[2];
+    need=Math.max(need,u/(lx*TH*asp)+wb,v/(ly*TH)+wb);
+  }
+  return clamp(need*Math.pow(spread,-.12),300,9000);
+}
+function presetFor(name){
+  var v=VIEWS[name];
+  if(name==="persp"&&W/H<.85)return {a:.95,e:.6};
+  return v;
+}
+function applyCam(){
+  elv=clamp(elv,-1.5,1.5);
+  dist=clamp(dist,60,9000);
+  tgt.set(clamp(tgt.x,-1400*sv.x,1400*sv.x),clamp(tgt.y,-900*sv.y,900*sv.y),clamp(tgt.z,-900*sv.z,900*sv.z));
+  var ce=Math.cos(elv);
+  camera.position.set(tgt.x+dist*ce*Math.sin(az),tgt.y+dist*Math.sin(elv),tgt.z+dist*ce*Math.cos(az));
+  camera.lookAt(tgt);
+  camera.updateMatrixWorld();
+}
+function panBy(dx,dy){
+  camera.matrixWorld.extractBasis(_xv,_yv,_zv);
+  var s=2*dist*TH/H;
+  tgt.addScaledVector(_xv,-dx*s).addScaledVector(_yv,dy*s);
+}
+function zoomAt(f,cx,cy){
+  var nd=clamp(dist*f,60,9000);
+  f=nd/dist;
+  if(f===1)return;
+  if(cx!=null){
+    var r=dom.getBoundingClientRect();
+    _m.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1);
+    rayc.setFromCamera(_m,camera);
+    camera.getWorldDirection(_n);
+    _pl.setFromNormalAndCoplanarPoint(_n,tgt);
+    if(rayc.ray.intersectPlane(_pl,_p))tgt.sub(_p).multiplyScalar(f).add(_p);
+  }
+  dist=nd;
+}
+
+/* ---------- tweens, presets, spin ---------- */
+function ease(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+function flyTo(p,d,a,e,dur){
+  var to={x:p.x,y:p.y,z:p.z,d:clamp(d,60,9000),a:az,e:elv};
+  if(a!=null)to.a=az+Math.atan2(Math.sin(a-az),Math.cos(a-az));
+  if(e!=null)to.e=e;
+  vaz=vel2=0;
+  if(reduced){
+    tgt.set(to.x,to.y,to.z);dist=to.d;az=to.a;elv=to.e;tw=null;
+    return;
+  }
+  tw={t0:performance.now(),dur:dur||700,f:{x:tgt.x,y:tgt.y,z:tgt.z,d:dist,a:az,e:elv},to:to};
+}
+function stepTween(now){
+  if(!tw)return false;
+  var k=clamp((now-tw.t0)/tw.dur,0,1),s=ease(k),f=tw.f,t=tw.to;
+  tgt.set(f.x+(t.x-f.x)*s,f.y+(t.y-f.y)*s,f.z+(t.z-f.z)*s);
+  dist=Math.exp(Math.log(f.d)+(Math.log(t.d)-Math.log(f.d))*s);
+  az=f.a+(t.a-f.a)*s;
+  elv=f.e+(t.e-f.e)*s;
+  if(k>=1)tw=null;
+  return true;
+}
+function syncViewBtns(){
+  ["persp","front","top"].forEach(function(v){
+    var b=$("#v-"+v);
+    b.classList.toggle("on",curView===v);
+    b.setAttribute("aria-pressed",curView===v?"true":"false");
+  });
+}
+function leaveView(){
+  if(curView!==null){curView=null;syncViewBtns();}
+}
+function goView(name){
+  var v=presetFor(name);
+  flyTo(CENTER,fitDist(v.a,v.e),v.a,v.e);
+  curView=name;
+  syncViewBtns();
+}
+function setSpin(on){
+  spinOn=!!on&&!reduced;
+  var b=$("#spin");
+  b.classList.toggle("on",spinOn);
+  b.setAttribute("aria-pressed",spinOn?"true":"false");
+}
+function zoomStep(f){
+  leaveView();
+  flyTo(tgt,dist*f,null,null,240);
+}
+function stepCamera(dt,now){
+  if(!stepTween(now)&&!down&&!ptrs.size){
+    if(Math.abs(vaz)>.001||Math.abs(vel2)>.001){
+      az+=vaz*dt;elv+=vel2*dt;
+      var k=Math.exp(-dt*4.5);
+      vaz*=k;vel2*=k;
+    }else if(spinOn)az+=dt*.09;
+  }
+  applyCam();
+}
+
+/* ---------- picking ---------- */
+function pickScene(cx,cy){
+  var r=dom.getBoundingClientRect();
+  _m.set((cx-r.left)/r.width*2-1,-(cy-r.top)/r.height*2+1);
+  rayc.setFromCamera(_m,camera);
+  var objs=[],hits;
+  N3.forEach(function(o){
+    if(!o.vis)return;
+    objs.push(o.pick);
+    if(o.name.sprite.visible&&o.name.mat.opacity>.45)objs.push(o.name.sprite);
+  });
+  hits=rayc.intersectObjects(objs,false);
+  if(hits.length)return {kind:"node",id:hits[0].object.userData.nid};
+  var eo=[];
+  E3.forEach(function(x){if(x.vis)eo.push(x.hit);});
+  hits=rayc.intersectObjects(eo,false);
+  if(hits.length)return {kind:"edge",i:hits[0].object.userData.ei};
+  return null;
+}
+function updateHover(){
+  if(!hoverDirty)return;
+  hoverDirty=false;
+  if(down||ptrs.size||!ptrPos.on)return;
+  setHover(pickScene(ptrPos.x,ptrPos.y),ptrPos.x,ptrPos.y);
+}
+function onTap(cx,cy){
+  var h=pickScene(cx,cy),now=performance.now();
+  if(h&&h.kind==="node"){
+    var again=lastTap.id===h.id&&now-lastTap.t<420;
+    lastTap={id:again?null:h.id,t:now};
+    select({t:"node",id:h.id},{detail:true});
+    if(again){leaveView();flyToSel();}
+  }else if(h){
+    lastTap={id:null,t:0};
+    select({t:"edge",i:h.i},{detail:true});
+  }else{
+    lastTap={id:null,t:0};
+    clearSel();
+  }
+}
+
+/* ---------- pointer input ---------- */
+dom.style.touchAction="none";
+dom.addEventListener("contextmenu",function(ev){ev.preventDefault();});
+dom.addEventListener("pointerdown",function(ev){
+  if(ev.pointerType==="mouse"&&ev.button>2)return;
+  ev.preventDefault();
+  try{dom.setPointerCapture(ev.pointerId);}catch(err){}
+  ptrs.set(ev.pointerId,{x:ev.clientX,y:ev.clientY});
+  tw=null;vaz=vel2=0;
+  setSpin(false);
+  leaveView();
+  hideTip();
+  if(ptrs.size===1){
+    down={x:ev.clientX,y:ev.clientY,t:performance.now(),moved:false,
+      pan:ev.button===2||ev.button===1||ev.shiftKey||ev.ctrlKey||ev.metaKey,type:ev.pointerType};
+  }else{
+    if(down)down.moved=true;
+    var a=Array.from(ptrs.values());
+    pinch={d:Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y),mx:(a[0].x+a[1].x)/2,my:(a[0].y+a[1].y)/2};
+  }
+});
+dom.addEventListener("pointermove",function(ev){
+  var p=ptrs.get(ev.pointerId);
+  if(!p){
+    if(ev.pointerType==="mouse"){ptrPos.x=ev.clientX;ptrPos.y=ev.clientY;ptrPos.on=true;hoverDirty=true;}
+    return;
+  }
+  if(ptrs.size===1&&down){
+    if(!down.moved&&Math.hypot(ev.clientX-down.x,ev.clientY-down.y)<5)return;
+    var dx=ev.clientX-p.x,dy=ev.clientY-p.y,now=performance.now();
+    p.x=ev.clientX;p.y=ev.clientY;
+    if(!down.moved){down.moved=true;stage.classList.add("drag");}
+    if(down.pan)panBy(dx,dy);
+    else{
+      az-=dx*.0062;elv+=dy*.0062;
+      var gap=Math.max(.008,(now-lastMoveT)/1000);
+      vaz=vaz*.5+(-dx*.0062/gap)*.5;
+      vel2=vel2*.5+(dy*.0062/gap)*.5;
+      lastMoveT=now;
+    }
+  }else if(ptrs.size>=2){
+    p.x=ev.clientX;p.y=ev.clientY;
+    var a=Array.from(ptrs.values()),d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
+    var mx=(a[0].x+a[1].x)/2,my=(a[0].y+a[1].y)/2;
+    if(pinch&&pinch.d>0&&d>0)dist=clamp(dist*pinch.d/d,60,9000);
+    if(pinch)panBy(mx-pinch.mx,my-pinch.my);
+    pinch={d:d,mx:mx,my:my};
+  }
+});
+function endPtr(ev){
+  if(!ptrs.delete(ev.pointerId))return;
+  try{dom.releasePointerCapture(ev.pointerId);}catch(err){}
+  if(ptrs.size<2)pinch=null;
+  if(ptrs.size===1){
+    var rest=Array.from(ptrs.values())[0];
+    down={x:rest.x,y:rest.y,t:performance.now(),moved:true,pan:false,type:"touch"};
+    return;
+  }
+  if(ptrs.size>0)return;
+  stage.classList.remove("drag");
+  var d=down;down=null;
+  if(!d)return;
+  if(ev.type==="pointerup"&&!d.moved&&performance.now()-d.t<500)onTap(ev.clientX,ev.clientY);
+  else if(d.moved&&!d.pan&&!reduced&&performance.now()-lastMoveT<80){
+    vaz=clamp(vaz,-3,3);vel2=clamp(vel2,-3,3);
+  }else vaz=vel2=0;
+}
+dom.addEventListener("pointerup",endPtr);
+dom.addEventListener("pointercancel",endPtr);
+dom.addEventListener("pointerleave",function(ev){
+  if(ev.pointerType!=="mouse")return;
+  ptrPos.on=false;hoverDirty=false;
+  if(!ptrs.size)setHover(null);
+});
+dom.addEventListener("wheel",function(ev){
+  ev.preventDefault();
+  tw=null;
+  leaveView();
+  var dy=ev.deltaY*(ev.deltaMode===1?16:ev.deltaMode===2?400:1);
+  zoomAt(Math.exp(dy*(ev.ctrlKey?.01:.0012)),ev.clientX,ev.clientY);
+  hideTip();
+},{passive:false});
+
+/* ---------- keyboard ---------- */
+window.addEventListener("keydown",function(ev){
+  var t=ev.target;
+  if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable))return;
+  if(ev.altKey||ev.ctrlKey||ev.metaKey)return;
+  var k=ev.key,used=true;
+  if(k==="ArrowLeft"){az-=.12;}
+  else if(k==="ArrowRight"){az+=.12;}
+  else if(k==="ArrowUp"){elv+=.1;}
+  else if(k==="ArrowDown"){elv-=.1;}
+  else if(k==="+"||k==="="){zoomStep(1/1.35);used=false;}
+  else if(k==="-"||k==="_"){zoomStep(1.35);used=false;}
+  else if(k==="f"||k==="F"){flyToSel();used=false;}
+  else if(k==="r"||k==="R"){goView("persp");used=false;}
+  else if(k==="Escape"){clearSel();used=false;}
+  else return;
+  if(used){tw=null;vaz=vel2=0;leaveView();ev.preventDefault();}
+});
+
+/* ---------- state and visibility ---------- */
+var sel=null,hov=null;
+var state={q:"",status:new Set(STATES),kinds:new Set(KINDS)};
+var view={edgeVis:[],nodeVis:new Map()};
+var base={nodes:new Map(),edges:[]};
+var detail=$("#detail"),dbody=$("#dbody"),dtog=$("#dtog"),qIn=$("#q"),qn=$("#qn");
+
+function computeView(){
+  var st=state;
+  var ok=function(n){return st.status.has(n.st);};
+  var edgeVis=EDGES.map(function(e){
+    return st.kinds.has(e.k)&&ok(nodeById.get(e.a))&&ok(nodeById.get(e.b));
+  });
+  var nodeVis=new Map(NODES.map(function(n){
+    return [n.id,ok(n)];
+  }));
+  view={edgeVis:edgeVis,nodeVis:nodeVis};
+}
+function validateSel(){
+  if(!sel)return;
+  if(sel.t==="node"&&!view.nodeVis.get(sel.id))sel=null;
+  else if(sel.t==="edge"&&!view.edgeVis[sel.i])sel=null;
+}
+function paint(){
+  var q=state.q.trim().toLowerCase();
+  var matched=q?new Set(NODES.filter(function(n){return hay.get(n.id).indexOf(q)>=0;}).map(function(n){return n.id;})):null;
+  qn.textContent=q?matched.size+(matched.size===1?" match":" matches"):"";
+  var sNode=null,sEdge=-1,nb=new Set();
+  if(sel){
+    if(sel.t==="node"){
+      sNode=sel.id;
+      EDGES.forEach(function(e,i){
+        if(!view.edgeVis[i])return;
+        if(e.a===sNode)nb.add(e.b);else if(e.b===sNode)nb.add(e.a);
+      });
+    }else if(sel.t==="edge"){
+      sEdge=sel.i;nb.add(EDGES[sEdge].a);nb.add(EDGES[sEdge].b);
+    }
+  }
+  base.nodes=new Map();
+  NODES.forEach(function(n){
+    var vis=view.nodeVis.get(n.id),isSel=sNode===n.id,isNb=!isSel&&nb.has(n.id);
+    var dim=sel?!(isSel||isNb):(matched?!matched.has(n.id):false);
+    base.nodes.set(n.id,{vis:vis,sel:isSel,nb:isNb,dim:vis&&dim,match:!!(matched&&matched.has(n.id)&&!sel)});
+  });
+  base.edges=EDGES.map(function(e,i){
+    if(!view.edgeVis[i])return "hide";
+    if(sEdge===i)return "sel";
+    if(sNode)return (e.a===sNode||e.b===sNode)?"on":"faint";
+    if(sEdge>=0)return "faint";
+    if(matched)return (matched.has(e.a)||matched.has(e.b))?"rest":"faint";
+    return "rest";
+  });
+  applyVis();
+}
+function applyVis(){
+  var hn=hov&&hov.kind==="node"?hov.id:null,he=hov&&hov.kind==="edge"?hov.i:-1;
+  N3.forEach(function(o,id){
+    var b=base.nodes.get(id),isHov=hn===id;
+    o.vis=b.vis;
+    o.g.visible=b.vis;
+    o.tOp=b.dim?.2:1;
+    o.tHalo=b.sel?1:(b.nb||b.match)?.5:isHov?.4:0;
+    o.strong=b.sel;
+    o.tScale=b.sel?1.3:isHov?1.18:1;
+    o.force=b.sel||b.nb||b.match||isHov;
+    o.hover=isHov;
+  });
+  E3.forEach(function(x,i){
+    var st=base.edges[i],e=x.e;
+    if(st!=="hide"&&st!=="sel"&&(he===i||(hn&&(e.a===hn||e.b===hn))))st="on";
+    x.st=st;
+    x.vis=st!=="hide";
+    var hot=e.h==="warn"||e.h==="broke";
+    x.tOp=st==="hide"?0:st==="faint"?.07:(st==="on"||st==="sel")?1:hot?.85:x.dormant?.6:e.s==="soft"?.42:.55;
+    x.tGlow=(st==="on"||st==="sel")?1:0;
+    x.flow=st==="hide"||x.dormant?0:st==="faint"?.1:(st==="on"||st==="sel")?1:hot?.9:.6;
+  });
+  for(var k=0;k<FN;k++)flowInt[k]=E3[flowIdx[k]].flow;
+}
+
+/* ---------- hover tip ---------- */
+function hideTip(){tip.hidden=true;}
+function tipFill(h){
+  tip.replaceChildren();
+  if(h.kind==="node"){
+    var n=nodeById.get(h.id);
+    tip.append(el("b",{text:n.label}),el("span",{"class":"m",text:n.sub}),
+      el("div",{},statePill(n.st)));
+    if(n.warn)tip.append(el("div",{"class":"w",text:"! "+n.warn}));
+  }else{
+    var e=EDGES[h.i];
+    tip.append(el("b",{},nodeById.get(e.a).label+" → "+nodeById.get(e.b).label),
+      el("span",{"class":"m",text:KIND[e.k]+" · "+clip(e.p,48)}),
+      el("div",{},healthPill(e.h)));
+  }
+}
+function setHover(h,x,y){
+  var same=(!h&&!hov)||(h&&hov&&h.kind===hov.kind&&(h.kind==="node"?h.id===hov.id:h.i===hov.i));
+  if(!same){
+    hov=h;
+    applyVis();
+    stage.classList.toggle("pick",!!h);
+    if(h)tipFill(h);
+  }
+  if(!h){hideTip();return;}
+  tip.hidden=false;
+  var r=stage.getBoundingClientRect();
+  var tw_=tip.offsetWidth,th_=tip.offsetHeight;
+  var px=x-r.left+16,py=y-r.top+18;
+  if(px+tw_>r.width-8)px=x-r.left-tw_-14;
+  if(py+th_>r.height-8)py=y-r.top-th_-14;
+  tip.style.left=Math.max(8,px)+"px";
+  tip.style.top=Math.max(8,py)+"px";
+}
+
+/* ---------- small pieces ---------- */
+function hlLine(h,w){return el("span",{"class":"hl"+(h==="ok"?"":" "+h)+(w?" "+w:"")});}
+function pill(dot,text,extra){return el("span",{"class":"pill"+(extra?" "+extra:"")},dot,text);}
+function statePill(st){return pill(el("span",{"class":"dot "+st}),STATE[st]);}
+function healthPill(h){return pill(hlLine(h),HEALTH[h]);}
+function relItem(i,otherId){
+  var e=EDGES[i],o=nodeById.get(otherId);
+  return el("li",{},el("button",{type:"button",onclick:function(){select({t:"edge",i:i},{fly:true});}},
+    el("span",{"class":"r1"},hlLine(e.h,e.s==="soft"?"thin":""),el("span",{"class":"t"},o.label),el("span",{"class":"kind"},KIND[e.k])),
+    el("span",{"class":"r2"},(e.s==="soft"?"soft · ":"")+clip(e.p,44)+" · "+clip(e.v,64))));
+}
+function nodeBtn(id){
+  var n=nodeById.get(id);
+  return el("li",{},el("button",{type:"button",onclick:function(){select({t:"node",id:id},{fly:true});}},
+    el("span",{"class":"r1"},el("span",{"class":"dot "+n.st}),el("span",{"class":"t"},n.label)),
+    el("span",{"class":"r2"},n.sub)));
+}
+function sortedByHealth(list){
+  return list.slice().sort(function(x,y){return HRANK[EDGES[x].h]-HRANK[EDGES[y].h]||x-y;});
+}
+
+/* ---------- detail panel ---------- */
+function renderDetail(){
+  dbody.replaceChildren();
+  if(!sel)dbody.append(detailOverview());
+  else if(sel.t==="node")dbody.append(detailNode(nodeById.get(sel.id)));
+  else if(sel.t==="edge")dbody.append(detailEdge(sel.i));
+  dbody.scrollTop=0;
+}
+function detailOverview(){
+  var counts={};
+  STATES.forEach(function(s){counts[s]=NODES.filter(function(n){return n.st===s;}).length;});
+  var dormant=EDGES.filter(function(e){return e.h==="dormant";}).length;
+  var f=document.createDocumentFragment();
+  f.append(el("h2",{text:"How to read this map"}));
+  f.append(el("p",{"class":"lead"},"Seven slabs run from the outside world on the left to hardware on the right. An arrow points from the thing that needs to the thing it needs, so following arrows right shows what each system stands on. Click a shape or a line for the detail."));
+  f.append(el("p",{"class":"note"},NODES.length+" systems and "+EDGES.length+" links. "+counts.run+" running, "+counts.sleep+" sleeping, "+counts.arch+" archived, "+counts.broke+" broken. "+dormant+" links are dormant because the far end is not running."));
+  f.append(el("h3",{text:"Shapes"}));
+  var lg=el("div",{"class":"legend"});
+  var shapes={run:"solid sphere",sleep:"wireframe sphere",arch:"grey tilted cube",broke:"red pulsing diamond"};
+  STATES.forEach(function(s){lg.append(el("div",{},el("span",{"class":"dot "+s}),el("span",{},el("b",{},STATE[s]),", "+shapes[s]+": "+STATE_NOTE[s])));});
+  lg.append(el("div",{},el("span",{"class":"dot ring"}),el("span",{},"Amber ring: a warning is attached")));
+  f.append(lg);
+  f.append(el("h3",{text:"Lines"}));
+  var ll=el("div",{"class":"legend"});
+  ["ok","dormant"].forEach(function(h){ll.append(el("div",{},hlLine(h),el("span",{},HEALTH[h])));});
+  ll.append(el("div",{},hlLine("ok","thick"),el("span",{},"Hard dependency: the caller fails without it")));
+  ll.append(el("div",{},hlLine("ok","thin"),el("span",{},"Soft dependency: the caller degrades")));
+  ll.append(el("div",{},el("span",{"class":"dot run"}),el("span",{},"Moving specks show the direction of the dependency")));
+  f.append(ll);
+  f.append(el("p",{"class":"note"},"Names and descriptions on this public copy are deliberately generic."));
+  return f;
+}
+function detailNode(n){
+  var out=[],inn=[],total=0;
+  EDGES.forEach(function(e,i){
+    if(e.a===n.id||e.b===n.id)total++;
+    if(!view.edgeVis[i])return;
+    if(e.a===n.id)out.push(i);
+    if(e.b===n.id)inn.push(i);
+  });
+  var f=document.createDocumentFragment();
+  f.append(el("h2",{text:n.label}));
+  f.append(el("div",{"class":"sub",text:n.sub}));
+  f.append(el("div",{"class":"pills"},statePill(n.st),pill(null,LANES[n.lane])));
+  if(n.warn)f.append(el("div",{"class":"warnbox"},el("b",{},"Attention: "),n.warn));
+  f.append(el("p",{text:n.sum}));
+  if(n.facts.length){
+    f.append(el("h3",{text:"Facts"}));
+    var dl=el("dl",{"class":"kv"});
+    n.facts.forEach(function(kv){dl.append(el("dt",{text:kv[0]}),el("dd",{text:kv[1]}));});
+    f.append(dl);
+  }
+  f.append(el("h3",{text:"Depends on ("+out.length+")"}));
+  f.append(out.length?el("ul",{"class":"rel"},sortedByHealth(out).map(function(i){return relItem(i,EDGES[i].b);})):el("p",{"class":"note",text:"Nothing recorded that this needs."}));
+  f.append(el("h3",{text:"Needed by ("+inn.length+")"}));
+  f.append(inn.length?el("ul",{"class":"rel"},sortedByHealth(inn).map(function(i){return relItem(i,EDGES[i].a);})):el("p",{"class":"note",text:"Nothing recorded that depends on this."}));
+  if(total>out.length+inn.length)f.append(el("p",{"class":"note",text:(total-out.length-inn.length)+" more link(s) hidden by the filters."}));
+  return f;
+}
+function detailEdge(i){
+  var e=EDGES[i],a=nodeById.get(e.a),b=nodeById.get(e.b);
+  var f=document.createDocumentFragment();
+  f.append(el("h2",{},a.label+" → "+b.label));
+  f.append(el("div",{"class":"sub",text:a.label+" depends on "+b.label}));
+  f.append(el("div",{"class":"pills"},pill(null,KIND[e.k]),healthPill(e.h),pill(hlLine("ok",e.s==="soft"?"thin":"thick"),e.s==="soft"?"Soft dependency":"Hard dependency")));
+  var dl=el("dl",{"class":"kv"});
+  [["How it works",e.m],["Protocol",e.p,1],["How often",e.f],["How much",e.v],["If it breaks",e.i]].forEach(function(r){
+    dl.append(el("dt",{text:r[0]}),el("dd",{"class":r[2]?"m":null,text:r[1]}));
+  });
+  f.append(dl);
+  f.append(el("p",{"class":"note"},e.s==="soft"?"Soft: the caller keeps working with reduced function if this goes away.":"Hard: the caller stops working without this."));
+  f.append(el("div",{"class":"acts"},
+    el("button",{"class":"btn",type:"button",onclick:function(){select({t:"node",id:a.id},{fly:true});}},"Go to "+a.label),
+    el("button",{"class":"btn",type:"button",onclick:function(){select({t:"node",id:b.id},{fly:true});}},"Go to "+b.label)));
+  return f;
+}
+function openDetail(){
+  detail.classList.remove("min");
+  dtog.textContent="Hide";
+  dtog.setAttribute("aria-expanded","true");
+}
+
+/* ---------- controls ---------- */
+var chipEls={status:new Map(),kinds:new Map()};
+function toggleIn(set,all,key){
+  if(set.size===all.length){set.clear();set.add(key);}
+  else if(set.has(key)){set.delete(key);if(!set.size)all.forEach(function(k){set.add(k);});}
+  else set.add(key);
+}
+function buildChips(){
+  var sbox=$("#status-chips"),kbox=$("#kind-chips");
+  STATES.forEach(function(s){
+    var n=NODES.filter(function(x){return x.st===s;}).length;
+    var b=el("button",{"class":"chip",type:"button","aria-pressed":"true",title:"Click to show only this state; click others to add them back",
+      onclick:function(){toggleIn(state.status,STATES,s);refresh();}},
+      el("span",{"class":"dot "+s}),STATE[s],el("span",{"class":"n"},n));
+    chipEls.status.set(s,b);sbox.append(b);
+  });
+  KINDS.forEach(function(k){
+    var n=EDGES.filter(function(e){return e.k===k;}).length;
+    var b=el("button",{"class":"chip",type:"button","aria-pressed":"true",title:"Click to show only this kind of link; click others to add them back",
+      onclick:function(){toggleIn(state.kinds,KINDS,k);refresh();}},
+      KIND[k],el("span",{"class":"n"},n));
+    chipEls.kinds.set(k,b);kbox.append(b);
+  });
+}
+function syncControls(){
+  STATES.forEach(function(s){chipEls.status.get(s).setAttribute("aria-pressed",state.status.has(s)?"true":"false");});
+  KINDS.forEach(function(k){chipEls.kinds.get(k).setAttribute("aria-pressed",state.kinds.has(k)?"true":"false");});
+}
+/* ---------- actions ---------- */
+function refresh(o){
+  o=o||{};
+  computeView();
+  validateSel();
+  paint();
+  syncControls();
+  if(o.detail!==false)renderDetail();
+}
+function selFocus(){
+  if(!sel)return null;
+  if(sel.t==="node")return {p:pos3.get(sel.id).clone(),d:Math.min(dist,780)};
+  if(sel.t==="edge"){
+    var x=E3[sel.i],A=pos3.get(x.e.a),B=pos3.get(x.e.b);
+    return {p:x.mid.clone(),d:clamp(A.distanceTo(B)*1.45+260,500,1400)};
+  }
+  return null;
+}
+function flyToSel(){
+  var f=selFocus();
+  if(!f)return;
+  var p=f.p;
+  if(narrow()&&!detail.classList.contains("min")){
+    camera.matrixWorld.extractBasis(_xv,_yv,_zv);
+    p=p.clone().addScaledVector(_yv,-.3*f.d*TH);
+  }
+  flyTo(p,f.d);
+}
+function select(s,o){
+  o=o||{};
+  sel=s;
+  refresh();
+  if(o.detail||o.fly)openDetail();
+  if(o.fly){leaveView();flyToSel();}
+}
+function clearSel(){
+  if(!sel)return;
+  sel=null;
+  refresh();
+}
+function resetAll(){
+  sel=null;hov=null;state.q="";
+  state.status=new Set(STATES);state.kinds=new Set(KINDS);
+  qIn.value="";
+  refresh();
+  setSpin(false);
+  goView("persp");
+}
+
+/* ---------- expand: spread the whole map out ---------- */
+var SPREAD_MAX=3,SPREAD_ON=2,ZOOM_KEEP=.62,SPREAD_X=.5,SPREAD_Z=1;
+var _nsv=new THREE.Vector3(),_rv=new THREE.Vector3();
+function applySpread(S,done){
+  _nsv.set(1+(S-1)*SPREAD_X,S,1+(S-1)*SPREAD_Z);
+  _rv.set(_nsv.x/sv.x,_nsv.y/sv.y,_nsv.z/sv.z);
+  var rd=Math.pow(Math.cbrt(_rv.x*_rv.y*_rv.z),ZOOM_KEEP);
+  spread=S;
+  sv.copy(_nsv);
+  base3.forEach(function(b,id){
+    var p=pos3.get(id).copy(b).multiply(sv);
+    N3.get(id).g.position.copy(p);
+  });
+  CENTER.copy(CENTER0).multiply(sv);
+  slabGroup.scale.copy(sv);
+  dust.scale.copy(sv);
+  if(tw){
+    tw.f.x*=_rv.x;tw.f.y*=_rv.y;tw.f.z*=_rv.z;tw.f.d*=rd;
+    if(curView){
+      tw.to.x=CENTER.x;tw.to.y=CENTER.y;tw.to.z=CENTER.z;tw.to.d=fitDist(tw.to.a,tw.to.e);
+    }else{
+      tw.to.x*=_rv.x;tw.to.y*=_rv.y;tw.to.z*=_rv.z;tw.to.d*=rd;
+    }
+  }else if(curView){
+    tgt.copy(CENTER);dist=fitDist(az,elv);
+  }else{
+    tgt.multiply(_rv);dist*=rd;
+  }
+  for(var i=0;i<E3.length;i++){
+    var x=E3[i];
+    if(done||x.vis)reshapeEdge(x,!!done);
+  }
+  for(var k=0;k<FN;k++)flowSpeed[k]=flowBase[k]/E3[flowIdx[k]].len;
+}
+function stepSpread(dt){
+  if(spread===spreadT)return;
+  var ns=reduced?spreadT:spread+(spreadT-spread)*Math.min(1,dt*6);
+  if(Math.abs(spreadT-ns)<.004)ns=spreadT;
+  applySpread(ns,ns===spreadT);
+}
+function setSpread(v){
+  spreadT=clamp(Math.round(v*20)/20,1,SPREAD_MAX);
+  syncSpreadUi();
+}
+function syncSpreadUi(){
+  var on=spreadT>1.04,sl=$("#spread"),b=$("#exp");
+  sl.value=spreadT;
+  $("#spreadv").textContent=spreadT.toFixed(2).replace(/0$/,"")+"×";
+  b.classList.toggle("on",on);
+  b.setAttribute("aria-pressed",on?"true":"false");
+}
+
+/* ---------- per-frame animation ---------- */
+var laneLabels=labels.slice(0,LANES.length*2);
+
+var _wp=new THREE.Vector3();
+
+var _lp=new THREE.Vector3(),labelQ=[];
+function animateNodes(dt,t){
+  var k=Math.min(1,dt*9),camP=camera.position,hw=W/2,hh=H/2;
+  labelQ.length=0;
+  N3.forEach(function(o){
+    if(!o.vis)return;
+    o.op+=(o.tOp-o.op)*k;
+    o.scale+=(o.tScale-o.scale)*k;
+    o.haloOp+=(o.tHalo-o.haloOp)*k;
+    for(var i=0;i<o.mats.length;i++)o.mats[i].m.opacity=o.mats[i].base*o.op;
+    var pulse=1,n=o.n;
+    if(n.st==="broke"){pulse=1+.08*Math.sin(t*3.4+o.phase);if(!reduced)o.body.rotation.y+=dt*.7;}
+    else if(n.st==="run"&&!reduced){pulse=1+.025*Math.sin(t*1.3+o.phase);}
+    o.body.scale.setScalar(o.scale*pulse);
+    if(n.st==="arch"&&!reduced)o.body.rotation.y+=dt*.08;
+    if(o.haloOp>.015){
+      o.halo.visible=true;
+      var hs=(o.strong?118:86)*(1+.05*Math.sin(t*2.1+o.phase));
+      o.halo.scale.set(hs,hs,1);
+      o.halo.material.opacity=o.haloOp*(o.strong?.95:.7);
+    }else o.halo.visible=false;
+    if(o.ring){
+      var rp=reduced?0:Math.sin(t*2.4+o.phase);
+      var rs=50*(1+.06*rp);
+      o.ring.scale.set(rs,rs,1);
+      o.ring.material.opacity=(.7+.25*rp)*(.3+.7*o.op);
+    }
+    var d=camP.distanceTo(o.g.position);
+    var ppu=H/(2*d*TH);
+    var s=clamp(10/(15.5*ppu),1,3.2);
+    var fontPx=ppu*15.5*s;
+    o.ls=s;o.ld=d;
+    var want=o.force?1:clamp((fontPx-5)/4,0,1);
+    _lp.copy(o.g.position).project(camera);
+    var behind=_lp.z>1||_lp.z<-1;
+    var cx=_lp.x*hw+hw,cy=-_lp.y*hh+hh;
+    var lw=o.name.w*s*ppu,lh=o.name.h*s*ppu*.62;
+    var top=cy+(o.R+5)*ppu;
+    labelQ.push({o:o,want:behind?0:want,x0:cx-lw/2,x1:cx+lw/2,y0:top,y1:top+lh,
+      pr:(o.force?1000:0)+(o.n.st==="broke"?200:0)+(o.n.warn?120:0)+o.deg*4+(o.n.st==="run"?1:0)});
+  });
+  labelQ.sort(function(a,b){return b.pr-a.pr;});
+  var placed=[],kk=Math.min(1,dt*10);
+  for(var qi=0;qi<labelQ.length;qi++){
+    var q=labelQ[qi],o2=q.o,ta=q.want;
+    if(ta>.03){
+      var clash=false;
+      if(!o2.force){
+        for(var pj=0;pj<placed.length;pj++){
+          var r=placed[pj];
+          if(q.x0<r.x1+4&&q.x1>r.x0-4&&q.y0<r.y1+2&&q.y1>r.y0-2){clash=true;break;}
+        }
+      }
+      if(clash)ta=0;else placed.push(q);
+    }
+    o2.la+=(ta-o2.la)*kk;
+    var a=o2.la*(.25+.75*o2.op),s2=o2.ls,d2=o2.ld;
+    o2.name.sprite.visible=a>.03;
+    o2.name.mat.opacity=a;
+    o2.name.setScale(s2);
+    var ny=-(o2.R+5);
+    o2.name.sprite.position.y=ny;
+    var showSub=(o2.strong||o2.hover||d2<620)&&a>.5;
+    if(showSub){
+      var sa=o2.strong||o2.hover?1:clamp((620-d2)/160,0,1);
+      o2.sub.sprite.visible=sa>.03;
+      o2.sub.mat.opacity=sa*a;
+      o2.sub.setScale(s2);
+      o2.sub.sprite.position.y=ny-o2.name.h*s2*.66;
+    }else o2.sub.sprite.visible=false;
+  }
+}
+function animateEdges(dt,t){
+  var k=Math.min(1,dt*8);
+  for(var i=0;i<E3.length;i++){
+    var x=E3[i];
+    x.op=x.op==null?x.tOp:x.op;
+    x.op+=(x.tOp-x.op)*k;
+    x.gl=x.gl==null?x.tGlow:x.gl;
+    x.gl+=(x.tGlow-x.gl)*k;
+    var vis=x.op>.012;
+    x.tube.visible=vis;x.cone.visible=vis;
+    if(!vis){if(x.glow)x.glow.visible=false;continue;}
+    var o=x.op;
+    if(x.st==="rest"&&x.e.h==="broke"&&!reduced)o*=.8+.2*Math.sin(t*3.2+i);
+    x.tube.material.opacity=o;
+    x.cone.material.opacity=o;
+    if(x.glow){
+      x.glow.visible=x.gl>.02;
+      if(x.glow.visible)x.glow.material.opacity=x.gl*(x.st==="sel"?.38:.22);
+    }
+  }
+}
+function animateLaneLabels(){
+  var ppu=H/(2*dist*TH),HY=(YMAX+SLAB_PAD)*sv.y;
+  for(var l=0;l<LANES.length;l++){
+    var t1=laneLabels[2*l],t2=laneLabels[2*l+1];
+    t1.sprite.position.x=t2.sprite.position.x=laneX(l)*sv.x;
+    var s1=clamp(15/(30*ppu),1,2.2),s2=clamp(10/(12.5*ppu),1,2.2);
+    t1.setScale(s1);t2.setScale(s2);
+    var y2=HY+8+t2.h*s2;
+    t2.sprite.position.y=y2;
+    t1.sprite.position.y=y2+4;
+    var a=clamp(.35+.65*(curView==="top"?.6:1),0,1);
+    t1.mat.opacity=a;t2.mat.opacity=a;
+  }
+}
+
+var lastT=performance.now(),firstFrame=true;
+function frame(){
+  requestAnimationFrame(frame);
+  var now=performance.now();
+  var dt=Math.min(.05,(now-lastT)/1000);
+  lastT=now;
+  var t=now/1000;
+  if(resize()&&curView&&!tw)dist=fitDist(az,elv);
+  stepSpread(dt);
+  stepCamera(dt,now);
+  updateHover();
+  animateNodes(dt,t);
+  animateEdges(dt,t);
+  animateLaneLabels();
+  stepFlow(reduced?0:dt);
+  renderer.render(scene,camera);
+  if(firstFrame){
+    firstFrame=false;
+    var boot=$("#boot");
+    if(boot)boot.remove();
+  }
+}
+
+/* ---------- wiring ---------- */
+var hud=$("#hud"),hudtog=$("#hudtog");
+$("#zin").addEventListener("click",function(){zoomStep(1/1.35);});
+$("#zout").addEventListener("click",function(){zoomStep(1.35);});
+["persp","front","top"].forEach(function(v){$("#v-"+v).addEventListener("click",function(){goView(v);});});
+$("#spin").addEventListener("click",function(){setSpin(!spinOn);});
+if(reduced){$("#spin").disabled=true;$("#spin").title="Off because the system asks for reduced motion";}
+$("#fit").addEventListener("click",function(){goView(curView||"persp");});
+$("#exp").addEventListener("click",function(){setSpread(spreadT>1.04?1:SPREAD_ON);});
+$("#spread").addEventListener("input",function(){setSpread(parseFloat(this.value)||1);});
+$("#reset").addEventListener("click",resetAll);
+qIn.addEventListener("input",function(){state.q=qIn.value;paint();});
+qIn.addEventListener("keydown",function(ev){
+  if(ev.key==="Enter"){
+    var q=state.q.trim().toLowerCase();
+    if(!q)return;
+    var m=NODES.find(function(n){return view.nodeVis.get(n.id)&&hay.get(n.id).indexOf(q)>=0;});
+    if(m){select({t:"node",id:m.id},{fly:true});if(narrow())setHud(true);}
+  }else if(ev.key==="Escape"){qIn.blur();}
+});
+function setHud(folded){
+  hud.classList.toggle("fold",folded);
+  hudtog.setAttribute("aria-expanded",folded?"false":"true");
+  hudtog.textContent=folded?"Filters":"Done";
+}
+hudtog.addEventListener("click",function(){setHud(!hud.classList.contains("fold"));});
+dtog.addEventListener("click",function(){
+  var min=detail.classList.toggle("min");
+  dtog.textContent=min?"Show":"Hide";
+  dtog.setAttribute("aria-expanded",min?"false":"true");
+});
+window.addEventListener("keydown",function(ev){
+  var tg=ev.target&&ev.target.tagName;
+  if(tg==="INPUT"||tg==="TEXTAREA"||ev.metaKey||ev.ctrlKey||ev.altKey)return;
+  if(ev.key==="/"){ev.preventDefault();if(narrow())setHud(false);qIn.focus();}
+  else if(ev.key==="e"||ev.key==="E"){setSpread(spreadT>1.04?1:SPREAD_ON);}
+});
+
+/* ---------- start ---------- */
+resize();
+var SPREAD_START=1.7;
+spreadT=SPREAD_START;applySpread(SPREAD_START,true);syncSpreadUi();
+var v0=presetFor("persp");az=v0.a;elv=v0.e;
+tgt.copy(CENTER);
+dist=fitDist(az,elv);
+applyCam();
+syncViewBtns();
+N3.forEach(function(o){o.deg=0;o.la=1;});
+EDGES.forEach(function(e){N3.get(e.a).deg++;N3.get(e.b).deg++;});
+buildChips();
+refresh();
+N3.forEach(function(o){o.op=o.tOp;o.scale=o.tScale;o.haloOp=o.tHalo;});
+E3.forEach(function(x){x.op=x.tOp;x.gl=x.tGlow;});
+if(document.fonts&&document.fonts.ready){
+  document.fonts.ready.then(function(){labels.forEach(function(l){l.draw();});});
+}
+requestAnimationFrame(frame);
+
+})();
+</script>
+</body>
+</html>
