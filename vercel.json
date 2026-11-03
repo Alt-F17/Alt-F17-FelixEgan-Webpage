@@ -1,13 +1,125 @@
 {
+  "redirects": [
+    {
+      "source": "/pluto-report.html",
+      "destination": "https://alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/pluto-report.html",
+      "permanent": true
+    },
+    {
+      "source": "/pluto-presentation.html",
+      "destination": "https://alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/pluto-presentation.html",
+      "permanent": true
+    },
+    {
+      "source": "/Dawson_Fall2026_Schedule_Builder.html",
+      "destination": "https://alt-f17.github.io/dawson-schedule-builder/",
+      "permanent": true
+    },
+    {
+      "source": "/ArrowPuzzle.html",
+      "destination": "https://alt-f17.github.io/other-projects/arrow-puzzle/",
+      "permanent": true
+    },
+    {
+      "source": "/fitnessv2.html",
+      "destination": "https://alt-f17.github.io/other-projects/dawson-fitness/fitnessv2.html",
+      "permanent": true
+    },
+    {
+      "source": "/fitnessv3.html",
+      "destination": "https://alt-f17.github.io/other-projects/dawson-fitness/fitnessv3.html",
+      "permanent": true
+    },
+    {
+      "source": "/productdesign.html",
+      "destination": "https://alt-f17.github.io/other-projects/product-design-checklist/",
+      "permanent": true
+    },
+    {
+      "source": "/IP.html",
+      "destination": "https://alt-f17.github.io/other-projects/aura/IP.html",
+      "permanent": true
+    },
+    {
+      "source": "/aura.html",
+      "destination": "https://alt-f17.github.io/other-projects/aura/aura.html",
+      "permanent": true
+    },
+    {
+      "source": "/repo-links.html",
+      "destination": "https://alt-f17.github.io/other-projects/aura/repo-links.html",
+      "permanent": true
+    },
+    {
+      "source": "/PDGE.html",
+      "destination": "https://alt-f17.github.io/other-projects/pdge/",
+      "permanent": true
+    },
+    {
+      "source": "/talk.html",
+      "destination": "https://alt-f17.github.io/other-projects/lightning-talk/",
+      "permanent": true
+    },
+    {
+      "source": "/netronizer.html",
+      "destination": "https://alt-f17.github.io/other-projects/robot-arm/netronizer.html",
+      "permanent": true
+    },
+    {
+      "source": "/RobotArm.onnx",
+      "destination": "https://alt-f17.github.io/other-projects/robot-arm/RobotArm.onnx",
+      "permanent": true
+    },
+    {
+      "source": "/theta-map",
+      "destination": "https://alt-f17.github.io/other-projects/theta-map/",
+      "permanent": true
+    },
+    {
+      "source": "/theta-map/:path*",
+      "destination": "https://alt-f17.github.io/other-projects/theta-map/",
+      "permanent": true
+    },
+    {
+      "source": "/lead-form",
+      "destination": "https://alt-f17.github.io/other-projects/simon/lead-form/",
+      "permanent": true
+    },
+    {
+      "source": "/lead-form/:path*",
+      "destination": "https://alt-f17.github.io/other-projects/simon/lead-form/",
+      "permanent": true
+    },
+    {
+      "source": "/lead-form.html",
+      "destination": "https://alt-f17.github.io/other-projects/simon/lead-form-legacy.html",
+      "permanent": true
+    },
+    {
+      "source": "/sf-study-tools",
+      "destination": "https://alt-f17.github.io/other-projects/sf-study-tools/",
+      "permanent": true
+    },
+    {
+      "source": "/sf-study-tools/:path*",
+      "destination": "https://alt-f17.github.io/other-projects/sf-study-tools/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
-    { "source": "/theta-map", "destination": "/theta-map/index.html" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
     }
   ]

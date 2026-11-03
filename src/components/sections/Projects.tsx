@@ -36,7 +36,7 @@ const projects: Project[] = [
     },
     technologies: ["Python", "AI", "NLP"],
     githubUrl: "https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant",
-    liveUrl: "https://felixegan.me/pluto-report.html",
+    liveUrl: "https://alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/pluto-report.html",
     id: "pluto-ai",
   },
   {

@@ -52,14 +52,14 @@ discord: Alt_F17
   description: Personal & Logical Utility Task Organizer — fully local, open-source, privacy-focused AI assistant.
   tech: Python, NLP, Local Inference
   github: https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant
-  live: https://felixegan.me/pluto-report.html
+  live: https://alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/pluto-report.html
 
 /projects/aura-robot → AURA — Unity Robot Analysis
   description: Reinforcement learning robot training in Unity with ML-Agents. Python analysis pipeline for model mutation and visualization.
   tech: C#, Unity, ML-Agents, Python, Reinforcement Learning
   github: https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis
   live: https://aura-project-monorepo.vercel.app/
-  extra: https://felixegan.me/netronizer.html (ONNX model breakdown)
+  extra: https://alt-f17.github.io/other-projects/robot-arm/netronizer.html (ONNX model breakdown)
 
 /projects/cloudsource → CloudSource
   description: Globe-first AI travel planner built during a hackathon. 3D Cesium globe with orbiting panels for flights, culture, budget, and AI assistant.
@@ -76,7 +76,7 @@ discord: Alt_F17
   description: Study platform for science, CS, and math students. Interactive quizzes, flashcards, code snippets, debugging challenges.
   tech: React, TypeScript, Next.js, Node.js, Express
   github: https://github.com/Alt-F17/sf-study-tools
-  live: https://sf-study-tools.com
+  live: https://alt-f17.github.io/other-projects/sf-study-tools/
 
 ## Project Subpage Sections (each /projects/:id page has)
 

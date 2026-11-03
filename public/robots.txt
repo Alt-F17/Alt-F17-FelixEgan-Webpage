@@ -1,14 +1,6 @@
 User-agent: *
 Allow: /
-Disallow: /IP.html
-Disallow: /talk.html
-Disallow: /repo-links.html
-Disallow: /productdesign.html
-Disallow: /pluto-presentation.html
-Disallow: /pluto-report.html
 Disallow: /previousWebpagePleaseNoOneFindThis.html
-Disallow: /PDGE.html
-Disallow: /aura.html
 Disallow: /paste
 
 Sitemap: https://www.felixegan.me/sitemap.xml
