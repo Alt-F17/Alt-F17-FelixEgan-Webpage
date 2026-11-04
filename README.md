@@ -2,23 +2,6 @@
 
 Hybrid personal + studio website focused on local SMB web development in Montreal.
 
-## Positioning Values (from feasibility study)
-
-- Target market size: `80,000-110,000` small businesses in greater Montreal
-- Underserved pool estimate: `20,000-35,000` businesses needing modern websites
-- Bilingual default: English + French
-- Recommended niche emphasis: trades and home services
-- Founding client promo: `20%` discount for early testimonials/case studies
-
-### Package Pricing Baseline (CAD)
-
-- Starter (brochure): `1,200-1,800`
-- Growth (site + CMS/funnel): `2,000-2,800`
-- Premium (advanced/custom): `3,000-4,500`
-- Landing page: `600-900`
-- Redesign baseline: `1,200-1,800`
-- Maintenance retainer: `100-150/month`
-
 ## Stack
 
 - React + TypeScript + Vite
