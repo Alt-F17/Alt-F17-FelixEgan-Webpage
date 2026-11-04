@@ -161,8 +161,18 @@ function toPublicItem(item) {
 // Paste item routes
 // ---------------------------------------------------------------------
 
+// Authenticated item responses are per-account (and /open, /download carry
+// decrypted content), but sit behind a Cloudflare Tunnel that keys on URL +
+// Origin and can't see the Bearer token. `append` (not `setHeader`) keeps the
+// CORS middleware's `Vary: Origin`.
+function markAuthedItemResponse(req, res, next) {
+  res.setHeader("Cache-Control", "no-store");
+  res.append("Vary", "Authorization");
+  next();
+}
+
 // Caller's own items only.
-app.get("/api/paste/items", requireAuth, (req, res) => {
+app.get("/api/paste/items", requireAuth, markAuthedItemResponse, (req, res) => {
   const items = db
     .getItemsByOwner(req.session.accountId)
     .filter((item) => LIVE_STATUSES.includes(item.status))
@@ -172,7 +182,7 @@ app.get("/api/paste/items", requireAuth, (req, res) => {
 
 // Any authenticated account — the cross-account sharing route
 // (felixegan.me/paste/i/<id>). Metadata only, same shape as above.
-app.get("/api/paste/items/:id", requireAuth, (req, res) => {
+app.get("/api/paste/items/:id", requireAuth, markAuthedItemResponse, (req, res) => {
   const item = db.getItemById(req.params.id);
   if (!item || item.deletedAt || !LIVE_STATUSES.includes(item.status)) {
     res.status(404).json({ error: "not_found", message: "Item not found.", retryAt: null });
@@ -630,6 +640,7 @@ async function pinAttemptMiddleware(req, res, next) {
 app.post(
   "/api/paste/open",
   requireAuth,
+  markAuthedItemResponse,
   express.json({ limit: "1kb" }),
   pinAttemptMiddleware,
   (req, res) => {
@@ -657,7 +668,7 @@ app.post(
   },
 );
 
-app.get("/api/paste/download", requireAuth, pinAttemptMiddleware, (req, res) => {
+app.get("/api/paste/download", requireAuth, markAuthedItemResponse, pinAttemptMiddleware, (req, res) => {
   const item = req.pasteItem;
   if (item.kind !== "file") {
     res.status(400).json({ error: "invalid_request", message: "Only file items can be downloaded.", retryAt: null });
