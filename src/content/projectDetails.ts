@@ -69,7 +69,7 @@ export const projectDetails: Record<string, ProjectDetail> = {
     },
     links: [
       { label: "GitHub", url: "https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant", type: "github" },
-      { label: "Report", url: "https://felixegan.me/pluto-report.html", type: "live" },
+      { label: "Report", url: "https://alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/pluto-report.html", type: "live" },
     ],
   },
 
@@ -102,7 +102,7 @@ export const projectDetails: Record<string, ProjectDetail> = {
     links: [
       { label: "GitHub", url: "https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis", type: "github" },
       { label: "Website", url: "https://aura-project-monorepo.vercel.app/", type: "live" },
-      { label: "ONNX Breakdown", url: "https://felixegan.me/netronizer.html", type: "live" },
+      { label: "ONNX Breakdown", url: "https://alt-f17.github.io/other-projects/robot-arm/netronizer.html", type: "live" },
     ],
   },
 
@@ -190,7 +190,7 @@ export const projectDetails: Record<string, ProjectDetail> = {
     },
     links: [
       { label: "GitHub", url: "https://github.com/Alt-F17/sf-study-tools", type: "github" },
-      { label: "Live", url: "https://sf-study-tools.com", type: "live" },
+      { label: "Live", url: "https://alt-f17.github.io/other-projects/sf-study-tools/", type: "live" },
     ],
   },
 };

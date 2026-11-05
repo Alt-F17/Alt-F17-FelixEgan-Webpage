@@ -73,7 +73,7 @@ discord: Alt_F17
   tech: C# / Unity, ML-Agents, Python, RL
   github: https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis
   live: https://aura-project-monorepo.vercel.app/
-  live: https://felixegan.me/netronizer.html
+  live: https://alt-f17.github.io/other-projects/robot-arm/netronizer.html
 
 6. /projects/portfolio → felixegan.me  [featured on /]
   description: You're already here. Bilingual portfolio and web-studio site with a real-time 3D starfield, validated lead intake into a self-hosted CRM, and a few tools living on it.
@@ -103,7 +103,7 @@ discord: Alt_F17
   description: Interactive study site for Dawson College's SF programming courses. Flashcards, drills, a code animator, and an in-browser Python terminal.
   tech: React, TypeScript, Vite, Tailwind
   github: https://github.com/Alt-F17/sf-study-tools
-  live: https://felixegan.me/sf-study-tools/
+  live: https://alt-f17.github.io/other-projects/sf-study-tools/
 
 12. /projects/agentrun → agentrun
   description: Runs a coding task through a chain of real agent CLIs (Codex, Claude Code, Antigravity, local Ollama), falling through when one is out of budget or fails.
@@ -125,7 +125,7 @@ discord: Alt_F17
   description: Early MCP orchestrator prototype before the release of MCP servers. Self-improving by generating own skills upon recognition of incapability using OpenAI's Realtime and o3 APIs
   tech: Python, NLP, OpenAI Realtime API, Voice Recognition, Self-Improving
   github: https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant
-  live: https://felixegan.me/pluto-report.html
+  live: https://alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/pluto-report.html
 
 17. /projects/instagram-vault → Pluto Instagram Vault
   description: Share a post or reel to a specific Instagram DM and it becomes a linked note in an Obsidian vault my assistant can search.

@@ -116,11 +116,6 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.felixegan.me/sf-study-tools/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-  <url>
     <loc>https://www.felixegan.me/studio</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>

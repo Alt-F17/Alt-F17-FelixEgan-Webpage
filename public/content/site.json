@@ -233,7 +233,7 @@
         "tech": ["React", "TypeScript", "Vite", "Tailwind"],
         "links": [
           { "label": "GitHub", "url": "https://github.com/Alt-F17/sf-study-tools", "icon": "⌥" },
-          { "label": "Live", "url": "https://felixegan.me/sf-study-tools/", "icon": "↗" }
+          { "label": "Live", "url": "https://alt-f17.github.io/other-projects/sf-study-tools/", "icon": "↗" }
         ]
       },
       {
@@ -291,7 +291,7 @@
         "tech": ["Python", "NLP", "OpenAI Realtime API", "Voice Recognition", "Self-Improving"],
         "links": [
           { "label": "GitHub", "url": "https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant", "icon": "⌥" },
-          { "label": "Report", "url": "https://felixegan.me/pluto-report.html", "icon": "↗" }
+          { "label": "Report", "url": "https://alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/pluto-report.html", "icon": "↗" }
         ]
       },
       {
@@ -611,7 +611,7 @@
       "links": [
         { "label": "GitHub", "url": "https://github.com/Alt-F17/Automatic-Unity-Robot-Analysis", "type": "github" },
         { "label": "Website", "url": "https://aura-project-monorepo.vercel.app/", "type": "live" },
-        { "label": "ONNX Breakdown", "url": "https://felixegan.me/netronizer.html", "type": "live" }
+        { "label": "ONNX Breakdown", "url": "https://alt-f17.github.io/other-projects/robot-arm/netronizer.html", "type": "live" }
       ]
     },
     "portfolio": {
@@ -742,7 +742,7 @@
       ],
       "links": [
         { "label": "GitHub", "url": "https://github.com/Alt-F17/sf-study-tools", "type": "github" },
-        { "label": "Live", "url": "https://felixegan.me/sf-study-tools/", "type": "live" }
+        { "label": "Live", "url": "https://alt-f17.github.io/other-projects/sf-study-tools/", "type": "live" }
       ]
     },
     "agentrun": {
@@ -838,7 +838,7 @@
       ],
       "links": [
         { "label": "GitHub", "url": "https://github.com/Alt-F17/P.L.U.T.O.-Personal-Assistant", "type": "github" },
-        { "label": "Report", "url": "https://felixegan.me/pluto-report.html", "type": "live" }
+        { "label": "Report", "url": "https://alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/pluto-report.html", "type": "live" }
       ]
     },
     "instagram-vault": {

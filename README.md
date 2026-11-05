@@ -27,6 +27,7 @@ Hybrid personal + studio website focused on local SMB web development in Montrea
 - `/paste` Temporary cross-device clipboard (text or file up to 5GB, 5-minute
   TTL), Google-sign-in gated, backed by a relay on Theta — see
   `docs/theta-paste-relay-plan.md`
+- `/qr` Full-screen QR code for sharing the site
 
 ## Environment Variables
 
@@ -73,9 +74,31 @@ npm install
 npm run dev
 ```
 
+## Off-site Apps
+
+Standalone demos, tools and write-ups no longer live in this repo. They are
+served from GitHub Pages and linked by their direct `https://alt-f17.github.io/...`
+URL everywhere on the site (`site.json`, `src/content/projectDetails.ts`,
+`public/portfolio.ai.map`):
+
+- `alt-f17.github.io/other-projects/` — SF Study Tools, Theta Map, Aura,
+  PDGE, Arrow Puzzle, the lightning talk, the robot-arm demo and the other
+  small apps
+- `alt-f17.github.io/dawson-schedule-builder/`
+- `alt-f17.github.io/P.L.U.T.O.-Personal-Assistant/`
+
+Old `felixegan.me` URLs for those apps are permanent (301) redirects in
+`vercel.json`. Redirects only run on Vercel, not under `npm run dev` or
+`npm run preview`. When moving another page off-site, add its redirect there
+and delete the file from `public/`.
+
 ## SEO Notes
 
-- `public/sitemap.xml` is included; add a `/projects/<slug>` entry when a
-  project is added to `site.json`
-- `public/robots.txt` disallows legacy utility pages
-- Legacy pages include `noindex,nofollow` meta
+- `public/sitemap.xml` lists only real in-app routes. When a project is added
+  to `site.json`, add its `/projects/<slug>` entry here and in
+  `public/portfolio.ai.map` so the three stay in sync; likewise
+  `public/studio.ai.map` for Studio pages
+- Never list a redirected or off-site URL in the sitemap
+- `public/robots.txt` allows everything except `/paste` and the legacy
+  `previousWebpagePleaseNoOneFindThis.html` page (which carries
+  `noindex,nofollow` meta), and points to the sitemap
