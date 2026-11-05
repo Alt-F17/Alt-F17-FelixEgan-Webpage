@@ -91,12 +91,22 @@
       "permanent": true
     },
     {
+      "source": "/theta-map/",
+      "destination": "https://alt-f17.github.io/other-projects/theta-map/",
+      "permanent": true
+    },
+    {
       "source": "/theta-map/:path*",
       "destination": "https://alt-f17.github.io/other-projects/theta-map/",
       "permanent": true
     },
     {
       "source": "/lead-form",
+      "destination": "https://alt-f17.github.io/other-projects/simon/lead-form/",
+      "permanent": true
+    },
+    {
+      "source": "/lead-form/",
       "destination": "https://alt-f17.github.io/other-projects/simon/lead-form/",
       "permanent": true
     },
@@ -112,6 +122,11 @@
     },
     {
       "source": "/sf-study-tools",
+      "destination": "https://alt-f17.github.io/other-projects/sf-study-tools/",
+      "permanent": true
+    },
+    {
+      "source": "/sf-study-tools/",
       "destination": "https://alt-f17.github.io/other-projects/sf-study-tools/",
       "permanent": true
     },
