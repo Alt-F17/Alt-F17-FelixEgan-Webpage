@@ -182,7 +182,7 @@ const NotFound = () => {
               {t.home[locale]}
             </Link>
             <Link
-              to="/#work"
+              to="/projects"
               className="fe-ghostbtn"
               style={{ display: "inline-flex", padding: "12px 22px", border: "1px solid rgba(124,179,255,.35)", color: "#c4ccdd", fontFamily: mono, fontSize: 14 }}
             >

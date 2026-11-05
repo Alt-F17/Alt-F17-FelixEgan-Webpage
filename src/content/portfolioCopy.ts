@@ -87,6 +87,10 @@ export const portfolioCopy = {
     subtitle: { en: "What I've been working on", fr: "Ce sur quoi je travaille" } satisfies ByLocale,
     github: { en: "GitHub", fr: "GitHub" } satisfies ByLocale,
     live: { en: "Live", fr: "Voir" } satisfies ByLocale,
+    allCta: { en: "all projects →", fr: "tous les projets →" } satisfies ByLocale,
+    allTitle: { en: "All Projects", fr: "Tous les projets" } satisfies ByLocale,
+    allSubtitle: { en: "Everything I've built, ranked", fr: "Tout ce que j'ai construit, classé" } satisfies ByLocale,
+    backToAll: { en: "← all projects", fr: "← tous les projets" } satisfies ByLocale,
   },
   contact: {
     title: { en: "Contact", fr: "Contact" } satisfies ByLocale,
@@ -123,7 +127,7 @@ export const portfolioCopy = {
       fr: ["Cette page n'existe pas. La moitié du site s'est fait ", "pirater", " en la cherchant."],
     } satisfies Record<Locale, [string, string, string]>,
     home: { en: "Back home", fr: "Retour à l'accueil" } satisfies ByLocale,
-    projects: { en: "My work", fr: "Mes projets" } satisfies ByLocale,
+    projects: { en: "All projects", fr: "Tous les projets" } satisfies ByLocale,
     leftBehind: { en: "left behind", fr: "oublié ici" } satisfies ByLocale,
   },
   footer: {
